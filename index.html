@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      `interactive-widget=overlays-content` (et non `resizes-content`) :
+      le clavier virtuel se superpose au contenu sans redimensionner le
+      viewport de mise en page. C'est le mode attendu par tout le code de
+      positionnement manuel basé sur `window.visualViewport` : avec `resizes-content`,
+      Safari 17.4+ redimensionne lui-même la page à l'ouverture du clavier,
+      ce qui fausse le calcul `innerHeight - visualViewport.height` (les deux
+      valeurs rétrécissent ensemble) et provoque des sauts / écarts erratiques
+      entre la console, le champ de saisie et la barre d'onglets mobile.
+    -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=overlays-content"
+    />
+    
+    
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=2" />
+    
+    <title>LeadCortex</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/start.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,3 @@
+# Ce dossier hébergera les éventuels packages Go exposés publiquement
+# (bibliothèques réutilisables hors de ce module).
+# Vide pour l'instant — à remplir au besoin.

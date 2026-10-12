@@ -1,0 +1,25 @@
+# Binaires compilés
+/bin/
+*.exe
+academy-server
+academy-cli
+
+# Artefacts de build
+/dist/
+*.test
+*.out
+coverage.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Env local
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
