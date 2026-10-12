@@ -40,6 +40,11 @@ export const Route = createFileRoute("/app")({
 /*     d'un dashboard classique qui n'existera peut-être jamais.              */
 
 function getAppSkeleton(pathname: string) {
+  if (/^\/app\/academy\/lesson\/[^/]+/.test(pathname)) {
+    // Le Lesson Player gère son propre skeleton plein écran.
+    return <WelcomeSkeleton />;
+  }
+
   if (pathname === "/app" || pathname === "/app/") {
     return <WelcomeSkeleton />;
   }

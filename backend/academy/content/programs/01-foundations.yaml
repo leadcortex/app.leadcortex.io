@@ -1,0 +1,1345 @@
+schema_version: "1.0"
+id: p1-foundations
+order: 1
+title: Fondations
+subtitle: Les bases de la prospection B2B
+description: |
+  Avant de prospecter, il faut comprendre à qui on parle et pourquoi.
+  Ce programme pose les fondations : vocabulaire B2B, ICP, personas,
+  signaux d'achat, canaux et posture.
+icon: book-open
+color: "#3186FF"
+difficulty: 1
+language: fr
+authors: ["team"]
+
+prerequisites:
+  previous_program_ids: []
+  min_level: 0
+  min_xp: 0
+
+concepts:
+  - id: prospection_definition
+    label: Définition de la prospection
+    description: L'action de rechercher activement de nouveaux clients.
+  - id: inbound_outbound
+    label: Inbound vs Outbound
+    description: Deux approches opposées — attirer ou aller chercher.
+  - id: icp_definition
+    label: Définition ICP
+    description: L'entreprise idéale qui tire le plus de valeur du produit.
+  - id: icp_vs_persona
+    label: ICP vs Persona
+    description: ICP = entreprise ; Persona = personne.
+  - id: buyer_journey
+    label: Parcours d'achat B2B
+    description: Les étapes entre la prise de conscience et la signature.
+  - id: signals
+    label: Signaux d'achat
+    description: Événements déclencheurs qui précèdent un achat.
+  - id: signals_priority
+    label: Priorisation des signaux
+    description: Tous les signaux ne se valent pas — les classer par force.
+  - id: channels
+    label: Canaux de prospection
+    description: Email, LinkedIn, téléphone, événements — forces et limites.
+  - id: tone_b2b
+    label: Ton B2B
+    description: Direct, professionnel, orienté problème client.
+
+modules:
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 1 — Bases de la prospection
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p1-m1
+    order: 1
+    title: Bases de la prospection
+    description: Comprendre le terrain avant de s'y aventurer.
+    prerequisites:
+      previous_module_ids: []
+      required_concept_ids: []
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 1.1 — Pourquoi la prospection outbound ?
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m1-l1-why-prospection
+        order: 1
+        slug: why-prospection
+        title: Pourquoi la prospection outbound ?
+        subtitle: Le contexte et les enjeux
+        duration_min: 7
+        difficulty: 1
+        xp_total: 120
+        concepts: [prospection_definition, inbound_outbound]
+        skills: [stratégie]
+        prerequisites:
+          previous_lesson_ids: []
+          required_concept_ids: []
+        unlocks:
+          lesson_ids: [p1-m1-l2-inbound-vs-outbound]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Pourquoi la prospection outbound ?
+            subtitle: Fondations · Module 1 · Leçon 1
+            mascot_pose: curious
+            mascot_line: Avant d'écrire à qui que ce soit, il faut savoir à qui on parle.
+            objectives:
+              - Comprendre la différence entre inbound et outbound
+              - Identifier quand l'outbound est pertinent
+              - Connaître les 3 erreurs de débutant
+
+          - type: theory
+            slides:
+              - id: t1
+                title: L'outbound, c'est quoi ?
+                body_md: |
+                  L'**outbound** consiste à aller **chercher** ses clients
+                  plutôt qu'à attendre qu'ils viennent (inbound).
+
+                  En B2B, c'est souvent le canal le plus fiable pour
+                  **démarrer** : on ne dépend pas encore de sa notoriété
+                  pour générer des conversations.
+                callout:
+                  tone: info
+                  title: À retenir
+                  text: Outbound = aller chercher. Inbound = attirer.
+              - id: t2
+                title: Quand l'outbound est pertinent
+                body_md: |
+                  L'outbound est particulièrement efficace quand :
+
+                  1. **Vous démarrez** — peu de trafic entrant.
+                  2. **Votre marché est étroit** — peu de cibles, elles ne
+                     se manifesteront pas toutes seules.
+                  3. **Votre panier est élevé** — chaque conversation vaut
+                     de l'or.
+
+                  Il est en revanche inefficace quand votre produit est
+                  très grand public, ou quand vous ciblez des millions
+                  d'utilisateurs en libre-service.
+                quote:
+                  text: Personne n'achète votre produit juste parce qu'il existe.
+                  author: Règle d'or B2B
+              - id: t3
+                title: Les 3 erreurs de débutant
+                body_md: |
+                  - **Parler de son produit** au lieu du problème client.
+                  - **Écrire à tout le monde** au lieu de cibler son ICP.
+                  - **Envoyer en masse** au lieu de personnaliser.
+
+                  Le reste du programme va démonter chaque erreur une par
+                  une.
+
+          - type: practice
+            exercises:
+              - id: p1-m1-l1-ex1
+                kind: mcq
+                prompt: Quelle affirmation décrit le mieux la prospection outbound ?
+                explanation_md: |
+                  L'outbound consiste à **aller chercher** activement les
+                  clients plutôt qu'à attendre qu'ils viennent à nous.
+                xp: 10
+                difficulty: 1
+                concepts: [prospection_definition]
+                payload:
+                  options:
+                    - Attendre que les clients nous contactent
+                    - Aller chercher activement des clients potentiels
+                    - Publier du contenu pour améliorer son référencement
+                    - Acheter une liste d'emails en masse
+                  correct: 1
+
+              - id: p1-m1-l1-ex2
+                kind: fill_blank
+                prompt: "L'______ va chercher les clients ; l'______ les attend."
+                explanation_md: |
+                  Outbound = aller chercher. Inbound = attirer / attendre.
+                xp: 15
+                difficulty: 1
+                concepts: [inbound_outbound]
+                payload:
+                  blanks:
+                    - correct: [outbound]
+                    - correct: [inbound]
+
+              - id: p1-m1-l1-ex3
+                kind: multi_select
+                prompt: Sélectionnez les situations où l'outbound est pertinent.
+                explanation_md: |
+                  L'outbound brille quand le marché est étroit, le panier
+                  élevé, ou qu'on démarre sans trafic entrant.
+                xp: 15
+                difficulty: 2
+                concepts: [prospection_definition]
+                payload:
+                  options:
+                    - Vous démarrez votre produit et avez peu de trafic
+                    - Votre marché cible compte 200 entreprises
+                    - Votre produit est un jeu mobile grand public
+                    - Votre panier moyen dépasse 10 000 €
+                    - Vous ciblez 1 million d'utilisateurs en libre-service
+                  correct: [0, 1, 3]
+
+          - type: mission
+            mission:
+              id: mission-why-prospection
+              title: Identifier 3 signaux d'achat chez vos cibles
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la page **Entreprises** et
+                parcourez 3 entreprises qui ressemblent à votre ICP.
+
+                Pour chacune, notez dans la fiche un signal d'achat que
+                vous identifiez (levée de fonds, recrutement, lancement
+                produit, changement de direction…).
+              target:
+                route: /app/companies
+                cta: Voir mes entreprises
+              validation:
+                trigger: company.viewed
+                conditions:
+                  - path: company.count
+                    op: ">="
+                    value: 3
+              on_success:
+                xp: 50
+                mascot_line: Bravo ! Tu commences à repérer ce qui bouge chez tes cibles.
+              on_failure:
+                feedback_md: Il te faut au moins 3 entreprises consultées.
+                hint_md: Va dans **Entreprises**, ouvre la liste, et parcours-en 3.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: prospection_definition
+            front: "Que signifie « prospection outbound » ?"
+            back: "Aller chercher activement des clients, plutôt que d'attendre qu'ils viennent (inbound)."
+          - concept: inbound_outbound
+            front: "Quelle est la différence entre inbound et outbound ?"
+            back: "Inbound = attirer (contenu, SEO). Outbound = aller chercher (email, LinkedIn, appel)."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 1.2 — Inbound vs Outbound
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m1-l2-inbound-vs-outbound
+        order: 2
+        slug: inbound-vs-outbound
+        title: Inbound vs Outbound
+        subtitle: Choisir la bonne approche selon le contexte
+        duration_min: 6
+        difficulty: 1
+        xp_total: 100
+        concepts: [inbound_outbound]
+        skills: [stratégie]
+        prerequisites:
+          previous_lesson_ids: [p1-m1-l1-why-prospection]
+          required_concept_ids: []
+        unlocks:
+          lesson_ids: [p1-m2-l1-icp-basics]
+        rewards:
+          xp: 80
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Inbound vs Outbound
+            subtitle: Fondations · Module 1 · Leçon 2
+            mascot_pose: thinking
+            mascot_line: Les deux approches ne s'opposent pas — elles se complètent.
+            objectives:
+              - Comparer les deux approches
+              - Savoir quand utiliser l'une ou l'autre
+              - Combiner les deux pour un pipeline solide
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Tableau comparatif
+                body_md: |
+                  | Critère | Inbound | Outbound |
+                  |---|---|---|
+                  | Principe | Attirer | Aller chercher |
+                  | Délai | Long (3-12 mois) | Court (jours) |
+                  | Coût initial | Élevé (contenu, SEO) | Faible |
+                  | Prévisibilité | Faible | Élevée |
+                  | Effet d'échelle | Fort | Limité par la qualité |
+                callout:
+                  tone: info
+                  text: En B2B, les deux se combinent — l'outbound génère les premières conversations, l'inbound les amplifie.
+              - id: t2
+                title: Les 5 canaux de prospection B2B
+                body_md: |
+                  1. **Email** — scalable, mais saturé.
+                  2. **LinkedIn** — réseau, crédibilité, DM.
+                  3. **Téléphone** — direct, puissant en haut de gamme.
+                  4. **Événements** — rencontres à forte valeur.
+                  5. **Recommandation** — la plus efficace, la plus lente.
+
+                  Chaque canal a ses forces. Le bon prospecteur **combine**.
+
+          - type: practice
+            exercises:
+              - id: p1-m1-l2-ex1
+                kind: match_pairs
+                prompt: Associez chaque canal à sa principale caractéristique.
+                explanation_md: |
+                  Chaque canal a un profil distinct — les combiner maximise
+                  les chances d'atteindre la cible.
+                xp: 15
+                difficulty: 2
+                concepts: [channels]
+                payload:
+                  pairs:
+                    - left: Email
+                      right: Scalable mais saturé
+                    - left: LinkedIn
+                      right: Crédibilité + réseau
+                    - left: Téléphone
+                      right: Direct et puissant en haut de gamme
+                    - left: Événements
+                      right: Rencontres à forte valeur
+                    - left: Recommandation
+                      right: Plus efficace mais plus lente
+
+              - id: p1-m1-l2-ex2
+                kind: order_steps
+                prompt: Remettez les étapes d'une stratégie mixte dans l'ordre logique.
+                explanation_md: |
+                  On pose d'abord les fondations (ICP), on identifie les
+                  cibles (signaux), on choisit un canal pour attaquer, puis
+                  on amplifie avec les autres canaux.
+                xp: 15
+                difficulty: 2
+                concepts: [channels]
+                payload:
+                  steps:
+                    - Définir son ICP
+                    - Repérer les signaux d'achat
+                    - Attaquer par un canal principal
+                    - Amplifier avec les canaux complémentaires
+                    - Mesurer et itérer
+
+          - type: mission
+            mission:
+              id: mission-pick-channel
+              title: Choisir votre canal principal
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la page **Séquences** et créez
+                une séquence **brouillon** nommée « Mon canal principal ».
+
+                Dans la description, indiquez en une phrase le canal que
+                vous voulez tester en premier (email, LinkedIn, téléphone)
+                et pourquoi.
+              target:
+                route: /app/sequences/new
+                cta: Créer une séquence
+              validation:
+                trigger: sequence.created
+                conditions:
+                  - path: sequence.name
+                    op: "contains"
+                    value: Mon canal principal
+              on_success:
+                xp: 50
+                mascot_line: Premier canal choisi — reste plus qu'à l'exploiter.
+              on_failure:
+                feedback_md: La séquence doit s'appeler « Mon canal principal ».
+                hint_md: Va dans **Séquences → Nouvelle**, remplis le nom et crée.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: channels
+            front: "Citez 3 canaux de prospection B2B et une force de chacun."
+            back: "Email (scalable), LinkedIn (crédibilité), Téléphone (direct et haut de gamme)."
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 2 — ICP et personas
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p1-m2
+    order: 2
+    title: ICP et personas
+    description: Savoir à qui on parle, précisément.
+    prerequisites:
+      previous_module_ids: [p1-m1]
+      required_concept_ids: [inbound_outbound]
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 2.1 — Définir son ICP
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m2-l1-icp-basics
+        order: 1
+        slug: icp-basics
+        title: Définir son ICP
+        subtitle: L'entreprise idéale, sur le papier
+        duration_min: 8
+        difficulty: 2
+        xp_total: 130
+        concepts: [icp_definition]
+        skills: [stratégie]
+        prerequisites:
+          previous_lesson_ids: [p1-m1-l2-inbound-vs-outbound]
+          required_concept_ids: []
+        unlocks:
+          lesson_ids: [p1-m2-l2-icp-vs-persona]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Définir son ICP
+            subtitle: Fondations · Module 2 · Leçon 1
+            mascot_pose: curious
+            mascot_line: Un ICP flou = une prospection floue.
+            objectives:
+              - Comprendre ce qu'est un ICP
+              - Construire un ICP en 5 critères
+              - Identifier les faux amis (grands comptes « tentants »)
+
+          - type: theory
+            slides:
+              - id: t1
+                title: L'ICP en une phrase
+                body_md: |
+                  L'**ICP** (Ideal Customer Profile) est le **profil
+                  d'entreprise** qui tire le plus de valeur de votre
+                  produit, et à qui vous apportez le plus de valeur en
+                  retour.
+
+                  Un bon ICP tient en **5 lignes maximum**. S'il vous
+                  faut 3 paragraphes, c'est qu'il n'est pas encore clair.
+                callout:
+                  tone: warning
+                  title: Attention
+                  text: Un ICP trop large (« toutes les entreprises B2B ») ne sert à rien. Il doit **exclure** autant qu'il inclut.
+              - id: t2
+                title: Les 5 critères d'un bon ICP
+                body_md: |
+                  1. **Secteur** — industrie précise, code NAF ou équivalent.
+                  2. **Taille** — effectif et/ou chiffre d'affaires.
+                  3. **Géographie** — pays, région, langue.
+                  4. **Maturité technologique** — outils déjà utilisés.
+                  5. **Signal structurel** — un événement qui rend le besoin
+                     actuel (levée, recrutement, expansion…).
+                visual:
+                  kind: comparison
+                  alt: Deux ICP — un flou vs un précis
+                  caption: Un ICP trop large dilue l'effort ; un ICP précis concentre la valeur.
+              - id: t3
+                title: Les faux amis
+                body_md: |
+                  Certains comptes semblent idéaux (grand nom, gros budget)
+                  mais **ne sont pas votre ICP** :
+
+                  - Ils n'ont pas le problème que vous résolvez.
+                  - Le cycle de vente est 10× plus long que votre capacité.
+                  - Ils achètent uniquement à des fournisseurs certifiés.
+
+                  Dire **non** à un faux ami, c'est dire **oui** au temps
+                  investi sur un vrai.
+
+          - type: practice
+            exercises:
+              - id: p1-m2-l1-ex1
+                kind: mcq
+                prompt: Qu'est-ce qu'un ICP ?
+                explanation_md: |
+                  L'ICP est le **profil d'entreprise** idéal — pas une
+                  personne (c'est le persona), ni une liste de contacts.
+                xp: 10
+                difficulty: 2
+                concepts: [icp_definition]
+                payload:
+                  options:
+                    - Une personne décisionnaire dans une entreprise
+                    - Le profil d'entreprise idéal que l'on veut cibler
+                    - Une liste d'emails achetée sur Internet
+                    - Un segment marketing large et indifférencié
+                  correct: 1
+
+              - id: p1-m2-l1-ex2
+                kind: fill_blank
+                prompt: "Un bon ICP tient en ______ lignes maximum."
+                explanation_md: |
+                  Un ICP trop long est un signe qu'il n'est pas encore
+                  assez clair — il doit pouvoir se formuler en 5 lignes.
+                xp: 10
+                difficulty: 2
+                concepts: [icp_definition]
+                payload:
+                  blanks:
+                    - correct: ["5", "cinq"]
+
+              - id: p1-m2-l1-ex3
+                kind: multi_select
+                prompt: Quels sont les critères typiques d'un bon ICP ?
+                explanation_md: |
+                  Les 5 critères : secteur, taille, géographie, maturité
+                  tech, signal structurel.
+                xp: 20
+                difficulty: 3
+                concepts: [icp_definition]
+                payload:
+                  options:
+                    - Secteur d'activité
+                    - Taille (effectif ou chiffre d'affaires)
+                    - Géographie
+                    - Nombre de followers du CEO sur Twitter
+                    - Maturité technologique
+                    - Signal structurel (levée, recrutement…)
+                  correct: [0, 1, 2, 4, 5]
+
+          - type: mission
+            mission:
+              id: mission-define-icp
+              title: Rédiger votre premier ICP
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la page **Entreprises** et
+                ajoutez 3 entreprises qui correspondent à votre ICP.
+
+                Pour chacune, renseignez les critères : secteur, taille,
+                localisation. Vous construisez, dans les faits, votre
+                premier ICP.
+              target:
+                route: /app/companies/new
+                cta: Ajouter une entreprise
+              validation:
+                trigger: company.created
+                conditions:
+                  - path: company.count
+                    op: ">="
+                    value: 3
+              on_success:
+                xp: 50
+                mascot_line: Ton ICP prend forme — continue à l'affiner.
+                unlocks_avatar_ids: [eagle]
+              on_failure:
+                feedback_md: Il te manque au moins 3 entreprises créées.
+                hint_md: Va dans **Entreprises → Nouvelle** et ajoute 3 profils.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: icp_definition
+            front: "Qu'est-ce qu'un ICP ?"
+            back: "Ideal Customer Profile : le profil d'entreprise idéal que l'on cible (secteur, taille, géo, maturité tech, signal)."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 2.2 — ICP vs Persona
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m2-l2-icp-vs-persona
+        order: 2
+        slug: icp-vs-persona
+        title: ICP vs Persona
+        subtitle: Entreprise et personne — deux niveaux
+        duration_min: 7
+        difficulty: 2
+        xp_total: 110
+        concepts: [icp_vs_persona, buyer_journey]
+        skills: [stratégie, communication]
+        prerequisites:
+          previous_lesson_ids: [p1-m2-l1-icp-basics]
+          required_concept_ids: [icp_definition]
+        unlocks:
+          lesson_ids: [p1-m3-l1-signals-basics]
+        rewards:
+          xp: 90
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: ICP vs Persona
+            subtitle: Fondations · Module 2 · Leçon 2
+            mascot_pose: thinking
+            mascot_line: L'entreprise n'achète pas. La personne, si.
+            objectives:
+              - Distinguer clairement ICP et persona
+              - Identifier les personas dans un compte cible
+              - Comprendre le parcours d'achat B2B
+
+          - type: theory
+            slides:
+              - id: t1
+                title: ICP = entreprise ; Persona = personne
+                body_md: |
+                  - **ICP** — quelle entreprise viser ?
+                  - **Persona** — quelle personne dans cette entreprise ?
+
+                  Un même ICP contient souvent **plusieurs personas** :
+                  le décideur économique (achète), l'utilisateur (utilise),
+                  le champion (pousse le projet en interne).
+
+                callout:
+                  tone: info
+                  title: Astuce
+                  text: Adaptez votre discours au persona. Le CTO veut de la robustesse, le CFO veut du ROI.
+              - id: t2
+                title: Les 4 personas classiques en B2B
+                body_md: |
+                  1. **Champion** — utilise le produit, veut le faire adopter.
+                  2. **Décideur** — signe le chèque, arbitre les budgets.
+                  3. **Utilisateur** — subit la solution au quotidien.
+                  4. **Bloqueur** — sécurité, juridique, DSI : peut tout
+                     arrêter.
+
+                  Le champion est votre allié : c'est lui qui vend
+                  **en interne** quand vous n'êtes pas dans la salle.
+              - id: t3
+                title: Le parcours d'achat B2B
+                body_md: |
+                  1. **Prise de conscience** — le problème existe.
+                  2. **Recherche** — exploration de solutions.
+                  3. **Comparaison** — short-list, démos, tests.
+                  4. **Décision** — signature ou refus.
+                  5. **Adoption** — onboarding, extension.
+
+                  Chaque étape a ses propres signaux. Les bons
+                  prospecteurs **calibrent** leur approche selon l'étape.
+
+          - type: practice
+            exercises:
+              - id: p1-m2-l2-ex1
+                kind: mcq
+                prompt: Quelle est la différence entre ICP et persona ?
+                explanation_md: |
+                  L'ICP est le **profil d'entreprise** ; le persona est
+                  la **personne** dans cette entreprise.
+                xp: 10
+                difficulty: 2
+                concepts: [icp_vs_persona]
+                payload:
+                  options:
+                    - L'ICP est une personne, le persona est une entreprise
+                    - L'ICP est une entreprise, le persona est une personne
+                    - Les deux désignent la même chose
+                    - L'ICP est un marché, le persona est un produit
+                  correct: 1
+
+              - id: p1-m2-l2-ex2
+                kind: match_pairs
+                prompt: Associez chaque persona à son rôle dans l'achat.
+                explanation_md: |
+                  Chaque persona joue un rôle distinct — les confondre
+                  mène à des discours mal ciblés.
+                xp: 15
+                difficulty: 3
+                concepts: [icp_vs_persona]
+                payload:
+                  pairs:
+                    - left: Champion
+                      right: Pousse le projet en interne
+                    - left: Décideur
+                      right: Signe le contrat et alloue le budget
+                    - left: Utilisateur
+                      right: Utilise le produit au quotidien
+                    - left: Bloqueur
+                      right: Peut arrêter le projet (sécurité, juridique)
+
+              - id: p1-m2-l2-ex3
+                kind: order_steps
+                prompt: Remettez le parcours d'achat B2B dans le bon ordre.
+                explanation_md: |
+                  Le cycle B2B suit cinq étapes canoniques, de la prise de
+                  conscience jusqu'à l'adoption.
+                xp: 15
+                difficulty: 2
+                concepts: [buyer_journey]
+                payload:
+                  steps:
+                    - Prise de conscience
+                    - Recherche
+                    - Comparaison
+                    - Décision
+                    - Adoption
+
+          - type: mission
+            mission:
+              id: mission-map-personas
+              title: Mapper 2 personas sur une entreprise cible
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la fiche d'une entreprise
+                (que vous avez créée ou importée), puis ajoutez **2
+                prospects** issus de cette entreprise.
+
+                Choisissez deux personas différents : par exemple un
+                décideur (CEO, CTO) et un utilisateur (Lead, Manager).
+              target:
+                route: /app/people/new
+                cta: Ajouter un prospect
+              validation:
+                trigger: lead.created
+                conditions:
+                  - path: lead.count
+                    op: ">="
+                    value: 2
+              on_success:
+                xp: 50
+                mascot_line: Deux personas — tu commences à raisonner en interne.
+              on_failure:
+                feedback_md: Il te faut au moins 2 prospects créés.
+                hint_md: Va dans **Prospects → Nouveau** et crée 2 profils.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: icp_vs_persona
+            front: "Quelle est la différence entre ICP et Persona ?"
+            back: "ICP = profil d'entreprise. Persona = personne dans cette entreprise (champion, décideur, utilisateur, bloqueur)."
+          - concept: buyer_journey
+            front: "Citez les 5 étapes du parcours d'achat B2B."
+            back: "Prise de conscience → Recherche → Comparaison → Décision → Adoption."
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 3 — Signaux d'achat
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p1-m3
+    order: 3
+    title: Signaux d'achat
+    description: Repérer les moments qui précèdent un achat.
+    prerequisites:
+      previous_module_ids: [p1-m2]
+      required_concept_ids: [icp_definition]
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 3.1 — Reconnaître les signaux
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m3-l1-signals-basics
+        order: 1
+        slug: signals-basics
+        title: Reconnaître les signaux d'achat
+        subtitle: Les moments qui font bouger une cible
+        duration_min: 8
+        difficulty: 2
+        xp_total: 130
+        concepts: [signals]
+        skills: [recherche]
+        prerequisites:
+          previous_lesson_ids: [p1-m2-l2-icp-vs-persona]
+          required_concept_ids: [icp_definition]
+        unlocks:
+          lesson_ids: [p1-m3-l2-signals-priority]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Reconnaître les signaux d'achat
+            subtitle: Fondations · Module 3 · Leçon 1
+            mascot_pose: curious
+            mascot_line: Les entreprises ne changent pas par hasard — elles changent sous pression.
+            objectives:
+              - Comprendre ce qu'est un signal d'achat
+              - Reconnaître les 5 signaux les plus courants
+              - Éviter les faux signaux
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Qu'est-ce qu'un signal d'achat ?
+                body_md: |
+                  Un **signal d'achat** est un événement observable qui
+                  augmente la **probabilité** qu'une entreprise ait besoin
+                  de votre produit **maintenant**.
+
+                  Un signal n'est pas une preuve, c'est un **indice de
+                  timing**. Il vous dit *quand* appuyer sur la détente.
+                callout:
+                  tone: info
+                  title: À retenir
+                  text: Signaux = timing. ICP = cible. Les deux ensemble = priorisation.
+              - id: t2
+                title: Les 5 signaux les plus forts en B2B
+                body_md: |
+                  1. **Levée de fonds** — budget disponible, croissance à
+                     absorber.
+                  2. **Recrutement C-level ou massif** — nouveaux objectifs,
+                     nouveaux outils.
+                  3. **Lancement produit / expansion géographique** —
+                     besoin de traction commerciale.
+                  4. **Changement de direction** — nouveau dirigeant, nouvelle
+                     stratégie.
+                  5. **Mise en conformité réglementaire** — obligation
+                     externe qui force l'achat.
+
+                quote:
+                  text: Le bon timing fait 80 % du travail.
+                  author: Règle d'or B2B
+              - id: t3
+                title: Les faux signaux
+                body_md: |
+                  Certains événements **ressemblent** à des signaux mais
+                  n'en sont pas :
+
+                  - Une publication LinkedIn générique du CEO.
+                  - Un changement de logo ou de site web.
+                  - Une nouvelle page « Carrières » vide.
+
+                  Ces événements sont **visibles** mais ne signalent pas un
+                  budget ni un besoin actuel. À ignorer dans la priorisation.
+
+          - type: practice
+            exercises:
+              - id: p1-m3-l1-ex1
+                kind: mcq
+                prompt: Quel événement est un signal d'achat fort en B2B ?
+                explanation_md: |
+                  Un **recrutement C-level** signale un changement
+                  d'objectifs et souvent un nouveau budget. Une publication
+                  LinkedIn générique, non.
+                xp: 10
+                difficulty: 2
+                concepts: [signals]
+                payload:
+                  options:
+                    - Une publication générique du CEO sur LinkedIn
+                    - Un recrutement C-level (nouveau CTO, CPO…)
+                    - Une mise à jour du logo
+                    - Une nouvelle page « Carrières » vide
+                  correct: 1
+
+              - id: p1-m3-l1-ex2
+                kind: multi_select
+                prompt: Sélectionnez les signaux d'achat **forts** en B2B.
+                explanation_md: |
+                  Levée de fonds, recrutement C-level, lancement produit,
+                  expansion géo, conformité réglementaire — tous signalent
+                  un budget et un besoin à court terme.
+                xp: 20
+                difficulty: 3
+                concepts: [signals]
+                payload:
+                  options:
+                    - Levée de fonds
+                    - Recrutement C-level
+                    - Changement de logo
+                    - Lancement d'un nouveau produit
+                    - Mise en conformité réglementaire
+                    - Post viré sur les réseaux sociaux
+                  correct: [0, 1, 3, 4]
+
+              - id: p1-m3-l1-ex3
+                kind: free_text
+                prompt: |
+                  En 2-3 phrases, expliquez pourquoi un signal d'achat
+                  est plus utile qu'un simple critère ICP statique.
+                explanation_md: |
+                  L'ICP dit **qui** cibler. Le signal dit **quand**.
+                  Combinés, ils multiplient l'efficacité de la prospection.
+                xp: 25
+                difficulty: 3
+                concepts: [signals]
+                payload:
+                  min_words: 20
+                  max_words: 120
+                  rubric_md: |
+                    La réponse doit mentionner :
+                    - le timing (quand agir) ;
+                    - la notion de probabilité accrue ;
+                    - la complémentarité avec l'ICP.
+                  expected_keywords:
+                    - timing
+                    - quand
+                    - probabilité
+                    - ICP
+                    - complémentaire
+
+          - type: mission
+            mission:
+              id: mission-spot-signal
+              title: Repérer un signal d'achat sur une cible
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la fiche d'un prospect et
+                remplissez le champ **Signal**.
+
+                Décrivez en une phrase le signal que vous avez identifié
+                chez cette cible (levée, recrutement, lancement…).
+              target:
+                route: /app/people
+                cta: Voir mes prospects
+              validation:
+                trigger: lead.updated
+                conditions:
+                  - path: lead.signal
+                    op: "is_not_empty"
+              on_success:
+                xp: 50
+                mascot_line: Un signal repéré = un angle d'attaque.
+              on_failure:
+                feedback_md: Le champ Signal d'un prospect est vide.
+                hint_md: Ouvre une fiche prospect et remplis le champ **Signal**.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: signals
+            front: "Qu'est-ce qu'un signal d'achat en B2B ?"
+            back: "Un événement observable qui augmente la probabilité qu'une entreprise ait besoin de votre produit maintenant (levée, recrutement C-level, lancement…)."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 3.2 — Prioriser les signaux
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m3-l2-signals-priority
+        order: 2
+        slug: signals-priority
+        title: Prioriser les signaux
+        subtitle: Tous les signaux ne se valent pas
+        duration_min: 7
+        difficulty: 3
+        xp_total: 110
+        concepts: [signals, signals_priority]
+        skills: [stratégie, analyse]
+        prerequisites:
+          previous_lesson_ids: [p1-m3-l1-signals-basics]
+          required_concept_ids: [signals]
+        unlocks:
+          lesson_ids: [p1-m4-l1-channels-overview]
+        rewards:
+          xp: 90
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Prioriser les signaux
+            subtitle: Fondations · Module 3 · Leçon 2
+            mascot_pose: thinking
+            mascot_line: Mieux vaut 10 bons signaux que 100 tièdes.
+            objectives:
+              - Comprendre la notion de force de signal
+              - Classer 3 niveaux : chaud, tiède, froid
+              - Savoir où investir son temps
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Les 3 niveaux de signal
+                body_md: |
+                  - **Chaud** — l'événement force presque l'achat
+                    (levée + expansion, conformité réglementaire, nouveau
+                    dirigeant en phase de refonte).
+                  - **Tiède** — l'événement crée une fenêtre
+                    (recrutement C-level, lancement produit).
+                  - **Froid** — l'événement ne change rien au besoin
+                    (post LinkedIn générique, refonte graphique).
+
+                  On **concentre l'effort** sur les signaux chauds et
+                  tièdes — les froids attendent.
+                callout:
+                  tone: warning
+                  title: Erreur classique
+                  text: Traiter tous les signaux avec la même énergie dilue votre efficacité. Priorisez sans pitié.
+              - id: t2
+                title: La règle 80/20 du signal
+                body_md: |
+                  En prospection, **20 % des signaux** génèrent
+                  **80 % des conversations qualifiées**.
+
+                  Ces 20 % sont presque toujours des signaux :
+
+                  - **Financiers** (levée, rachat).
+                  - **Humains** (recrutement C-level).
+                  - **Structurels** (expansion, nouveau marché).
+
+                  Le reste (posts, refontes) est à archiver pour plus tard.
+
+          - type: practice
+            exercises:
+              - id: p1-m3-l2-ex1
+                kind: mcq
+                prompt: Quel signal est le plus chaud ?
+                explanation_md: |
+                  Une levée de fonds suivie d'une expansion géographique
+                  combine deux signaux majeurs : budget disponible +
+                  besoin de traction. C'est le plus chaud des trois.
+                xp: 15
+                difficulty: 3
+                concepts: [signals_priority]
+                payload:
+                  options:
+                    - Nouveau post LinkedIn du CEO
+                    - Levée de fonds + expansion géographique
+                    - Refonte du site web
+                    - Publication d'un communiqué annuel
+                  correct: 1
+
+              - id: p1-m3-l2-ex2
+                kind: order_steps
+                prompt: Classez ces signaux du plus chaud au plus froid.
+                explanation_md: |
+                  Conformité réglementaire (obligation) > levée (budget) >
+                  recrutement C-level (nouveaux objectifs) > post LinkedIn
+                  générique (bruit).
+                xp: 20
+                difficulty: 4
+                concepts: [signals_priority]
+                payload:
+                  steps:
+                    - Mise en conformité réglementaire
+                    - Levée de fonds
+                    - Recrutement C-level
+                    - Post LinkedIn générique
+
+          - type: mission
+            mission:
+              id: mission-prioritize-signals
+              title: Prioriser 3 prospects par signal
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la page **Prospects** et
+                attribuez un **score** aux 3 prospects que vous avez
+                identifiés.
+
+                Plus le signal est chaud, plus le score doit être élevé
+                (≥ 8 pour les signaux chauds, 5-7 pour les tièdes).
+              target:
+                route: /app/people
+                cta: Voir mes prospects
+              validation:
+                trigger: lead.updated
+                conditions:
+                  - path: lead.count_scored
+                    op: ">="
+                    value: 3
+              on_success:
+                xp: 50
+                mascot_line: Prioriser, c'est gagner du temps sur les bonnes cibles.
+              on_failure:
+                feedback_md: Il te manque au moins 3 prospects scorés.
+                hint_md: Va dans **Prospects**, ouvre 3 fiches et renseigne le score.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: signals_priority
+            front: "Comment classer les signaux d'achat ?"
+            back: "3 niveaux : chaud (force l'achat), tiède (crée une fenêtre), froid (n'affecte pas le besoin). Concentrer l'effort sur les chauds et tièdes."
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 4 — Canaux et posture
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p1-m4
+    order: 4
+    title: Canaux et posture
+    description: Choisir son canal et adopter le bon ton.
+    prerequisites:
+      previous_module_ids: [p1-m3]
+      required_concept_ids: [signals]
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 4.1 — Vue d'ensemble des canaux
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m4-l1-channels-overview
+        order: 1
+        slug: channels-overview
+        title: Vue d'ensemble des canaux
+        subtitle: Forces et limites de chaque canal
+        duration_min: 8
+        difficulty: 2
+        xp_total: 120
+        concepts: [channels]
+        skills: [stratégie]
+        prerequisites:
+          previous_lesson_ids: [p1-m3-l2-signals-priority]
+          required_concept_ids: [signals]
+        unlocks:
+          lesson_ids: [p1-m4-l2-tone-posture]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Vue d'ensemble des canaux
+            subtitle: Fondations · Module 4 · Leçon 1
+            mascot_pose: curious
+            mascot_line: Chaque canal a sa personnalité — apprenez à les écouter.
+            objectives:
+              - Connaître les 4 canaux principaux
+              - Comprendre forces et limites de chacun
+              - Savoir combiner les canaux
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Les 4 canaux principaux
+                body_md: |
+                  - **Email** — scalable, mesurable, mais saturé.
+                  - **LinkedIn** — crédibilité, réseau, DM puissants.
+                  - **Téléphone** — direct, haut de gamme, exigeant.
+                  - **Événements** — rencontres à très forte valeur.
+
+                  Il n'y a pas de « meilleur canal » universel : il y a un
+                  canal **adapté à votre cible et à votre panier**.
+                callout:
+                  tone: info
+                  text: Un fondateur solo privilégie LinkedIn. Une équipe avec SDR, l'email. Un CEO qui vend à des CEO, le téléphone.
+              - id: t2
+                title: La règle de la combinaison
+                body_md: |
+                  Les meilleurs pipelines B2B combinent **2 à 3 canaux**
+                  autour du même prospect :
+
+                  - Un email personnalisé après un like.
+                  - Un appel après une visite de page tarifs.
+                  - Une connexion LinkedIn après une réponse email.
+
+                  La **cohérence** entre canaux multiplie la crédibilité.
+                quote:
+                  text: Le prospect doit vous croiser trois fois avant de répondre.
+                  author: Principe de fréquence
+
+          - type: practice
+            exercises:
+              - id: p1-m4-l1-ex1
+                kind: match_pairs
+                prompt: Associez chaque canal à son avantage principal.
+                explanation_md: |
+                  Email = scalable. LinkedIn = crédibilité. Téléphone =
+                  direct. Événements = rencontre à forte valeur.
+                xp: 15
+                difficulty: 2
+                concepts: [channels]
+                payload:
+                  pairs:
+                    - left: Email
+                      right: Scalable et mesurable
+                    - left: LinkedIn
+                      right: Crédibilité et réseau
+                    - left: Téléphone
+                      right: Direct et puissant haut de gamme
+                    - left: Événements
+                      right: Rencontres à très forte valeur
+
+              - id: p1-m4-l1-ex2
+                kind: mcq
+                prompt: Combien de canaux combine typiquement une bonne séquence B2B ?
+                explanation_md: |
+                  Les meilleurs pipelines combinent **2 à 3 canaux**
+                  autour du même prospect pour maximiser la crédibilité.
+                xp: 10
+                difficulty: 2
+                concepts: [channels]
+                payload:
+                  options:
+                    - Un seul, pour rester concentré
+                    - 2 à 3, en cohérence
+                    - 5 ou plus, pour multiplier les touches
+                    - Aucun, la prospection est passive
+                  correct: 1
+
+          - type: mission
+            mission:
+              id: mission-combine-channels
+              title: Combiner 2 canaux sur une séquence
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la page **Séquences** et
+                éditez la séquence que vous avez créée précédemment.
+
+                Ajoutez au moins **2 étapes de types différents** (par
+                exemple email + LinkedIn) dans la séquence.
+              target:
+                route: /app/sequences
+                cta: Voir mes séquences
+              validation:
+                trigger: sequence.updated
+                conditions:
+                  - path: sequence.steps_count
+                    op: ">="
+                    value: 2
+              on_success:
+                xp: 50
+                mascot_line: Deux canaux, c'est déjà une vraie séquence.
+              on_failure:
+                feedback_md: La séquence doit contenir au moins 2 étapes.
+                hint_md: Édite ta séquence et ajoute une 2e étape (email + LinkedIn).
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: channels
+            front: "Citez 4 canaux de prospection B2B et un avantage de chacun."
+            back: "Email (scalable), LinkedIn (crédibilité), Téléphone (direct, haut de gamme), Événements (rencontres à forte valeur)."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 4.2 — Le ton et la posture B2B
+      # ───────────────────────────────────────────────────────────────
+      - id: p1-m4-l2-tone-posture
+        order: 2
+        slug: tone-posture
+        title: Le ton et la posture B2B
+        subtitle: Direct, professionnel, orienté problème
+        duration_min: 8
+        difficulty: 2
+        xp_total: 130
+        concepts: [tone_b2b]
+        skills: [communication]
+        prerequisites:
+          previous_lesson_ids: [p1-m4-l1-channels-overview]
+          required_concept_ids: [channels]
+        unlocks:
+          lesson_ids: []
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Le ton et la posture B2B
+            subtitle: Fondations · Module 4 · Leçon 2
+            mascot_pose: happy
+            mascot_line: Parlez comme un pair, pas comme un vendeur.
+            objectives:
+              - Adopter le ton B2B juste
+              - Éviter les 4 erreurs de ton
+              - Structurer un premier message efficace
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Le ton B2B, en 3 principes
+                body_md: |
+                  1. **Direct** — pas de bavardage, pas de « J'espère que
+                     vous allez bien ».
+                  2. **Professionnel** — pas de tutoiement non sollicité,
+                     pas d'émojis, pas de « nous sommes ravis ».
+                  3. **Orienté problème client** — on parle du **problème**
+                     du prospect avant de parler du produit.
+                callout:
+                  tone: success
+                  title: Règle d'or
+                  text: Vous parlez à un pair, pas à un prospect. Traitez-le comme un collègue qui pourrait vous aider.
+              - id: t2
+                title: Les 4 erreurs de ton
+                body_md: |
+                  - **Trop commercial** — « Nous sommes leader sur le
+                    marché ». Personne ne s'en soucie.
+                  - **Trop familier** — « Salut, ça gaze ? ». Le B2B reste
+                    formel tant que la relation n'est pas établie.
+                  - **Trop long** — Plus de 3 paragraphes = ignoré.
+                  - **Trop vague** — « On aide les entreprises à se
+                    développer ». Vous aidez qui, comment ?
+
+              - id: t3
+                title: La structure d'un premier message
+                body_md: |
+                  1. **Contexte personnalisé** — 1 phrase sur le prospect.
+                  2. **Problème** — le problème que vous adressez.
+                  3. **Preuve** — 1 chiffre, 1 client, 1 résultat.
+                  4. **CTA faible** — une question fermée, pas une demande
+                     de RDV.
+
+                  Cette structure tient en **5 lignes maximum**.
+                visual:
+                  kind: mini_case_study
+                  alt: Exemple d'email B2B court
+                  caption: Un bon premier email tient en 5 lignes et pose une seule question.
+
+          - type: practice
+            exercises:
+              - id: p1-m4-l2-ex1
+                kind: mcq
+                prompt: Quel est le bon ton pour un premier email B2B ?
+                explanation_md: |
+                  Le ton B2B est **direct, professionnel, orienté
+                  problème client** — pas commercial ni familier.
+                xp: 10
+                difficulty: 2
+                concepts: [tone_b2b]
+                payload:
+                  options:
+                    - Familier et décontracté
+                    - Direct, professionnel, orienté problème client
+                    - Commercial, avec beaucoup de superlatifs
+                    - Long et détaillé pour montrer son expertise
+                  correct: 1
+
+              - id: p1-m4-l2-ex2
+                kind: order_steps
+                prompt: Remettez la structure d'un premier message dans le bon ordre.
+                explanation_md: |
+                  Contexte → Problème → Preuve → CTA. Cet ordre respecte
+                  la logique de lecture du prospect.
+                xp: 15
+                difficulty: 3
+                concepts: [tone_b2b]
+                payload:
+                  steps:
+                    - Contexte personnalisé (1 phrase)
+                    - Problème adressé
+                    - Preuve (chiffre, client, résultat)
+                    - CTA faible (question fermée)
+
+              - id: p1-m4-l2-ex3
+                kind: fill_blank
+                prompt: "Un bon premier message B2B tient en ______ lignes maximum."
+                explanation_md: |
+                  Au-delà de 5 lignes, le message n'est plus lu — le
+                  prospect décroche à la 3e phrase.
+                xp: 10
+                difficulty: 2
+                concepts: [tone_b2b]
+                payload:
+                  blanks:
+                    - correct: ["5", "cinq"]
+
+          - type: mission
+            mission:
+              id: mission-first-email
+              title: Rédiger votre premier email B2B
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez la page **Emails** et
+                rédigez un premier email à destination d'un de vos
+                prospects.
+
+                Respectez la structure : contexte, problème, preuve, CTA.
+                Maximum 5 lignes.
+              target:
+                route: /app/emails
+                cta: Rédiger un email
+              validation:
+                trigger: email.drafted
+                conditions:
+                  - path: email.body_length
+                    op: ">="
+                    value: 50
+                  - path: email.body_length
+                    op: "<="
+                    value: 800
+              on_success:
+                xp: 60
+                mascot_line: Premier email rédigé — la posture est en place.
+                badge_ids: [first-steps]
+              on_failure:
+                feedback_md: L'email est vide ou trop long (> 800 caractères).
+                hint_md: Ouvre **Emails → Nouveau**, rédige 5 lignes max.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: tone_b2b
+            front: "Quels sont les 3 principes du ton B2B ?"
+            back: "Direct, professionnel, orienté problème client. Éviter : trop commercial, trop familier, trop long, trop vague."

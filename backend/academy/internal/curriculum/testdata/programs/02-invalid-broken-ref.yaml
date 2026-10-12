@@ -1,0 +1,32 @@
+# Fichier volontairement invalide pour tester le validateur.
+# Il ne doit PAS être chargé par le loader en mode normal.
+schema_version: "1.0"
+id: p-broken
+order: 99
+title: Programme cassé
+subtitle: Test
+description: Test de validation.
+difficulty: 2
+
+concepts:
+  - id: c1
+    label: Concept 1
+
+modules:
+  - id: p-broken-m1
+    order: 1
+    title: Module cassé
+    lessons:
+      - id: p-broken-l1
+        order: 1
+        title: Leçon cassée
+        duration_min: 5
+        difficulty: 2
+        xp_total: 10
+        # Référence à un concept non déclaré.
+        concepts: [unknown_concept]
+        blocks:
+          - type: cover
+            title: Cover
+            objectives: [Objectif]
+          # Mission manquante → erreur pédagogique

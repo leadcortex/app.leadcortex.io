@@ -23,6 +23,7 @@ import {
   Inbox,
   Wrench,
   Home,
+  GraduationCap,
 } from "lucide-react";
 
 export type MobileNavLink = {
@@ -48,6 +49,16 @@ export type MobileNavSection = {
 };
 
 export const MOBILE_NAV_SECTIONS: MobileNavSection[] = [
+  {
+    key: "academy",
+    label: "Academy",
+    icon: GraduationCap,
+    matches: ["/app/academy"],
+    items: [
+      { to: "/app/academy", label: "Parcours", icon: GraduationCap, exact: true },
+      { to: "/app/academy/profile", label: "Profil apprenant", icon: GraduationCap },
+    ],
+  },
   {
     key: "prospect",
     label: "Prospecter & enrichir",

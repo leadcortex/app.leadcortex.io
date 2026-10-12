@@ -1,71 +1,89 @@
-# LeadCortex Academy — Backend
-
-Moteur d'apprentissage pédagogique pour LeadCortex : programmes, leçons, missions in-app,
-spaced repetition et gamification. Écrit en Go, alimenté par des programmes YAML.
-
-## Objectif
-
-Transformer l'app LeadCortex en terrain d'entraînement vivant : chaque leçon se termine
-par une **mission in-app** — l'utilisateur doit réellement exécuter ce qu'il a appris
-dans l'interface (créer un prospect, rédiger un email, lancer une séquence…).
-
-## Architecture
-
-```
-cmd/                 → points d'entrée (serveur HTTP + CLI dev)
-internal/
-  version/           → métadonnées de build (version, commit, date)
-  config/            → configuration (fichier + env + flags)
-  logger/            → logging structuré (zerolog)
-  domain/            → types métier (Learner, Program, Lesson…)       [Partie 2]
-  curriculum/        → chargement + validation des programmes YAML    [Partie 3]
-  progress/          → moteur de progression (FSM)                    [Partie 4]
-  assessment/        → moteur d'évaluation des exercices              [Partie 5]
-  srs/               → spaced repetition (SM-2)                       [Partie 6]
-  gamification/      → XP, streaks, badges, quêtes                    [Partie 7]
-  avatars/           → système d'avatars débloquables                 [Partie 8]
-  missions/          → orchestrateur de missions in-app               [Partie 9]
-  adaptivity/        → personnalisation et recommandations           [Partie 10]
-  repository/        → interface de persistance (dev: in-memory)      [Partie 16]
-  api/               → serveur HTTP (REST + SSE)                      [Partie 16]
-content/
-  programs/          → programmes pédagogiques en YAML                [Parties 11-15]
-  schemas/           → schémas JSON de validation
-```
-
-## Démarrage rapide
-
-```bash
-# Compiler
-make build
-
-# Lancer le serveur en mode dev
-make run
-
-# Valider les programmes YAML
-make validate-content
-
-# Tests
-make test
-```
-
-## Configuration
-
-Variables d'environnement (toutes optionnelles en dev) :
-
-| Variable | Défaut | Description |
-|---|---|---|
-| `ACADEMY_ENV` | `development` | `development` / `staging` / `production` |
-| `ACADEMY_HTTP_ADDR` | `:8080` | Adresse d'écoute du serveur |
-| `ACADEMY_CONTENT_DIR` | `./content` | Chemin vers les YAML de contenu |
-| `ACADEMY_LOG_LEVEL` | `info` | `debug` / `info` / `warn` / `error` |
-| `ACADEMY_LOG_FORMAT` | `json` | `json` / `console` |
-
-Un fichier `academy.yaml` à la racine est aussi lu (voir `config.example.yaml`).
-
 ## État du projet
 
-- [x] Partie 1 — Fondations (structure, config, logger)
-- [ ] Partie 2 — Domaine métier
-- [ ] Partie 3 — Moteur de curriculum
-- [ ] … (voir le plan global dans la documentation interne)
+### Phase 1 — Fondations moteur (backend Go) ✅
+- [x] Partie 1 — Fondations : module, config, logger, serveur HTTP, CLI
+- [x] Partie 2 — Domaine métier (Learner, Program, Lesson, Exercise…)
+- [x] Partie 3 — Curriculum : loader YAML, DSL polymorphe, validator
+- [x] Partie 4 — Progression : FSM, gates, Engine.Apply, Snapshot
+- [x] Partie 5 — Évaluation : 7 scorers, normalisation, feedback
+- [x] Partie 6 — SRS : SM-2 adapté, instantiator, queue, forecast
+
+### Phase 2 — Expérience apprenant ✅
+- [x] Partie 7 — Gamification : XP, streak, hearts, badges, quêtes
+- [x] Partie 8 — Avatars : 12 mascottes, déblocage, SVG pipeline
+- [x] Partie 9 — Missions in-app : EventBus, Validator, Orchestrator
+- [x] Partie 10 — Adaptivité : signaux, profil, difficulté, recommandation
+
+### Phase 3 — Contenu pédagogique ✅
+- [x] Parties 11-15 — 5 programmes, 20 modules, 40 leçons, 40 missions
+- [x] Fichiers compagnons : 12 avatars, 21 badges
+
+### Phase 4 — API & Frontend (en cours)
+- [x] Partie 16 — API HTTP Go (REST + SSE)
+- [ ] Partie 17 — UI React Desktop
+- [ ] Partie 18 — UI React Mobile
+- [ ] Partie 19 — Intégration finale
+
+## Endpoints API
+
+Une fois `make run` lancé, l'API est disponible sur `http://localhost:8080`.
+
+**Santé**
+- `GET /healthz` — liveness
+- `GET /readyz` — readiness
+- `GET /version` — métadonnées de build
+
+**Profil** (`/api/v1`)
+- `GET /me`
+- `GET /me/snapshot`
+- `PATCH /me/equip-avatar`
+- `GET /me/recommendation`
+- `POST /me/plan`
+
+**Curriculum**
+- `GET /programs`
+- `GET /programs/{id}`
+- `GET /lessons/{id}`
+- `POST /lessons/{id}/start`
+- `POST /lessons/{id}/blocks/{i}/view`
+- `POST /lessons/{id}/exercises/{eid}/answer`
+
+**Missions & Events**
+- `GET /missions`
+- `POST /missions/{id}/attempt`
+- `POST /events`
+- `GET /events/stream` (SSE)
+
+**SRS**
+- `GET /srs/queue`
+- `POST /srs/cards/{id}/review`
+- `GET /srs/stats`
+- `GET /srs/forecast`
+
+**Avatars**
+- `GET /avatars`
+- `POST /avatars/equip`
+
+**Quêtes**
+- `GET /quests`
+- `POST /quests/{id}/claim`
+
+## Authentification (V1)
+
+Aucune auth 2.0. Les routes `/api/v1/*` exigent l'en-tête `X-Learner-ID`.
+
+En développement (`ACADEMY_ENV=development`), l'absence de cet en-tête
+utilise automatiquement l'identifiant `"default"`. En production, un
+en-tête manquant renvoie 401.
+
+## Notes d'implémentation
+
+- **Cartes SRS** : instanciées paresseusement à chaque appel SRS depuis
+  les `SrsTemplates` des leçons complétées (voir `syncSrsCards` dans
+  `internal/api/handlers_srs.go`).
+- **Quêtes quotidiennes** : générées à la volée au premier appel du jour,
+  progression automatique branchée dans les handlers d'exercices, de
+  missions et d'événements.
+- **SSE** : le hub diffuse les événements publiés sur le bus. En V1, il
+  n'y a pas de boucle d'écoute asynchrone — les événements arrivent via
+  `POST /events` puis sont publiés sur le bus.

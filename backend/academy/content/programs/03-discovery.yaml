@@ -1,0 +1,1431 @@
+schema_version: "1.0"
+id: p3-discovery
+order: 3
+title: Découverte & démo
+subtitle: Qualification, MEDDIC, storytelling
+description: |
+  Transformer un premier contact en opportunité qualifiée : poser les
+  bonnes questions, écouter activement, qualifier selon BANT et MEDDIC,
+  préparer une démo qui parle au prospect, et terminer par des prochaines
+  étapes claires.
+icon: search
+color: "#F59E0B"
+difficulty: 3
+language: fr
+authors: ["team"]
+
+prerequisites:
+  previous_program_ids: [p2-outbound]
+  min_level: 3
+  min_xp: 400
+
+concepts:
+  - id: qualification_definition
+    label: Définition de la qualification
+    description: Trier les prospects réels des contacts non pertinents.
+  - id: bant
+    label: Framework BANT
+    description: Budget, Authority, Need, Timing — la qualification classique.
+  - id: meddic
+    label: Framework MEDDIC
+    description: Framework de qualification avancé pour cycles longs.
+  - id: discovery_call
+    label: Call de découverte
+    description: Le premier échange, structuré pour qualifier et comprendre.
+  - id: open_questions
+    label: Questions ouvertes
+    description: Questions qui ouvrent le dialogue (au lieu de fermer).
+  - id: active_listening
+    label: Écoute active
+    description: Écouter pour comprendre, pas pour répondre.
+  - id: demo_prep
+    label: Préparation de démo
+    description: Construire une démo qui parle au contexte du prospect.
+  - id: demo_storytelling
+    label: Storytelling de démo
+    description: Raconter une histoire, pas dérouler une checklist.
+  - id: objection_handling
+    label: Traitement des objections
+    description: Répondre aux objections sans défensivité.
+  - id: next_steps
+    label: Prochaines étapes
+    description: Toujours terminer un call par une action concrète datée.
+
+modules:
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 1 — Qualification
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p3-m1
+    order: 1
+    title: Qualification
+    description: Trier vite, trier bien.
+    prerequisites:
+      previous_module_ids: []
+      required_concept_ids: []
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 1.1 — Pourquoi qualifier ?
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m1-l1-why-qualify
+        order: 1
+        slug: why-qualify
+        title: Pourquoi qualifier ?
+        subtitle: Arrêter de perdre du temps sur les mauvais
+        duration_min: 7
+        difficulty: 2
+        xp_total: 120
+        concepts: [qualification_definition, bant]
+        skills: [stratégie]
+        prerequisites:
+          previous_lesson_ids: []
+          required_concept_ids: [tone_b2b]
+        unlocks:
+          lesson_ids: [p3-m1-l2-meddic]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Pourquoi qualifier ?
+            subtitle: Découverte · Module 1 · Leçon 1
+            mascot_pose: thinking
+            mascot_line: Un mauvais prospect consomme plus qu'il ne rapporte.
+            objectives:
+              - Comprendre l'enjeu de la qualification
+              - Connaître le framework BANT
+              - Savoir disqualifier sans culpabiliser
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Le coût d'un mauvais prospect
+                body_md: |
+                  Un prospect non qualifié consomme :
+
+                  - Du **temps commercial** (appels, démos, relances).
+                  - De la **charge mentale** (espoir, déception).
+                  - De la **bande passante produit** (démos inutiles).
+                  - Et il **fausse vos prévisions**.
+
+                  La qualification n'est pas un filtre administratif —
+                  c'est votre premier levier de productivité.
+                callout:
+                  tone: warning
+                  title: Contre-intuitif
+                  text: Dire non vite à un mauvais prospect, c'est dire oui plus vite à un bon. La discipline de qualification fait gagner 30 à 40 % de temps commercial.
+              - id: t2
+                title: Le framework BANT
+                body_md: |
+                  BANT = **B**udget, **A**uthority, **N**eed, **T**iming.
+
+                  - **Budget** — ont-ils les moyens ? (pas juste l'envie)
+                  - **Authority** — parlons-nous au décideur ?
+                  - **Need** — ont-ils un problème que vous résolvez ?
+                  - **Timing** — quand veulent-ils avancer ?
+
+                  Un prospect qui coche les 4 est **qualifié**. Trois sur
+                  quatre = à cultiver. Deux ou moins = à disqualifier.
+              - id: t3
+                title: Disqualifier sans culpabiliser
+                body_md: |
+                  Un « non » propre vaut mieux qu'un « peut-être » toxique.
+
+                  - **Cultiver** les prospects tièdes (nurturing).
+                  - **Disqualifier** les prospects froids (avec un message
+                    courtois).
+                  - **Refuser poliment** les hors-ICP (recommandation).
+
+                  La discipline de disqualification libère votre agenda
+                  pour les vrais deals.
+
+          - type: practice
+            exercises:
+              - id: p3-m1-l1-ex1
+                kind: mcq
+                prompt: Que signifie BANT ?
+                explanation_md: |
+                  BANT = Budget, Authority, Need, Timing. Le framework
+                  de qualification le plus classique.
+                xp: 10
+                difficulty: 2
+                concepts: [bant]
+                payload:
+                  options:
+                    - Budget, Authority, Need, Timing
+                    - Business, Analysis, Negotiation, Terms
+                    - Buy, Apply, Notify, Test
+                    - Base, Access, Network, Trust
+                  correct: 0
+
+              - id: p3-m1-l1-ex2
+                kind: multi_select
+                prompt: Quels sont les 4 critères de BANT ?
+                explanation_md: |
+                  Budget, Authority, Need, Timing.
+                xp: 15
+                difficulty: 2
+                concepts: [bant]
+                payload:
+                  options:
+                    - Budget
+                    - Authority
+                    - Need
+                    - Timing
+                    - Brand
+                    - Territory
+                  correct: [0, 1, 2, 3]
+
+              - id: p3-m1-l1-ex3
+                kind: mcq
+                prompt: |
+                  Un prospect coche Budget, Authority et Need mais
+                  repousse l'achat « à l'année prochaine ». Comment le
+                  classez-vous ?
+                explanation_md: |
+                  3/4 critères. Le prospect est **tiède** — à cultiver.
+                  La dimension Timing manque.
+                xp: 10
+                difficulty: 3
+                concepts: [qualification_definition, bant]
+                payload:
+                  options:
+                    - Qualifié (à closer tout de suite)
+                    - Tiède (à cultiver)
+                    - À disqualifier immédiatement
+                    - Impossible à dire
+                  correct: 1
+
+          - type: mission
+            mission:
+              id: mission-bant-check
+              title: Qualifier un prospect selon BANT
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez **Prospects** et éditez un
+                de vos prospects.
+
+                Dans le champ **Notes**, notez BANT : ce que vous savez
+                sur le Budget, l'Authority, le Need et le Timing.
+                Écrivez aussi son score de qualification (0-4).
+              target:
+                route: /app/people
+                cta: Voir mes prospects
+              validation:
+                trigger: lead.updated
+                conditions:
+                  - path: lead.notes_length
+                    op: ">="
+                    value: 120
+              on_success:
+                xp: 50
+                mascot_line: Ton premier prospect qualifié — la discipline commence.
+              on_failure:
+                feedback_md: Les notes sont trop courtes (< 120 caractères).
+                hint_md: Ouvre une fiche, section Notes, écris BANT en 4 lignes.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: bant
+            front: "Que signifie BANT ?"
+            back: "Budget, Authority, Need, Timing. 4/4 = qualifié, 3/4 = tiède, ≤2/4 = à disqualifier."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 1.2 — MEDDIC
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m1-l2-meddic
+        order: 2
+        slug: meddic
+        title: MEDDIC
+        subtitle: Qualification avancée pour cycles longs
+        duration_min: 8
+        difficulty: 4
+        xp_total: 150
+        concepts: [meddic, qualification_definition]
+        skills: [stratégie]
+        prerequisites:
+          previous_lesson_ids: [p3-m1-l1-why-qualify]
+          required_concept_ids: [bant]
+        unlocks:
+          lesson_ids: [p3-m2-l1-discovery-call]
+        rewards:
+          xp: 110
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: MEDDIC
+            subtitle: Découverte · Module 1 · Leçon 2
+            mascot_pose: thinking
+            mascot_line: BANT suffit pour les petits deals. Pour les gros, il faut MEDDIC.
+            objectives:
+              - Comprendre MEDDIC
+              - Distinguer MEDDIC et BANT
+              - Savoir quand utiliser l'un ou l'autre
+
+          - type: theory
+            slides:
+              - id: t1
+                title: MEDDIC, en 6 lettres
+                body_md: |
+                  - **M** — Metrics : quels résultats mesurables ?
+                  - **E** — Economic buyer : qui signe le chèque ?
+                  - **D** — Decision criteria : sur quels critères
+                    décident-ils ?
+                  - **D** — Decision process : quelles étapes internes ?
+                  - **I** — Identify pain : quel problème douloureux ?
+                  - **C** — Champion : qui pousse en interne ?
+                callout:
+                  tone: info
+                  title: BANT vs MEDDIC
+                  text: BANT = qualification rapide. MEDDIC = qualification profonde pour cycles longs (>30k€, >60 jours).
+              - id: t2
+                title: Le rôle du champion
+                body_md: |
+                  Le **champion** est la clé de MEDDIC :
+
+                  - Il **utilise** votre solution (ou veut l'utiliser).
+                  - Il a **accès** au décideur économique.
+                  - Il **pousse** activement le projet en interne.
+                  - Il **partage** les informations critiques.
+
+                  Sans champion identifié, un gros deal est presque
+                  toujours perdu — même si le produit est parfait.
+              - id: t3
+                title: Le decision process
+                body_md: |
+                  La question cachée : *« Comment cette entreprise
+                  décide-t-elle d'acheter ? »*
+
+                  - Combien de décideurs ?
+                  - Quelles étapes obligatoires (juridique, sécurité,
+                    DSI, achats) ?
+                  - Quels délais administratifs ?
+                  - Quels documents requis ?
+
+                  Le **decision process** est souvent ce qui allonge un
+                  deal — pas le produit.
+
+          - type: practice
+            exercises:
+              - id: p3-m1-l2-ex1
+                kind: multi_select
+                prompt: Quelles sont les 6 lettres de MEDDIC ?
+                explanation_md: |
+                  Metrics, Economic buyer, Decision criteria, Decision
+                  process, Identify pain, Champion.
+                xp: 20
+                difficulty: 4
+                concepts: [meddic]
+                payload:
+                  options:
+                    - Metrics
+                    - Economic buyer
+                    - Decision criteria
+                    - Decision process
+                    - Identify pain
+                    - Champion
+                    - Authority
+                    - Brand
+                  correct: [0, 1, 2, 3, 4, 5]
+
+              - id: p3-m1-l2-ex2
+                kind: fill_blank
+                prompt: "Dans MEDDIC, le ______ est la personne qui pousse le projet en interne, même quand vous n'êtes pas dans la salle."
+                explanation_md: |
+                  Le champion est votre allié interne — sans lui, un
+                  gros deal se perd.
+                xp: 10
+                difficulty: 3
+                concepts: [meddic]
+                payload:
+                  blanks:
+                    - correct: [champion]
+
+              - id: p3-m1-l2-ex3
+                kind: mcq
+                prompt: |
+                  Pour quel type de deal utilise-t-on plutôt MEDDIC que
+                  BANT ?
+                explanation_md: |
+                  MEDDIC est fait pour les **cycles longs** (gros
+                  paniers, >30k€, >60 jours). BANT suffit pour les petits
+                  deals rapides.
+                xp: 15
+                difficulty: 3
+                concepts: [meddic, bant]
+                payload:
+                  options:
+                    - Les deals rapides (<30 jours)
+                    - Les cycles longs (>60 jours, gros paniers)
+                    - Les deals en self-service
+                    - Les renouvellements automatiques
+                  correct: 1
+
+          - type: mission
+            mission:
+              id: mission-meddic-checklist
+              title: Appliquer MEDDIC sur un deal réel
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez **Opportunités** et
+                sélectionnez un deal en cours.
+
+                Dans les notes du deal, listez les 6 dimensions MEDDIC
+                et ce que vous savez de chacune. Identifiez au moins un
+                **champion** et une dimension à creuser.
+              target:
+                route: /app/deals
+                cta: Voir mes opportunités
+              validation:
+                trigger: deal.updated
+                conditions:
+                  - path: deal.notes_length
+                    op: ">="
+                    value: 150
+              on_success:
+                xp: 60
+                mascot_line: MEDDIC appliqué — tu qualifies en profondeur.
+              on_failure:
+                feedback_md: Les notes du deal sont trop courtes (< 150 caractères).
+                hint_md: Ouvre un deal, édite les notes et liste les 6 dimensions.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: meddic
+            front: "Que signifie MEDDIC ?"
+            back: "Metrics, Economic buyer, Decision criteria, Decision process, Identify pain, Champion. Framework pour cycles longs."
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 2 — Découverte
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p3-m2
+    order: 2
+    title: Découverte
+    description: Mener un premier call qui compte.
+    prerequisites:
+      previous_module_ids: [p3-m1]
+      required_concept_ids: [meddic]
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 2.1 — Mener un call de découverte
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m2-l1-discovery-call
+        order: 1
+        slug: discovery-call
+        title: Mener un call de découverte
+        subtitle: Structurer le premier échange
+        duration_min: 8
+        difficulty: 3
+        xp_total: 140
+        concepts: [discovery_call, open_questions]
+        skills: [communication]
+        prerequisites:
+          previous_lesson_ids: [p3-m1-l2-meddic]
+          required_concept_ids: [meddic]
+        unlocks:
+          lesson_ids: [p3-m2-l2-active-listening]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Mener un call de découverte
+            subtitle: Découverte · Module 2 · Leçon 1
+            mascot_pose: curious
+            mascot_line: En découverte, tu écoutes 70 % du temps.
+            objectives:
+              - Structurer un call en 4 phases
+              - Poser les bonnes questions
+              - Sortir avec les infos clés
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Les 4 phases du call
+                body_md: |
+                  1. **Cadrage (2 min)** — agenda, durée, objectif.
+                  2. **Contexte (10 min)** — comprendre le prospect, son
+                     rôle, son entreprise.
+                  3. **Problème (20 min)** — creuser le problème, ses
+                     impacts, ses coûts.
+                  4. **Suite (3 min)** — résumé, prochaines étapes
+                     datées.
+                callout:
+                  tone: info
+                  title: Règle d'or
+                  text: 70 % écoute, 30 % parole. Si vous parlez plus que le prospect, vous ne qualifiez pas.
+              - id: t2
+                title: Questions ouvertes vs fermées
+                body_md: |
+                  - **Ouvertes** — « Racontez-moi comment vous gérez
+                    aujourd'hui… »
+                  - **Fermées** — « Utilisez-vous Excel ? »
+
+                  Les questions **ouvertes** révèlent le contexte. Les
+                  questions **fermées** confirment un détail.
+
+                  On commence toujours par des questions ouvertes.
+              - id: t3
+                title: Les 5 questions qui comptent
+                body_md: |
+                  1. « Comment gérez-vous [problème] aujourd'hui ? »
+                  2. « Qu'est-ce qui rend ça difficile ? »
+                  3. « Qu'avez-vous essayé ? »
+                  4. « Qu'est-ce que ça vous coûte ? »
+                  5. « Qu'est-ce qui se passerait si rien ne changeait ? »
+
+                  Ces 5 questions traversent la plupart des contextes.
+
+          - type: practice
+            exercises:
+              - id: p3-m2-l1-ex1
+                kind: multi_select
+                prompt: Quelles sont les 4 phases d'un call de découverte ?
+                explanation_md: |
+                  Cadrage → Contexte → Problème → Suite. Chaque phase a
+                  un objectif précis.
+                xp: 15
+                difficulty: 3
+                concepts: [discovery_call]
+                payload:
+                  options:
+                    - Cadrage
+                    - Contexte
+                    - Démo produit
+                    - Problème
+                    - Suite
+                  correct: [0, 1, 3, 4]
+
+              - id: p3-m2-l1-ex2
+                kind: mcq
+                prompt: Quel est le bon ratio parole/écoute en découverte ?
+                explanation_md: |
+                  70 % écoute, 30 % parole. Si vous parlez plus, vous ne
+                  qualifiez pas — vous pitchez.
+                xp: 10
+                difficulty: 2
+                concepts: [discovery_call, active_listening]
+                payload:
+                  options:
+                    - 20 % écoute, 80 % parole
+                    - 50 / 50
+                    - 70 % écoute, 30 % parole
+                    - 90 % écoute, 10 % parole
+                  correct: 2
+
+              - id: p3-m2-l1-ex3
+                kind: match_pairs
+                prompt: Associez chaque question à sa famille.
+                explanation_md: |
+                  Les questions ouvertes explorent le contexte ; les
+                  fermées confirment un détail.
+                xp: 15
+                difficulty: 3
+                concepts: [open_questions]
+                payload:
+                  pairs:
+                    - left: "Comment gérez-vous X aujourd'hui ?"
+                      right: Question ouverte
+                    - left: "Utilisez-vous Excel ?"
+                      right: Question fermée
+                    - left: "Qu'est-ce qui rend ça difficile ?"
+                      right: Question ouverte
+                    - left: "Avez-vous un budget ?"
+                      right: Question fermée
+
+          - type: mission
+            mission:
+              id: mission-schedule-discovery
+              title: Planifier un call de découverte
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez **Meetings** et planifie
+                un **call de découverte** avec un prospect qualifié.
+
+                Ajoutez dans les notes du meeting les 5 questions clés
+                que vous prévoyez de poser.
+              target:
+                route: /app/meetings
+                cta: Planifier un meeting
+              validation:
+                trigger: meeting.scheduled
+                conditions:
+                  - path: meeting.notes_length
+                    op: ">="
+                    value: 100
+              on_success:
+                xp: 60
+                mascot_line: Call planifié, questions prêtes — tu es paré.
+              on_failure:
+                feedback_md: Le meeting doit avoir au moins 100 caractères de notes.
+                hint_md: Va dans **Meetings → Nouveau** et note tes questions.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: discovery_call
+            front: "Quelles sont les 4 phases d'un call de découverte ?"
+            back: "Cadrage (2 min) → Contexte (10 min) → Problème (20 min) → Suite (3 min)."
+          - concept: open_questions
+            front: "Quelle est la différence entre question ouverte et fermée ?"
+            back: "Ouverte : explore le contexte (Comment gérez-vous X ?). Fermée : confirme un détail (Utilisez-vous Excel ?)."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 2.2 — Écoute active
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m2-l2-active-listening
+        order: 2
+        slug: active-listening
+        title: Écoute active
+        subtitle: Écouter pour comprendre, pas pour répondre
+        duration_min: 7
+        difficulty: 3
+        xp_total: 130
+        concepts: [active_listening, discovery_call]
+        skills: [communication]
+        prerequisites:
+          previous_lesson_ids: [p3-m2-l1-discovery-call]
+          required_concept_ids: [discovery_call]
+        unlocks:
+          lesson_ids: [p3-m3-l1-demo-prep]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Écoute active
+            subtitle: Découverte · Module 2 · Leçon 2
+            mascot_pose: curious
+            mascot_line: La plupart des commerciaux écoutent pour répondre. Les meilleurs écoutent pour comprendre.
+            objectives:
+              - Comprendre l'écoute active
+              - Maîtriser 3 techniques
+              - Éviter les pièges d'écoute
+
+          - type: theory
+            slides:
+              - id: t1
+                title: L'écoute active, c'est quoi ?
+                body_md: |
+                  L'écoute active consiste à :
+
+                  - **Reformuler** ce que dit le prospect.
+                  - **Creuser** avec des questions de suivi.
+                  - **Valider** les émotions (« Ça a l'air frustrant »).
+                  - **Noter** les mots exacts du prospect.
+
+                  Elle transforme un échange en **compréhension
+                  profonde**.
+                callout:
+                  tone: success
+                  title: Test
+                  text: Si vous ne pouvez pas répéter les 3 derniers mots du prospect, vous n'écoutiez pas.
+              - id: t2
+                title: 3 techniques d'écoute active
+                body_md: |
+                  1. **Reformulation** — « Si je comprends bien, votre
+                     problème principal est X ? »
+                  2. **Question de suivi** — « Qu'est-ce qui rend ça
+                     difficile aujourd'hui ? »
+                  3. **Silence** — Laissez 3 secondes de blanc après une
+                     réponse. Le prospect va souvent **creuser lui-même**.
+              - id: t3
+                title: Les 4 pièges de l'écoute
+                body_md: |
+                  - **Couper la parole** pour placer votre solution.
+                  - **Pitcher** dès qu'un mot-clé évoque votre produit.
+                  - **Deviner** la suite avant que le prospect termine.
+                  - **Juger** au lieu d'explorer.
+
+                  Ces 4 pièges détruisent la confiance en quelques
+                  minutes.
+
+          - type: practice
+            exercises:
+              - id: p3-m2-l2-ex1
+                kind: multi_select
+                prompt: Quelles sont les bonnes techniques d'écoute active ?
+                explanation_md: |
+                  Reformulation, question de suivi, silence —
+                  techniques qui font parler le prospect et creusent la
+                  compréhension.
+                xp: 15
+                difficulty: 3
+                concepts: [active_listening]
+                payload:
+                  options:
+                    - Reformuler ce que dit le prospect
+                    - Poser des questions de suivi
+                    - Pitcher dès qu'on entend un mot-clé
+                    - Laisser un silence de 3 secondes
+                    - Terminer la phrase du prospect à sa place
+                  correct: [0, 1, 3]
+
+              - id: p3-m2-l2-ex2
+                kind: mcq
+                prompt: |
+                  Le prospect dit « On perd beaucoup de temps sur la
+                  recherche de leads. » Que faites-vous ?
+                explanation_md: |
+                  On **creuse** : « Beaucoup de temps — combien par
+                  semaine, concrètement ? » On ne pitche pas tout de
+                  suite.
+                xp: 15
+                difficulty: 4
+                concepts: [active_listening]
+                payload:
+                  options:
+                    - "Ah super, on fait exactement ça !"
+                    - "Beaucoup de temps, combien concrètement par semaine ?"
+                    - "Oui, tout le monde a ce problème."
+                    - "Attendez que je vous montre notre produit."
+                  correct: 1
+
+              - id: p3-m2-l2-ex3
+                kind: fill_blank
+                prompt: "Après une réponse du prospect, laissez ______ secondes de silence avant de rebondir."
+                explanation_md: |
+                  Un silence de 3 secondes fait souvent creuser le
+                  prospect lui-même — il révèle plus que ce qu'il a dit
+                  au départ.
+                xp: 10
+                difficulty: 3
+                concepts: [active_listening]
+                payload:
+                  blanks:
+                    - correct: ["3", "trois"]
+
+          - type: mission
+            mission:
+              id: mission-active-listening
+              title: Noter 3 formulations d'un call
+              brief_md: |
+                Dans l'app LeadCortex, ouvrez un meeting et éditez ses
+                **notes**.
+
+                Reformulez en 3 puces ce que le prospect a dit pendant
+                le call (ou pendant votre dernier échange). Chaque puce
+                doit commencer par « Le prospect a dit que… ».
+              target:
+                route: /app/meetings
+                cta: Voir mes meetings
+              validation:
+                trigger: meeting.updated
+                conditions:
+                  - path: meeting.notes_length
+                    op: ">="
+                    value: 150
+              on_success:
+                xp: 60
+                mascot_line: 3 reformulations — tu écoutes activement.
+              on_failure:
+                feedback_md: Les notes doivent contenir au moins 150 caractères.
+                hint_md: Édite un meeting, section Notes, écris 3 puces.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: active_listening
+            front: "Quelles sont les 3 techniques d'écoute active ?"
+            back: "Reformulation, question de suivi, silence de 3 secondes. Éviter : couper la parole, pitcher trop tôt, deviner, juger."
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 3 — Démo
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p3-m3
+    order: 3
+    title: Démo
+    description: Montrer juste assez, mais montrer juste.
+    prerequisites:
+      previous_module_ids: [p3-m2]
+      required_concept_ids: [discovery_call, active_listening]
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 3.1 — Préparer sa démo
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m3-l1-demo-prep
+        order: 1
+        slug: demo-prep
+        title: Préparer sa démo
+        subtitle: Adapter la démo au prospect
+        duration_min: 8
+        difficulty: 3
+        xp_total: 140
+        concepts: [demo_prep, discovery_call]
+        skills: [communication, technique]
+        prerequisites:
+          previous_lesson_ids: [p3-m2-l2-active-listening]
+          required_concept_ids: [active_listening]
+        unlocks:
+          lesson_ids: [p3-m3-l2-demo-storytelling]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Préparer sa démo
+            subtitle: Découverte · Module 3 · Leçon 1
+            mascot_pose: thinking
+            mascot_line: Une démo non préparée est un catalogue — pas une démonstration.
+            objectives:
+              - Préparer une démo en 4 étapes
+              - Personnaliser selon le contexte
+              - Définir un objectif clair
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Les 4 étapes de préparation
+                body_md: |
+                  1. **Relire les notes** du call de découverte.
+                  2. **Choisir 3 problèmes** à adresser.
+                  3. **Préparer 3 scénarios** concrets (dans la peau du
+                     prospect).
+                  4. **Définir l'objectif** : quoi à la fin du call ?
+                callout:
+                  tone: info
+                  title: Objectif
+                  text: À la fin de la démo, le prospect doit avoir envie de passer à l'étape suivante (POC, devis, comité). Pas juste « avoir vu le produit ».
+              - id: t2
+                title: Personnaliser sans sur-personnaliser
+                body_md: |
+                  On personnalise **les scénarios**, pas le produit.
+
+                  - Le produit reste le même.
+                  - Les données de démo sont **celles du prospect** (nom
+                    réel, secteur réel, cas réaliste).
+                  - Le vocabulaire s'aligne sur celui du prospect.
+
+                  Résultat : le prospect se reconnaît dans la démo.
+              - id: t3
+                title: Les 3 erreurs classiques
+                body_md: |
+                  - **Démo feature-centric** — on montre toutes les
+                    fonctionnalités, sans hiérarchie.
+                  - **Démo trop longue** — au-delà de 30 min, l'attention
+                    décroche.
+                  - **Démo non préparée** — on improvise devant le
+                    prospect. C'est le meilleur moyen de perdre sa
+                    crédibilité.
+
+          - type: practice
+            exercises:
+              - id: p3-m3-l1-ex1
+                kind: multi_select
+                prompt: Que faire pour préparer une bonne démo ?
+                explanation_md: |
+                  Relire les notes, choisir 3 problèmes, préparer 3
+                  scénarios, définir l'objectif.
+                xp: 15
+                difficulty: 3
+                concepts: [demo_prep]
+                payload:
+                  options:
+                    - Relire les notes du call de découverte
+                    - Choisir 3 problèmes à adresser
+                    - Préparer 3 scénarios concrets
+                    - Définir l'objectif de fin de call
+                    - Montrer toutes les fonctionnalités du produit
+                  correct: [0, 1, 2, 3]
+
+              - id: p3-m3-l1-ex2
+                kind: mcq
+                prompt: Quel est l'objectif réel d'une démo ?
+                explanation_md: |
+                  La démo doit amener le prospect à **vouloir avancer**
+                  (POC, devis, comité). « Avoir vu le produit » n'est pas
+                  un objectif.
+                xp: 10
+                difficulty: 3
+                concepts: [demo_prep]
+                payload:
+                  options:
+                    - Montrer toutes les fonctionnalités du produit
+                    - Impressionner le prospect avec la tech
+                    - Amener le prospect à vouloir avancer d'une étape
+                    - Vérifier si le prospect est prêt à acheter
+                  correct: 2
+
+              - id: p3-m3-l1-ex3
+                kind: order_steps
+                prompt: Remettez la préparation de démo dans le bon ordre.
+                explanation_md: |
+                  Notes → problèmes → scénarios → objectif. Cet ordre
+                  évite de partir dans tous les sens.
+                xp: 15
+                difficulty: 3
+                concepts: [demo_prep]
+                payload:
+                  steps:
+                    - Relire les notes du call de découverte
+                    - Choisir 3 problèmes à adresser
+                    - Préparer 3 scénarios concrets
+                    - Définir l'objectif de fin de call
+
+          - type: mission
+            mission:
+              id: mission-demo-prep
+              title: Préparer une démo dans LeadCortex
+              brief_md: |
+                Dans l'app LeadCortex, planifie un **meeting de démo**
+                avec un prospect.
+
+                Dans les notes, liste : les 3 problèmes du prospect, les
+                3 scénarios prévus et l'objectif de fin de call.
+              target:
+                route: /app/meetings
+                cta: Planifier une démo
+              validation:
+                trigger: meeting.scheduled
+                conditions:
+                  - path: meeting.type
+                    op: "=="
+                    value: demo
+                  - path: meeting.notes_length
+                    op: ">="
+                    value: 150
+              on_success:
+                xp: 70
+                mascot_line: Démo préparée — tu montres juste, tu montres bien.
+              on_failure:
+                feedback_md: Le meeting doit être de type "demo" avec 150+ caractères de notes.
+                hint_md: Va dans **Meetings → Nouveau**, choisis type "demo", remplis les notes.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: demo_prep
+            front: "Quelles sont les 4 étapes de préparation d'une démo ?"
+            back: "Relire les notes → choisir 3 problèmes → préparer 3 scénarios → définir l'objectif de fin de call."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 3.2 — Storytelling de démo
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m3-l2-demo-storytelling
+        order: 2
+        slug: demo-storytelling
+        title: Storytelling de démo
+        subtitle: Raconter une histoire, pas dérouler une checklist
+        duration_min: 8
+        difficulty: 4
+        xp_total: 150
+        concepts: [demo_storytelling, demo_prep]
+        skills: [communication]
+        prerequisites:
+          previous_lesson_ids: [p3-m3-l1-demo-prep]
+          required_concept_ids: [demo_prep]
+        unlocks:
+          lesson_ids: [p3-m4-l1-objections]
+        rewards:
+          xp: 110
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Storytelling de démo
+            subtitle: Découverte · Module 3 · Leçon 2
+            mascot_pose: happy
+            mascot_line: Le prospect n'achète pas un produit. Il achète une transformation.
+            objectives:
+              - Structurer une démo narrative
+              - Utiliser la méthode Contexte → Problème → Résolution
+              - Terminer par un pont vers la suite
+
+          - type: theory
+            slides:
+              - id: t1
+                title: La structure narrative
+                body_md: |
+                  1. **Contexte** — « Vous m'avez dit que vous gérez X
+                     aujourd'hui… »
+                  2. **Problème** — « … ce qui vous coûte Y par mois. »
+                  3. **Résolution** — « Voilà comment on aide à Z, avec
+                     [client similaire]. »
+                  4. **Preuve** — « Concrètement, on obtient W en N
+                     jours. »
+                  5. **Pont** — « Est-ce que ça correspond à ce que
+                     vous cherchez ? »
+
+                  Cette structure tient en **10 minutes par scénario**.
+                callout:
+                  tone: success
+                  title: Règle
+                  text: Si vous n'avez pas dit « Vous m'avez dit… » au moins 3 fois dans la démo, vous n'avez pas raconté d'histoire — vous avez fait un tour de produit.
+              - id: t2
+                title: Faire parler le prospect
+                body_md: |
+                  Une bonne démo fait **parler le prospect** :
+
+                  - « Est-ce que ça correspond à ce que vous faites
+                    aujourd'hui ? »
+                  - « Comment voyez-vous ça dans votre contexte ? »
+                  - « Qu'est-ce qui serait le plus utile dans votre cas ? »
+
+                  Chaque question fait émerger du contexte.
+              - id: t3
+                title: Terminer par un pont
+                body_md: |
+                  La dernière minute de la démo est la plus importante.
+
+                  - **Résumer** les 3 problèmes adressés.
+                  - **Proposer** une prochaine étape concrète (POC, essai,
+                    devis, comité).
+                  - **Datation** — la prochaine étape doit avoir une
+                    **date**.
+
+                  Sans date, il n'y a pas de prochaine étape.
+
+          - type: practice
+            exercises:
+              - id: p3-m3-l2-ex1
+                kind: order_steps
+                prompt: Remettez la structure narrative d'une démo dans l'ordre.
+                explanation_md: |
+                  Contexte → Problème → Résolution → Preuve → Pont. Cet
+                  ordre suit la logique d'écoute du prospect.
+                xp: 20
+                difficulty: 4
+                concepts: [demo_storytelling]
+                payload:
+                  steps:
+                    - Contexte (Vous m'avez dit que…)
+                    - Problème (ce qui coûte Y)
+                    - Résolution (voilà comment on aide)
+                    - Preuve (client similaire, résultat chiffré)
+                    - Pont (prochaine étape datée)
+
+              - id: p3-m3-l2-ex2
+                kind: mcq
+                prompt: |
+                  Comment savoir si la démo était bonne ?
+                explanation_md: |
+                  Une bonne démo fait **parler le prospect** — s'il pose
+                  des questions concrètes sur son contexte, c'est gagné.
+                xp: 15
+                difficulty: 4
+                concepts: [demo_storytelling]
+                payload:
+                  options:
+                    - Le prospect a dit « c'est bien »
+                    - Le prospect a posé des questions sur son propre contexte
+                    - Le prospect a demandé une remise
+                    - La démo s'est terminée à l'heure
+                  correct: 1
+
+              - id: p3-m3-l2-ex3
+                kind: free_text
+                prompt: |
+                  Rédigez le « pont final » d'une démo SaaS B2B — les 2
+                  ou 3 phrases qui transforment la démo en prochaine
+                  étape datée.
+                explanation_md: |
+                  Le pont final résume les problèmes adressés et propose
+                  une prochaine étape avec une date.
+                xp: 30
+                difficulty: 4
+                concepts: [demo_storytelling, next_steps]
+                payload:
+                  min_words: 20
+                  max_words: 120
+                  rubric_md: |
+                    Le pont doit :
+                    - résumer les 3 problèmes adressés ;
+                    - proposer une prochaine étape concrète ;
+                    - être daté.
+                  expected_keywords:
+                    - résumé
+                    - prochaine étape
+                    - date
+                    - POC
+                    - essai
+                    - comité
+
+          - type: mission
+            mission:
+              id: mission-demo-script
+              title: Rédiger un script de démo
+              brief_md: |
+                Dans l'app LeadCortex, ouvre la fiche d'un meeting de
+                démo et édite les **notes**.
+
+                Rédige un script de démo structuré : Contexte, Problème,
+                Résolution, Preuve, Pont — dans cet ordre.
+              target:
+                route: /app/meetings
+                cta: Voir mes meetings
+              validation:
+                trigger: meeting.updated
+                conditions:
+                  - path: meeting.notes_length
+                    op: ">="
+                    value: 250
+              on_success:
+                xp: 70
+                mascot_line: Script rédigé — prêt à raconter une histoire.
+              on_failure:
+                feedback_md: Les notes doivent contenir au moins 250 caractères.
+                hint_md: Ouvre un meeting de démo, édite les notes, structure les 5 étapes.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: demo_storytelling
+            front: "Quelles sont les 5 étapes d'une démo narrative ?"
+            back: "Contexte → Problème → Résolution → Preuve → Pont (prochaine étape datée)."
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MODULE 4 — Après le call
+  # ═══════════════════════════════════════════════════════════════════
+  - id: p3-m4
+    order: 4
+    title: Après le call
+    description: Objections, prochaines étapes, suivi.
+    prerequisites:
+      previous_module_ids: [p3-m3]
+      required_concept_ids: [demo_storytelling]
+    lessons:
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 4.1 — Traiter les objections
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m4-l1-objections
+        order: 1
+        slug: objections
+        title: Traiter les objections
+        subtitle: Répondre sans défensivité
+        duration_min: 8
+        difficulty: 4
+        xp_total: 150
+        concepts: [objection_handling]
+        skills: [communication]
+        prerequisites:
+          previous_lesson_ids: [p3-m3-l2-demo-storytelling]
+          required_concept_ids: [demo_storytelling]
+        unlocks:
+          lesson_ids: [p3-m4-l2-next-steps]
+        rewards:
+          xp: 110
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Traiter les objections
+            subtitle: Découverte · Module 4 · Leçon 1
+            mascot_pose: thinking
+            mascot_line: Une objection n'est pas un refus — c'est une demande de clarification.
+            objectives:
+              - Comprendre la nature des objections
+              - Maîtriser la méthode ARC
+              - Éviter les réponses défensives
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Une objection, c'est quoi ?
+                body_md: |
+                  Une objection est rarement un « non » ferme. C'est
+                  souvent :
+
+                  - **Une inquiétude non dite** (« et si ça ne marche
+                    pas ? »)
+                  - **Un manque d'information** (« je ne comprends pas
+                    bien le prix »)
+                  - **Un signal d'intérêt** (« je pose la question parce
+                    que ça m'intéresse »)
+
+                  Traitez l'objection comme une **opportunité de
+                  clarifier**, pas comme une attaque.
+                callout:
+                  tone: success
+                  title: Règle d'or
+                  text: On ne contredit jamais une objection. On l'accueille, on la creuse, on la résout.
+              - id: t2
+                title: La méthode ARC
+                body_md: |
+                  **A**ccuser réception → **R**eformuler → **C**reuser.
+
+                  1. **Accuser réception** — « Je comprends cette
+                     inquiétude. »
+                  2. **Reformuler** — « Si je résume, vous vous demandez
+                     comment on garantit X ? »
+                  3. **Creuser** — « Qu'est-ce qui vous ferait dire
+                     aujourd'hui que c'est réglé ? »
+
+                  Une fois que le prospect précise, on répond **sur son
+                  terrain**.
+              - id: t3
+                title: Les réponses défensives à éviter
+                body_md: |
+                  - « Non, ce n'est pas vrai. »
+                  - « Oui mais vous n'avez pas compris… »
+                  - « Nos concurrents sont pires. »
+                  - « Tous nos clients sont satisfaits. »
+
+                  Ces réponses **ferment** la conversation. Elles
+                  cherchent à gagner un débat, pas à résoudre une
+                  inquiétude.
+
+          - type: practice
+            exercises:
+              - id: p3-m4-l1-ex1
+                kind: mcq
+                prompt: Que signifie l'acronyme ARC pour traiter les objections ?
+                explanation_md: |
+                  Accuser réception, Reformuler, Creuser. C'est la
+                  méthode pour transformer une objection en opportunité.
+                xp: 15
+                difficulty: 4
+                concepts: [objection_handling]
+                payload:
+                  options:
+                    - Accuser, Répondre, Conclure
+                    - Accuser réception, Reformuler, Creuser
+                    - Analyser, Répondre, Closer
+                    - Argumenter, Réfuter, Contrer
+                  correct: 1
+
+              - id: p3-m4-l1-ex2
+                kind: multi_select
+                prompt: Quelles sont les bonnes réactions face à une objection ?
+                explanation_md: |
+                  Accueillir, reformuler, creuser. On ne contredit
+                  jamais, on ne cherche pas à gagner.
+                xp: 15
+                difficulty: 4
+                concepts: [objection_handling]
+                payload:
+                  options:
+                    - Accueillir l'objection sans la contredire
+                    - Reformuler pour valider la compréhension
+                    - Creuser avec une question
+                    - Répondre immédiatement avec un argument
+                    - Dire au prospect qu'il a tort
+                  correct: [0, 1, 2]
+
+              - id: p3-m4-l1-ex3
+                kind: fill_blank
+                prompt: "Devant une objection, on ne contredit jamais — on l'______, on la reformule, on la creuse."
+                explanation_md: |
+                  On accueille l'objection. On cherche à comprendre le
+                  vrai enjeu derrière.
+                xp: 10
+                difficulty: 3
+                concepts: [objection_handling]
+                payload:
+                  blanks:
+                    - correct: [accueille, "accueille l'", accepte, reçoit, "prend en compte"]
+
+          - type: mission
+            mission:
+              id: mission-log-objection
+              title: Logger une objection réelle
+              brief_md: |
+                Dans l'app LeadCortex, ouvre un deal ou un meeting et
+                logue dans les notes **une objection** qu'un prospect t'a
+                faite récemment.
+
+                Écris : (1) l'objection, (2) la méthode ARC que tu as
+                utilisée, (3) le résultat.
+              target:
+                route: /app/deals
+                cta: Voir mes opportunités
+              validation:
+                trigger: deal.updated
+                conditions:
+                  - path: deal.notes_length
+                    op: ">="
+                    value: 180
+              on_success:
+                xp: 60
+                mascot_line: Objection loguée — tu capitalises sur le terrain.
+              on_failure:
+                feedback_md: Les notes doivent contenir au moins 180 caractères.
+                hint_md: Ouvre un deal, édite les notes, décris l'objection + la réponse.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: objection_handling
+            front: "Quelle est la méthode ARC pour traiter une objection ?"
+            back: "Accuser réception → Reformuler → Creuser. On ne contredit jamais l'objection."
+
+      # ───────────────────────────────────────────────────────────────
+      # Leçon 4.2 — Prochaines étapes
+      # ───────────────────────────────────────────────────────────────
+      - id: p3-m4-l2-next-steps
+        order: 2
+        slug: next-steps
+        title: Prochaines étapes
+        subtitle: Toujours finir par une action datée
+        duration_min: 7
+        difficulty: 3
+        xp_total: 130
+        concepts: [next_steps, demo_storytelling]
+        skills: [communication, méthode]
+        prerequisites:
+          previous_lesson_ids: [p3-m4-l1-objections]
+          required_concept_ids: [objection_handling]
+        unlocks:
+          lesson_ids: []
+        rewards:
+          xp: 100
+          hearts_refund: 0
+        blocks:
+          - type: cover
+            title: Prochaines étapes
+            subtitle: Découverte · Module 4 · Leçon 2
+            mascot_pose: happy
+            mascot_line: Un call sans prochaine étape est un call perdu.
+            objectives:
+              - Comprendre pourquoi les prochaines étapes sont critiques
+              - Connaître les types de prochaines étapes
+              - Toujours sortir avec une action datée
+
+          - type: theory
+            slides:
+              - id: t1
+                title: Pourquoi c'est vital
+                body_md: |
+                  Un call sans prochaine étape est un call **à
+                  recommencer**.
+
+                  - Le prospect oublie 60 % de ce qui s'est dit dans les
+                    24 h.
+                  - Sans action, le deal perd son momentum.
+                  - Sans date, la « relance » devient harcèlement.
+
+                  La prochaine étape est **le livrable principal** d'un
+                  call de découverte ou de démo.
+                callout:
+                  tone: warning
+                  title: Anti-pattern
+                  text: Terminer par « je vous fais un mail » sans date, c'est terminer par un appel dans le vide.
+              - id: t2
+                title: Les types de prochaines étapes
+                body_md: |
+                  - **POC / Essai** — tester la solution sur un cas réel.
+                  - **Devis** — chiffrage formel pour décision.
+                  - **Comité** — passer au comité de décision.
+                  - **Découverte élargie** — inclure un autre décideur.
+                  - **Rendez-vous de suivi** — daté, avec ordre du jour.
+
+                  Toutes ont un point commun : elles sont **datées**.
+              - id: t3
+                title: Les 3 phrases magiques
+                body_md: |
+                  Pour sécuriser la prochaine étape :
+
+                  1. « Pour avancer, je vous propose [action concrète]. »
+                  2. « Est-ce que [date précise] vous conviendrait ? »
+                  3. « Je vous envoie l'invitation tout de suite. »
+
+                  Ces 3 phrases transforment une intention en action.
+
+          - type: practice
+            exercises:
+              - id: p3-m4-l2-ex1
+                kind: multi_select
+                prompt: Quels sont les bons types de prochaines étapes ?
+                explanation_md: |
+                  POC, devis, comité, découverte élargie, rendez-vous
+                  daté. Toutes ont un point commun : elles sont datées.
+                xp: 15
+                difficulty: 3
+                concepts: [next_steps]
+                payload:
+                  options:
+                    - POC / Essai sur un cas réel
+                    - Devis formel
+                    - Comité de décision
+                    - "On reste en contact"
+                    - Rendez-vous de suivi daté
+                  correct: [0, 1, 2, 4]
+
+              - id: p3-m4-l2-ex2
+                kind: mcq
+                prompt: Quelle est la meilleure façon de finir un call ?
+                explanation_md: |
+                  On **propose une action concrète avec une date**, et
+                  on envoie l'invitation tout de suite. Pas de « je vous
+                  fais un mail » vague.
+                xp: 10
+                difficulty: 3
+                concepts: [next_steps]
+                payload:
+                  options:
+                    - « On se tient au courant. »
+                    - « Je vous envoie un mail bientôt. »
+                    - « Je vous propose un POC jeudi 15h — je vous envoie l'invitation. »
+                    - « Vous me rappelez quand vous êtes prêt ? »
+                  correct: 2
+
+              - id: p3-m4-l2-ex3
+                kind: order_steps
+                prompt: Remettez dans l'ordre les 3 phrases pour sécuriser une prochaine étape.
+                explanation_md: |
+                  On propose l'action, on propose la date, on envoie
+                  l'invitation. Cet ordre évite les longs pourparlers.
+                xp: 15
+                difficulty: 3
+                concepts: [next_steps]
+                payload:
+                  steps:
+                    - "Pour avancer, je vous propose [action]."
+                    - "Est-ce que [date précise] vous conviendrait ?"
+                    - "Je vous envoie l'invitation tout de suite."
+
+          - type: mission
+            mission:
+              id: mission-next-step
+              title: Créer une prochaine étape datée
+              brief_md: |
+                Dans l'app LeadCortex, ouvre un deal en cours et crée
+                une **tâche de suivi** avec une date précise.
+
+                La tâche doit décrire l'action concrète (POC, devis,
+                comité, rendez-vous…) et être liée au deal.
+              target:
+                route: /app/tasks
+                cta: Créer une tâche
+              validation:
+                trigger: task.created
+                conditions:
+                  - path: task.due_date
+                    op: "is_not_empty"
+              on_success:
+                xp: 60
+                mascot_line: Prochaine étape datée — ton pipeline avance.
+              on_failure:
+                feedback_md: La tâche doit avoir une date d'échéance.
+                hint_md: Va dans **Tâches → Nouvelle**, choisis une date précise.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: next_steps
+            front: "Pourquoi terminer un call par une prochaine étape datée ?"
+            back: "Sans action datée, le deal perd son momentum. La prochaine étape est le livrable principal d'un call."

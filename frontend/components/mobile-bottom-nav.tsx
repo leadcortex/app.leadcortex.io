@@ -24,6 +24,7 @@ export function MobileBottomNav() {
   }, []);
 
   // Expose la hauteur RÉELLE occupée dans le viewport (padding inclus) via
+  // la variable CSS --pen-nav-h, consommée par AppShell et AssistantSidebar.
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -61,7 +62,7 @@ export function MobileBottomNav() {
       >
         <nav
           aria-label="Navigation principale"
-          className="pointer-events-auto grid grid-cols-5 items-stretch overflow-hidden rounded-2xl border border-border/70 bg-surface/95 shadow-lg backdrop-blur-md"
+          className="pointer-events-auto grid grid-cols-6 items-stretch overflow-hidden rounded-2xl border border-border/70 bg-surface/95 shadow-lg backdrop-blur-md"
         >
           {sections.map((section) => (
             <MobileNavSectionButton
@@ -69,8 +70,8 @@ export function MobileBottomNav() {
               section={section}
               className="h-14 w-full rounded-none"
               iconStyle={{
-                width: "clamp(22px, 6.6vw, 28px)",
-                height: "clamp(22px, 6.6vw, 28px)",
+                width: "clamp(20px, 5.5vw, 26px)",
+                height: "clamp(20px, 5.5vw, 26px)",
               }}
               activeClassName="text-primary"
               idleClassName="text-muted-foreground"

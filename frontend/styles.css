@@ -253,11 +253,6 @@
   50% { opacity: 1; }
 }
 
-@keyframes confetti-fall {
-  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
-}
-
 @keyframes card-flip {
   0% { transform: perspective(600px) rotateY(0deg); }
   100% { transform: perspective(600px) rotateY(180deg); }
@@ -312,6 +307,23 @@
   to { stroke-dashoffset: -24; }
 }
 
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(var(--confetti-rotate-start, 0deg));
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 110vh, 0) rotate(var(--confetti-rotate-end, 720deg));
+    opacity: 0;
+  }
+}
+
+.animate-confetti {
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.25, 0.6, 0.4, 1);
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+}
 @utility animate-row-shimmer {
   background: linear-gradient(
     90deg,

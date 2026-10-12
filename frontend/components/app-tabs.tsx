@@ -33,6 +33,7 @@ import {
   Wand2,
   Workflow,
   X,
+  GraduationCap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +58,7 @@ const ICONS = {
   settings: Settings,
   creditCard: CreditCard,
   file: FileText,
+  graduationCap: GraduationCap,
 } as const;
 
 type IconKey = keyof typeof ICONS;
@@ -65,6 +67,8 @@ type TabMeta = { label: string; iconKey: IconKey };
 
 const STATIC_ROUTES: Record<string, TabMeta> = {
   "/app": { label: "Dashboard", iconKey: "dashboard" },
+  "/app/academy": { label: "Academy", iconKey: "graduationCap" },
+  "/app/academy/profile": { label: "Profil apprenant", iconKey: "graduationCap" },
   "/app/people": { label: "Prospects", iconKey: "users" },
   "/app/people/new": { label: "Nouveau prospect", iconKey: "users" },
   "/app/companies": { label: "Entreprises", iconKey: "building" },
@@ -91,6 +95,10 @@ const STATIC_ROUTES: Record<string, TabMeta> = {
 
 function resolveTabMeta(pathname: string): TabMeta {
   if (STATIC_ROUTES[pathname]) return STATIC_ROUTES[pathname];
+  if (/^\/app\/academy\/lesson\/[^/]+$/.test(pathname))
+    return { label: "Leçon", iconKey: "graduationCap" };
+  if (/^\/app\/academy\/[^/]+$/.test(pathname))
+    return { label: "Programme", iconKey: "graduationCap" };
   if (/^\/app\/people\/[^/]+$/.test(pathname)) return { label: "Prospect", iconKey: "users" };
   if (/^\/app\/companies\/[^/]+$/.test(pathname))
     return { label: "Entreprise", iconKey: "building" };

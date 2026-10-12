@@ -31,6 +31,7 @@ import {
   Search,
   Bell,
   Plus,
+  GraduationCap,
 } from "lucide-react";
 import {
   CommandDialog,
@@ -60,6 +61,13 @@ const staticGroups: NavGroup[] = [
   {
     label: "Accueil",
     items: [{ to: "/app", label: "Dashboard", icon: LayoutDashboard, exact: true }],
+  },
+  {
+    label: "Academy",
+    items: [
+      { to: "/app/academy", label: "Parcours", icon: GraduationCap },
+      { to: "/app/academy/profile", label: "Profil apprenant", icon: GraduationCap },
+    ],
   },
   {
     label: "Prospecter & enrichir",
@@ -138,6 +146,10 @@ function AppShellBody({ children }: { children: ReactNode }) {
     pathname !== "/app/workflows" &&
     pathname !== "/app/workflows/";
 
+  // Academy Lesson Player : plein écran sans shell (sidebar, tabs, assistant).
+  // Cohérent avec le pattern isWorkflowBuilder ci-dessus.
+  const isAcademyLesson = /^\/app\/academy\/lesson\/[^/]+/.test(pathname);
+
   const isFullBleed = /^\/app\/(conversations|emails)/.test(pathname);
 
   const groups = useMemo(() => {
@@ -160,6 +172,17 @@ function AppShellBody({ children }: { children: ReactNode }) {
     for (const g of groups) for (const it of g.items) if (it.badge) map[it.to] = it.badge;
     return map;
   }, [groups]);
+
+  if (isAcademyLesson) {
+    return (
+      <>
+        <div className="h-dvh w-screen overflow-hidden bg-background text-foreground">
+          {children}
+        </div>
+        <SettingsModal />
+      </>
+    );
+  }
 
   if (isWorkflowBuilder) {
     if (isMobile) {

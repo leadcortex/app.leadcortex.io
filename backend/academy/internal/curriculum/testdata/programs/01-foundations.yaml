@@ -1,0 +1,186 @@
+schema_version: "1.0"
+id: p1-foundations
+order: 1
+title: Foundations
+subtitle: Les bases de la prospection B2B
+description: Avant de prospecter, il faut comprendre à qui on parle et pourquoi.
+icon: book-open
+color: "#3186FF"
+difficulty: 1
+language: fr
+authors: ["team"]
+
+prerequisites:
+  previous_program_ids: []
+  min_level: 0
+  min_xp: 0
+
+concepts:
+  - id: icp_definition
+    label: Définition ICP
+    description: L'entreprise idéale qui tire le plus de valeur du produit.
+  - id: icp_vs_persona
+    label: ICP vs Persona
+    description: ICP = entreprise ; Persona = personne.
+  - id: signals
+    label: Signaux d'achat
+    description: Événements déclencheurs qui précèdent un achat.
+
+modules:
+  - id: p1-m1
+    order: 1
+    title: Bases de la prospection
+    description: Comprendre le terrain avant de s'y aventurer.
+    prerequisites:
+      previous_module_ids: []
+      required_concept_ids: []
+    lessons:
+      - id: p1-m1-l1-why-prospection
+        order: 1
+        slug: why-prospection
+        title: Pourquoi la prospection outbound ?
+        subtitle: Le contexte et les enjeux
+        duration_min: 6
+        difficulty: 1
+        xp_total: 100
+        concepts: [signals]
+        skills: [stratégie]
+
+        prerequisites:
+          previous_lesson_ids: []
+          required_concept_ids: []
+        unlocks:
+          lesson_ids: [p1-m1-l2-icp-basics]
+          avatar_ids: [eagle]
+          badge_ids: [first-steps]
+        rewards:
+          xp: 100
+          hearts_refund: 0
+
+        blocks:
+          - type: cover
+            title: Pourquoi la prospection outbound ?
+            subtitle: Foundations · Module 1 · Leçon 1
+            mascot_pose: curious
+            mascot_line: Avant d'écrire à qui que ce soit, il faut savoir à qui on parle.
+            objectives:
+              - Comprendre l'intérêt de l'outbound en B2B
+              - Identifier les 3 moments clés pour prospecter
+              - Éviter les erreurs de débutant
+
+          - type: theory
+            slides:
+              - id: t1
+                title: L'outbound, c'est quoi ?
+                body_md: |
+                  L'outbound, c'est **aller chercher** ses clients plutôt que
+                  d'attendre qu'ils viennent (inbound). En B2B, c'est souvent
+                  le canal le plus fiable pour **démarrer**.
+                callout:
+                  tone: info
+                  text: Un bon ICP tient en 5 lignes maximum.
+              - id: t2
+                title: Les 3 moments clés
+                body_md: |
+                  1. **Après une levée** — budget disponible
+                  2. **Après un recrutement C-level** — nouveaux objectifs
+                  3. **Après un lancement produit** — besoin de traction
+                quote:
+                  text: Le bon moment fait 80 % du travail.
+                  author: Règle d'or B2B
+
+          - type: practice
+            exercises:
+              - id: ex1
+                kind: mcq
+                prompt: Quel événement est un signal d'achat fort ?
+                explanation_md: Un recrutement C-level signale un changement d'objectifs.
+                xp: 10
+                difficulty: 2
+                concepts: [signals]
+                payload:
+                  options:
+                    - Une publication sur les réseaux sociaux
+                    - Un recrutement C-level
+                    - Une mise à jour du site web
+                    - Un changement de logo
+                  correct: 1
+
+              - id: ex2
+                kind: fill_blank
+                prompt: "L'______ va chercher les clients ; l'______ les attend."
+                explanation_md: Outbound = aller chercher, inbound = attendre.
+                xp: 15
+                difficulty: 2
+                concepts: [signals]
+                payload:
+                  blanks:
+                    - correct: [outbound]
+                    - correct: [inbound]
+
+          - type: mission
+            mission:
+              id: mission-define-icp
+              title: Rédige ton premier ICP
+              brief_md: |
+                Dans l'app, ouvre la page **Entreprises** et identifie 3
+                entreprises qui ressemblent à ton client idéal. Note pour
+                chacune : secteur, taille, géographie.
+              target:
+                route: /app/companies
+                cta: Voir mes entreprises
+              validation:
+                trigger: company.viewed
+                conditions:
+                  - path: company.count
+                    op: ">="
+                    value: 3
+              on_success:
+                xp: 50
+                mascot_line: Bravo ! Ton ICP prend forme.
+                unlock_avatars: [eagle]
+              on_failure:
+                feedback_md: Il te manque au moins 3 entreprises identifiées.
+                hint_md: Va dans Entreprises → parcours la liste → note 3 profils.
+              hint_after_minutes: 5
+              retry_allowed: true
+
+          - type: debrief
+            sections: [score_breakdown, concepts_mastered, next_recommendation]
+
+        srs_templates:
+          - concept: signals
+            front: "Quel événement est un signal d'achat fort en B2B ?"
+            back: "Un recrutement C-level (ou une levée de fonds, un lancement produit)."
+
+avatars:
+  - id: eagle
+    name: Aigle
+    tier: classic
+    description: Symbole de vision et de hauteur de vue.
+    svg_path: /images/SVG-avatar/classic/Eagle.svg
+    default_pose: neutral
+    poses:
+      - key: neutral
+        label: Neutre
+        is_default: true
+      - key: curious
+        label: Curieux
+        is_default: false
+    unlock:
+      kind: program
+      value: p1-foundations
+      description: Terminer le programme Foundations.
+
+badges:
+  - id: first-steps
+    name: Premiers pas
+    description: Tu as terminé ta première leçon.
+    icon: footsteps
+    color: "#3186FF"
+    category: progress
+    rarity: common
+    conditions:
+      - path: lesson.count_completed
+        op: ">="
+        value: 1

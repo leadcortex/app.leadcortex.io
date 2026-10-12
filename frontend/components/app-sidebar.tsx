@@ -30,6 +30,7 @@ import {
   LogOut,
   ChevronRight,
   ChevronsUpDown,
+  GraduationCap,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -51,6 +52,13 @@ const GROUPS: Group[] = [
   {
     label: "Accueil",
     items: [{ to: "/app", label: "Dashboard", icon: LayoutDashboard, exact: true }],
+  },
+  {
+    label: "Academy",
+    items: [
+      { to: "/app/academy", label: "Parcours", icon: GraduationCap },
+      { to: "/app/academy/profile", label: "Profil apprenant", icon: GraduationCap },
+    ],
   },
   {
     label: "Prospecter & enrichir",
