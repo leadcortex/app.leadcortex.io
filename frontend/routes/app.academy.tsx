@@ -1,17 +1,11 @@
-//frontend\routes\app.academy.tsx
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { AcademyProvider } from "../../academy/src/components/academy/academy-shell";
+import "../../academy/src/components/academy/academy.css";
 
-/**
- * Layout parent de toutes les routes /app/academy/*.
- *
- * Aucun chrome additionnel : les pages filles utilisent le shell standard
- * (AppShell), SAUF /app/academy/lesson/* qui est rendu en plein écran par
- * AppShell grâce au flag isAcademyLesson.
- */
 export const Route = createFileRoute("/app/academy")({
   head: () => ({
     meta: [
-      { title: "Academy — LeadCortex" },
+      { title: "Académie — Lead Cortex" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -19,5 +13,11 @@ export const Route = createFileRoute("/app/academy")({
 });
 
 function AcademyLayout() {
-  return <Outlet />;
+  return (
+    <AcademyProvider>
+      <div className="academy-scope">
+        <Outlet />
+      </div>
+    </AcademyProvider>
+  );
 }

@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { RewardsPage } from '@/components/academy/secondary-pages';
+export const Route = createFileRoute('/recompenses')({ component: RewardsPage, head: () => ({ meta: [ {title:'Récompenses — Académie Lead Cortex'}, {name:'description',content:'Vos XP, badges et récompenses d’apprentissage Lead Cortex.'}, {property:'og:title',content:'Récompenses — Académie Lead Cortex'}, {property:'og:description',content:'Chaque progrès en prospection mérite sa récompense.'}, {property:'og:type',content:'website'}, {name:'twitter:card',content:'summary_large_image'} ] }) });

@@ -106,6 +106,10 @@ func buildTestServer(t *testing.T) *Server {
 	engine := progress.NewEngine(registry, resolver, nil)
 	evaluator := assessment.NewEvaluator(assessment.DefaultPassingScore)
 	bus := missions.NewEventBus()
+	orchestrator, err := missions.NewOrchestrator(registry, bus)
+	if err != nil {
+		t.Fatalf("NewOrchestrator : %v", err)
+	}
 
 	// Avatars service : alimente GET /avatars et ApplyAndUnlock.
 	avatarSvc := avatars.NewService(registry)
@@ -115,14 +119,15 @@ func buildTestServer(t *testing.T) *Server {
 	cfg.AllowDevFallback = true
 
 	deps := Dependencies{
-		Logger:     zerolog.Nop(),
-		Registry:   registry,
-		Resolver:   resolver,
-		Repository: repo,
-		Engine:     engine,
-		Evaluator:  evaluator,
-		Bus:        bus,
-		Avatars:    avatarSvc,
+		Logger:       zerolog.Nop(),
+		Registry:     registry,
+		Resolver:     resolver,
+		Repository:   repo,
+		Engine:       engine,
+		Evaluator:    evaluator,
+		Bus:          bus,
+		Avatars:      avatarSvc,
+		Orchestrator: orchestrator,
 	}
 
 	s, err := NewServer(cfg, deps)

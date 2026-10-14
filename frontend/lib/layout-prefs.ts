@@ -114,3 +114,58 @@ export function useMobileNavSide(): MobileNavSide {
 
   return side;
 }
+
+/* ==========================================================================
+   Masquer la bulle Academy dans la barre mobile
+   ========================================================================== */
+
+export const HIDE_ACADEMY_MOBILE_KEY = "lc.layout.hideAcademyMobile";
+export const HIDE_ACADEMY_MOBILE_EVENT = "lc:layout-hide-academy-mobile";
+
+const DEFAULT_HIDE_ACADEMY_MOBILE = false;
+
+export function readHideAcademyFromMobile(): boolean {
+  if (typeof window === "undefined") return DEFAULT_HIDE_ACADEMY_MOBILE;
+  try {
+    return window.localStorage.getItem(HIDE_ACADEMY_MOBILE_KEY) === "1";
+  } catch {
+    /* Intentionally ignored. */
+  }
+  return DEFAULT_HIDE_ACADEMY_MOBILE;
+}
+
+export function writeHideAcademyFromMobile(hidden: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(HIDE_ACADEMY_MOBILE_KEY, hidden ? "1" : "0");
+  } catch {
+    /* Intentionally ignored. */
+  }
+  try {
+    window.dispatchEvent(new CustomEvent(HIDE_ACADEMY_MOBILE_EVENT, { detail: hidden }));
+  } catch {
+    /* Intentionally ignored. */
+  }
+}
+
+export function useHideAcademyFromMobile(): boolean {
+  const [hidden, setHidden] = useState<boolean>(() => readHideAcademyFromMobile());
+
+  useEffect(() => {
+    const onCustom = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setHidden(typeof detail === "boolean" ? detail : readHideAcademyFromMobile());
+    };
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === HIDE_ACADEMY_MOBILE_KEY) setHidden(readHideAcademyFromMobile());
+    };
+    window.addEventListener(HIDE_ACADEMY_MOBILE_EVENT, onCustom);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener(HIDE_ACADEMY_MOBILE_EVENT, onCustom);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, []);
+
+  return hidden;
+}

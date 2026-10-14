@@ -759,7 +759,7 @@ modules:
                 mascot_line: Positionnement prêt — tu ne combats pas le concurrent, tu clarifies.
               on_failure:
                 feedback_md: Les notes doivent contenir au moins 250 caractères.
-                hint_md: Décris 3 points : forces concurrent, vos différenciateurs, prochain test.
+                hint_md: "Décris 3 points : forces concurrent, vos différenciateurs, prochain test."
               hint_after_minutes: 5
               retry_allowed: true
 

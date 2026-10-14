@@ -63,7 +63,7 @@ var catalogEntries = []domain.Avatar{
 		Name:        "Panda",
 		Tier:        domain.AvatarTierClassic,
 		Description: "Posé et concentré. Avance à son rythme, sans jamais s'arrêter.",
-		SVGPath:     "/images/SVG-avatar/classic/Panda.svg",
+		SVGPath:     "/images/SVG-avatar/classic/panda.svg",
 		DefaultPose: "neutral",
 		Poses:       posesStandard,
 		Unlock: domain.AvatarUnlock{
@@ -77,7 +77,7 @@ var catalogEntries = []domain.Avatar{
 		Name:        "Panda roux",
 		Tier:        domain.AvatarTierClassic,
 		Description: "Curieux et joueur. Toujours en quête d'une nouvelle découverte.",
-		SVGPath:     "/images/SVG-avatar/classic/RedPanda.svg",
+		SVGPath:     "/images/SVG-avatar/classic/Red-panda.svg",
 		DefaultPose: "neutral",
 		Poses:       posesStandard,
 		Unlock: domain.AvatarUnlock{
@@ -121,7 +121,7 @@ var catalogEntries = []domain.Avatar{
 		Name:        "Chouette",
 		Tier:        domain.AvatarTierCollector,
 		Description: "Gardienne du savoir. Chaque mission réussie affine son jugement.",
-		SVGPath:     "/images/SVG-avatar/collector/Owl.svg",
+		SVGPath:     "/images/SVG-avatar/collector/Astral-owl.svg",
 		DefaultPose: "neutral",
 		Poses:       posesStandard,
 		Unlock: domain.AvatarUnlock{
@@ -149,7 +149,7 @@ var catalogEntries = []domain.Avatar{
 		Name:        "Chat lunaire",
 		Tier:        domain.AvatarTierCollector,
 		Description: "Compagnon nocturne des stratèges. Marche entre deux mondes.",
-		SVGPath:     "/images/SVG-avatar/collector/Cat.svg",
+		SVGPath:     "/images/SVG-avatar/collector/Lunar-cat.svg",
 		DefaultPose: "neutral",
 		Poses:       posesStandard,
 		Unlock: domain.AvatarUnlock{
@@ -163,7 +163,7 @@ var catalogEntries = []domain.Avatar{
 		Name:        "Tortue",
 		Tier:        domain.AvatarTierCollector,
 		Description: "Rien ne l'arrête, tout simplement. La constance incarnée.",
-		SVGPath:     "/images/SVG-avatar/collector/Turtle.svg",
+		SVGPath:     "/images/SVG-avatar/collector/Mosaic-turtle.svg",
 		DefaultPose: "neutral",
 		Poses:       posesStandard,
 		Unlock: domain.AvatarUnlock{
@@ -177,7 +177,7 @@ var catalogEntries = []domain.Avatar{
 		Name:        "Lion",
 		Tier:        domain.AvatarTierCollector,
 		Description: "Roi de la savane commerciale. Il reste à sa place jusqu'à la victoire.",
-		SVGPath:     "/images/SVG-avatar/collector/Lion.svg",
+		SVGPath:     "/images/SVG-avatar/collector/Solar-lion.svg",
 		DefaultPose: "neutral",
 		Poses:       posesStandard,
 		Unlock: domain.AvatarUnlock{
@@ -191,7 +191,7 @@ var catalogEntries = []domain.Avatar{
 		Name:        "Dauphin fondateur",
 		Tier:        domain.AvatarTierCollector,
 		Description: "L'aboutissement du parcours. Réservé aux pionniers de l'academy.",
-		SVGPath:     "/images/SVG-avatar/collector/Dolphin.svg",
+		SVGPath:     "/images/SVG-avatar/collector/Founding-dolphin.svg",
 		DefaultPose: "neutral",
 		Poses:       posesFounding,
 		Unlock: domain.AvatarUnlock{
@@ -234,7 +234,9 @@ func initCatalog() {
 func All() []domain.Avatar {
 	initCatalog()
 	out := make([]domain.Avatar, len(catalogList))
-	copy(out, catalogList)
+	for i, avatar := range catalogList {
+		out[i] = cloneAvatar(avatar)
+	}
 	return out
 }
 
@@ -242,7 +244,10 @@ func All() []domain.Avatar {
 func Find(id string) (domain.Avatar, bool) {
 	initCatalog()
 	a, ok := catalogByID[id]
-	return a, ok
+	if !ok {
+		return domain.Avatar{}, false
+	}
+	return cloneAvatar(a), true
 }
 
 // MustFind est une variante de Find qui panique si l'avatar n'existe pas.
@@ -261,10 +266,15 @@ func ByTier(tier domain.AvatarTier) []domain.Avatar {
 	out := make([]domain.Avatar, 0, 6)
 	for _, a := range catalogList {
 		if a.Tier == tier {
-			out = append(out, a)
+			out = append(out, cloneAvatar(a))
 		}
 	}
 	return out
+}
+
+func cloneAvatar(avatar domain.Avatar) domain.Avatar {
+	avatar.Poses = append([]domain.AvatarPose(nil), avatar.Poses...)
+	return avatar
 }
 
 // Count renvoie le nombre total d'avatars du catalogue.

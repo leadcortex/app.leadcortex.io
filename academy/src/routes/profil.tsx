@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { ProfilePage } from '@/components/academy/secondary-pages';
+export const Route = createFileRoute('/profil')({ component: ProfilePage, head: () => ({ meta: [ {title:'Mon profil — Académie Lead Cortex'}, {name:'description',content:'Votre progression et vos compagnons dans l’Académie Lead Cortex.'}, {property:'og:title',content:'Mon profil — Académie Lead Cortex'}, {property:'og:description',content:'Choisissez votre compagnon d’apprentissage.'}, {property:'og:type',content:'website'}, {name:'twitter:card',content:'summary_large_image'} ] }) });

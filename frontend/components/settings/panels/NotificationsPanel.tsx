@@ -16,6 +16,16 @@ import {
   type NotificationMobilePosition,
 } from "@/components/ui/sonner";
 import { PanelIntro, PanelGroup, SettingsCard, Row } from "./primitives";
+import {
+  PhoneFrame,
+  PhoneSkeleton,
+  PhoneNavBar,
+  NotificationCard,
+  PHONE,
+  NAV_Y_BOTTOM,
+  NOTIF_BASE_W,
+  NOTIF_BASE_H,
+} from "./phone-preview";
 
 const DESKTOP_POSITIONS: {
   value: NotificationPosition;
@@ -42,19 +52,20 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
   const H = 168;
 
   const contentX = 8;
-  const contentY = 46;
+  const contentY = 26;
   const contentW = W - contentX * 2;
   const contentH = H - contentY - 8;
 
-  const notifW = 80;
-  const notifH = 44;
+  const scale = 1.1;
+  const notifW = NOTIF_BASE_W * scale;
+  const notifH = NOTIF_BASE_H * scale;
   const pad = 10;
 
   const isRight = position === "top-right" || position === "bottom-right";
   const isTop = position === "top-left" || position === "top-right";
 
   const notifX = isRight ? contentX + contentW - notifW - pad : contentX + pad;
-  const notifY = isTop ? contentY + pad : contentY + contentH - notifH - pad;
+  const notifY = isTop ? contentY + pad : contentY + contentH - notifH - pad - 3;
 
   const label = DESKTOP_POSITIONS.find((p) => p.value === position)?.label.toLowerCase() ?? "";
 
@@ -65,6 +76,7 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
       role="img"
       aria-label={`Aperçu : notification ${label}`}
     >
+      {/* Fenêtre */}
       <rect
         x="0.5"
         y="0.5"
@@ -75,13 +87,13 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
         stroke="currentColor"
         strokeOpacity="0.15"
       />
-      <circle cx="16" cy="12" r="3.2" fill="#ff5f57" />
-      <circle cx="27" cy="12" r="3.2" fill="#febc2e" />
-      <circle cx="38" cy="12" r="3.2" fill="#28c840" />
-
+      {/* Barre de titre : feux + barre d'adresse */}
+      <circle cx="16" cy="13" r="3.2" fill="#ff5f57" />
+      <circle cx="27" cy="13" r="3.2" fill="#febc2e" />
+      <circle cx="38" cy="13" r="3.2" fill="#28c840" />
       <rect
         x="58"
-        y="5.5"
+        y="6.5"
         width={W - 72}
         height="13"
         rx="6.5"
@@ -90,7 +102,7 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
       />
       <text
         x="68"
-        y="14.5"
+        y="15.5"
         fontSize="6.5"
         fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
         fill="currentColor"
@@ -99,6 +111,7 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
         app.leadcortex.io
       </text>
 
+      {/* Zone de contenu */}
       <rect
         x={contentX}
         y={contentY}
@@ -111,33 +124,30 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
         strokeOpacity="0.06"
       />
 
+      {/* Faux dashboard : en-tête, 3 tuiles, tableau */}
       <g fill="currentColor" fillOpacity="0.08">
-        <rect x={contentX + 16} y={contentY + 14} width="64" height="6" rx="3" />
-        <rect x={contentX + 16} y={contentY + 26} width="118" height="4" rx="2" />
-        <rect x={contentX + 16} y={contentY + 34} width="96" height="4" rx="2" />
-        <rect x={contentX + 16} y={contentY + 56} width={contentW - 32} height="12" rx="4" />
-        <rect x={contentX + 16} y={contentY + 74} width={contentW - 32} height="12" rx="4" />
-        <rect x={contentX + 16} y={contentY + 92} width={contentW - 32} height="12" rx="4" />
+        <rect x={contentX + 14} y={contentY + 12} width="56" height="6" rx="3" fillOpacity="0.16" />
+        <rect x={contentX + 14} y={contentY + 23} width="96" height="3.5" rx="1.75" />
+        {[0, 1, 2].map((i) => (
+          <rect
+            key={i}
+            x={contentX + 14 + i * 68}
+            y={contentY + 36}
+            width="62"
+            height="26"
+            rx="5"
+          />
+        ))}
+        {[70, 86, 102].map((dy) => (
+          <g key={dy}>
+            <rect x={contentX + 14} y={contentY + dy} width={contentW - 28} height="12" rx="4" fillOpacity="0.06" />
+            <circle cx={contentX + 22} cy={contentY + dy + 6} r="3" fillOpacity="0.14" />
+            <rect x={contentX + 30} y={contentY + dy + 4.5} width="44" height="3" rx="1.5" fillOpacity="0.16" />
+          </g>
+        ))}
       </g>
 
-      <g transform={`translate(${notifX}, ${notifY})`}>
-        <rect x="0" y="2" width={notifW} height={notifH} rx="7" fill="#0b0b0f" fillOpacity="0.22" />
-        <rect
-          x="0"
-          y="0"
-          width={notifW}
-          height={notifH}
-          rx="7"
-          fill="#ffffff"
-          stroke="#000000"
-          strokeOpacity="0.06"
-        />
-        <circle cx="14" cy="15" r="6.5" fill="var(--primary)" fillOpacity="0.14" />
-        <circle cx="14" cy="15" r="2.2" fill="var(--primary)" />
-        <rect x="25" y="9.5" width="44" height="4" rx="2" fill="#111111" fillOpacity="0.72" />
-        <rect x="25" y="18" width="34" height="3" rx="1.5" fill="#111111" fillOpacity="0.4" />
-        <rect x="25" y="25" width="48" height="3" rx="1.5" fill="#111111" fillOpacity="0.22" />
-      </g>
+      <NotificationCard x={notifX} y={notifY} scale={scale} />
     </svg>
   );
 }
@@ -153,160 +163,24 @@ function MobileNotificationPreview({
   side: NotificationMobilePosition;
   size: number;
 }) {
-  const W = 160;
-  const H = 300;
+  // Échelle de la carte selon la préférence de taille (0 → 0,78 · 100 → 1,04).
+  // Bornée pour que la carte ne dépasse jamais de l'écran du téléphone
+  // (largeur max = 96 × 1,04 ≈ 100 pour un écran de 108).
+  const scale = 0.78 + (size / 100) * 0.26;
+  const cardW = NOTIF_BASE_W * scale;
+  const cardH = NOTIF_BASE_H * scale;
 
-  const phoneX = 20;
-  const phoneY = 6;
-  const phoneW = W - 40;
-  const phoneH = H - 12;
-  const phoneR = 18;
-
-  const screenX = phoneX + 4;
-  const screenY = phoneY + 4;
-  const screenW = phoneW - 8;
-  const screenH = phoneH - 8;
-  const screenR = 14;
-
-  const notchW = 40;
-  const notchH = 6;
-  const notchX = W / 2 - notchW / 2;
-  const notchY = screenY + 3;
-
-  // Échelle de la carte notification en fonction de la préférence de taille
-  // (0 → 0.55, 100 → 1.25). La carte s'agrandit visuellement sur l'aperçu.
-  const cardScale = 0.55 + (size / 100) * 0.7;
-  const cardW = 120 * cardScale;
-  const cardH = 40 * cardScale;
-  const cardX = screenX + (screenW - cardW) / 2;
+  const cardX = PHONE.sx + (PHONE.sw - cardW) / 2;
   const isTop = side === "top";
-  const cardY = isTop ? screenY + 24 : screenY + screenH - cardH - 24;
-
-  const label = isTop ? "en haut" : "en bas";
+  // En haut : juste sous la Dynamic Island. En bas : au-dessus de la barre de nav.
+  const cardY = isTop ? 33 : NAV_Y_BOTTOM - cardH - 11;
 
   return (
-    <svg
-      viewBox={`0 0 ${W} ${H}`}
-      className="h-auto w-full"
-      role="img"
-      aria-label={`Aperçu mobile : notification ${label}`}
-    >
-      <rect
-        x={phoneX}
-        y={phoneY}
-        width={phoneW}
-        height={phoneH}
-        rx={phoneR}
-        fill="var(--background)"
-        stroke="currentColor"
-        strokeOpacity="0.18"
-        strokeWidth="1.5"
-      />
-
-      <rect
-        x={screenX}
-        y={screenY}
-        width={screenW}
-        height={screenH}
-        rx={screenR}
-        fill="currentColor"
-        fillOpacity="0.025"
-      />
-
-      <rect
-        x={notchX}
-        y={notchY}
-        width={notchW}
-        height={notchH}
-        rx={notchH / 2}
-        fill="currentColor"
-        fillOpacity="0.22"
-      />
-
-      <g fill="currentColor" fillOpacity="0.08">
-        <rect x={screenX + 12} y={screenY + 20} width="50" height="6" rx="3" />
-        <rect x={screenX + 12} y={screenY + 32} width="80" height="4" rx="2" />
-        <rect x={screenX + 12} y={screenY + 54} width={screenW - 24} height="18" rx="5" />
-        <rect x={screenX + 12} y={screenY + 80} width={screenW - 24} height="18" rx="5" />
-        <rect x={screenX + 12} y={screenY + 106} width={screenW - 24} height="18" rx="5" />
-        <rect x={screenX + 12} y={screenY + 132} width={screenW - 24} height="18" rx="5" />
-      </g>
-
-      <g>
-        <rect
-          x={cardX}
-          y={cardY + 2}
-          width={cardW}
-          height={cardH}
-          rx={7 * cardScale}
-          fill="#0b0b0f"
-          fillOpacity="0.18"
-        />
-
-        <rect
-          x={cardX}
-          y={cardY}
-          width={cardW}
-          height={cardH}
-          rx={7 * cardScale}
-          fill="#ffffff"
-          stroke="#000000"
-          strokeOpacity="0.06"
-        />
-
-        <circle
-          cx={cardX + 14 * cardScale}
-          cy={cardY + cardH / 2}
-          r={6 * cardScale}
-          fill="var(--primary)"
-          fillOpacity="0.15"
-        />
-        <circle
-          cx={cardX + 14 * cardScale}
-          cy={cardY + cardH / 2}
-          r={2.2 * cardScale}
-          fill="var(--primary)"
-        />
-
-        <rect
-          x={cardX + 25 * cardScale}
-          y={cardY + 9 * cardScale}
-          width={44 * cardScale}
-          height={3 * cardScale}
-          rx={1.5 * cardScale}
-          fill="#111111"
-          fillOpacity="0.72"
-        />
-        <rect
-          x={cardX + 25 * cardScale}
-          y={cardY + 17 * cardScale}
-          width={34 * cardScale}
-          height={2.4 * cardScale}
-          rx={1.2 * cardScale}
-          fill="#111111"
-          fillOpacity="0.4"
-        />
-        <rect
-          x={cardX + 25 * cardScale}
-          y={cardY + 24 * cardScale}
-          width={48 * cardScale}
-          height={2.4 * cardScale}
-          rx={1.2 * cardScale}
-          fill="#111111"
-          fillOpacity="0.22"
-        />
-      </g>
-
-      <rect
-        x={W / 2 - 20}
-        y={phoneY + phoneH - 3}
-        width="40"
-        height="2"
-        rx="1"
-        fill="currentColor"
-        fillOpacity="0.28"
-      />
-    </svg>
+    <PhoneFrame label={`Aperçu mobile : notification ${isTop ? "en haut" : "en bas"}`}>
+      <PhoneSkeleton />
+      <PhoneNavBar y={NAV_Y_BOTTOM} />
+      <NotificationCard x={cardX} y={cardY} scale={scale} />
+    </PhoneFrame>
   );
 }
 
@@ -465,7 +339,7 @@ export function NotificationsPanel() {
                   hint={p.hint}
                   ariaLabel={`${p.label} — ${p.hint}`}
                 >
-                  <div className="mx-auto w-full max-w-[130px]">
+                  <div className="mx-auto w-full max-w-[112px]">
                     <MobileNotificationPreview side={p.value} size={size} />
                   </div>
                 </SelectorCard>

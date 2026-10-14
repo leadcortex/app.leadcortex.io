@@ -1,8 +1,16 @@
 //frontend\components\settings\panels\DisplayPanel.tsx
 // ⚠️ Conditionnement mobile/desktop :
 
-import { AlertCircle, Check, LayoutTemplate, Monitor, Smartphone } from "lucide-react";
+import {
+  AlertCircle,
+  Check,
+  GraduationCap,
+  LayoutTemplate,
+  Monitor,
+  Smartphone,
+} from "lucide-react";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -10,10 +18,13 @@ import {
   writeSidebarSide,
   useMobileNavSide,
   writeMobileNavSide,
+  useHideAcademyFromMobile,
+  writeHideAcademyFromMobile,
   type SidebarSide,
   type MobileNavSide,
 } from "@/lib/layout-prefs";
 import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
+import { PhoneFrame, PhoneSkeleton, PhoneNavBar, NAV_Y_BOTTOM, NAV_Y_TOP } from "./phone-preview";
 
 const SIDEBAR_SIDES: {
   value: SidebarSide;
@@ -36,6 +47,29 @@ const MOBILE_NAV_SIDES: {
   { value: "bottom", label: "Barre en bas", hint: "Valeur par défaut · accessible au pouce" },
   { value: "top", label: "Barre en haut", hint: "Sous la barre d'état du téléphone" },
 ];
+
+/* -------------------------------------------------------------------------- */
+/*  AcademyMobilePreview — aperçu téléphone avec la bulle Academy (on/off)    */
+/* -------------------------------------------------------------------------- */
+
+function AcademyMobilePreview({ hidden }: { hidden: boolean }) {
+  return (
+    <PhoneFrame
+      label={
+        hidden
+          ? "Aperçu : bulle Academy masquée dans la barre mobile"
+          : "Aperçu : bulle Academy visible dans la barre mobile"
+      }
+    >
+      <PhoneSkeleton />
+      <PhoneNavBar y={NAV_Y_BOTTOM} academy={hidden ? "hidden" : "visible"} />
+    </PhoneFrame>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  DesktopSidebarPreview — inchangé (rappel)                                 */
+/* -------------------------------------------------------------------------- */
 
 function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
   const W = 240;
@@ -178,124 +212,13 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
 /* -------------------------------------------------------------------------- */
 
 function MobileNavPreview({ side }: { side: MobileNavSide }) {
-  const W = 160;
-  const H = 300;
-
-  const phoneX = 20;
-  const phoneY = 6;
-  const phoneW = W - 40;
-  const phoneH = H - 12;
-  const phoneR = 18;
-
-  const screenX = phoneX + 4;
-  const screenY = phoneY + 4;
-  const screenW = phoneW - 8;
-  const screenH = phoneH - 8;
-  const screenR = 14;
-
-  const navW = screenW - 16;
-  const navH = 22;
-  const navX = screenX + 8;
-
-  const isTop = side === "top";
-  const navY = isTop ? screenY + 8 : screenY + screenH - navH - 8;
-
-  const notchW = 40;
-  const notchH = 6;
-  const notchX = W / 2 - notchW / 2;
-  const notchY = screenY + 3;
-
   const label = MOBILE_NAV_SIDES.find((s) => s.value === side)?.label.toLowerCase() ?? "";
 
   return (
-    <svg
-      viewBox={`0 0 ${W} ${H}`}
-      className="h-auto w-full"
-      role="img"
-      aria-label={`Aperçu mobile : ${label}`}
-    >
-      <rect
-        x={phoneX}
-        y={phoneY}
-        width={phoneW}
-        height={phoneH}
-        rx={phoneR}
-        fill="var(--background)"
-        stroke="currentColor"
-        strokeOpacity="0.18"
-        strokeWidth="1.5"
-      />
-
-      <rect
-        x={screenX}
-        y={screenY}
-        width={screenW}
-        height={screenH}
-        rx={screenR}
-        fill="currentColor"
-        fillOpacity="0.025"
-      />
-
-      <rect
-        x={notchX}
-        y={notchY}
-        width={notchW}
-        height={notchH}
-        rx={notchH / 2}
-        fill="currentColor"
-        fillOpacity="0.22"
-      />
-
-      <g fill="currentColor" fillOpacity="0.08">
-        <rect x={screenX + 12} y={screenY + 18} width="40" height="6" rx="3" />
-        <rect x={screenX + 12} y={screenY + 30} width="80" height="4" rx="2" />
-        <rect x={screenX + 12} y={screenY + 50} width={screenW - 24} height="20" rx="5" />
-        <rect x={screenX + 12} y={screenY + 78} width={screenW - 24} height="20" rx="5" />
-        <rect x={screenX + 12} y={screenY + 106} width={screenW - 24} height="20" rx="5" />
-        <rect x={screenX + 12} y={screenY + 134} width={screenW - 24} height="20" rx="5" />
-        <rect x={screenX + 12} y={screenY + 162} width={screenW - 24} height="20" rx="5" />
-      </g>
-
-      <g transform={`translate(${navX}, ${navY})`}>
-        <rect x="0" y="1" width={navW} height={navH} rx="7" fill="#0b0b0f" fillOpacity="0.10" />
-        <rect
-          x="0"
-          y="0"
-          width={navW}
-          height={navH}
-          rx="7"
-          fill="var(--surface)"
-          stroke="currentColor"
-          strokeOpacity="0.1"
-        />
-        {[0, 1, 2, 3, 4].map((i) => {
-          const itemW = navW / 5;
-          const cx = itemW * i + itemW / 2;
-          const cy = navH / 2;
-          const active = i === 2;
-          return (
-            <circle
-              key={i}
-              cx={cx}
-              cy={cy}
-              r={active ? 3.4 : 2.6}
-              fill={active ? "var(--primary)" : "currentColor"}
-              fillOpacity={active ? 1 : 0.35}
-            />
-          );
-        })}
-      </g>
-
-      <rect
-        x={W / 2 - 20}
-        y={phoneY + phoneH - 3}
-        width="40"
-        height="2"
-        rx="1"
-        fill="currentColor"
-        fillOpacity="0.28"
-      />
-    </svg>
+    <PhoneFrame label={`Aperçu mobile : ${label}`}>
+      <PhoneSkeleton />
+      <PhoneNavBar y={side === "top" ? NAV_Y_TOP : NAV_Y_BOTTOM} />
+    </PhoneFrame>
   );
 }
 
@@ -367,6 +290,7 @@ export function DisplayPanel() {
   const isMobile = useIsMobile();
   const sidebarSide = useSidebarSide();
   const mobileNavSide = useMobileNavSide();
+  const hideAcademy = useHideAcademyFromMobile();
 
   const handleSidebarSideChange = (next: SidebarSide) => {
     if (next === sidebarSide) return;
@@ -385,6 +309,15 @@ export function DisplayPanel() {
       next === "bottom"
         ? "Barre mobile repositionnée en bas"
         : "Barre mobile repositionnée en haut",
+    );
+  };
+
+  const handleHideAcademyChange = (next: boolean) => {
+    writeHideAcademyFromMobile(next);
+    toast.success(
+      next
+        ? "Academy masquée dans la barre mobile"
+        : "Academy réaffichée dans la barre mobile",
     );
   };
 
@@ -413,7 +346,7 @@ export function DisplayPanel() {
                   hint={s.hint}
                   ariaLabel={`${s.label} — ${s.hint}`}
                 >
-                  <div className="mx-auto w-full max-w-[160px]">
+                  <div className="mx-auto w-full max-w-[112px]">
                     <MobileNavPreview side={s.value} />
                   </div>
                 </SelectorCard>
@@ -427,6 +360,45 @@ export function DisplayPanel() {
                   ? "La barre est ancrée en bas de l'écran, au-dessus de la zone sûre iOS."
                   : "La barre est ancrée en haut de l'écran, sous la barre d'état du téléphone."}{" "}
                 Le réglage est conservé sur cet appareil.
+              </span>
+            </div>
+          </SettingsCard>
+
+          {/* ─── Nouveau : Masquer Academy dans la barre mobile ─── */}
+          <SettingsCard
+            title="Academy dans la barre"
+            description="La bulle Academy à gauche de la barre de navigation peut être masquée pour libérer de l'espace."
+            icon={GraduationCap}
+          >
+            <div className="grid gap-4 sm:grid-cols-[minmax(0,128px)_1fr] sm:items-center">
+              <div className="mx-auto w-full max-w-[128px]">
+                <AcademyMobilePreview hidden={hideAcademy} />
+              </div>
+
+              <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-surface/30 p-4">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium">Masquer la bulle Academy</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
+                    {hideAcademy
+                      ? "La bulle Academy n'apparaît plus. La barre principale occupe toute la largeur."
+                      : "La bulle Academy apparaît à gauche de la barre principale."}
+                  </p>
+                </div>
+                <Switch
+                  checked={hideAcademy}
+                  onCheckedChange={handleHideAcademyChange}
+                  aria-label="Masquer la bulle Academy dans la barre mobile"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-start gap-2 rounded-lg bg-surface/40 p-3 text-[11px] text-muted-foreground">
+              <AlertCircle className="mt-px size-3.5 shrink-0 text-primary" />
+              <span>
+                La page{" "}
+                <b className="text-foreground">Académie</b> reste accessible depuis la barre
+                latérale (desktop) ou via l'adresse <code>/app/academy</code>. Le réglage est
+                conservé sur cet appareil.
               </span>
             </div>
           </SettingsCard>

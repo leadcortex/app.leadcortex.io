@@ -50,6 +50,7 @@ func completeLesson(t *testing.T, s *Server, learnerID, lessonID string) {
 	do(http.MethodPost, "/api/v1/lessons/"+lessonID+"/exercises/ex2/answer", `{"kind":"fill_blank","blanks":["bonjour"]}`)
 	do(http.MethodPost, "/api/v1/missions/mission-1/attempt", `{"payload":{}}`)
 	do(http.MethodPost, "/api/v1/lessons/"+lessonID+"/blocks/3/view", `{"slides_consumed":1}`)
+	do(http.MethodGet, "/api/v1/srs/queue", "")
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -285,9 +286,9 @@ func TestSrsForecast(t *testing.T) {
 	var resp struct {
 		Days     int `json:"days"`
 		Forecast []struct {
-			Date     string `json:"date"`
-			DayOffset int   `json:"day_offset"`
-			DueCount int    `json:"due_count"`
+			Date      string `json:"date"`
+			DayOffset int    `json:"day_offset"`
+			DueCount  int    `json:"due_count"`
 		} `json:"forecast"`
 	}
 	if err := json.NewDecoder(rec.Body).Decode(&resp); err != nil {

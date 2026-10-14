@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"hash/fnv"
 	"time"
-
-	"github.com/leadcortex/academy/internal/domain"
 )
 
 // QuestKind énumère les familles de quêtes quotidiennes.
@@ -261,11 +259,11 @@ func TotalRewardPending(quests []Quest) int {
 
 // QuestStatusForLearner construit un résumé des quêtes pour l'UI.
 type QuestStatusForLearner struct {
-	Date       string `json:"date"`
-	Quests     []Quest `json:"quests"`
-	Completed  int     `json:"completed"`
-	Total      int     `json:"total"`
-	RewardDue  int     `json:"reward_due"`
+	Date      string  `json:"date"`
+	Quests    []Quest `json:"quests"`
+	Completed int     `json:"completed"`
+	Total     int     `json:"total"`
+	RewardDue int     `json:"reward_due"`
 }
 
 // SummarizeQuests — résumé prêt pour l'UI.

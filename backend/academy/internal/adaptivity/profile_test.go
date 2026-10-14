@@ -2,7 +2,6 @@ package adaptivity
 
 import (
 	"testing"
-	"time"
 
 	"github.com/leadcortex/academy/internal/domain"
 )

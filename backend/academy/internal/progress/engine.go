@@ -120,6 +120,13 @@ func (e *Engine) applyLessonStarted(learner *domain.Learner, ev LessonStarted) (
 	if !exists {
 		progress = domain.NewLessonProgress(lesson)
 	}
+	if progress.Status == domain.LessonStatusLocked {
+		if err := assertTransition(lesson.ID, domain.LessonStatusLocked,
+			domain.LessonStatusAvailable); err != nil {
+			return ApplyResult{}, err
+		}
+		progress.Status = domain.LessonStatusAvailable
+	}
 
 	// Déjà démarrée : idempotent (on ne relance pas la transition).
 	if progress.Status != domain.LessonStatusAvailable &&
@@ -329,6 +336,18 @@ func (e *Engine) applyMissionSucceeded(learner *domain.Learner, ev MissionSuccee
 	state.Viewed = true
 	state.LastUpdatedAt = ev.At
 	progress.BlockStates[ev.BlockIndex] = state
+
+	missionProgress := learner.MissionProgress[ev.MissionID]
+	missionProgress.MissionID = ev.MissionID
+	if missionProgress.StartedAt == nil {
+		missionProgress.StartedAt = ev.At
+	}
+	if !already {
+		missionProgress.Attempts++
+	}
+	missionProgress.Status = domain.MissionStatusCompleted
+	missionProgress.CompletedAt = ev.At
+	learner.MissionProgress[ev.MissionID] = missionProgress
 
 	result := ApplyResult{}
 	now := ev.At
@@ -645,10 +664,10 @@ type Recommendation struct {
 type RecommendationKind string
 
 const (
-	RecoLesson       RecommendationKind = "lesson"
-	RecoReview       RecommendationKind = "review"
-	RecoDailyQuest   RecommendationKind = "daily_quest"
-	RecoNone         RecommendationKind = "none"
+	RecoLesson     RecommendationKind = "lesson"
+	RecoReview     RecommendationKind = "review"
+	RecoDailyQuest RecommendationKind = "daily_quest"
+	RecoNone       RecommendationKind = "none"
 )
 
 // Recommend renvoie la prochaine action conseillée à l'apprenant.

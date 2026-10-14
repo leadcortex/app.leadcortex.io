@@ -288,7 +288,7 @@ modules:
                 callout:
                   tone: info
                   title: Astuce
-                  text: Un domaine d'entreprise (ex. `acme.com`) ouvre la porte à des patterns d'email fiables : `prenom.nom@`, `p.nom@`, `prenom@`.
+                  text: "Un domaine d'entreprise (ex. `acme.com`) ouvre la porte à des patterns d'email fiables : `prenom.nom@`, `p.nom@`, `prenom@`."
               - id: t2
                 title: Où trouver chaque champ
                 body_md: |

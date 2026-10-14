@@ -9,6 +9,7 @@ import (
 	"github.com/leadcortex/academy/internal/assessment"
 	"github.com/leadcortex/academy/internal/avatars"
 	"github.com/leadcortex/academy/internal/domain"
+	"github.com/leadcortex/academy/internal/gamification"
 	"github.com/leadcortex/academy/internal/missions"
 	"github.com/leadcortex/academy/internal/progress"
 	"github.com/leadcortex/academy/internal/repository"
@@ -230,6 +231,16 @@ func classify(err error) (int, string, string) {
 		return http.StatusUnprocessableEntity, CodeUnprocessable, "type d'exercice non supporté"
 	case errors.Is(err, assessment.ErrMissingPayload):
 		return http.StatusInternalServerError, CodeInternalError, "payload manquant"
+	}
+
+	// ── Quêtes ────────────────────────────────────────────────────────
+	switch {
+	case errors.Is(err, gamification.ErrQuestNotFound):
+		return http.StatusNotFound, CodeNotFound, "quête introuvable"
+	case errors.Is(err, gamification.ErrQuestNotComplete):
+		return http.StatusBadRequest, CodeBadRequest, "quête non terminée"
+	case errors.Is(err, gamification.ErrQuestAlreadyClaimed):
+		return http.StatusConflict, CodeConflict, "quête déjà réclamée"
 	}
 
 	// ── SRS ───────────────────────────────────────────────────────────

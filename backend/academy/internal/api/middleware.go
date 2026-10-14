@@ -91,17 +91,38 @@ func (s *statusRecorder) Write(b []byte) (int, error) {
 	return s.ResponseWriter.Write(b)
 }
 
+func (s *statusRecorder) flush() {
+	if !s.wrote {
+		s.WriteHeader(http.StatusOK)
+	}
+	if flusher, ok := s.ResponseWriter.(http.Flusher); ok {
+		flusher.Flush()
+	}
+}
+
+type flushableStatusRecorder struct {
+	*statusRecorder
+}
+
+func (s *flushableStatusRecorder) Flush() {
+	s.statusRecorder.flush()
+}
+
 // WithLoggingMiddleware journalise chaque requête.
 func WithLoggingMiddleware(l logger.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
-			rw := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
+			recorder := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
+			var rw http.ResponseWriter = recorder
+			if _, ok := w.(http.Flusher); ok {
+				rw = &flushableStatusRecorder{statusRecorder: recorder}
+			}
 			next.ServeHTTP(rw, r)
 			l.Info().
 				Str("method", r.Method).
 				Str("path", r.URL.Path).
-				Int("status", rw.status).
+				Int("status", recorder.status).
 				Dur("duration", time.Since(start)).
 				Str("request_id", RequestIDFromContext(r.Context())).
 				Str("remote", r.RemoteAddr).

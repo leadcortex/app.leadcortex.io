@@ -1,0 +1,2153 @@
+{
+  "schema_version": "1.0",
+  "id": "p1-foundations",
+  "order": 1,
+  "title": "Fondations",
+  "subtitle": "Les bases de la prospection B2B",
+  "description": "Avant de prospecter, il faut comprendre à qui on parle et pourquoi.\nCe programme pose les fondations : vocabulaire B2B, ICP, personas,\nsignaux d'achat, canaux et posture.\n",
+  "icon": "book-open",
+  "color": "#3186FF",
+  "difficulty": 1,
+  "language": "fr",
+  "authors": [
+    "team"
+  ],
+  "prerequisites": {
+    "previous_program_ids": [],
+    "min_level": 0,
+    "min_xp": 0
+  },
+  "concepts": [
+    {
+      "id": "prospection_definition",
+      "label": "Définition de la prospection",
+      "description": "L'action de rechercher activement de nouveaux clients."
+    },
+    {
+      "id": "inbound_outbound",
+      "label": "Inbound vs Outbound",
+      "description": "Deux approches opposées — attirer ou aller chercher."
+    },
+    {
+      "id": "icp_definition",
+      "label": "Définition ICP",
+      "description": "L'entreprise idéale qui tire le plus de valeur du produit."
+    },
+    {
+      "id": "icp_vs_persona",
+      "label": "ICP vs Persona",
+      "description": "ICP = entreprise ; Persona = personne."
+    },
+    {
+      "id": "buyer_journey",
+      "label": "Parcours d'achat B2B",
+      "description": "Les étapes entre la prise de conscience et la signature."
+    },
+    {
+      "id": "signals",
+      "label": "Signaux d'achat",
+      "description": "Événements déclencheurs qui précèdent un achat."
+    },
+    {
+      "id": "signals_priority",
+      "label": "Priorisation des signaux",
+      "description": "Tous les signaux ne se valent pas — les classer par force."
+    },
+    {
+      "id": "channels",
+      "label": "Canaux de prospection",
+      "description": "Email, LinkedIn, téléphone, événements — forces et limites."
+    },
+    {
+      "id": "tone_b2b",
+      "label": "Ton B2B",
+      "description": "Direct, professionnel, orienté problème client."
+    }
+  ],
+  "modules": [
+    {
+      "id": "p1-m1",
+      "order": 1,
+      "title": "Bases de la prospection",
+      "description": "Comprendre le terrain avant de s'y aventurer.",
+      "prerequisites": {
+        "previous_module_ids": [],
+        "required_concept_ids": []
+      },
+      "lessons": [
+        {
+          "id": "p1-m1-l1-why-prospection",
+          "order": 1,
+          "slug": "why-prospection",
+          "title": "Pourquoi la prospection outbound ?",
+          "subtitle": "Le contexte et les enjeux",
+          "duration_min": 7,
+          "difficulty": 1,
+          "xp_total": 120,
+          "concepts": ["prospection_definition", "inbound_outbound"],
+          "skills": ["stratégie"],
+          "prerequisites": {
+            "previous_lesson_ids": [],
+            "required_concept_ids": []
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m1-l2-inbound-vs-outbound"]
+          },
+          "rewards": {
+            "xp": 100,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Pourquoi la prospection outbound ?",
+              "subtitle": "Fondations · Module 1 · Leçon 1",
+              "mascot_pose": "curious",
+              "mascot_line": "Avant d'écrire à qui que ce soit, il faut savoir à qui on parle.",
+              "objectives": [
+                "Comprendre la différence entre inbound et outbound",
+                "Identifier quand l'outbound est pertinent",
+                "Connaître les 3 erreurs de débutant"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "L'outbound, c'est quoi ?",
+                  "body_md": "L'**outbound** consiste à aller **chercher** ses clients\nplutôt qu'à attendre qu'ils viennent (inbound).\n\nEn B2B, c'est souvent le canal le plus fiable pour\n**démarrer** : on ne dépend pas encore de sa notoriété\npour générer des conversations.\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "À retenir",
+                    "text": "Outbound = aller chercher. Inbound = attirer."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Quand l'outbound est pertinent",
+                  "body_md": "L'outbound est particulièrement efficace quand :\n\n1. **Vous démarrez** — peu de trafic entrant.\n2. **Votre marché est étroit** — peu de cibles, elles ne\n   se manifesteront pas toutes seules.\n3. **Votre panier est élevé** — chaque conversation vaut\n   de l'or.\n\nIl est en revanche inefficace quand votre produit est\ntrès grand public, ou quand vous ciblez des millions\nd'utilisateurs en libre-service.\n",
+                  "quote": {
+                    "text": "Personne n'achète votre produit juste parce qu'il existe.",
+                    "author": "Règle d'or B2B"
+                  }
+                },
+                {
+                  "id": "t3",
+                  "title": "Les 3 erreurs de débutant",
+                  "body_md": "- **Parler de son produit** au lieu du problème client.\n- **Écrire à tout le monde** au lieu de cibler son ICP.\n- **Envoyer en masse** au lieu de personnaliser.\n\nLe reste du programme va démonter chaque erreur une par\nune.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m1-l1-ex1",
+                  "kind": "mcq",
+                  "prompt": "Quelle affirmation décrit le mieux la prospection outbound ?",
+                  "explanation_md": "L'outbound consiste à **aller chercher** activement les\nclients plutôt qu'à attendre qu'ils viennent à nous.\n",
+                  "xp": 10,
+                  "difficulty": 1,
+                  "concepts": ["prospection_definition"],
+                  "payload": {
+                    "options": [
+                      "Attendre que les clients nous contactent",
+                      "Aller chercher activement des clients potentiels",
+                      "Publier du contenu pour améliorer son référencement",
+                      "Acheter une liste d'emails en masse"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m1-l1-ex2",
+                  "kind": "fill_blank",
+                  "prompt": "L'______ va chercher les clients ; l'______ les attend.",
+                  "explanation_md": "Outbound = aller chercher. Inbound = attirer / attendre.\n",
+                  "xp": 15,
+                  "difficulty": 1,
+                  "concepts": ["inbound_outbound"],
+                  "payload": {
+                    "blanks": [
+                      { "correct": ["outbound"] },
+                      { "correct": ["inbound"] }
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m1-l1-ex3",
+                  "kind": "multi_select",
+                  "prompt": "Sélectionnez les situations où l'outbound est pertinent.",
+                  "explanation_md": "L'outbound brille quand le marché est étroit, le panier\nélevé, ou qu'on démarre sans trafic entrant.\n",
+                  "xp": 15,
+                  "difficulty": 2,
+                  "concepts": ["prospection_definition"],
+                  "payload": {
+                    "options": [
+                      "Vous démarrez votre produit et avez peu de trafic",
+                      "Votre marché cible compte 200 entreprises",
+                      "Votre produit est un jeu mobile grand public",
+                      "Votre panier moyen dépasse 10 000 €",
+                      "Vous ciblez 1 million d'utilisateurs en libre-service"
+                    ],
+                    "correct": [0, 1, 3]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-why-prospection",
+                "title": "Identifier 3 signaux d'achat chez vos cibles",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la page **Entreprises** et\nparcourez 3 entreprises qui ressemblent à votre ICP.\n\nPour chacune, notez dans la fiche un signal d'achat que\nvous identifiez (levée de fonds, recrutement, lancement\nproduit, changement de direction…).\n",
+                "target": {
+                  "route": "/app/companies",
+                  "cta": "Voir mes entreprises"
+                },
+                "validation": {
+                  "trigger": "company.viewed",
+                  "conditions": [
+                    { "path": "company.count", "op": ">=", "value": 3 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Bravo ! Tu commences à repérer ce qui bouge chez tes cibles."
+                },
+                "on_failure": {
+                  "feedback_md": "Il te faut au moins 3 entreprises consultées.",
+                  "hint_md": "Va dans **Entreprises**, ouvre la liste, et parcours-en 3."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "prospection_definition",
+              "front": "Que signifie « prospection outbound » ?",
+              "back": "Aller chercher activement des clients, plutôt que d'attendre qu'ils viennent (inbound)."
+            },
+            {
+              "concept": "inbound_outbound",
+              "front": "Quelle est la différence entre inbound et outbound ?",
+              "back": "Inbound = attirer (contenu, SEO). Outbound = aller chercher (email, LinkedIn, appel)."
+            }
+          ]
+        },
+        {
+          "id": "p1-m1-l2-inbound-vs-outbound",
+          "order": 2,
+          "slug": "inbound-vs-outbound",
+          "title": "Inbound vs Outbound",
+          "subtitle": "Choisir la bonne approche selon le contexte",
+          "duration_min": 6,
+          "difficulty": 1,
+          "xp_total": 100,
+          "concepts": ["inbound_outbound"],
+          "skills": ["stratégie"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m1-l1-why-prospection"],
+            "required_concept_ids": []
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m2-l1-icp-basics"]
+          },
+          "rewards": {
+            "xp": 80,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Inbound vs Outbound",
+              "subtitle": "Fondations · Module 1 · Leçon 2",
+              "mascot_pose": "thinking",
+              "mascot_line": "Les deux approches ne s'opposent pas — elles se complètent.",
+              "objectives": [
+                "Comparer les deux approches",
+                "Savoir quand utiliser l'une ou l'autre",
+                "Combiner les deux pour un pipeline solide"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Tableau comparatif",
+                  "body_md": "| Critère | Inbound | Outbound |\n|---|---|---|\n| Principe | Attirer | Aller chercher |\n| Délai | Long (3-12 mois) | Court (jours) |\n| Coût initial | Élevé (contenu, SEO) | Faible |\n| Prévisibilité | Faible | Élevée |\n| Effet d'échelle | Fort | Limité par la qualité |\n",
+                  "callout": {
+                    "tone": "info",
+                    "text": "En B2B, les deux se combinent — l'outbound génère les premières conversations, l'inbound les amplifie."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les 5 canaux de prospection B2B",
+                  "body_md": "1. **Email** — scalable, mais saturé.\n2. **LinkedIn** — réseau, crédibilité, DM.\n3. **Téléphone** — direct, puissant en haut de gamme.\n4. **Événements** — rencontres à forte valeur.\n5. **Recommandation** — la plus efficace, la plus lente.\n\nChaque canal a ses forces. Le bon prospecteur **combine**.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m1-l2-ex1",
+                  "kind": "match_pairs",
+                  "prompt": "Associez chaque canal à sa principale caractéristique.",
+                  "explanation_md": "Chaque canal a un profil distinct — les combiner maximise\nles chances d'atteindre la cible.\n",
+                  "xp": 15,
+                  "difficulty": 2,
+                  "concepts": ["channels"],
+                  "payload": {
+                    "pairs": [
+                      { "left": "Email", "right": "Scalable mais saturé" },
+                      { "left": "LinkedIn", "right": "Crédibilité + réseau" },
+                      { "left": "Téléphone", "right": "Direct et puissant en haut de gamme" },
+                      { "left": "Événements", "right": "Rencontres à forte valeur" },
+                      { "left": "Recommandation", "right": "Plus efficace mais plus lente" }
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m1-l2-ex2",
+                  "kind": "order_steps",
+                  "prompt": "Remettez les étapes d'une stratégie mixte dans l'ordre logique.",
+                  "explanation_md": "On pose d'abord les fondations (ICP), on identifie les\ncibles (signaux), on choisit un canal pour attaquer, puis\non amplifie avec les autres canaux.\n",
+                  "xp": 15,
+                  "difficulty": 2,
+                  "concepts": ["channels"],
+                  "payload": {
+                    "steps": [
+                      "Définir son ICP",
+                      "Repérer les signaux d'achat",
+                      "Attaquer par un canal principal",
+                      "Amplifier avec les canaux complémentaires",
+                      "Mesurer et itérer"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-pick-channel",
+                "title": "Choisir votre canal principal",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la page **Séquences** et créez\nune séquence **brouillon** nommée « Mon canal principal ».\n\nDans la description, indiquez en une phrase le canal que\nvous voulez tester en premier (email, LinkedIn, téléphone)\net pourquoi.\n",
+                "target": {
+                  "route": "/app/sequences/new",
+                  "cta": "Créer une séquence"
+                },
+                "validation": {
+                  "trigger": "sequence.created",
+                  "conditions": [
+                    { "path": "sequence.name", "op": "contains", "value": "Mon canal principal" }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Premier canal choisi — reste plus qu'à l'exploiter."
+                },
+                "on_failure": {
+                  "feedback_md": "La séquence doit s'appeler « Mon canal principal ».",
+                  "hint_md": "Va dans **Séquences → Nouvelle**, remplis le nom et crée."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "channels",
+              "front": "Citez 3 canaux de prospection B2B et une force de chacun.",
+              "back": "Email (scalable), LinkedIn (crédibilité), Téléphone (direct et haut de gamme)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p1-m2",
+      "order": 2,
+      "title": "ICP et personas",
+      "description": "Savoir à qui on parle, précisément.",
+      "prerequisites": {
+        "previous_module_ids": ["p1-m1"],
+        "required_concept_ids": ["inbound_outbound"]
+      },
+      "lessons": [
+        {
+          "id": "p1-m2-l1-icp-basics",
+          "order": 1,
+          "slug": "icp-basics",
+          "title": "Définir son ICP",
+          "subtitle": "L'entreprise idéale, sur le papier",
+          "duration_min": 8,
+          "difficulty": 2,
+          "xp_total": 130,
+          "concepts": ["icp_definition"],
+          "skills": ["stratégie"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m1-l2-inbound-vs-outbound"],
+            "required_concept_ids": []
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m2-l2-icp-vs-persona"]
+          },
+          "rewards": {
+            "xp": 100,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Définir son ICP",
+              "subtitle": "Fondations · Module 2 · Leçon 1",
+              "mascot_pose": "curious",
+              "mascot_line": "Un ICP flou = une prospection floue.",
+              "objectives": [
+                "Comprendre ce qu'est un ICP",
+                "Construire un ICP en 5 critères",
+                "Identifier les faux amis (grands comptes « tentants »)"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "L'ICP en une phrase",
+                  "body_md": "L'**ICP** (Ideal Customer Profile) est le **profil\nd'entreprise** qui tire le plus de valeur de votre\nproduit, et à qui vous apportez le plus de valeur en\nretour.\n\nUn bon ICP tient en **5 lignes maximum**. S'il vous\nfaut 3 paragraphes, c'est qu'il n'est pas encore clair.\n",
+                  "callout": {
+                    "tone": "warning",
+                    "title": "Attention",
+                    "text": "Un ICP trop large (« toutes les entreprises B2B ») ne sert à rien. Il doit **exclure** autant qu'il inclut."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les 5 critères d'un bon ICP",
+                  "body_md": "1. **Secteur** — industrie précise, code NAF ou équivalent.\n2. **Taille** — effectif et/ou chiffre d'affaires.\n3. **Géographie** — pays, région, langue.\n4. **Maturité technologique** — outils déjà utilisés.\n5. **Signal structurel** — un événement qui rend le besoin\n   actuel (levée, recrutement, expansion…).\n",
+                  "visual": {
+                    "kind": "comparison",
+                    "alt": "Deux ICP — un flou vs un précis",
+                    "caption": "Un ICP trop large dilue l'effort ; un ICP précis concentre la valeur."
+                  }
+                },
+                {
+                  "id": "t3",
+                  "title": "Les faux amis",
+                  "body_md": "Certains comptes semblent idéaux (grand nom, gros budget)\nmais **ne sont pas votre ICP** :\n\n- Ils n'ont pas le problème que vous résolvez.\n- Le cycle de vente est 10× plus long que votre capacité.\n- Ils achètent uniquement à des fournisseurs certifiés.\n\nDire **non** à un faux ami, c'est dire **oui** au temps\ninvesti sur un vrai.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m2-l1-ex1",
+                  "kind": "mcq",
+                  "prompt": "Qu'est-ce qu'un ICP ?",
+                  "explanation_md": "L'ICP est le **profil d'entreprise** idéal — pas une\npersonne (c'est le persona), ni une liste de contacts.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["icp_definition"],
+                  "payload": {
+                    "options": [
+                      "Une personne décisionnaire dans une entreprise",
+                      "Le profil d'entreprise idéal que l'on veut cibler",
+                      "Une liste d'emails achetée sur Internet",
+                      "Un segment marketing large et indifférencié"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m2-l1-ex2",
+                  "kind": "fill_blank",
+                  "prompt": "Un bon ICP tient en ______ lignes maximum.",
+                  "explanation_md": "Un ICP trop long est un signe qu'il n'est pas encore\nassez clair — il doit pouvoir se formuler en 5 lignes.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["icp_definition"],
+                  "payload": {
+                    "blanks": [{ "correct": ["5", "cinq"] }]
+                  }
+                },
+                {
+                  "id": "p1-m2-l1-ex3",
+                  "kind": "multi_select",
+                  "prompt": "Quels sont les critères typiques d'un bon ICP ?",
+                  "explanation_md": "Les 5 critères : secteur, taille, géographie, maturité\ntech, signal structurel.\n",
+                  "xp": 20,
+                  "difficulty": 3,
+                  "concepts": ["icp_definition"],
+                  "payload": {
+                    "options": [
+                      "Secteur d'activité",
+                      "Taille (effectif ou chiffre d'affaires)",
+                      "Géographie",
+                      "Nombre de followers du CEO sur Twitter",
+                      "Maturité technologique",
+                      "Signal structurel (levée, recrutement…)"
+                    ],
+                    "correct": [0, 1, 2, 4, 5]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-define-icp",
+                "title": "Rédiger votre premier ICP",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la page **Entreprises** et\najoutez 3 entreprises qui correspondent à votre ICP.\n\nPour chacune, renseignez les critères : secteur, taille,\nlocalisation. Vous construisez, dans les faits, votre\npremier ICP.\n",
+                "target": {
+                  "route": "/app/companies/new",
+                  "cta": "Ajouter une entreprise"
+                },
+                "validation": {
+                  "trigger": "company.created",
+                  "conditions": [
+                    { "path": "company.count", "op": ">=", "value": 3 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Ton ICP prend forme — continue à l'affiner.",
+                  "unlocks_avatar_ids": ["eagle"]
+                },
+                "on_failure": {
+                  "feedback_md": "Il te manque au moins 3 entreprises créées.",
+                  "hint_md": "Va dans **Entreprises → Nouvelle** et ajoute 3 profils."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "icp_definition",
+              "front": "Qu'est-ce qu'un ICP ?",
+              "back": "Ideal Customer Profile : le profil d'entreprise idéal que l'on cible (secteur, taille, géo, maturité tech, signal)."
+            }
+          ]
+        },
+        {
+          "id": "p1-m2-l2-icp-vs-persona",
+          "order": 2,
+          "slug": "icp-vs-persona",
+          "title": "ICP vs Persona",
+          "subtitle": "Entreprise et personne — deux niveaux",
+          "duration_min": 7,
+          "difficulty": 2,
+          "xp_total": 110,
+          "concepts": ["icp_vs_persona", "buyer_journey"],
+          "skills": ["stratégie", "communication"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m2-l1-icp-basics"],
+            "required_concept_ids": ["icp_definition"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m3-l1-signals-basics"]
+          },
+          "rewards": {
+            "xp": 90,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "ICP vs Persona",
+              "subtitle": "Fondations · Module 2 · Leçon 2",
+              "mascot_pose": "thinking",
+              "mascot_line": "L'entreprise n'achète pas. La personne, si.",
+              "objectives": [
+                "Distinguer clairement ICP et persona",
+                "Identifier les personas dans un compte cible",
+                "Comprendre le parcours d'achat B2B"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "ICP = entreprise ; Persona = personne",
+                  "body_md": "- **ICP** — quelle entreprise viser ?\n- **Persona** — quelle personne dans cette entreprise ?\n\nUn même ICP contient souvent **plusieurs personas** :\nle décideur économique (achète), l'utilisateur (utilise),\nle champion (pousse le projet en interne).\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "Astuce",
+                    "text": "Adaptez votre discours au persona. Le CTO veut de la robustesse, le CFO veut du ROI."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les 4 personas classiques en B2B",
+                  "body_md": "1. **Champion** — utilise le produit, veut le faire adopter.\n2. **Décideur** — signe le chèque, arbitre les budgets.\n3. **Utilisateur** — subit la solution au quotidien.\n4. **Bloqueur** — sécurité, juridique, DSI : peut tout\n   arrêter.\n\nLe champion est votre allié : c'est lui qui vend\n**en interne** quand vous n'êtes pas dans la salle.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Le parcours d'achat B2B",
+                  "body_md": "1. **Prise de conscience** — le problème existe.\n2. **Recherche** — exploration de solutions.\n3. **Comparaison** — short-list, démos, tests.\n4. **Décision** — signature ou refus.\n5. **Adoption** — onboarding, extension.\n\nChaque étape a ses propres signaux. Les bons\nprospecteurs **calibrent** leur approche selon l'étape.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m2-l2-ex1",
+                  "kind": "mcq",
+                  "prompt": "Quelle est la différence entre ICP et persona ?",
+                  "explanation_md": "L'ICP est le **profil d'entreprise** ; le persona est\nla **personne** dans cette entreprise.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["icp_vs_persona"],
+                  "payload": {
+                    "options": [
+                      "L'ICP est une personne, le persona est une entreprise",
+                      "L'ICP est une entreprise, le persona est une personne",
+                      "Les deux désignent la même chose",
+                      "L'ICP est un marché, le persona est un produit"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m2-l2-ex2",
+                  "kind": "match_pairs",
+                  "prompt": "Associez chaque persona à son rôle dans l'achat.",
+                  "explanation_md": "Chaque persona joue un rôle distinct — les confondre\nmène à des discours mal ciblés.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["icp_vs_persona"],
+                  "payload": {
+                    "pairs": [
+                      { "left": "Champion", "right": "Pousse le projet en interne" },
+                      { "left": "Décideur", "right": "Signe le contrat et alloue le budget" },
+                      { "left": "Utilisateur", "right": "Utilise le produit au quotidien" },
+                      { "left": "Bloqueur", "right": "Peut arrêter le projet (sécurité, juridique)" }
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m2-l2-ex3",
+                  "kind": "order_steps",
+                  "prompt": "Remettez le parcours d'achat B2B dans le bon ordre.",
+                  "explanation_md": "Le cycle B2B suit cinq étapes canoniques, de la prise de\nconscience jusqu'à l'adoption.\n",
+                  "xp": 15,
+                  "difficulty": 2,
+                  "concepts": ["buyer_journey"],
+                  "payload": {
+                    "steps": [
+                      "Prise de conscience",
+                      "Recherche",
+                      "Comparaison",
+                      "Décision",
+                      "Adoption"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-map-personas",
+                "title": "Mapper 2 personas sur une entreprise cible",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la fiche d'une entreprise\n(que vous avez créée ou importée), puis ajoutez **2\nprospects** issus de cette entreprise.\n\nChoisissez deux personas différents : par exemple un\ndécideur (CEO, CTO) et un utilisateur (Lead, Manager).\n",
+                "target": {
+                  "route": "/app/people/new",
+                  "cta": "Ajouter un prospect"
+                },
+                "validation": {
+                  "trigger": "lead.created",
+                  "conditions": [
+                    { "path": "lead.count", "op": ">=", "value": 2 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Deux personas — tu commences à raisonner en interne."
+                },
+                "on_failure": {
+                  "feedback_md": "Il te faut au moins 2 prospects créés.",
+                  "hint_md": "Va dans **Prospects → Nouveau** et crée 2 profils."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "icp_vs_persona",
+              "front": "Quelle est la différence entre ICP et Persona ?",
+              "back": "ICP = profil d'entreprise. Persona = personne dans cette entreprise (champion, décideur, utilisateur, bloqueur)."
+            },
+            {
+              "concept": "buyer_journey",
+              "front": "Citez les 5 étapes du parcours d'achat B2B.",
+              "back": "Prise de conscience → Recherche → Comparaison → Décision → Adoption."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p1-m3",
+      "order": 3,
+      "title": "Signaux d'achat",
+      "description": "Repérer les moments qui précèdent un achat.",
+      "prerequisites": {
+        "previous_module_ids": ["p1-m2"],
+        "required_concept_ids": ["icp_definition"]
+      },
+      "lessons": [
+        {
+          "id": "p1-m3-l1-signals-basics",
+          "order": 1,
+          "slug": "signals-basics",
+          "title": "Reconnaître les signaux d'achat",
+          "subtitle": "Les moments qui font bouger une cible",
+          "duration_min": 8,
+          "difficulty": 2,
+          "xp_total": 130,
+          "concepts": ["signals"],
+          "skills": ["recherche"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m2-l2-icp-vs-persona"],
+            "required_concept_ids": ["icp_definition"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m3-l2-signals-priority"]
+          },
+          "rewards": {
+            "xp": 100,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Reconnaître les signaux d'achat",
+              "subtitle": "Fondations · Module 3 · Leçon 1",
+              "mascot_pose": "curious",
+              "mascot_line": "Les entreprises ne changent pas par hasard — elles changent sous pression.",
+              "objectives": [
+                "Comprendre ce qu'est un signal d'achat",
+                "Reconnaître les 5 signaux les plus courants",
+                "Éviter les faux signaux"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Qu'est-ce qu'un signal d'achat ?",
+                  "body_md": "Un **signal d'achat** est un événement observable qui\naugmente la **probabilité** qu'une entreprise ait besoin\nde votre produit **maintenant**.\n\nUn signal n'est pas une preuve, c'est un **indice de\ntiming**. Il vous dit *quand* appuyer sur la détente.\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "À retenir",
+                    "text": "Signaux = timing. ICP = cible. Les deux ensemble = priorisation."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les 5 signaux les plus forts en B2B",
+                  "body_md": "1. **Levée de fonds** — budget disponible, croissance à\n   absorber.\n2. **Recrutement C-level ou massif** — nouveaux objectifs,\n   nouveaux outils.\n3. **Lancement produit / expansion géographique** —\n   besoin de traction commerciale.\n4. **Changement de direction** — nouveau dirigeant, nouvelle\n   stratégie.\n5. **Mise en conformité réglementaire** — obligation\n   externe qui force l'achat.\n",
+                  "quote": {
+                    "text": "Le bon timing fait 80 % du travail.",
+                    "author": "Règle d'or B2B"
+                  }
+                },
+                {
+                  "id": "t3",
+                  "title": "Les faux signaux",
+                  "body_md": "Certains événements **ressemblent** à des signaux mais\nn'en sont pas :\n\n- Une publication LinkedIn générique du CEO.\n- Un changement de logo ou de site web.\n- Une nouvelle page « Carrières » vide.\n\nCes événements sont **visibles** mais ne signalent pas un\nbudget ni un besoin actuel. À ignorer dans la priorisation.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m3-l1-ex1",
+                  "kind": "mcq",
+                  "prompt": "Quel événement est un signal d'achat fort en B2B ?",
+                  "explanation_md": "Un **recrutement C-level** signale un changement\nd'objectifs et souvent un nouveau budget. Une publication\nLinkedIn générique, non.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["signals"],
+                  "payload": {
+                    "options": [
+                      "Une publication générique du CEO sur LinkedIn",
+                      "Un recrutement C-level (nouveau CTO, CPO…)",
+                      "Une mise à jour du logo",
+                      "Une nouvelle page « Carrières » vide"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m3-l1-ex2",
+                  "kind": "multi_select",
+                  "prompt": "Sélectionnez les signaux d'achat **forts** en B2B.",
+                  "explanation_md": "Levée de fonds, recrutement C-level, lancement produit,\nexpansion géo, conformité réglementaire — tous signalent\nun budget et un besoin à court terme.\n",
+                  "xp": 20,
+                  "difficulty": 3,
+                  "concepts": ["signals"],
+                  "payload": {
+                    "options": [
+                      "Levée de fonds",
+                      "Recrutement C-level",
+                      "Changement de logo",
+                      "Lancement d'un nouveau produit",
+                      "Mise en conformité réglementaire",
+                      "Post viré sur les réseaux sociaux"
+                    ],
+                    "correct": [0, 1, 3, 4]
+                  }
+                },
+                {
+                  "id": "p1-m3-l1-ex3",
+                  "kind": "free_text",
+                  "prompt": "En 2-3 phrases, expliquez pourquoi un signal d'achat\nest plus utile qu'un simple critère ICP statique.\n",
+                  "explanation_md": "L'ICP dit **qui** cibler. Le signal dit **quand**.\nCombinés, ils multiplient l'efficacité de la prospection.\n",
+                  "xp": 25,
+                  "difficulty": 3,
+                  "concepts": ["signals"],
+                  "payload": {
+                    "min_words": 20,
+                    "max_words": 120,
+                    "rubric_md": "La réponse doit mentionner :\n- le timing (quand agir) ;\n- la notion de probabilité accrue ;\n- la complémentarité avec l'ICP.\n",
+                    "expected_keywords": ["timing", "quand", "probabilité", "ICP", "complémentaire"]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-spot-signal",
+                "title": "Repérer un signal d'achat sur une cible",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la fiche d'un prospect et\nremplissez le champ **Signal**.\n\nDécrivez en une phrase le signal que vous avez identifié\nchez cette cible (levée, recrutement, lancement…).\n",
+                "target": {
+                  "route": "/app/people",
+                  "cta": "Voir mes prospects"
+                },
+                "validation": {
+                  "trigger": "lead.updated",
+                  "conditions": [
+                    { "path": "lead.signal", "op": "is_not_empty" }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Un signal repéré = un angle d'attaque."
+                },
+                "on_failure": {
+                  "feedback_md": "Le champ Signal d'un prospect est vide.",
+                  "hint_md": "Ouvre une fiche prospect et remplis le champ **Signal**."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "signals",
+              "front": "Qu'est-ce qu'un signal d'achat en B2B ?",
+              "back": "Un événement observable qui augmente la probabilité qu'une entreprise ait besoin de votre produit maintenant (levée, recrutement C-level, lancement…)."
+            }
+          ]
+        },
+        {
+          "id": "p1-m3-l2-signals-priority",
+          "order": 2,
+          "slug": "signals-priority",
+          "title": "Prioriser les signaux",
+          "subtitle": "Tous les signaux ne se valent pas",
+          "duration_min": 7,
+          "difficulty": 3,
+          "xp_total": 110,
+          "concepts": ["signals", "signals_priority"],
+          "skills": ["stratégie", "analyse"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m3-l1-signals-basics"],
+            "required_concept_ids": ["signals"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m4-l1-channels-overview"]
+          },
+          "rewards": {
+            "xp": 90,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Prioriser les signaux",
+              "subtitle": "Fondations · Module 3 · Leçon 2",
+              "mascot_pose": "thinking",
+              "mascot_line": "Mieux vaut 10 bons signaux que 100 tièdes.",
+              "objectives": [
+                "Comprendre la notion de force de signal",
+                "Classer 3 niveaux : chaud, tiède, froid",
+                "Savoir où investir son temps"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Les 3 niveaux de signal",
+                  "body_md": "- **Chaud** — l'événement force presque l'achat\n  (levée + expansion, conformité réglementaire, nouveau\n  dirigeant en phase de refonte).\n- **Tiède** — l'événement crée une fenêtre\n  (recrutement C-level, lancement produit).\n- **Froid** — l'événement ne change rien au besoin\n  (post LinkedIn générique, refonte graphique).\n\nOn **concentre l'effort** sur les signaux chauds et\ntièdes — les froids attendent.\n",
+                  "callout": {
+                    "tone": "warning",
+                    "title": "Erreur classique",
+                    "text": "Traiter tous les signaux avec la même énergie dilue votre efficacité. Priorisez sans pitié."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "La règle 80/20 du signal",
+                  "body_md": "En prospection, **20 % des signaux** génèrent\n**80 % des conversations qualifiées**.\n\nCes 20 % sont presque toujours des signaux :\n\n- **Financiers** (levée, rachat).\n- **Humains** (recrutement C-level).\n- **Structurels** (expansion, nouveau marché).\n\nLe reste (posts, refontes) est à archiver pour plus tard.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m3-l2-ex1",
+                  "kind": "mcq",
+                  "prompt": "Quel signal est le plus chaud ?",
+                  "explanation_md": "Une levée de fonds suivie d'une expansion géographique\ncombine deux signaux majeurs : budget disponible +\nbesoin de traction. C'est le plus chaud des trois.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["signals_priority"],
+                  "payload": {
+                    "options": [
+                      "Nouveau post LinkedIn du CEO",
+                      "Levée de fonds + expansion géographique",
+                      "Refonte du site web",
+                      "Publication d'un communiqué annuel"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m3-l2-ex2",
+                  "kind": "order_steps",
+                  "prompt": "Classez ces signaux du plus chaud au plus froid.",
+                  "explanation_md": "Conformité réglementaire (obligation) > levée (budget) >\nrecrutement C-level (nouveaux objectifs) > post LinkedIn\ngénérique (bruit).\n",
+                  "xp": 20,
+                  "difficulty": 4,
+                  "concepts": ["signals_priority"],
+                  "payload": {
+                    "steps": [
+                      "Mise en conformité réglementaire",
+                      "Levée de fonds",
+                      "Recrutement C-level",
+                      "Post LinkedIn générique"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-prioritize-signals",
+                "title": "Prioriser 3 prospects par signal",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la page **Prospects** et\nattribuez un **score** aux 3 prospects que vous avez\nidentifiés.\n\nPlus le signal est chaud, plus le score doit être élevé\n(≥ 8 pour les signaux chauds, 5-7 pour les tièdes).\n",
+                "target": {
+                  "route": "/app/people",
+                  "cta": "Voir mes prospects"
+                },
+                "validation": {
+                  "trigger": "lead.updated",
+                  "conditions": [
+                    { "path": "lead.count_scored", "op": ">=", "value": 3 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Prioriser, c'est gagner du temps sur les bonnes cibles."
+                },
+                "on_failure": {
+                  "feedback_md": "Il te manque au moins 3 prospects scorés.",
+                  "hint_md": "Va dans **Prospects**, ouvre 3 fiches et renseigne le score."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "signals_priority",
+              "front": "Comment classer les signaux d'achat ?",
+              "back": "3 niveaux : chaud (force l'achat), tiède (crée une fenêtre), froid (n'affecte pas le besoin). Concentrer l'effort sur les chauds et tièdes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p1-m4",
+      "order": 4,
+      "title": "Canaux et posture",
+      "description": "Choisir son canal et adopter le bon ton.",
+      "prerequisites": {
+        "previous_module_ids": ["p1-m3"],
+        "required_concept_ids": ["signals"]
+      },
+      "lessons": [
+        {
+          "id": "p1-m4-l1-channels-overview",
+          "order": 1,
+          "slug": "channels-overview",
+          "title": "Vue d'ensemble des canaux",
+          "subtitle": "Forces et limites de chaque canal",
+          "duration_min": 8,
+          "difficulty": 2,
+          "xp_total": 120,
+          "concepts": ["channels"],
+          "skills": ["stratégie"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m3-l2-signals-priority"],
+            "required_concept_ids": ["signals"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m4-l2-tone-posture"]
+          },
+          "rewards": {
+            "xp": 100,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Vue d'ensemble des canaux",
+              "subtitle": "Fondations · Module 4 · Leçon 1",
+              "mascot_pose": "curious",
+              "mascot_line": "Chaque canal a sa personnalité — apprenez à les écouter.",
+              "objectives": [
+                "Connaître les 4 canaux principaux",
+                "Comprendre forces et limites de chacun",
+                "Savoir combiner les canaux"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Les 4 canaux principaux",
+                  "body_md": "- **Email** — scalable, mesurable, mais saturé.\n- **LinkedIn** — crédibilité, réseau, DM puissants.\n- **Téléphone** — direct, haut de gamme, exigeant.\n- **Événements** — rencontres à très forte valeur.\n\nIl n'y a pas de « meilleur canal » universel : il y a un\ncanal **adapté à votre cible et à votre panier**.\n",
+                  "callout": {
+                    "tone": "info",
+                    "text": "Un fondateur solo privilégie LinkedIn. Une équipe avec SDR, l'email. Un CEO qui vend à des CEO, le téléphone."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "La règle de la combinaison",
+                  "body_md": "Les meilleurs pipelines B2B combinent **2 à 3 canaux**\nautour du même prospect :\n\n- Un email personnalisé après un like.\n- Un appel après une visite de page tarifs.\n- Une connexion LinkedIn après une réponse email.\n\nLa **cohérence** entre canaux multiplie la crédibilité.\n",
+                  "quote": {
+                    "text": "Le prospect doit vous croiser trois fois avant de répondre.",
+                    "author": "Principe de fréquence"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m4-l1-ex1",
+                  "kind": "match_pairs",
+                  "prompt": "Associez chaque canal à son avantage principal.",
+                  "explanation_md": "Email = scalable. LinkedIn = crédibilité. Téléphone =\ndirect. Événements = rencontre à forte valeur.\n",
+                  "xp": 15,
+                  "difficulty": 2,
+                  "concepts": ["channels"],
+                  "payload": {
+                    "pairs": [
+                      { "left": "Email", "right": "Scalable et mesurable" },
+                      { "left": "LinkedIn", "right": "Crédibilité et réseau" },
+                      { "left": "Téléphone", "right": "Direct et puissant haut de gamme" },
+                      { "left": "Événements", "right": "Rencontres à très forte valeur" }
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m4-l1-ex2",
+                  "kind": "mcq",
+                  "prompt": "Combien de canaux combine typiquement une bonne séquence B2B ?",
+                  "explanation_md": "Les meilleurs pipelines combinent **2 à 3 canaux**\nautour du même prospect pour maximiser la crédibilité.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["channels"],
+                  "payload": {
+                    "options": [
+                      "Un seul, pour rester concentré",
+                      "2 à 3, en cohérence",
+                      "5 ou plus, pour multiplier les touches",
+                      "Aucun, la prospection est passive"
+                    ],
+                    "correct": 1
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-combine-channels",
+                "title": "Combiner 2 canaux sur une séquence",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la page **Séquences** et\néditez la séquence que vous avez créée précédemment.\n\nAjoutez au moins **2 étapes de types différents** (par\nexemple email + LinkedIn) dans la séquence.\n",
+                "target": {
+                  "route": "/app/sequences",
+                  "cta": "Voir mes séquences"
+                },
+                "validation": {
+                  "trigger": "sequence.updated",
+                  "conditions": [
+                    { "path": "sequence.steps_count", "op": ">=", "value": 2 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Deux canaux, c'est déjà une vraie séquence."
+                },
+                "on_failure": {
+                  "feedback_md": "La séquence doit contenir au moins 2 étapes.",
+                  "hint_md": "Édite ta séquence et ajoute une 2e étape (email + LinkedIn)."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "channels",
+              "front": "Citez 4 canaux de prospection B2B et un avantage de chacun.",
+              "back": "Email (scalable), LinkedIn (crédibilité), Téléphone (direct, haut de gamme), Événements (rencontres à forte valeur)."
+            }
+          ]
+        },
+        {
+          "id": "p1-m4-l2-tone-posture",
+          "order": 2,
+          "slug": "tone-posture",
+          "title": "Le ton et la posture B2B",
+          "subtitle": "Direct, professionnel, orienté problème",
+          "duration_min": 8,
+          "difficulty": 2,
+          "xp_total": 130,
+          "concepts": ["tone_b2b"],
+          "skills": ["communication"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m4-l1-channels-overview"],
+            "required_concept_ids": ["channels"]
+          },
+          "unlocks": {
+            "lesson_ids": []
+          },
+          "rewards": {
+            "xp": 100,
+            "hearts_refund": 0
+          },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Le ton et la posture B2B",
+              "subtitle": "Fondations · Module 4 · Leçon 2",
+              "mascot_pose": "happy",
+              "mascot_line": "Parlez comme un pair, pas comme un vendeur.",
+              "objectives": [
+                "Adopter le ton B2B juste",
+                "Éviter les 4 erreurs de ton",
+                "Structurer un premier message efficace"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Le ton B2B, en 3 principes",
+                  "body_md": "1. **Direct** — pas de bavardage, pas de « J'espère que\n   vous allez bien ».\n2. **Professionnel** — pas de tutoiement non sollicité,\n   pas d'émojis, pas de « nous sommes ravis ».\n3. **Orienté problème client** — on parle du **problème**\n   du prospect avant de parler du produit.\n",
+                  "callout": {
+                    "tone": "success",
+                    "title": "Règle d'or",
+                    "text": "Vous parlez à un pair, pas à un prospect. Traitez-le comme un collègue qui pourrait vous aider."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les 4 erreurs de ton",
+                  "body_md": "- **Trop commercial** — « Nous sommes leader sur le\n  marché ». Personne ne s'en soucie.\n- **Trop familier** — « Salut, ça gaze ? ». Le B2B reste\n  formel tant que la relation n'est pas établie.\n- **Trop long** — Plus de 3 paragraphes = ignoré.\n- **Trop vague** — « On aide les entreprises à se\n  développer ». Vous aidez qui, comment ?\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "La structure d'un premier message",
+                  "body_md": "1. **Contexte personnalisé** — 1 phrase sur le prospect.\n2. **Problème** — le problème que vous adressez.\n3. **Preuve** — 1 chiffre, 1 client, 1 résultat.\n4. **CTA faible** — une question fermée, pas une demande\n   de RDV.\n\nCette structure tient en **5 lignes maximum**.\n",
+                  "visual": {
+                    "kind": "mini_case_study",
+                    "alt": "Exemple d'email B2B court",
+                    "caption": "Un bon premier email tient en 5 lignes et pose une seule question."
+                  }
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m4-l2-ex1",
+                  "kind": "mcq",
+                  "prompt": "Quel est le bon ton pour un premier email B2B ?",
+                  "explanation_md": "Le ton B2B est **direct, professionnel, orienté\nproblème client** — pas commercial ni familier.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["tone_b2b"],
+                  "payload": {
+                    "options": [
+                      "Familier et décontracté",
+                      "Direct, professionnel, orienté problème client",
+                      "Commercial, avec beaucoup de superlatifs",
+                      "Long et détaillé pour montrer son expertise"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m4-l2-ex2",
+                  "kind": "order_steps",
+                  "prompt": "Remettez la structure d'un premier message dans le bon ordre.",
+                  "explanation_md": "Contexte → Problème → Preuve → CTA. Cet ordre respecte\nla logique de lecture du prospect.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["tone_b2b"],
+                  "payload": {
+                    "steps": [
+                      "Contexte personnalisé (1 phrase)",
+                      "Problème adressé",
+                      "Preuve (chiffre, client, résultat)",
+                      "CTA faible (question fermée)"
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m4-l2-ex3",
+                  "kind": "fill_blank",
+                  "prompt": "Un bon premier message B2B tient en ______ lignes maximum.",
+                  "explanation_md": "Au-delà de 5 lignes, le message n'est plus lu — le\nprospect décroche à la 3e phrase.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["tone_b2b"],
+                  "payload": {
+                    "blanks": [{ "correct": ["5", "cinq"] }]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-first-email",
+                "title": "Rédiger votre premier email B2B",
+                "brief_md": "Dans l'app LeadCortex, ouvrez la page **Emails** et\nrédigez un premier email à destination d'un de vos\nprospects.\n\nRespectez la structure : contexte, problème, preuve, CTA.\nMaximum 5 lignes.\n",
+                "target": {
+                  "route": "/app/emails",
+                  "cta": "Rédiger un email"
+                },
+                "validation": {
+                  "trigger": "email.drafted",
+                  "conditions": [
+                    { "path": "email.body_length", "op": ">=", "value": 50 },
+                    { "path": "email.body_length", "op": "<=", "value": 800 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 60,
+                  "mascot_line": "Premier email rédigé — la posture est en place.",
+                  "badge_ids": ["first-steps"]
+                },
+                "on_failure": {
+                  "feedback_md": "L'email est vide ou trop long (> 800 caractères).",
+                  "hint_md": "Ouvre **Emails → Nouveau**, rédige 5 lignes max."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "tone_b2b",
+              "front": "Quels sont les 3 principes du ton B2B ?",
+              "back": "Direct, professionnel, orienté problème client. Éviter : trop commercial, trop familier, trop long, trop vague."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p1-m5",
+      "order": 5,
+      "chapter": 2,
+      "title": "De la théorie à l'action",
+      "description": "Passer du concept au concret : chercher, créer et qualifier avec les outils LeadCortex.",
+      "prerequisites": {
+        "previous_module_ids": ["p1-m4"],
+        "required_concept_ids": ["tone_b2b"]
+      },
+      "lessons": [
+        {
+          "id": "p1-m5-l1-search-prospect-ai",
+          "order": 1,
+          "slug": "search-prospect-ai",
+          "title": "Rechercher un prospect avec l'IA",
+          "subtitle": "Confier sa cible à l'assistant",
+          "duration_min": 8,
+          "difficulty": 2,
+          "xp_total": 130,
+          "concepts": ["icp_definition", "signals"],
+          "skills": ["recherche"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m4-l2-tone-posture"],
+            "required_concept_ids": ["tone_b2b"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m5-l2-create-target-company"]
+          },
+          "rewards": { "xp": 100, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Rechercher un prospect avec l'IA",
+              "subtitle": "Fondations · Module 5 · Leçon 1",
+              "mascot_pose": "happy",
+              "mascot_line": "Tu n'es plus seul devant la barre de recherche.",
+              "objectives": [
+                "Savoir formuler une requête à l'assistant IA",
+                "Comprendre comment l'IA croise ICP et signaux",
+                "Récupérer une première liste de cibles"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "L'assistant IA, c'est quoi ?",
+                  "body_md": "L'assistant IA est un **copilote intégré** à chaque page de LeadCortex.\n\nOuvre-le en cliquant sur le bandeau vertical **ASSISTANT IA** à droite de l'écran (ou en glissant depuis le bord sur mobile).\n\nTu peux lui demander :\n- de **trouver des prospects**\n- de **qualifier un compte**\n- de **rédiger un message**\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "Astuce",
+                    "text": "L'IA connaît la page sur laquelle tu te trouves. Elle adapte ses réponses au contexte."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Formuler une bonne requête",
+                  "body_md": "Une bonne requête contient **3 éléments** :\n\n1. **Le type de cible** — « des CTO de SaaS B2B »\n2. **Le critère de taille ou de géo** — « entre 20 et 200 salariés, France »\n3. **Le signal ou l'angle** — « qui viennent de lever des fonds »\n\nExemple complet :\n\n> « Trouve-moi 20 CTO de SaaS B2B, 20 à 200 salariés, en France, qui ont levé des fonds ces 6 derniers mois. »\n",
+                  "quote": {
+                    "text": "Ce que tu ne formules pas, l'IA ne le devinera pas.",
+                    "author": "Règle d'or de l'assistant"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m5-l1-ex1",
+                  "kind": "mcq",
+                  "prompt": "Quelle requête est la plus efficace pour l'assistant IA ?",
+                  "explanation_md": "Une bonne requête précise **cible**, **taille** et **signal**.\n",
+                  "xp": 15,
+                  "difficulty": 2,
+                  "concepts": ["icp_definition"],
+                  "payload": {
+                    "options": [
+                      "Trouve-moi des prospects",
+                      "Trouve-moi 20 CTO de SaaS B2B en France qui ont levé des fonds",
+                      "Donne-moi des entreprises",
+                      "Qui peut acheter mon produit ?"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m5-l1-ex2",
+                  "kind": "multi_select",
+                  "prompt": "Quels éléments rendent une requête IA exploitable ?",
+                  "explanation_md": "Type de cible, taille, géographie et signal. Tout le reste est du bruit.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["icp_definition", "signals"],
+                  "payload": {
+                    "options": [
+                      "Le type de cible (poste, secteur)",
+                      "La taille de l'entreprise",
+                      "La géographie",
+                      "Le signal d'achat",
+                      "Le nombre de followers du CEO",
+                      "La couleur préférée du fondateur"
+                    ],
+                    "correct": [0, 1, 2, 3]
+                  }
+                },
+                {
+                  "id": "p1-m5-l1-ex3",
+                  "kind": "fill_blank",
+                  "prompt": "Une requête IA efficace contient la cible, la taille et le ______.",
+                  "explanation_md": "Troisième pilier : le **signal** (levée, recrutement, expansion…).\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["signals"],
+                  "payload": {
+                    "blanks": [
+                      { "correct": ["signal", "signal d'achat", "signal d’achat"] }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-ai-search",
+                "title": "Ouvrir l'assistant et formuler une requête",
+                "brief_md": "Dans l'app LeadCortex, **ouvre l'assistant IA** (bandeau vertical à droite) et demande-lui :\n\n« Trouve-moi 20 prospects qui correspondent à mon ICP. »\n\nGarde la liste pour la leçon suivante.\n",
+                "target": {
+                  "route": "/app/people",
+                  "cta": "Ouvrir la page Prospects"
+                },
+                "validation": {
+                  "trigger": "ai.assistant.opened",
+                  "conditions": [
+                    { "path": "ai.assistant.opened", "op": "==", "value": true }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Première requête envoyée. Tu vas voir, ça change tout."
+                },
+                "on_failure": {
+                  "feedback_md": "L'assistant n'a pas encore été ouvert.",
+                  "hint_md": "Clique sur le bandeau vertical **ASSISTANT IA** à droite de l'écran."
+                },
+                "hint_after_minutes": 3,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "icp_definition",
+              "front": "Que doit contenir une bonne requête à l'assistant IA ?",
+              "back": "Type de cible + taille/géographie + signal d'achat."
+            }
+          ]
+        },
+        {
+          "id": "p1-m5-l2-create-target-company",
+          "order": 2,
+          "slug": "create-target-company",
+          "title": "Créer une entreprise cible",
+          "subtitle": "Remplir proprement la fiche entreprise",
+          "duration_min": 7,
+          "difficulty": 2,
+          "xp_total": 120,
+          "concepts": ["icp_definition"],
+          "skills": ["recherche"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m5-l1-search-prospect-ai"],
+            "required_concept_ids": ["icp_definition"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m5-l3-add-qualify-lead"]
+          },
+          "rewards": { "xp": 100, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Créer une entreprise cible",
+              "subtitle": "Fondations · Module 5 · Leçon 2",
+              "mascot_pose": "curious",
+              "mascot_line": "Une fiche bien remplie vaut dix fiches floues.",
+              "objectives": [
+                "Connaître les 5 champs essentiels d'une entreprise",
+                "Ajouter une entreprise via le formulaire LeadCortex",
+                "Comprendre l'impact sur la qualification automatique"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Les 5 champs essentiels",
+                  "body_md": "Sur chaque entreprise, tu dois renseigner :\n\n1. **Nom** — raison sociale exacte\n2. **Domaine** — `acme.com` (essentiel pour l'enrichissement)\n3. **Secteur** — industrie ou code NAF\n4. **Localisation** — ville + pays\n5. **Effectif** — nombre de salariés (au moins un ordre de grandeur)\n\nCes 5 champs alimentent le **scoring IA** et le **waterfall d'enrichissement**.\n",
+                  "callout": {
+                    "tone": "success",
+                    "title": "Raccourci",
+                    "text": "Sur la page Entreprises → Nouvelle, la barre « Complétion de la fiche » te montre en temps réel si tu as assez rempli pour que l'IA puisse travailler."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "L'IA pré-remplit",
+                  "body_md": "Quand tu tapes un **nom d'entreprise** dans le formulaire, LeadCortex interroge les bases publiques (SIRENE, GLEIF) et **propose automatiquement** le secteur, la localisation et la taille.\n\nTu n'as plus qu'à valider ou corriger. **Gain de temps** : 3 à 5 minutes par fiche.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m5-l2-ex1",
+                  "kind": "multi_select",
+                  "prompt": "Quels champs sont indispensables sur une entreprise ?",
+                  "explanation_md": "Nom, domaine, secteur, localisation, effectif. Le reste est optionnel.\n",
+                  "xp": 15,
+                  "difficulty": 2,
+                  "concepts": ["icp_definition"],
+                  "payload": {
+                    "options": [
+                      "Nom",
+                      "Domaine",
+                      "Secteur",
+                      "Localisation",
+                      "Effectif",
+                      "Couleur du logo",
+                      "Nombre de followers LinkedIn"
+                    ],
+                    "correct": [0, 1, 2, 3, 4]
+                  }
+                },
+                {
+                  "id": "p1-m5-l2-ex2",
+                  "kind": "order_steps",
+                  "prompt": "Remets les étapes de création d'une entreprise dans le bon ordre.",
+                  "explanation_md": "On tape le nom, on laisse l'IA proposer, on complète les champs manquants, on valide.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["icp_definition"],
+                  "payload": {
+                    "steps": [
+                      "Taper le nom de l'entreprise",
+                      "Laisser LeadCortex proposer secteur et localisation",
+                      "Vérifier et corriger les champs proposés",
+                      "Compléter l'effectif",
+                      "Valider la création"
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m5-l2-ex3",
+                  "kind": "fill_blank",
+                  "prompt": "Sur LeadCortex, la barre de ______ indique en temps réel si la fiche est assez complète pour l'IA.",
+                  "explanation_md": "La barre de **complétion** évite de créer des fiches inutilisables.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["icp_definition"],
+                  "payload": {
+                    "blanks": [
+                      { "correct": ["complétion", "completion"] }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-create-company",
+                "title": "Créer 2 entreprises cibles",
+                "brief_md": "Dans l'app LeadCortex, ouvre **Entreprises → Nouvelle** et crée **2 entreprises** correspondant à ton ICP.\n\nPour chacune : tape le nom, laisse l'IA proposer, puis complète au moins **secteur, localisation et effectif**.\n",
+                "target": {
+                  "route": "/app/companies/new",
+                  "cta": "Créer une entreprise"
+                },
+                "validation": {
+                  "trigger": "company.created",
+                  "conditions": [
+                    { "path": "company.count", "op": ">=", "value": 2 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Deux comptes prêts à être travaillés."
+                },
+                "on_failure": {
+                  "feedback_md": "Il te faut au moins 2 entreprises créées.",
+                  "hint_md": "Va dans **Entreprises → Nouvelle**, remplis la fiche et valide."
+                },
+                "hint_after_minutes": 4,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "icp_definition",
+              "front": "Quels sont les 5 champs essentiels d'une entreprise ?",
+              "back": "Nom, domaine, secteur, localisation, effectif."
+            }
+          ]
+        },
+        {
+          "id": "p1-m5-l3-add-qualify-lead",
+          "order": 3,
+          "slug": "add-qualify-lead",
+          "title": "Ajouter et qualifier un prospect",
+          "subtitle": "Transformer une entreprise en opportunité",
+          "duration_min": 7,
+          "difficulty": 2,
+          "xp_total": 120,
+          "concepts": ["icp_vs_persona", "signals_priority"],
+          "skills": ["recherche", "stratégie"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m5-l2-create-target-company"],
+            "required_concept_ids": ["icp_definition"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m6-l1-first-email"]
+          },
+          "rewards": { "xp": 100, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Ajouter et qualifier un prospect",
+              "subtitle": "Fondations · Module 5 · Leçon 3",
+              "mascot_pose": "thinking",
+              "mascot_line": "Le bon contact, c'est le début de tout.",
+              "objectives": [
+                "Créer un prospect rattaché à une entreprise",
+                "Renseigner le champ Signal pour activer le scoring",
+                "Distinguer un contact utile d'un contact inutile"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Qui ajouter ?",
+                  "body_md": "Sur une entreprise cible, tu cherches **les personnes qui peuvent dire oui ou non** :\n\n- **Décideur** — signe le contrat\n- **Champion** — porte le projet en interne\n- **Utilisateur** — subit le produit au quotidien\n\nUn même compte peut avoir **plusieurs contacts**. Commence toujours par le **décideur**.\n",
+                  "callout": {
+                    "tone": "warning",
+                    "title": "Erreur classique",
+                    "text": "Ajouter 15 contacts par entreprise dilue ton message. 1 à 3 maximum au départ."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Le champ Signal change tout",
+                  "body_md": "Sur chaque prospect, tu peux renseigner un **signal d'achat** (levée, recrutement, lancement produit…).\n\nCe signal :\n\n- alimente le **score IA**\n- remonte le prospect dans la liste\n- déclenche des **séquences automatiques**\n\nC'est le champ le plus rentable de ta fiche.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m5-l3-ex1",
+                  "kind": "mcq",
+                  "prompt": "Combien de contacts ajouter par entreprise au départ ?",
+                  "explanation_md": "**1 à 3 contacts maximum**. Multiplier les contacts dilue le message.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["icp_vs_persona"],
+                  "payload": {
+                    "options": [
+                      "1 seul, toujours le CEO",
+                      "1 à 3, en priorisant le décideur",
+                      "Tous les décideurs de LinkedIn",
+                      "Au moins 10 pour maximiser les chances"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m5-l3-ex2",
+                  "kind": "multi_select",
+                  "prompt": "Quels signaux d'achat valent la peine d'être renseignés ?",
+                  "explanation_md": "Levée, recrutement C-level, lancement produit, expansion. Ce sont les signaux chauds.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["signals_priority"],
+                  "payload": {
+                    "options": [
+                      "Levée de fonds",
+                      "Recrutement C-level",
+                      "Changement de logo",
+                      "Lancement d'un nouveau produit",
+                      "Expansion géographique",
+                      "Post LinkedIn générique"
+                    ],
+                    "correct": [0, 1, 3, 4]
+                  }
+                },
+                {
+                  "id": "p1-m5-l3-ex3",
+                  "kind": "fill_blank",
+                  "prompt": "Le champ ______ alimente le score IA et déclenche les séquences automatiques.",
+                  "explanation_md": "Le champ **Signal** est la clé du scoring automatique.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["signals"],
+                  "payload": {
+                    "blanks": [
+                      { "correct": ["signal", "signal d'achat", "signal d’achat"] }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-add-lead-with-signal",
+                "title": "Ajouter un prospect avec signal",
+                "brief_md": "Dans l'app LeadCortex, ouvre **Prospects → Nouveau** et crée **1 prospect** rattaché à l'une de tes entreprises.\n\nRenseigne au minimum : nom, poste, entreprise, et surtout le **champ Signal** (ex : levée de fonds, recrutement…).\n",
+                "target": {
+                  "route": "/app/people/new",
+                  "cta": "Créer un prospect"
+                },
+                "validation": {
+                  "trigger": "lead.updated",
+                  "conditions": [
+                    { "path": "lead.signal", "op": "is_not_empty" }
+                  ]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Un prospect qualifié — le scoring IA peut travailler."
+                },
+                "on_failure": {
+                  "feedback_md": "Le champ Signal est vide.",
+                  "hint_md": "Ouvre **Prospects → Nouveau** et remplis le champ **Signal d'intérêt**."
+                },
+                "hint_after_minutes": 4,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "icp_vs_persona",
+              "front": "Combien de contacts ajouter par entreprise au départ ?",
+              "back": "1 à 3 maximum, en priorisant le décideur (ou le champion)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p1-m6",
+      "order": 6,
+      "chapter": 2,
+      "title": "Étude de cas : votre premier deal",
+      "description": "Appliquer tout ce qui a été appris dans un scénario complet, de la recherche au premier RDV.",
+      "prerequisites": {
+        "previous_module_ids": ["p1-m5"],
+        "required_concept_ids": ["icp_definition"]
+      },
+      "lessons": [
+        {
+          "id": "p1-m6-l1-first-email",
+          "order": 1,
+          "slug": "first-email",
+          "title": "Rédiger un premier email",
+          "subtitle": "Passer du brouillon au message envoyé",
+          "duration_min": 9,
+          "difficulty": 3,
+          "xp_total": 140,
+          "concepts": ["tone_b2b", "channels"],
+          "skills": ["communication"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m5-l3-add-qualify-lead"],
+            "required_concept_ids": ["icp_definition", "tone_b2b"]
+          },
+          "unlocks": {
+            "lesson_ids": ["p1-m6-l2-full-case-study"]
+          },
+          "rewards": { "xp": 110, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Rédiger un premier email",
+              "subtitle": "Fondations · Module 6 · Leçon 1",
+              "mascot_pose": "happy",
+              "mascot_line": "Cinq lignes bien écrites valent mille brouillons.",
+              "objectives": [
+                "Structurer un premier email en 4 blocs",
+                "Utiliser l'IA pour générer un brouillon",
+                "Personnaliser avec le signal du prospect"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "La structure qui marche",
+                  "body_md": "Un premier email B2B efficace tient en **5 lignes** :\n\n1. **Objet court** — moins de 45 caractères\n2. **Accroche** — référence au signal détecté\n3. **Problème** — celui que tu adresses\n4. **Preuve** — un chiffre, un client, un résultat\n5. **CTA faible** — une question fermée (pas de demande de RDV)\n"
+                },
+                {
+                  "id": "t2",
+                  "title": "L'IA rédige le brouillon",
+                  "body_md": "Dans la page **Emails** ou depuis une fiche prospect, tu peux demander à l'assistant :\n\n> « Rédige un premier email pour ce prospect, en t'appuyant sur son signal. Ton direct, 5 lignes max, CTA question fermée. »\n\nL'IA te propose un **brouillon personnalisé** que tu ajustes.\n",
+                  "callout": {
+                    "tone": "success",
+                    "title": "Astuce",
+                    "text": "Ne colle jamais un brouillon IA tel quel. Lis-le à voix haute. Si tu ne dirais pas ça à un collègue, réécris."
+                  }
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m6-l1-ex1",
+                  "kind": "order_steps",
+                  "prompt": "Remets les 4 blocs d'un email dans l'ordre.",
+                  "explanation_md": "Accroche → Problème → Preuve → CTA. Cet ordre respecte la lecture naturelle du prospect.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["tone_b2b"],
+                  "payload": {
+                    "steps": [
+                      "Accroche personnalisée (signal)",
+                      "Problème que tu adresses",
+                      "Preuve (chiffre, client, résultat)",
+                      "CTA faible (question fermée)"
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m6-l1-ex2",
+                  "kind": "mcq",
+                  "prompt": "Quelle longueur pour l'objet d'un premier email ?",
+                  "explanation_md": "**Moins de 45 caractères**. Au-delà, l'objet se tronque dans la boîte de réception.\n",
+                  "xp": 10,
+                  "difficulty": 2,
+                  "concepts": ["channels"],
+                  "payload": {
+                    "options": [
+                      "1 mot",
+                      "Moins de 45 caractères",
+                      "50 à 80 caractères",
+                      "Une phrase complète"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m6-l1-ex3",
+                  "kind": "free_text",
+                  "prompt": "Rédige un premier email de 5 lignes pour ton prospect (celui que tu viens de créer).\n",
+                  "explanation_md": "La réponse doit contenir : une accroche liée au signal, un problème, une preuve, un CTA faible.\n",
+                  "xp": 30,
+                  "difficulty": 4,
+                  "concepts": ["tone_b2b"],
+                  "payload": {
+                    "min_words": 30,
+                    "max_words": 120,
+                    "rubric_md": "La réponse doit :\n- commencer par une accroche liée au signal\n- mentionner un problème concret\n- apporter au moins une preuve\n- terminer par une question fermée (CTA faible)\n",
+                    "expected_keywords": ["signal", "problème", "résultat", "question", "disponible"]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-first-email-real",
+                "title": "Rédiger un email dans LeadCortex",
+                "brief_md": "Dans l'app LeadCortex, ouvre **Emails** et rédige un **premier email** à destination de ton prospect.\n\nStructure : accroche → problème → preuve → CTA faible. Maximum 5 lignes.\n",
+                "target": {
+                  "route": "/app/emails",
+                  "cta": "Ouvrir la page Emails"
+                },
+                "validation": {
+                  "trigger": "email.drafted",
+                  "conditions": [
+                    { "path": "email.body_length", "op": ">=", "value": 80 },
+                    { "path": "email.body_length", "op": "<=", "value": 900 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 60,
+                  "mascot_line": "Premier email rédigé — tu es passé à l'action."
+                },
+                "on_failure": {
+                  "feedback_md": "L'email est vide ou trop long.",
+                  "hint_md": "Ouvre **Emails → Nouveau message**, écris 5 lignes max, sauvegarde en brouillon."
+                },
+                "hint_after_minutes": 4,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "tone_b2b",
+              "front": "Quelle est la structure d'un premier email B2B ?",
+              "back": "Accroche (signal) → Problème → Preuve → CTA faible (question fermée). 5 lignes max."
+            }
+          ]
+        },
+        {
+          "id": "p1-m6-l2-full-case-study",
+          "order": 2,
+          "slug": "full-case-study",
+          "title": "Étude de cas complète",
+          "subtitle": "De la recherche au premier rendez-vous",
+          "duration_min": 12,
+          "difficulty": 4,
+          "xp_total": 180,
+          "concepts": ["icp_definition", "signals_priority", "tone_b2b", "channels"],
+          "skills": ["stratégie", "communication", "recherche"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p1-m6-l1-first-email"],
+            "required_concept_ids": ["tone_b2b"]
+          },
+          "unlocks": { "lesson_ids": [] },
+          "rewards": { "xp": 150, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Étude de cas complète",
+              "subtitle": "Fondations · Module 6 · Leçon 2",
+              "mascot_pose": "thinking",
+              "mascot_line": "Maintenant, tu joues en conditions réelles.",
+              "objectives": [
+                "Appliquer tout le programme sur un scénario complet",
+                "Prendre les décisions clés à chaque étape",
+                "Dérouler le workflow de A à Z dans LeadCortex"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Le scénario",
+                  "body_md": "**Contexte** : tu vends un outil SaaS B2B à des CTO d'industriels français (50 à 500 salariés).\n\n**Ta cible** : l'entreprise *Novatech Industries* — 180 salariés, Lyon, vient de lever 8 M€.\n\n**Ta mission** : générer un premier RDV en moins de 10 jours.\n\nSuis les étapes une par une.\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "Méthode",
+                    "text": "ICP → signal → décideur → email → séquence → RDV. C'est l'enchaînement à retenir."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les 5 décisions clés",
+                  "body_md": "1. **Qui cibler en priorité** dans l'organigramme ?\n2. **Quel signal** mettre en avant dans l'accroche ?\n3. **Quel canal** attaquer en premier ?\n4. **Combien de relances** prévoir ?\n5. **Quand arrêter** si aucune réponse ?\n\nChaque décision a une **bonne réponse** que tu connais déjà.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p1-m6-l2-ex1",
+                  "kind": "mcq",
+                  "prompt": "Sur Novatech Industries, qui contacter en priorité ?",
+                  "explanation_md": "Sur un SaaS B2B technique, le **CTO** est le décideur économique naturel. Le CEO arbitre mais ne porte pas le projet.\n",
+                  "xp": 20,
+                  "difficulty": 4,
+                  "concepts": ["icp_vs_persona"],
+                  "payload": {
+                    "options": [
+                      "Le PDG",
+                      "Le CTO",
+                      "Le directeur marketing",
+                      "La réceptionniste"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m6-l2-ex2",
+                  "kind": "mcq",
+                  "prompt": "Quel signal mettre en avant dans l'accroche ?",
+                  "explanation_md": "La **levée de 8 M€** est le signal chaud : elle indique un budget disponible et un besoin d'accélération.\n",
+                  "xp": 20,
+                  "difficulty": 4,
+                  "concepts": ["signals_priority"],
+                  "payload": {
+                    "options": [
+                      "Le logo récemment refait",
+                      "La levée de fonds de 8 M€",
+                      "Le nombre de followers LinkedIn",
+                      "Un post générique du CEO"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p1-m6-l2-ex3",
+                  "kind": "order_steps",
+                  "prompt": "Remets le workflow complet dans l'ordre.",
+                  "explanation_md": "On part de l'ICP, on repère le signal, on contacte, on relance et on convertit.\n",
+                  "xp": 25,
+                  "difficulty": 5,
+                  "concepts": ["channels"],
+                  "payload": {
+                    "steps": [
+                      "Identifier l'entreprise dans son ICP",
+                      "Repérer un signal d'achat chaud",
+                      "Trouver le bon décideur",
+                      "Envoyer un premier email personnalisé",
+                      "Relancer sur un second canal",
+                      "Décrocher un premier RDV"
+                    ]
+                  }
+                },
+                {
+                  "id": "p1-m6-l2-ex4",
+                  "kind": "multi_select",
+                  "prompt": "Quels critères justifient d'arrêter la séquence ?",
+                  "explanation_md": "On arrête après réponse, désabonnement, ou épuisement des étapes prévues.\n",
+                  "xp": 20,
+                  "difficulty": 4,
+                  "concepts": ["channels"],
+                  "payload": {
+                    "options": [
+                      "Le prospect a répondu (positif ou négatif)",
+                      "Le prospect s'est désabonné",
+                      "Le prospect n'a pas ouvert le premier email",
+                      "Toutes les étapes prévues ont été épuisées",
+                      "Le prospect a changé de poste publiquement"
+                    ],
+                    "correct": [0, 1, 3, 4]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-full-case-study",
+                "title": "Dérouler le workflow complet",
+                "brief_md": "Dans l'app LeadCortex, applique le scénario de bout en bout :\n\n1. **Crée l'entreprise** Novatech Industries\n2. **Ajoute le CTO** avec son signal (levée)\n3. **Rédige un email** personnalisé\n4. **Crée une séquence** avec au moins 3 étapes\n\nQuand les 4 actions sont faites, la leçon est validée.\n",
+                "target": {
+                  "route": "/app/sequences",
+                  "cta": "Créer une séquence"
+                },
+                "validation": {
+                  "trigger": "workflow.completed",
+                  "conditions": [
+                    { "path": "company.created", "op": ">=", "value": 1 },
+                    { "path": "lead.created", "op": ">=", "value": 1 },
+                    { "path": "email.drafted", "op": ">=", "value": 1 },
+                    { "path": "sequence.steps_count", "op": ">=", "value": 3 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 80,
+                  "mascot_line": "Bravo. Tu as déroulé le programme complet, en conditions réelles.",
+                  "badge_ids": ["first-case-study"]
+                },
+                "on_failure": {
+                  "feedback_md": "Certaines étapes du workflow ne sont pas encore validées.",
+                  "hint_md": "Vérifie que tu as bien créé : 1 entreprise, 1 prospect, 1 email brouillon, 1 séquence de 3 étapes minimum."
+                },
+                "hint_after_minutes": 6,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "signals_priority",
+              "front": "Quels sont les signaux les plus chauds en B2B ?",
+              "back": "Levée de fonds, conformité réglementaire, expansion géo, recrutement C-level."
+            },
+            {
+              "concept": "tone_b2b",
+              "front": "Quelle est la structure d'un premier email B2B ?",
+              "back": "Accroche (signal) → Problème → Preuve → CTA faible (question fermée). 5 lignes max."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

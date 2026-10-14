@@ -1,5 +1,26 @@
 ## État du projet
 
+## Lancement local
+
+Depuis deux terminaux à la racine du dépôt :
+
+1. Démarrer l'API Academy :
+
+   ```powershell
+   Set-Location backend\academy
+   go run ./cmd/academy-server -env development -addr :8080 -content content
+   ```
+
+2. Démarrer le frontend :
+
+   ```powershell
+   npm run dev
+   ```
+
+Le frontend est disponible sur `http://localhost:3000`. Vite relaie `/api/v1`
+vers `http://localhost:8080`; le mode développement utilise l'apprenant
+`default`. `VITE_API_BASE_URL` permet de remplacer cette URL si nécessaire.
+
 ### Phase 1 — Fondations moteur (backend Go) ✅
 - [x] Partie 1 — Fondations : module, config, logger, serveur HTTP, CLI
 - [x] Partie 2 — Domaine métier (Learner, Program, Lesson, Exercise…)
@@ -16,17 +37,18 @@
 
 ### Phase 3 — Contenu pédagogique ✅
 - [x] Parties 11-15 — 5 programmes, 20 modules, 40 leçons, 40 missions
-- [x] Fichiers compagnons : 12 avatars, 21 badges
+- [x] Fichiers compagnons : 12 avatars, 19 badges
 
 ### Phase 4 — API & Frontend (en cours)
 - [x] Partie 16 — API HTTP Go (REST + SSE)
-- [ ] Partie 17 — UI React Desktop
+- [x] Partie 17 — UI React Desktop
 - [ ] Partie 18 — UI React Mobile
 - [ ] Partie 19 — Intégration finale
 
 ## Endpoints API
 
-Une fois `make run` lancé, l'API est disponible sur `http://localhost:8080`.
+Une fois l'API démarrée comme indiqué dans « Lancement local », elle est
+disponible sur `http://localhost:8080`.
 
 **Santé**
 - `GET /healthz` — liveness

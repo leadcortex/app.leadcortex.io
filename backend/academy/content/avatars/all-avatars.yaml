@@ -41,7 +41,7 @@
   name: Panda
   tier: classic
   description: Posé et concentré. Avance à son rythme, sans jamais s'arrêter.
-  svg_path: /images/SVG-avatar/classic/Panda.svg
+  svg_path: /images/SVG-avatar/classic/panda.svg
   default_pose: neutral
   poses:
     - {key: neutral, label: Neutre, is_default: true}
@@ -58,7 +58,7 @@
   name: Panda roux
   tier: classic
   description: Curieux et joueur. Toujours en quête d'une nouvelle découverte.
-  svg_path: /images/SVG-avatar/classic/RedPanda.svg
+  svg_path: /images/SVG-avatar/classic/Red-panda.svg
   default_pose: neutral
   poses:
     - {key: neutral, label: Neutre, is_default: true}
@@ -111,7 +111,7 @@
   name: Chouette
   tier: collector
   description: Gardienne du savoir. Chaque mission réussie affine son jugement.
-  svg_path: /images/SVG-avatar/collector/Owl.svg
+  svg_path: /images/SVG-avatar/collector/Astral-owl.svg
   default_pose: neutral
   poses:
     - {key: neutral, label: Neutre, is_default: true}
@@ -145,7 +145,7 @@
   name: Chat lunaire
   tier: collector
   description: Compagnon nocturne des stratèges. Marche entre deux mondes.
-  svg_path: /images/SVG-avatar/collector/Cat.svg
+  svg_path: /images/SVG-avatar/collector/Lunar-cat.svg
   default_pose: neutral
   poses:
     - {key: neutral, label: Neutre, is_default: true}
@@ -162,7 +162,7 @@
   name: Tortue
   tier: collector
   description: Rien ne l'arrête, tout simplement. La constance incarnée.
-  svg_path: /images/SVG-avatar/collector/Turtle.svg
+  svg_path: /images/SVG-avatar/collector/Mosaic-turtle.svg
   default_pose: neutral
   poses:
     - {key: neutral, label: Neutre, is_default: true}
@@ -179,7 +179,7 @@
   name: Lion
   tier: collector
   description: Roi de la savane commerciale. Il reste à sa place jusqu'à la victoire.
-  svg_path: /images/SVG-avatar/collector/Lion.svg
+  svg_path: /images/SVG-avatar/collector/Solar-lion.svg
   default_pose: neutral
   poses:
     - {key: neutral, label: Neutre, is_default: true}
@@ -196,7 +196,7 @@
   name: Dauphin fondateur
   tier: collector
   description: L'aboutissement du parcours. Réservé aux pionniers de l'academy.
-  svg_path: /images/SVG-avatar/collector/Dolphin.svg
+  svg_path: /images/SVG-avatar/collector/Founding-dolphin.svg
   default_pose: neutral
   poses:
     - {key: neutral, label: Neutre, is_default: true}

@@ -923,7 +923,7 @@ modules:
             mascot_line: Mieux vaut 10 bons signaux que 100 tièdes.
             objectives:
               - Comprendre la notion de force de signal
-              - Classer 3 niveaux : chaud, tiède, froid
+              - "Classer 3 niveaux : chaud, tiède, froid"
               - Savoir où investir son temps
 
           - type: theory

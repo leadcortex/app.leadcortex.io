@@ -42,7 +42,6 @@ export type MobileNavSection = {
   key: string;
   label: string;
   icon: typeof Users;
-
   matches: string[];
   items: MobileNavLink[];
   groups?: MobileNavSubGroup[];
@@ -56,7 +55,6 @@ export const MOBILE_NAV_SECTIONS: MobileNavSection[] = [
     matches: ["/app/academy"],
     items: [
       { to: "/app/academy", label: "Parcours", icon: GraduationCap, exact: true },
-      { to: "/app/academy/profile", label: "Profil apprenant", icon: GraduationCap },
     ],
   },
   {
@@ -127,7 +125,6 @@ export const MOBILE_NAV_SECTIONS: MobileNavSection[] = [
       { to: "/app/visitors", label: "Visiteurs", icon: Eye },
       { to: "/app/forms", label: "Formulaires", icon: FileInput },
     ],
-
     groups: [
       {
         label: "Sauvegardés & Réglages",

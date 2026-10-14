@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { ReviewPage } from '@/components/academy/secondary-pages';
+export const Route = createFileRoute('/revision')({ component: ReviewPage, head: () => ({ meta: [ {title:'Révisions — Académie Lead Cortex'}, {name:'description',content:'Renforcez vos réflexes de prospection avec vos leçons Lead Cortex.'}, {property:'og:title',content:'Révisions — Académie Lead Cortex'}, {property:'og:description',content:'Revenez sur vos acquis en prospection B2B.'}, {property:'og:type',content:'website'}, {name:'twitter:card',content:'summary_large_image'} ] }) });

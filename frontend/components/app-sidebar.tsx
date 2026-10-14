@@ -55,10 +55,7 @@ const GROUPS: Group[] = [
   },
   {
     label: "Academy",
-    items: [
-      { to: "/app/academy", label: "Parcours", icon: GraduationCap },
-      { to: "/app/academy/profile", label: "Profil apprenant", icon: GraduationCap },
-    ],
+    items: [{ to: "/app/academy", label: "Parcours", icon: GraduationCap }],
   },
   {
     label: "Prospecter & enrichir",

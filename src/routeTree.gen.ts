@@ -48,9 +48,11 @@ import { Route as AppConversationsRouteImport } from './../frontend/routes/app.c
 import { Route as AppCompaniesRouteImport } from './../frontend/routes/app.companies'
 import { Route as AppCallsRouteImport } from './../frontend/routes/app.calls'
 import { Route as AppAnalyticsRouteImport } from './../frontend/routes/app.analytics'
+import { Route as AppAcademyRouteImport } from './../frontend/routes/app.academy'
 import { Route as AppSequencesRouteRouteImport } from './../frontend/routes/app/sequences/route'
 import { Route as AppWorkflowsIndexRouteImport } from './../frontend/routes/app.workflows.index'
 import { Route as AppSequencesIndexRouteImport } from './../frontend/routes/app/sequences/index'
+import { Route as AppAcademyIndexRouteImport } from './../frontend/routes/app.academy.index'
 import { Route as AppWorkflowsNewRouteImport } from './../frontend/routes/app.workflows.new'
 import { Route as AppWorkflowsWorkflowIdRouteImport } from './../frontend/routes/app.workflows.$workflowId'
 import { Route as AppTasksIdRouteImport } from './../frontend/routes/app.tasks.$id'
@@ -62,6 +64,9 @@ import { Route as AppPeopleIdRouteImport } from './../frontend/routes/app.people
 import { Route as AppDealsIdRouteImport } from './../frontend/routes/app.deals.$id'
 import { Route as AppCompaniesNewRouteImport } from './../frontend/routes/app.companies.new'
 import { Route as AppCompaniesIdRouteImport } from './../frontend/routes/app.companies.$id'
+import { Route as AppAcademyRewardsRouteImport } from './../frontend/routes/app.academy.rewards'
+import { Route as AppAcademyReviewRouteImport } from './../frontend/routes/app.academy.review'
+import { Route as AppAcademyProfileRouteImport } from './../frontend/routes/app.academy.profile'
 
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
@@ -258,6 +263,11 @@ const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAcademyRoute = AppAcademyRouteImport.update({
+  id: '/academy',
+  path: '/academy',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSequencesRouteRoute = AppSequencesRouteRouteImport.update({
   id: '/sequences',
   path: '/sequences',
@@ -272,6 +282,11 @@ const AppSequencesIndexRoute = AppSequencesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppSequencesRouteRoute,
+} as any)
+const AppAcademyIndexRoute = AppAcademyIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppAcademyRoute,
 } as any)
 const AppWorkflowsNewRoute = AppWorkflowsNewRouteImport.update({
   id: '/workflows/new',
@@ -328,6 +343,21 @@ const AppCompaniesIdRoute = AppCompaniesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppCompaniesRoute,
 } as any)
+const AppAcademyRewardsRoute = AppAcademyRewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => AppAcademyRoute,
+} as any)
+const AppAcademyReviewRoute = AppAcademyReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => AppAcademyRoute,
+} as any)
+const AppAcademyProfileRoute = AppAcademyProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppAcademyRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -342,6 +372,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
   '/app/sequences': typeof AppSequencesRouteRouteWithChildren
+  '/app/academy': typeof AppAcademyRouteWithChildren
   '/app/analytics': typeof AppAnalyticsRoute
   '/app/calls': typeof AppCallsRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
@@ -370,6 +401,9 @@ export interface FileRoutesByFullPath {
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
   '/app/': typeof AppIndexRoute
+  '/app/academy/profile': typeof AppAcademyProfileRoute
+  '/app/academy/review': typeof AppAcademyReviewRoute
+  '/app/academy/rewards': typeof AppAcademyRewardsRoute
   '/app/companies/$id': typeof AppCompaniesIdRoute
   '/app/companies/new': typeof AppCompaniesNewRoute
   '/app/deals/$id': typeof AppDealsIdRoute
@@ -381,6 +415,7 @@ export interface FileRoutesByFullPath {
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/workflows/$workflowId': typeof AppWorkflowsWorkflowIdRoute
   '/app/workflows/new': typeof AppWorkflowsNewRoute
+  '/app/academy/': typeof AppAcademyIndexRoute
   '/app/sequences/': typeof AppSequencesIndexRoute
   '/app/workflows/': typeof AppWorkflowsIndexRoute
 }
@@ -423,6 +458,9 @@ export interface FileRoutesByTo {
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
   '/app': typeof AppIndexRoute
+  '/app/academy/profile': typeof AppAcademyProfileRoute
+  '/app/academy/review': typeof AppAcademyReviewRoute
+  '/app/academy/rewards': typeof AppAcademyRewardsRoute
   '/app/companies/$id': typeof AppCompaniesIdRoute
   '/app/companies/new': typeof AppCompaniesNewRoute
   '/app/deals/$id': typeof AppDealsIdRoute
@@ -434,6 +472,7 @@ export interface FileRoutesByTo {
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/workflows/$workflowId': typeof AppWorkflowsWorkflowIdRoute
   '/app/workflows/new': typeof AppWorkflowsNewRoute
+  '/app/academy': typeof AppAcademyIndexRoute
   '/app/sequences': typeof AppSequencesIndexRoute
   '/app/workflows': typeof AppWorkflowsIndexRoute
 }
@@ -451,6 +490,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
   '/app/sequences': typeof AppSequencesRouteRouteWithChildren
+  '/app/academy': typeof AppAcademyRouteWithChildren
   '/app/analytics': typeof AppAnalyticsRoute
   '/app/calls': typeof AppCallsRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
@@ -479,6 +519,9 @@ export interface FileRoutesById {
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
   '/app/': typeof AppIndexRoute
+  '/app/academy/profile': typeof AppAcademyProfileRoute
+  '/app/academy/review': typeof AppAcademyReviewRoute
+  '/app/academy/rewards': typeof AppAcademyRewardsRoute
   '/app/companies/$id': typeof AppCompaniesIdRoute
   '/app/companies/new': typeof AppCompaniesNewRoute
   '/app/deals/$id': typeof AppDealsIdRoute
@@ -490,6 +533,7 @@ export interface FileRoutesById {
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/workflows/$workflowId': typeof AppWorkflowsWorkflowIdRoute
   '/app/workflows/new': typeof AppWorkflowsNewRoute
+  '/app/academy/': typeof AppAcademyIndexRoute
   '/app/sequences/': typeof AppSequencesIndexRoute
   '/app/workflows/': typeof AppWorkflowsIndexRoute
 }
@@ -508,6 +552,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/support'
     | '/app/sequences'
+    | '/app/academy'
     | '/app/analytics'
     | '/app/calls'
     | '/app/companies'
@@ -536,6 +581,9 @@ export interface FileRouteTypes {
     | '/legal/dpa'
     | '/legal/mentions-legales'
     | '/app/'
+    | '/app/academy/profile'
+    | '/app/academy/review'
+    | '/app/academy/rewards'
     | '/app/companies/$id'
     | '/app/companies/new'
     | '/app/deals/$id'
@@ -547,6 +595,7 @@ export interface FileRouteTypes {
     | '/app/tasks/$id'
     | '/app/workflows/$workflowId'
     | '/app/workflows/new'
+    | '/app/academy/'
     | '/app/sequences/'
     | '/app/workflows/'
   fileRoutesByTo: FileRoutesByTo
@@ -589,6 +638,9 @@ export interface FileRouteTypes {
     | '/legal/dpa'
     | '/legal/mentions-legales'
     | '/app'
+    | '/app/academy/profile'
+    | '/app/academy/review'
+    | '/app/academy/rewards'
     | '/app/companies/$id'
     | '/app/companies/new'
     | '/app/deals/$id'
@@ -600,6 +652,7 @@ export interface FileRouteTypes {
     | '/app/tasks/$id'
     | '/app/workflows/$workflowId'
     | '/app/workflows/new'
+    | '/app/academy'
     | '/app/sequences'
     | '/app/workflows'
   id:
@@ -616,6 +669,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/support'
     | '/app/sequences'
+    | '/app/academy'
     | '/app/analytics'
     | '/app/calls'
     | '/app/companies'
@@ -644,6 +698,9 @@ export interface FileRouteTypes {
     | '/legal/dpa'
     | '/legal/mentions-legales'
     | '/app/'
+    | '/app/academy/profile'
+    | '/app/academy/review'
+    | '/app/academy/rewards'
     | '/app/companies/$id'
     | '/app/companies/new'
     | '/app/deals/$id'
@@ -655,6 +712,7 @@ export interface FileRouteTypes {
     | '/app/tasks/$id'
     | '/app/workflows/$workflowId'
     | '/app/workflows/new'
+    | '/app/academy/'
     | '/app/sequences/'
     | '/app/workflows/'
   fileRoutesById: FileRoutesById
@@ -954,6 +1012,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAnalyticsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/academy': {
+      id: '/app/academy'
+      path: '/academy'
+      fullPath: '/app/academy'
+      preLoaderRoute: typeof AppAcademyRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/sequences': {
       id: '/app/sequences'
       path: '/sequences'
@@ -974,6 +1039,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/sequences/'
       preLoaderRoute: typeof AppSequencesIndexRouteImport
       parentRoute: typeof AppSequencesRouteRoute
+    }
+    '/app/academy/': {
+      id: '/app/academy/'
+      path: '/'
+      fullPath: '/app/academy/'
+      preLoaderRoute: typeof AppAcademyIndexRouteImport
+      parentRoute: typeof AppAcademyRoute
     }
     '/app/workflows/new': {
       id: '/app/workflows/new'
@@ -1052,6 +1124,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCompaniesIdRouteImport
       parentRoute: typeof AppCompaniesRoute
     }
+    '/app/academy/rewards': {
+      id: '/app/academy/rewards'
+      path: '/rewards'
+      fullPath: '/app/academy/rewards'
+      preLoaderRoute: typeof AppAcademyRewardsRouteImport
+      parentRoute: typeof AppAcademyRoute
+    }
+    '/app/academy/review': {
+      id: '/app/academy/review'
+      path: '/review'
+      fullPath: '/app/academy/review'
+      preLoaderRoute: typeof AppAcademyReviewRouteImport
+      parentRoute: typeof AppAcademyRoute
+    }
+    '/app/academy/profile': {
+      id: '/app/academy/profile'
+      path: '/profile'
+      fullPath: '/app/academy/profile'
+      preLoaderRoute: typeof AppAcademyProfileRouteImport
+      parentRoute: typeof AppAcademyRoute
+    }
   }
 }
 
@@ -1069,6 +1162,24 @@ const AppSequencesRouteRouteChildren: AppSequencesRouteRouteChildren = {
 
 const AppSequencesRouteRouteWithChildren =
   AppSequencesRouteRoute._addFileChildren(AppSequencesRouteRouteChildren)
+
+interface AppAcademyRouteChildren {
+  AppAcademyProfileRoute: typeof AppAcademyProfileRoute
+  AppAcademyReviewRoute: typeof AppAcademyReviewRoute
+  AppAcademyRewardsRoute: typeof AppAcademyRewardsRoute
+  AppAcademyIndexRoute: typeof AppAcademyIndexRoute
+}
+
+const AppAcademyRouteChildren: AppAcademyRouteChildren = {
+  AppAcademyProfileRoute: AppAcademyProfileRoute,
+  AppAcademyReviewRoute: AppAcademyReviewRoute,
+  AppAcademyRewardsRoute: AppAcademyRewardsRoute,
+  AppAcademyIndexRoute: AppAcademyIndexRoute,
+}
+
+const AppAcademyRouteWithChildren = AppAcademyRoute._addFileChildren(
+  AppAcademyRouteChildren,
+)
 
 interface AppCompaniesRouteChildren {
   AppCompaniesIdRoute: typeof AppCompaniesIdRoute
@@ -1136,6 +1247,7 @@ const AppTasksRouteWithChildren = AppTasksRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppSequencesRouteRoute: typeof AppSequencesRouteRouteWithChildren
+  AppAcademyRoute: typeof AppAcademyRouteWithChildren
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppCallsRoute: typeof AppCallsRoute
   AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
@@ -1159,6 +1271,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppSequencesRouteRoute: AppSequencesRouteRouteWithChildren,
+  AppAcademyRoute: AppAcademyRouteWithChildren,
   AppAnalyticsRoute: AppAnalyticsRoute,
   AppCallsRoute: AppCallsRoute,
   AppCompaniesRoute: AppCompaniesRouteWithChildren,

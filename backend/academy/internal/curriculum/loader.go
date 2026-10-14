@@ -53,6 +53,9 @@ func Load(contentDir string) (*LoadResult, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(programFiles) == 0 {
+		return nil, NewFileError(contentDir, 0, ErrMissingContent, "aucun programme trouvé")
+	}
 
 	// 2. Lecture + parsing.
 	var programs []*domain.Program

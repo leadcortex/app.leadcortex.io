@@ -186,6 +186,19 @@ func TestClaimQuest_NotComplete(t *testing.T) {
 
 func TestQuests_ProgressAfterExercise(t *testing.T) {
 	s := buildTestServer(t)
+	now := s.deps.Clock.Now()
+	quests := []gamification.Quest{{
+		ID:     "q-exercises",
+		Date:   now.UTC().Format("2006-01-02"),
+		Kind:   gamification.QuestExercises,
+		Title:  "Réussir un exercice",
+		Target: 1,
+		Reward: 5,
+		Status: gamification.QuestStatusActive,
+	}}
+	if err := s.deps.Repository.SaveQuests(context.Background(), "alice", now, quests); err != nil {
+		t.Fatalf("initialisation de la quête : %v", err)
+	}
 	startLesson(t, s, "alice", "l1")
 
 	// Répond correctement à ex1 (MCQ → 10 XP).
