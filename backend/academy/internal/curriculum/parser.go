@@ -1,9 +1,8 @@
 package curriculum
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"gopkg.in/yaml.v3"
 
 	"github.com/leadcortex/academy/internal/domain"
 )
@@ -23,11 +22,10 @@ func Parse(src ProgramYAML) (*domain.Program, error) {
 		Color:            src.Color,
 		Difficulty:       src.Difficulty,
 		Prerequisites:    parseProgramPrereq(src.Prerequisites),
-		EstimatedMinutes: 0, // calculé plus bas
+		EstimatedMinutes: 0,
 		Modules:          make([]domain.Module, 0, len(src.Modules)),
 	}
 
-	// Concepts du programme — utiles pour valider les références internes.
 	concepts := make(map[string]domain.Concept, len(src.Concepts))
 	for i, c := range src.Concepts {
 		concept := domain.Concept{
@@ -44,7 +42,6 @@ func Parse(src ProgramYAML) (*domain.Program, error) {
 		concepts[concept.ID] = concept
 	}
 
-	// Modules + leçons.
 	for mi, m := range src.Modules {
 		module, err := parseModule(m, src.ID, concepts)
 		if err != nil {
@@ -53,16 +50,13 @@ func Parse(src ProgramYAML) (*domain.Program, error) {
 		program.Modules = append(program.Modules, module)
 	}
 
-	// Calcul de la durée estimée.
 	for _, m := range program.Modules {
 		program.EstimatedMinutes += m.EstimatedMinutes()
 	}
 
-	// Validation globale du programme.
 	if err := program.Validate(); err != nil {
 		return nil, err
 	}
-
 	return program, nil
 }
 
@@ -79,6 +73,7 @@ func parseModule(src ModuleYAML, programID string, concepts map[string]domain.Co
 		ID:          src.ID,
 		ProgramID:   programID,
 		Order:       src.Order,
+		Chapter:     src.Chapter,
 		Title:       src.Title,
 		Description: src.Description,
 		Prerequisites: domain.ModulePrerequisites{
@@ -260,7 +255,7 @@ func parsePractice(src *PracticeBlockYAML, concepts map[string]domain.Concept) (
 }
 
 func parseExercise(src ExerciseYAML, concepts map[string]domain.Concept) (domain.Exercise, error) {
-	payload, err := parseExercisePayload(src.Kind, &src.Payload)
+	payload, err := parseExercisePayload(src)
 	if err != nil {
 		return domain.Exercise{}, fmt.Errorf("exercice %s : %w", src.ID, err)
 	}
@@ -280,24 +275,38 @@ func parseExercise(src ExerciseYAML, concepts map[string]domain.Concept) (domain
 	return ex, nil
 }
 
-func parseExercisePayload(kind string, node *yaml.Node) (domain.ExercisePayload, error) {
-	switch domain.ExerciseKind(kind) {
+// decodePayload décode le payload dans la cible, en choisissant le
+// décodeur selon la source (JSON d'abord, puis YAML).
+//
+// Le frontend fournit du JSON ; les tests peuvent encore utiliser du YAML.
+func decodePayload(src ExerciseYAML, dst any) error {
+	if len(src.PayloadJSON) > 0 {
+		return json.Unmarshal(src.PayloadJSON, dst)
+	}
+	if src.PayloadYAML.Kind == 0 {
+		return fmt.Errorf("payload absent (ni JSON ni YAML)")
+	}
+	return src.PayloadYAML.Decode(dst)
+}
+
+func parseExercisePayload(src ExerciseYAML) (domain.ExercisePayload, error) {
+	switch domain.ExerciseKind(src.Kind) {
 	case domain.ExerciseMCQ:
 		var p struct {
-			Options []string `yaml:"options"`
-			Correct int      `yaml:"correct"`
+			Options []string `yaml:"options" json:"options"`
+			Correct int      `yaml:"correct" json:"correct"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload mcq : %w", err)
 		}
 		return domain.MCqPayload{Options: p.Options, Correct: p.Correct}, nil
 
 	case domain.ExerciseMultiSelect:
 		var p struct {
-			Options []string `yaml:"options"`
-			Correct []int    `yaml:"correct"`
+			Options []string `yaml:"options" json:"options"`
+			Correct []int    `yaml:"correct" json:"correct"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload multi_select : %w", err)
 		}
 		return domain.MultiSelectPayload{Options: p.Options, Correct: p.Correct}, nil
@@ -305,10 +314,10 @@ func parseExercisePayload(kind string, node *yaml.Node) (domain.ExercisePayload,
 	case domain.ExerciseFillBlank:
 		var p struct {
 			Blanks []struct {
-				Correct []string `yaml:"correct"`
-			} `yaml:"blanks"`
+				Correct []string `yaml:"correct" json:"correct"`
+			} `yaml:"blanks" json:"blanks"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload fill_blank : %w", err)
 		}
 		blanks := make([]domain.Blank, 0, len(p.Blanks))
@@ -319,30 +328,30 @@ func parseExercisePayload(kind string, node *yaml.Node) (domain.ExercisePayload,
 
 	case domain.ExerciseOrderSteps:
 		var p struct {
-			Steps []string `yaml:"steps"`
+			Steps []string `yaml:"steps" json:"steps"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload order_steps : %w", err)
 		}
 		return domain.OrderStepsPayload{Steps: p.Steps}, nil
 
 	case domain.ExerciseMatchPairs:
 		var p struct {
-			Pairs []domain.MatchPair `yaml:"pairs"`
+			Pairs []domain.MatchPair `yaml:"pairs" json:"pairs"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload match_pairs : %w", err)
 		}
 		return domain.MatchPairsPayload{Pairs: p.Pairs}, nil
 
 	case domain.ExerciseFreeText:
 		var p struct {
-			MinWords         int      `yaml:"min_words"`
-			MaxWords         int      `yaml:"max_words"`
-			RubricMD         string   `yaml:"rubric_md"`
-			ExpectedKeywords []string `yaml:"expected_keywords"`
+			MinWords         int      `yaml:"min_words" json:"min_words"`
+			MaxWords         int      `yaml:"max_words" json:"max_words"`
+			RubricMD         string   `yaml:"rubric_md" json:"rubric_md"`
+			ExpectedKeywords []string `yaml:"expected_keywords" json:"expected_keywords"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload free_text : %w", err)
 		}
 		return domain.FreeTextPayload{
@@ -354,24 +363,24 @@ func parseExercisePayload(kind string, node *yaml.Node) (domain.ExercisePayload,
 
 	case domain.ExerciseScenario:
 		var p struct {
-			Steps []domain.ScenarioStep `yaml:"steps"`
+			Steps []domain.ScenarioStep `yaml:"steps" json:"steps"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload scenario : %w", err)
 		}
 		return domain.ScenarioPayload{Steps: p.Steps}, nil
 
 	case domain.ExerciseInAppMission:
 		var p struct {
-			MissionID string `yaml:"mission_id"`
+			MissionID string `yaml:"mission_id" json:"mission_id"`
 		}
-		if err := node.Decode(&p); err != nil {
+		if err := decodePayload(src, &p); err != nil {
 			return nil, fmt.Errorf("payload in_app_mission : %w", err)
 		}
 		return domain.InAppMissionPayload{MissionID: p.MissionID}, nil
 
 	default:
-		return nil, fmt.Errorf("type d'exercice inconnu : %q", kind)
+		return nil, fmt.Errorf("type d'exercice inconnu : %q", src.Kind)
 	}
 }
 
@@ -389,11 +398,11 @@ func parseMission(src *MissionBlockYAML, lessonID string, concepts map[string]do
 		})
 	}
 	mission := domain.Mission{
-		ID:        m.ID,
-		LessonID:  lessonID,
-		Title:     m.Title,
-		BriefMD:   m.BriefMD,
-		Target:    domain.MissionTarget{Route: m.Target.Route, CTA: m.Target.CTA},
+		ID:       m.ID,
+		LessonID: lessonID,
+		Title:    m.Title,
+		BriefMD:  m.BriefMD,
+		Target:   domain.MissionTarget{Route: m.Target.Route, CTA: m.Target.CTA},
 		Validation: domain.MissionValidation{
 			Trigger:    m.Validation.Trigger,
 			Conditions: domain.ConditionGroup{All: conditions},

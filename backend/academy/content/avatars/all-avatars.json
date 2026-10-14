@@ -1,0 +1,241 @@
+[
+  {
+    "id": "eagle",
+    "name": "Aigle",
+    "tier": "classic",
+    "description": "Symbole de vision et de hauteur de vue. Repère ses cibles de loin.",
+    "svg_path": "/images/SVG-avatar/classic/Eagle.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "program",
+      "value": "p1-foundations",
+      "description": "Terminer le programme Fondations."
+    }
+  },
+  {
+    "id": "fox",
+    "name": "Renard",
+    "tier": "classic",
+    "description": "Malin et agile. Ne rate jamais un signal d'achat.",
+    "svg_path": "/images/SVG-avatar/classic/Fox.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "streak",
+      "value": "7",
+      "description": "Maintenir une série de 7 jours consécutifs."
+    }
+  },
+  {
+    "id": "panda",
+    "name": "Panda",
+    "tier": "classic",
+    "description": "Posé et concentré. Avance à son rythme, sans jamais s'arrêter.",
+    "svg_path": "/images/SVG-avatar/classic/panda.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "lessons",
+      "value": "5",
+      "description": "Terminer 5 leçons."
+    }
+  },
+  {
+    "id": "red-panda",
+    "name": "Panda roux",
+    "tier": "classic",
+    "description": "Curieux et joueur. Toujours en quête d'une nouvelle découverte.",
+    "svg_path": "/images/SVG-avatar/classic/Red-panda.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "lessons",
+      "value": "25",
+      "description": "Terminer 25 leçons."
+    }
+  },
+  {
+    "id": "tiger",
+    "name": "Tigre",
+    "tier": "classic",
+    "description": "Puissant et discipliné. Chasse sans relâche.",
+    "svg_path": "/images/SVG-avatar/classic/Tiger.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "streak",
+      "value": "30",
+      "description": "Maintenir une série de 30 jours consécutifs."
+    }
+  },
+  {
+    "id": "wolf",
+    "name": "Loup",
+    "tier": "classic",
+    "description": "Fidèle et stratégique. Il avance avec sa meute.",
+    "svg_path": "/images/SVG-avatar/classic/Wolf.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "lessons",
+      "value": "50",
+      "description": "Terminer 50 leçons."
+    }
+  },
+  {
+    "id": "owl",
+    "name": "Chouette",
+    "tier": "collector",
+    "description": "Gardienne du savoir. Chaque mission réussie affine son jugement.",
+    "svg_path": "/images/SVG-avatar/collector/Astral-owl.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "mission_count",
+      "value": "10",
+      "description": "Réussir 10 missions in-app."
+    }
+  },
+  {
+    "id": "otter",
+    "name": "Loutre",
+    "tier": "collector",
+    "description": "Toujours connectée. Le lien humain est sa force.",
+    "svg_path": "/images/SVG-avatar/collector/Otter.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "streak",
+      "value": "100",
+      "description": "Maintenir une série de 100 jours consécutifs."
+    }
+  },
+  {
+    "id": "cat",
+    "name": "Chat lunaire",
+    "tier": "collector",
+    "description": "Compagnon nocturne des stratèges. Marche entre deux mondes.",
+    "svg_path": "/images/SVG-avatar/collector/Lunar-cat.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "secret",
+      "value": "level-20",
+      "description": "Atteindre le niveau 20."
+    }
+  },
+  {
+    "id": "turtle",
+    "name": "Tortue",
+    "tier": "collector",
+    "description": "Rien ne l'arrête, tout simplement. La constance incarnée.",
+    "svg_path": "/images/SVG-avatar/collector/Mosaic-turtle.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "secret",
+      "value": "exercises-100",
+      "description": "Réussir 100 exercices."
+    }
+  },
+  {
+    "id": "lion",
+    "name": "Lion",
+    "tier": "collector",
+    "description": "Roi de la savane commerciale. Il reste à sa place jusqu'à la victoire.",
+    "svg_path": "/images/SVG-avatar/collector/Solar-lion.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "curious", "label": "Curieux", "is_default": false},
+      {"key": "thinking", "label": "Pensif", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "secret",
+      "value": "level-50",
+      "description": "Atteindre le niveau 50."
+    }
+  },
+  {
+    "id": "dolphin",
+    "name": "Dauphin fondateur",
+    "tier": "collector",
+    "description": "L'aboutissement du parcours. Réservé aux pionniers de l'academy.",
+    "svg_path": "/images/SVG-avatar/collector/Founding-dolphin.svg",
+    "default_pose": "neutral",
+    "poses": [
+      {"key": "neutral", "label": "Neutre", "is_default": true},
+      {"key": "happy", "label": "Content", "is_default": false},
+      {"key": "celebrating", "label": "Célébration", "is_default": false},
+      {"key": "sparkling", "label": "Étincelant", "is_default": false}
+    ],
+    "unlock": {
+      "kind": "founding",
+      "value": "founding",
+      "description": "Compléter l'intégralité de l'academy."
+    }
+  }
+]

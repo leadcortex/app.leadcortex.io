@@ -13,6 +13,7 @@ import (
 //	/healthz   /readyz   /version   (publiques)
 //
 //	/api/v1
+//	├── /curriculum                snapshot complet (nouveau)
 //	├── /me                        profil
 //	├── /me/snapshot               vue agrégée
 //	├── /me/equip-avatar           PATCH
@@ -59,6 +60,9 @@ func (s *Server) buildRouter() http.Handler {
 			DefaultLearnerID: s.cfg.DefaultLearnerID,
 		}))
 
+		// ── Curriculum (snapshot complet) ────────────────────────────
+		r.Get("/curriculum", s.handleGetCurriculum)
+
 		// ── Profil ───────────────────────────────────────────────────
 		r.Get("/me", s.handleGetMe)
 		r.Get("/me/snapshot", s.handleGetSnapshot)
@@ -66,7 +70,7 @@ func (s *Server) buildRouter() http.Handler {
 		r.Get("/me/recommendation", s.handleRecommendation)
 		r.Post("/me/plan", s.handlePlanSession)
 
-		// ── Curriculum ───────────────────────────────────────────────
+		// ── Curriculum (unités) ──────────────────────────────────────
 		r.Get("/programs", s.handleListPrograms)
 		r.Get("/programs/{programID}", s.handleGetProgram)
 		r.Get("/lessons/{lessonID}", s.handleGetLesson)

@@ -1,0 +1,231 @@
+[
+  {
+    "id": "first-steps",
+    "name": "Premiers pas",
+    "description": "Tu as terminé ta première leçon.",
+    "icon": "footsteps",
+    "color": "#3186FF",
+    "category": "progress",
+    "rarity": "common",
+    "conditions": [
+      {"path": "learner.lessons_completed", "op": ">=", "value": 1}
+    ]
+  },
+  {
+    "id": "first-program",
+    "name": "Premier programme",
+    "description": "Tu as terminé un programme entier.",
+    "icon": "medal",
+    "color": "#3186FF",
+    "category": "progress",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "learner.programs_completed", "op": ">=", "value": 1}
+    ]
+  },
+  {
+    "id": "marathon-runner",
+    "name": "Marathonien",
+    "description": "10 leçons terminées.",
+    "icon": "flag",
+    "color": "#3186FF",
+    "category": "progress",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "learner.lessons_completed", "op": ">=", "value": 10}
+    ]
+  },
+  {
+    "id": "streak-3",
+    "name": "Premier élan",
+    "description": "3 jours d'affilée.",
+    "icon": "flame",
+    "color": "#F5A623",
+    "category": "streak",
+    "rarity": "common",
+    "conditions": [
+      {"path": "learner.streak_days", "op": ">=", "value": 3}
+    ]
+  },
+  {
+    "id": "streak-7",
+    "name": "Une semaine solide",
+    "description": "7 jours consécutifs sans rater.",
+    "icon": "flame",
+    "color": "#F5A623",
+    "category": "streak",
+    "rarity": "common",
+    "conditions": [
+      {"path": "learner.streak_days", "op": ">=", "value": 7}
+    ]
+  },
+  {
+    "id": "streak-14",
+    "name": "Rythme de croisière",
+    "description": "14 jours consécutifs.",
+    "icon": "flame",
+    "color": "#F5A623",
+    "category": "streak",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "learner.streak_days", "op": ">=", "value": 14}
+    ]
+  },
+  {
+    "id": "streak-30",
+    "name": "Un mois sans faiblir",
+    "description": "30 jours consécutifs.",
+    "icon": "flame",
+    "color": "#E5584A",
+    "category": "streak",
+    "rarity": "epic",
+    "conditions": [
+      {"path": "learner.streak_days", "op": ">=", "value": 30}
+    ]
+  },
+  {
+    "id": "streak-100",
+    "name": "Série légendaire",
+    "description": "100 jours consécutifs.",
+    "icon": "flame",
+    "color": "#E5584A",
+    "category": "streak",
+    "rarity": "legendary",
+    "conditions": [
+      {"path": "learner.streak_days", "op": ">=", "value": 100}
+    ]
+  },
+  {
+    "id": "level-5",
+    "name": "Prospecteur",
+    "description": "Niveau 5 atteint.",
+    "icon": "star",
+    "color": "#8B5CF6",
+    "category": "progress",
+    "rarity": "common",
+    "conditions": [
+      {"path": "learner.level", "op": ">=", "value": 5}
+    ]
+  },
+  {
+    "id": "level-10",
+    "name": "Chasseur",
+    "description": "Niveau 10 atteint.",
+    "icon": "star",
+    "color": "#8B5CF6",
+    "category": "progress",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "learner.level", "op": ">=", "value": 10}
+    ]
+  },
+  {
+    "id": "level-20",
+    "name": "Stratège",
+    "description": "Niveau 20 atteint.",
+    "icon": "star",
+    "color": "#8B5CF6",
+    "category": "progress",
+    "rarity": "epic",
+    "conditions": [
+      {"path": "learner.level", "op": ">=", "value": 20}
+    ]
+  },
+  {
+    "id": "level-30",
+    "name": "Vétéran",
+    "description": "Niveau 30 atteint.",
+    "icon": "star",
+    "color": "#F5A623",
+    "category": "progress",
+    "rarity": "epic",
+    "conditions": [
+      {"path": "learner.level", "op": ">=", "value": 30}
+    ]
+  },
+  {
+    "id": "level-50",
+    "name": "Maître",
+    "description": "Niveau 50 atteint.",
+    "icon": "crown",
+    "color": "#FFD166",
+    "category": "progress",
+    "rarity": "legendary",
+    "conditions": [
+      {"path": "learner.level", "op": ">=", "value": 50}
+    ]
+  },
+  {
+    "id": "concepts-5-mastered",
+    "name": "Bases solides",
+    "description": "5 concepts maîtrisés.",
+    "icon": "brain",
+    "color": "#10B981",
+    "category": "mastery",
+    "rarity": "common",
+    "conditions": [
+      {"path": "learner.concepts_mastered", "op": ">=", "value": 5}
+    ]
+  },
+  {
+    "id": "concepts-25-mastered",
+    "name": "Encyclopédiste",
+    "description": "25 concepts maîtrisés.",
+    "icon": "brain",
+    "color": "#10B981",
+    "category": "mastery",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "learner.concepts_mastered", "op": ">=", "value": 25}
+    ]
+  },
+  {
+    "id": "missions-5",
+    "name": "Exécutant",
+    "description": "5 missions in-app réussies.",
+    "icon": "check-circle",
+    "color": "#0EA5E9",
+    "category": "mission",
+    "rarity": "common",
+    "conditions": [
+      {"path": "learner.missions_completed", "op": ">=", "value": 5}
+    ]
+  },
+  {
+    "id": "missions-25",
+    "name": "Opérateur aguerri",
+    "description": "25 missions in-app réussies.",
+    "icon": "check-circle",
+    "color": "#0EA5E9",
+    "category": "mission",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "learner.missions_completed", "op": ">=", "value": 25}
+    ]
+  },
+  {
+    "id": "night-owl",
+    "name": "Oiseau de nuit",
+    "description": "Badge caché. Tu as étudié après minuit.",
+    "icon": "moon",
+    "color": "#6366F1",
+    "category": "secret",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "event.local_hour", "op": "<", "value": 5}
+    ]
+  },
+  {
+    "id": "early-bird",
+    "name": "Lève-tôt",
+    "description": "Badge caché. Tu as étudié avant 7h.",
+    "icon": "sunrise",
+    "color": "#F5A623",
+    "category": "secret",
+    "rarity": "rare",
+    "conditions": [
+      {"path": "event.local_hour", "op": ">=", "value": 5},
+      {"path": "event.local_hour", "op": "<", "value": 7}
+    ]
+  }
+]

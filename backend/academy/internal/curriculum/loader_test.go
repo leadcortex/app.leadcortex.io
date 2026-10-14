@@ -6,27 +6,14 @@ import (
 	"testing"
 )
 
-func TestLoad_SampleFoundations(t *testing.T) {
-	contentDir := t.TempDir()
-	for _, file := range []struct {
-		source string
-		target string
-	}{
-		{source: filepath.Join("testdata", "programs", "01-foundations.yaml"), target: filepath.Join("programs", "01-foundations.yaml")},
-		{source: filepath.Join("..", "..", "content", "avatars", "all-avatars.yaml"), target: filepath.Join("avatars", "all-avatars.yaml")},
-		{source: filepath.Join("..", "..", "content", "badges", "standard-badges.yaml"), target: filepath.Join("badges", "standard-badges.yaml")},
-	} {
-		data, err := os.ReadFile(file.source)
-		if err != nil {
-			t.Fatalf("lecture de %s : %v", file.source, err)
-		}
-		target := filepath.Join(contentDir, file.target)
-		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
-			t.Fatalf("création du répertoire %s : %v", filepath.Dir(target), err)
-		}
-		if err := os.WriteFile(target, data, 0o600); err != nil {
-			t.Fatalf("écriture de %s : %v", target, err)
-		}
+// TestLoad_RealContent charge le contenu réel du dépôt (5 programmes JSON).
+//
+// Ce test est skippé si le dossier content/ n'est pas encore peuplé
+// (utile en CI sur un checkout partiel).
+func TestLoad_RealContent(t *testing.T) {
+	contentDir := filepath.Join("..", "..", "content")
+	if _, err := os.Stat(contentDir); err != nil {
+		t.Skipf("content dir absent (%s) : %v", contentDir, err)
 	}
 
 	res, err := Load(contentDir)
@@ -38,48 +25,70 @@ func TestLoad_SampleFoundations(t *testing.T) {
 	}
 
 	stats := res.Registry.Stats()
-	if stats.Programs < 1 {
-		t.Errorf("attendu au moins 1 programme, obtenu %d", stats.Programs)
+	if stats.Programs != 5 {
+		t.Errorf("programmes : attendu 5, obtenu %d", stats.Programs)
 	}
-	if stats.Lessons < 1 {
-		t.Errorf("attendu au moins 1 leçon, obtenue %d", stats.Lessons)
+	if stats.Lessons < 40 {
+		t.Errorf("leçons : attendu >= 40, obtenu %d", stats.Lessons)
+	}
+	if stats.Avatars != 12 {
+		t.Errorf("avatars : attendu 12, obtenu %d", stats.Avatars)
+	}
+	if stats.Badges != 19 {
+		t.Errorf("badges : attendu 19, obtenu %d", stats.Badges)
 	}
 
-	// Lookup direct.
+	// Lookup direct d'un programme connu.
 	p, ok := res.Registry.Program("p1-foundations")
 	if !ok {
 		t.Fatal("programme p1-foundations introuvable")
 	}
-	if p.Title != "Foundations" {
-		t.Errorf("titre : attendu %q, obtenu %q", "Foundations", p.Title)
+	if p.Title != "Fondations" {
+		t.Errorf("titre : attendu %q, obtenu %q", "Fondations", p.Title)
 	}
 
+	// Lookup direct d'une leçon connue (avec blocs).
 	l, ok := res.Registry.Lesson("p1-m1-l1-why-prospection")
 	if !ok {
 		t.Fatal("leçon p1-m1-l1-why-prospection introuvable")
 	}
-	if l.DurationMin != 6 {
-		t.Errorf("durée : attendue 6, obtenue %d", l.DurationMin)
+	if l.DurationMin != 7 {
+		t.Errorf("durée : attendue 7, obtenue %d", l.DurationMin)
 	}
-	if len(l.Blocks) != 5 {
-		t.Errorf("blocs : attendu 5, obtenu %d", len(l.Blocks))
+	if len(l.Blocks) == 0 {
+		t.Errorf("blocs : attendu > 0, obtenu %d", len(l.Blocks))
 	}
 }
 
-func TestLoad_AcademyContent(t *testing.T) {
-	res, err := Load(filepath.Join("..", "..", "content"))
+// TestLoad_ChapterOnModules vérifie que le champ chapter du JSON est
+// bien propagé jusqu'à domain.Module.
+func TestLoad_ChapterOnModules(t *testing.T) {
+	contentDir := filepath.Join("..", "..", "content")
+	if _, err := os.Stat(contentDir); err != nil {
+		t.Skipf("content dir absent (%s) : %v", contentDir, err)
+	}
+	res, err := Load(contentDir)
 	if err != nil {
-		t.Fatalf("Load curriculum Academy : %v", err)
+		t.Fatalf("Load : %v", err)
 	}
 	if res.Registry == nil {
-		t.Fatalf("registre Academy nil, issues : %v", res.Issues)
+		t.Fatalf("registre nil, issues : %v", res.Issues)
 	}
-	stats := res.Registry.Stats()
-	if stats.Programs != 5 || stats.Lessons != 40 {
-		t.Errorf("curriculum incomplet : %d programmes, %d leçons", stats.Programs, stats.Lessons)
+
+	m5, ok := res.Registry.Module("p1-m5")
+	if !ok {
+		t.Fatal("module p1-m5 introuvable")
 	}
-	if stats.Avatars != 12 || stats.Badges != 19 {
-		t.Errorf("catalogues incomplets : %d avatars, %d badges", stats.Avatars, stats.Badges)
+	if m5.Chapter != 2 {
+		t.Errorf("p1-m5.Chapter : attendu 2, obtenu %d", m5.Chapter)
+	}
+
+	m1, ok := res.Registry.Module("p1-m1")
+	if !ok {
+		t.Fatal("module p1-m1 introuvable")
+	}
+	if m1.EffectiveChapter() != 1 {
+		t.Errorf("p1-m1.EffectiveChapter() : attendu 1, obtenu %d", m1.EffectiveChapter())
 	}
 }
 

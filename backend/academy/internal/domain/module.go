@@ -2,6 +2,9 @@ package domain
 
 // Module est une subdivision d'un programme. Exemple pour "Foundations" :
 // "Bases de la prospection", "ICP & Persona", "Funnel & Signaux".
+//
+// Le champ Chapter permet de regrouper les modules en chapitres
+// (1 = fondations, 2 = pratique). 0 = non spécifié (traité comme 1).
 type Module struct {
 	// ID — identifiant stable, ex. "p1-m2".
 	ID string
@@ -11,6 +14,10 @@ type Module struct {
 
 	// Order — ordre dans le programme (1-based).
 	Order int
+
+	// Chapter — chapitre auquel appartient ce module (1 ou 2).
+	// 0 = non spécifié, traité comme 1 par les consommateurs.
+	Chapter int
 
 	// Title — titre lisible.
 	Title string
@@ -45,6 +52,9 @@ func (m Module) Validate() error {
 	if m.Order <= 0 {
 		return NewValidationError("Module", "order", "doit être > 0")
 	}
+	if m.Chapter < 0 || m.Chapter > 2 {
+		return NewValidationError("Module", "chapter", "doit être 0, 1 ou 2")
+	}
 	if m.Title == "" {
 		return NewValidationError("Module", "title", "obligatoire")
 	}
@@ -61,6 +71,14 @@ func (m Module) Validate() error {
 		}
 	}
 	return nil
+}
+
+// EffectiveChapter renvoie le chapitre effectif (1 si non spécifié).
+func (m Module) EffectiveChapter() int {
+	if m.Chapter <= 0 {
+		return 1
+	}
+	return m.Chapter
 }
 
 // TotalXP renvoie l'XP totale distribuable dans ce module.

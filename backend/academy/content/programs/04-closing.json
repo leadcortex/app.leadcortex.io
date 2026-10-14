@@ -1,0 +1,1285 @@
+{
+  "schema_version": "1.0",
+  "id": "p4-closing",
+  "order": 4,
+  "title": "Closing & post-vente",
+  "subtitle": "Objections, closing, onboarding, expansion",
+  "description": "Transformer une opportunité qualifiée en client signé, puis en client\nqui dure : maîtriser les signaux d'achat finaux, closer sans forcer,\nrépondre aux objections de fin, réussir l'onboarding et créer les\nconditions de l'expansion.\n",
+  "icon": "trophy",
+  "color": "#EF4444",
+  "difficulty": 4,
+  "language": "fr",
+  "authors": ["team"],
+  "prerequisites": {
+    "previous_program_ids": ["p3-discovery"],
+    "min_level": 4,
+    "min_xp": 800
+  },
+  "concepts": [
+    { "id": "closing_signals", "label": "Signaux de closing", "description": "Signaux qui indiquent qu'un deal est prêt à être signé." },
+    { "id": "closing_techniques", "label": "Techniques de closing", "description": "Méthodes pour amener le prospect à décider." },
+    { "id": "price_objection", "label": "Objection prix", "description": "Traiter la question du prix sans brader la valeur." },
+    { "id": "competitor_objection", "label": "Objection concurrent", "description": "Se positionner face à un concurrent sans dénigrer." },
+    { "id": "timing_objection", "label": "Objection timing", "description": "Gérer le « pas maintenant » sans perdre le deal." },
+    { "id": "negotiation_basics", "label": "Bases de la négociation", "description": "Concessions, contreparties, ancrage." },
+    { "id": "onboarding", "label": "Onboarding client", "description": "Les premiers jours qui décident de la rétention." },
+    { "id": "time_to_value", "label": "Time to value", "description": "Délai entre la signature et le premier résultat concret." },
+    { "id": "upsell", "label": "Upsell", "description": "Augmenter le panier d'un client existant." },
+    { "id": "cross_sell", "label": "Cross-sell", "description": "Vendre des produits complémentaires à un client existant." },
+    { "id": "renewal", "label": "Renouvellement", "description": "Sécuriser la reconduction du contrat." },
+    { "id": "churn_prevention", "label": "Prévention du churn", "description": "Détecter les signaux faibles avant qu'il ne soit trop tard." }
+  ],
+  "modules": [
+    {
+      "id": "p4-m1",
+      "order": 1,
+      "title": "Closing",
+      "description": "Transformer une opportunité en client.",
+      "prerequisites": { "previous_module_ids": [], "required_concept_ids": [] },
+      "lessons": [
+        {
+          "id": "p4-m1-l1-closing-signals",
+          "order": 1,
+          "slug": "closing-signals",
+          "title": "Signaux de closing",
+          "subtitle": "Reconnaître quand le deal est prêt",
+          "duration_min": 7,
+          "difficulty": 3,
+          "xp_total": 130,
+          "concepts": ["closing_signals", "next_steps"],
+          "skills": ["analyse", "communication"],
+          "prerequisites": {
+            "previous_lesson_ids": [],
+            "required_concept_ids": ["next_steps"]
+          },
+          "unlocks": { "lesson_ids": ["p4-m1-l2-closing-techniques"] },
+          "rewards": { "xp": 100, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Signaux de closing",
+              "subtitle": "Closing · Module 1 · Leçon 1",
+              "mascot_pose": "curious",
+              "mascot_line": "Un deal prêt à closer, ça se voit. Encore faut-il savoir regarder.",
+              "objectives": [
+                "Reconnaître les signaux d'achat finaux",
+                "Éviter de closer trop tôt",
+                "Ne pas rater le bon moment"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Les signaux classiques",
+                  "body_md": "Un deal prêt à être signé émet des signaux :\n\n- Le prospect pose des questions **précises sur\n  l'implémentation** (délais, ressources, intégrations).\n- Il mentionne **d'autres parties prenantes** qu'il doit\n  consulter.\n- Il demande une **version de devis formelle**.\n- Il parle au **« nous »** plutôt qu'au « je » ou « on ».\n- Il évoque le **« quand on aura mis en place… »**.\n",
+                  "callout": {
+                    "tone": "success",
+                    "title": "Signal fort",
+                    "text": "Quand le prospect parle du futur avec votre solution, il a déjà acheté dans sa tête. Il reste à formaliser."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les faux signaux",
+                  "body_md": "Attention aux faux positifs :\n\n- « C'est très intéressant » → curiosité, pas engagement.\n- « Il faut qu'on en reparle » → souvent un non poli.\n- « On va voir avec la direction » → sans date, c'est\n  un mur.\n\nCes phrases **ouvrent** la conversation mais ne sont\npas des signaux d'achat.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Le bon timing",
+                  "body_md": "Closer trop tôt = pression, méfiance, recul.\nCloser trop tard = concurrence, hésitation, perte.\n\nLe bon moment : **quand le prospect a verbalisé le\nproblème, la valeur et la prochaine étape — mais pas\nencore le prix**.\n\nÀ ce moment précis, proposez la formalisation.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m1-l1-ex1",
+                  "kind": "multi_select",
+                  "prompt": "Quels sont les signaux d'un deal prêt à être signé ?",
+                  "explanation_md": "Questions d'implémentation, autres parties prenantes,\ndevis formel, « quand on aura mis en place… ».\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["closing_signals"],
+                  "payload": {
+                    "options": [
+                      "Pose des questions précises sur l'implémentation",
+                      "Dit « c'est très intéressant »",
+                      "Demande une version formelle de devis",
+                      "Parle au « nous » plutôt qu'au « je »",
+                      "Parle du futur avec votre solution"
+                    ],
+                    "correct": [0, 2, 3, 4]
+                  }
+                },
+                {
+                  "id": "p4-m1-l1-ex2",
+                  "kind": "mcq",
+                  "prompt": "Le prospect dit « Il faut qu'on en reparle ». Comment\ninterprétez-vous ce signal ?\n",
+                  "explanation_md": "C'est souvent un **non poli** ou un manque\nd'engagement. Ce n'est pas un signal d'achat.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["closing_signals"],
+                  "payload": {
+                    "options": [
+                      "Un signal d'achat fort",
+                      "Un signal d'achat tiède",
+                      "Probablement un non poli",
+                      "Un signal d'indécision neutre"
+                    ],
+                    "correct": 2
+                  }
+                },
+                {
+                  "id": "p4-m1-l1-ex3",
+                  "kind": "mcq",
+                  "prompt": "Quand est le bon moment pour closer ?",
+                  "explanation_md": "Ni trop tôt (pression), ni trop tard (perte). Le bon\nmoment : après que le prospect a verbalisé problème et\nvaleur, mais avant qu'il bloque sur le prix.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["closing_signals"],
+                  "payload": {
+                    "options": [
+                      "Dès le premier call",
+                      "Après que le prospect a verbalisé valeur et problème",
+                      "Toujours à la fin du contrat annuel",
+                      "Quand le prospect dit « c'est intéressant »"
+                    ],
+                    "correct": 1
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-spot-closing-signal",
+                "title": "Repérer un signal de closing réel",
+                "brief_md": "Dans l'app LeadCortex, ouvre un deal en cours et note\ndans les commentaires **un signal de closing** que tu as\nobservé chez ce prospect.\n\nPrécise la phrase exacte ou le comportement qui t'a mis\nsur la piste.\n",
+                "target": { "route": "/app/deals", "cta": "Voir mes deals" },
+                "validation": {
+                  "trigger": "deal.updated",
+                  "conditions": [{ "path": "deal.notes_length", "op": ">=", "value": 120 }]
+                },
+                "on_success": {
+                  "xp": 50,
+                  "mascot_line": "Signal repéré — tu sais quand appuyer."
+                },
+                "on_failure": {
+                  "feedback_md": "Les notes doivent contenir au moins 120 caractères.",
+                  "hint_md": "Ouvre un deal, ajoute une note décrivant le signal observé."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "closing_signals",
+              "front": "Citez 3 signaux d'un deal prêt à être signé.",
+              "back": "Questions d'implémentation, mentions de parties prenantes à consulter, demande de devis formel, usage du « nous »."
+            }
+          ]
+        },
+        {
+          "id": "p4-m1-l2-closing-techniques",
+          "order": 2,
+          "slug": "closing-techniques",
+          "title": "Techniques de closing",
+          "subtitle": "Amener à décider sans forcer",
+          "duration_min": 8,
+          "difficulty": 4,
+          "xp_total": 150,
+          "concepts": ["closing_techniques", "negotiation_basics"],
+          "skills": ["communication"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p4-m1-l1-closing-signals"],
+            "required_concept_ids": ["closing_signals"]
+          },
+          "unlocks": { "lesson_ids": ["p4-m2-l1-price-objection"] },
+          "rewards": { "xp": 110, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Techniques de closing",
+              "subtitle": "Closing · Module 1 · Leçon 2",
+              "mascot_pose": "happy",
+              "mascot_line": "Closer, ce n'est pas forcer. C'est rendre la décision facile.",
+              "objectives": [
+                "Connaître 4 techniques de closing",
+                "Choisir la technique selon le contexte",
+                "Éviter les techniques manipulatoires"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Les 4 techniques classiques",
+                  "body_md": "1. **Closing par alternative** — « Vous préférez\n   commencer en janvier ou en février ? »\n2. **Closing par résumé** — « Si je résume : vous\n   voulez X, Y, Z. On est alignés ? »\n3. **Closing par objection** — « Qu'est-ce qui vous\n   empêcherait de signer aujourd'hui ? »\n4. **Closing par prochaine étape** — « Prochaine\n   étape : signature du devis cette semaine ? »\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "Fil rouge",
+                    "text": "Toutes ces techniques posent une question précise à un moment précis. Elles ne forcent pas — elles clarifient."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "La technique du résumé",
+                  "body_md": "La plus puissante et la plus sous-utilisée :\n\n1. **Résumez** ce que le prospect a dit vouloir.\n2. **Vérifiez** qu'il est d'accord.\n3. **Proposez** la suite logique.\n\nExemple : « Si je résume : vous cherchez à réduire le\ntemps de recherche de vos SDR de 40 %, sur un\npérimètre de 15 personnes. C'est bien ça ? »\n\nUne fois le « oui », la suite coule de source.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Ce qu'il ne faut **jamais** faire",
+                  "body_md": "- **Fausse urgence** — « L'offre expire demain. »\n- **Pression morale** — « Vous ne voulez pas réussir ? »\n- **Rabais surprise** — « Je peux vous faire -30 %\n  tout de suite. »\n- **Manipulation** — déformer ce que le prospect a dit.\n\nCes tactiques fonctionnent à court terme et détruisent\nla relation à long terme.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m1-l2-ex1",
+                  "kind": "multi_select",
+                  "prompt": "Quelles sont les techniques de closing saines ?",
+                  "explanation_md": "Alternative, résumé, objection, prochaine étape. Ce\nsont des questions qui clarifient, pas qui forcent.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["closing_techniques"],
+                  "payload": {
+                    "options": [
+                      "Closing par alternative (janvier ou février ?)",
+                      "Closing par résumé (si je résume…)",
+                      "Fausse urgence (l'offre expire demain)",
+                      "Closing par objection (qu'est-ce qui vous bloque ?)",
+                      "Closing par prochaine étape (signature cette semaine ?)"
+                    ],
+                    "correct": [0, 1, 3, 4]
+                  }
+                },
+                {
+                  "id": "p4-m1-l2-ex2",
+                  "kind": "fill_blank",
+                  "prompt": "La technique du closing par ______ consiste à reformuler ce que veut le prospect avant de proposer la suite.",
+                  "explanation_md": "Le **résumé** est la technique la plus puissante :\nreformuler, valider, puis proposer.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["closing_techniques"],
+                  "payload": { "blanks": [{ "correct": ["résumé", "resume"] }] }
+                },
+                {
+                  "id": "p4-m1-l2-ex3",
+                  "kind": "mcq",
+                  "prompt": "Quel est le risque principal d'une fausse urgence\n(« l'offre expire demain ») ?\n",
+                  "explanation_md": "Elle fonctionne à court terme mais **détruit la\nrelation à long terme**. Le prospect se sent manipulé\net n'achète plus.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["closing_techniques", "negotiation_basics"],
+                  "payload": {
+                    "options": [
+                      "Elle ne fonctionne jamais",
+                      "Elle détruit la relation à long terme",
+                      "Elle est illégale",
+                      "Elle nécessite l'accord du manager"
+                    ],
+                    "correct": 1
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-summary-close",
+                "title": "Rédiger un closing par résumé",
+                "brief_md": "Dans l'app LeadCortex, ouvre un deal et rédige dans les\nnotes un **closing par résumé**.\n\nStructure : « Si je résume, vous voulez X, Y, Z. On est\nalignés pour [prochaine étape datée] ? »\n",
+                "target": { "route": "/app/deals", "cta": "Voir mes deals" },
+                "validation": {
+                  "trigger": "deal.updated",
+                  "conditions": [{ "path": "deal.notes_length", "op": ">=", "value": 180 }]
+                },
+                "on_success": {
+                  "xp": 60,
+                  "mascot_line": "Résumé prêt — un closing propre commence par un bon résumé."
+                },
+                "on_failure": {
+                  "feedback_md": "Les notes doivent contenir au moins 180 caractères.",
+                  "hint_md": "Ouvre un deal, écris « Si je résume… » puis propose une prochaine étape."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "closing_techniques",
+              "front": "Citez 2 techniques de closing saines.",
+              "back": "Closing par résumé (reformuler puis proposer) et closing par alternative (janvier ou février ?). Éviter la fausse urgence et la pression morale."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p4-m2",
+      "order": 2,
+      "title": "Objections de fin",
+      "description": "Prix, concurrent, timing — les 3 dernières barrières.",
+      "prerequisites": {
+        "previous_module_ids": ["p4-m1"],
+        "required_concept_ids": ["closing_techniques"]
+      },
+      "lessons": [
+        {
+          "id": "p4-m2-l1-price-objection",
+          "order": 1,
+          "slug": "price-objection",
+          "title": "Objection prix",
+          "subtitle": "Traiter le prix sans brader la valeur",
+          "duration_min": 8,
+          "difficulty": 4,
+          "xp_total": 150,
+          "concepts": ["price_objection", "negotiation_basics"],
+          "skills": ["communication", "méthode"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p4-m1-l2-closing-techniques"],
+            "required_concept_ids": ["closing_techniques"]
+          },
+          "unlocks": { "lesson_ids": ["p4-m2-l2-competitor-timing"] },
+          "rewards": { "xp": 110, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Objection prix",
+              "subtitle": "Closing · Module 2 · Leçon 1",
+              "mascot_pose": "thinking",
+              "mascot_line": "Le prix n'est jamais le vrai problème.",
+              "objectives": [
+                "Comprendre ce qui se cache derrière « c'est cher »",
+                "Utiliser la méthode valeur/prix",
+                "Faire des concessions avec contrepartie"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Ce qui se cache derrière « c'est cher »",
+                  "body_md": "Quand un prospect dit « c'est cher », il veut souvent\ndire :\n\n- « Je ne vois pas **assez de valeur** pour justifier ce\n  prix. »\n- « Je n'ai **pas ce budget** cette année. »\n- « Je dois **justifier en interne** et je n'ai pas les\n  arguments. »\n- « J'ai vu **moins cher ailleurs**. »\n\nChaque cas appelle une réponse différente.\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "Règle",
+                    "text": "On ne baisse jamais le prix sans baisser le scope ou obtenir une contrepartie. Sinon on signale que le prix initial était faux."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "La méthode valeur/prix",
+                  "body_md": "Avant de parler prix, on rappelle la **valeur** :\n\n- Combien le problème coûte actuellement ?\n- Combien la solution va rapporter ?\n- En combien de temps le ROI est atteint ?\n\nExemple : « Vous économisez 3h/SDR/semaine × 15 SDR ×\n50 €/h = 9 000 €/mois. Notre solution coûte 2 000 €/mois.\nVous êtes à +7 000 € net dès le 1er mois. »\n\nOn transforme le prix en **investissement mesurable**.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Les concessions avec contrepartie",
+                  "body_md": "Si vous devez concéder quelque chose, obtenez toujours\nune **contrepartie** :\n\n- Remise → engagement plus long.\n- Remise → paiement annuel au lieu de mensuel.\n- Remise → témoignage public ou référence.\n- Remise → cas client écrit.\n\nUne remise sans contrepartie est une **défaite\nnégociée**.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m2-l1-ex1",
+                  "kind": "multi_select",
+                  "prompt": "Que peut cacher l'objection « c'est cher » ?",
+                  "explanation_md": "Manque de valeur perçue, budget réel absent, besoin\nd'arguments internes, concurrence moins chère. Chaque\ncas appelle une réponse différente.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["price_objection"],
+                  "payload": {
+                    "options": [
+                      "Un manque de valeur perçue",
+                      "Une impossibilité budgétaire réelle",
+                      "Un besoin d'arguments internes",
+                      "Une concurrence moins chère",
+                      "Une simple envie de tester votre résistance"
+                    ],
+                    "correct": [0, 1, 2, 3]
+                  }
+                },
+                {
+                  "id": "p4-m2-l1-ex2",
+                  "kind": "mcq",
+                  "prompt": "Un prospect demande une remise de 20 %. Quelle est la\nbonne réaction ?\n",
+                  "explanation_md": "On **ne baisse pas le prix sans contrepartie**. Soit on\nréduit le scope, soit on obtient un engagement plus\nlong, un paiement annuel ou un témoignage.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["price_objection", "negotiation_basics"],
+                  "payload": {
+                    "options": [
+                      "Accorder la remise immédiatement pour ne pas perdre le deal",
+                      "Refuser net et passer à autre chose",
+                      "Demander une contrepartie (engagement plus long, témoignage)",
+                      "Proposer un rabais sur le prochain contrat"
+                    ],
+                    "correct": 2
+                  }
+                },
+                {
+                  "id": "p4-m2-l1-ex3",
+                  "kind": "fill_blank",
+                  "prompt": "Une remise sans ______ est une défaite négociée.",
+                  "explanation_md": "Toujours obtenir une contrepartie : engagement, durée,\ntémoignage, paiement annuel.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["negotiation_basics"],
+                  "payload": {
+                    "blanks": [
+                      { "correct": ["contrepartie", "contre-partie", "compensation"] }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-price-argument",
+                "title": "Préparer une réponse à l'objection prix",
+                "brief_md": "Dans l'app LeadCortex, ouvre un deal et note dans les\ncommentaires un **argumentaire valeur/prix**.\n\nChiffre le coût du problème pour le prospect et compare-le\nau prix de votre solution.\n",
+                "target": { "route": "/app/deals", "cta": "Voir mes deals" },
+                "validation": {
+                  "trigger": "deal.updated",
+                  "conditions": [{ "path": "deal.notes_length", "op": ">=", "value": 200 }]
+                },
+                "on_success": {
+                  "xp": 70,
+                  "mascot_line": "Argumentaire prêt — tu ne parles plus prix, tu parles valeur."
+                },
+                "on_failure": {
+                  "feedback_md": "Les notes doivent contenir au moins 200 caractères.",
+                  "hint_md": "Chiffre le coût du problème (heures × taux horaire) et compare-le au prix."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "price_objection",
+              "front": "Que cache souvent l'objection « c'est cher » ?",
+              "back": "Manque de valeur perçue, budget réel absent, besoin d'arguments internes, ou concurrence moins chère."
+            },
+            {
+              "concept": "negotiation_basics",
+              "front": "Que faire avant d'accorder une remise ?",
+              "back": "Toujours obtenir une contrepartie : engagement plus long, paiement annuel, témoignage public."
+            }
+          ]
+        },
+        {
+          "id": "p4-m2-l2-competitor-timing",
+          "order": 2,
+          "slug": "competitor-timing",
+          "title": "Objection concurrent & timing",
+          "subtitle": "Le concurrent et le « pas maintenant »",
+          "duration_min": 8,
+          "difficulty": 4,
+          "xp_total": 150,
+          "concepts": ["competitor_objection", "timing_objection"],
+          "skills": ["communication", "stratégie"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p4-m2-l1-price-objection"],
+            "required_concept_ids": ["price_objection"]
+          },
+          "unlocks": { "lesson_ids": ["p4-m3-l1-onboarding"] },
+          "rewards": { "xp": 110, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Objection concurrent & timing",
+              "subtitle": "Closing · Module 2 · Leçon 2",
+              "mascot_pose": "thinking",
+              "mascot_line": "Le concurrent est une opportunité. Le « pas maintenant » aussi.",
+              "objectives": [
+                "Se positionner face à un concurrent",
+                "Gérer le « pas maintenant » sans perdre le deal",
+                "Éviter le dénigrement"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Face au concurrent — les règles",
+                  "body_md": "- **Ne jamais dénigrer.** Le prospect perd confiance en\n  vous, pas en l'autre.\n- **Reconnaître ce que fait bien le concurrent.**\n  « Oui, ils sont bons sur X. »\n- **Recentrer sur les critères de décision du\n  prospect.** « Sur vos 3 critères, voilà où on se\n  situe. »\n- **Proposer un test objectif.** POC, benchmark, essai.\n",
+                  "callout": {
+                    "tone": "warning",
+                    "title": "Piège classique",
+                    "text": "Critiquer un concurrent en réunion fait toujours perdre des points. Le prospect le perçoit comme un manque de confiance en votre propre offre."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Le « pas maintenant »",
+                  "body_md": "Le prospect dit : « Ce n'est pas le bon moment. »\n\nTrois cas :\n\n1. **Vrai manque de timing** — budget qui se libère en\n   janvier, comité en février. → **Datation.**\n2. **Manque de priorité interne** — d'autres projets\n   plus urgents. → **Business case comparatif.**\n3. **Prétexte poli** — le prospect ne veut pas dire\n   non. → **Question directe : qu'est-ce qui changerait\n   votre décision ?**\n\nLe traitement diffère selon le cas.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Quand fermer proprement",
+                  "body_md": "Parfois, il faut savoir **fermer proprement** :\n\n- « Je comprends. Je vous propose qu'on se reparle en\n  [mois précis]. »\n\n- « Si ce n'est pas un sujet cette année, autant le\n  dire et arrêter là. »\n\nUn deal fermé proprement **revient** souvent 6 mois\nplus tard. Un deal forci laisse une mauvaise\nimpression.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m2-l2-ex1",
+                  "kind": "mcq",
+                  "prompt": "Un prospect mentionne un concurrent. Quelle est la\nbonne première réaction ?\n",
+                  "explanation_md": "On **reconnaît** ce que fait bien le concurrent, puis\non **recentre** sur les critères de décision du\nprospect. Jamais de dénigrement.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["competitor_objection"],
+                  "payload": {
+                    "options": [
+                      "Lister les faiblesses du concurrent",
+                      "Reconnaître ce qu'il fait bien, puis recentrer sur les critères",
+                      "Ignorer complètement la mention",
+                      "Proposer immédiatement une grosse remise"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p4-m2-l2-ex2",
+                  "kind": "multi_select",
+                  "prompt": "Le prospect dit « pas maintenant ». Que peut-il\nvraiment vouloir dire ?\n",
+                  "explanation_md": "Vrai manque de timing, manque de priorité interne, ou\nprétexte poli. Chaque cas appelle une réponse\ndifférente.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["timing_objection"],
+                  "payload": {
+                    "options": [
+                      "Vrai manque de timing (budget, comité)",
+                      "Manque de priorité interne",
+                      "Prétexte poli pour dire non",
+                      "Toujours un oui caché",
+                      "Un signal d'achat"
+                    ],
+                    "correct": [0, 1, 2]
+                  }
+                },
+                {
+                  "id": "p4-m2-l2-ex3",
+                  "kind": "mcq",
+                  "prompt": "Pourquoi faut-il parfois « fermer proprement » un\ndeal ?\n",
+                  "explanation_md": "Un deal fermé proprement **revient souvent** plus tard.\nUn deal forci laisse une mauvaise impression et bloque\ntoute relation future.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["timing_objection"],
+                  "payload": {
+                    "options": [
+                      "Pour éviter d'appeler le manager",
+                      "Parce qu'un deal fermé proprement revient souvent plus tard",
+                      "Pour respecter le CRM",
+                      "Parce que le prospect l'exige"
+                    ],
+                    "correct": 1
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-competitor-positioning",
+                "title": "Préparer un positionnement concurrent",
+                "brief_md": "Dans l'app LeadCortex, ouvre un deal où un concurrent est\nen jeu et note dans les commentaires ta stratégie :\n\n(1) Ce que fait bien le concurrent.\n(2) Sur quels critères vous vous démarquez.\n(3) La prochaine étape pour prouver votre valeur (POC,\nbenchmark, essai).\n",
+                "target": { "route": "/app/deals", "cta": "Voir mes deals" },
+                "validation": {
+                  "trigger": "deal.updated",
+                  "conditions": [{ "path": "deal.notes_length", "op": ">=", "value": 250 }]
+                },
+                "on_success": {
+                  "xp": 70,
+                  "mascot_line": "Positionnement prêt — tu ne combats pas le concurrent, tu clarifies."
+                },
+                "on_failure": {
+                  "feedback_md": "Les notes doivent contenir au moins 250 caractères.",
+                  "hint_md": "Décris 3 points : forces concurrent, vos différenciateurs, prochain test."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "competitor_objection",
+              "front": "Comment réagir face à un concurrent mentionné par le prospect ?",
+              "back": "Ne jamais dénigrer. Reconnaître ses forces. Recentrer sur les critères du prospect. Proposer un test objectif."
+            },
+            {
+              "concept": "timing_objection",
+              "front": "Que cache le « pas maintenant » ?",
+              "back": "Vrai manque de timing (à dater), manque de priorité interne (business case), ou prétexte poli (question directe)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p4-m3",
+      "order": 3,
+      "title": "Onboarding",
+      "description": "Les premiers jours qui décident de la rétention.",
+      "prerequisites": {
+        "previous_module_ids": ["p4-m2"],
+        "required_concept_ids": ["timing_objection"]
+      },
+      "lessons": [
+        {
+          "id": "p4-m3-l1-onboarding",
+          "order": 1,
+          "slug": "onboarding",
+          "title": "Les 30 premiers jours",
+          "subtitle": "Le moment le plus critique de la relation",
+          "duration_min": 8,
+          "difficulty": 3,
+          "xp_total": 140,
+          "concepts": ["onboarding", "time_to_value"],
+          "skills": ["méthode", "communication"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p4-m2-l2-competitor-timing"],
+            "required_concept_ids": ["timing_objection"]
+          },
+          "unlocks": { "lesson_ids": ["p4-m3-l2-time-to-value"] },
+          "rewards": { "xp": 100, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Les 30 premiers jours",
+              "subtitle": "Closing · Module 3 · Leçon 1",
+              "mascot_pose": "happy",
+              "mascot_line": "Un client qui réussit ses 30 premiers jours reste 3 ans.",
+              "objectives": [
+                "Comprendre l'enjeu des 30 premiers jours",
+                "Structurer un onboarding réussi",
+                "Éviter les erreurs classiques"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Le moment le plus risqué",
+                  "body_md": "Les 30 premiers jours après la signature sont **le\nmoment le plus risqué** de la relation client :\n\n- L'enthousiasme de la signature retombe.\n- Le client découvre la réalité du produit.\n- Les utilisateurs internes résistent au changement.\n- Le champion doit tenir sa promesse en interne.\n\nUn onboarding raté = **churn à 6 mois**.\n",
+                  "callout": {
+                    "tone": "warning",
+                    "title": "Statistique",
+                    "text": "Un client qui n'atteint pas son premier résultat dans les 30 jours a 3× plus de chances de churner la 1ère année."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les 4 phases d'un onboarding",
+                  "body_md": "1. **Kick-off** — alignement sur les objectifs et le\n   planning.\n2. **Configuration** — paramétrage technique et import\n   de données.\n3. **Formation** — montée en compétence des\n   utilisateurs clés.\n4. **Premier résultat** — la victoire concrète visible\n   par le client.\n\nChaque phase a un livrable explicite et une date.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Les erreurs classiques",
+                  "body_md": "- **Lancer l'onboarding sans objectif écrit**.\n- **Ne pas inclure le champion** dans la préparation.\n- **Multiplier les réunions** sans livrable concret.\n- **Attendre que le client s'adapte seul**.\n- **Ne pas célébrer** le premier résultat.\n\nCes erreurs rallongent le time-to-value et fragilisent\nla relation.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m3-l1-ex1",
+                  "kind": "multi_select",
+                  "prompt": "Quelles sont les 4 phases d'un onboarding ?",
+                  "explanation_md": "Kick-off, configuration, formation, premier résultat.\nChaque phase a un livrable et une date.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["onboarding"],
+                  "payload": {
+                    "options": [
+                      "Kick-off et alignement",
+                      "Configuration technique",
+                      "Formation des utilisateurs",
+                      "Premier résultat concret",
+                      "Démonstration commerciale"
+                    ],
+                    "correct": [0, 1, 2, 3]
+                  }
+                },
+                {
+                  "id": "p4-m3-l1-ex2",
+                  "kind": "mcq",
+                  "prompt": "Pourquoi les 30 premiers jours sont-ils si critiques ?\n",
+                  "explanation_md": "L'enthousiasme retombe, les utilisateurs résistent,\nle champion doit tenir ses promesses. Un client qui\nn'atteint pas de résultat rapide churne souvent.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["onboarding"],
+                  "payload": {
+                    "options": [
+                      "Parce que le client peut encore se rétracter légalement",
+                      "Parce que la valeur perçue se joue à ce moment-là",
+                      "Parce que le prix change après 30 jours",
+                      "Parce que le contrat est renégociable"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p4-m3-l1-ex3",
+                  "kind": "order_steps",
+                  "prompt": "Remettez les 4 phases d'un onboarding dans l'ordre.",
+                  "explanation_md": "On commence par un kick-off, puis la configuration,\npuis la formation, puis le premier résultat.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["onboarding"],
+                  "payload": {
+                    "steps": [
+                      "Kick-off et alignement",
+                      "Configuration technique",
+                      "Formation des utilisateurs",
+                      "Premier résultat concret"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-onboarding-plan",
+                "title": "Créer un plan d'onboarding",
+                "brief_md": "Dans l'app LeadCortex, ouvre une opportunité **gagnée**\n(ou crée-en une) et ajoute dans les commentaires un\n**plan d'onboarding** en 4 phases.\n\nChaque phase doit avoir un livrable et une date cible.\n",
+                "target": { "route": "/app/deals", "cta": "Voir mes deals" },
+                "validation": {
+                  "trigger": "deal.updated",
+                  "conditions": [{ "path": "deal.notes_length", "op": ">=", "value": 250 }]
+                },
+                "on_success": {
+                  "xp": 60,
+                  "mascot_line": "Plan d'onboarding posé — le client sait où il va."
+                },
+                "on_failure": {
+                  "feedback_md": "Les notes doivent contenir au moins 250 caractères.",
+                  "hint_md": "Structure en 4 phases (kick-off, config, formation, résultat) avec dates."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "onboarding",
+              "front": "Quelles sont les 4 phases d'un onboarding réussi ?",
+              "back": "Kick-off et alignement → Configuration technique → Formation des utilisateurs → Premier résultat concret."
+            }
+          ]
+        },
+        {
+          "id": "p4-m3-l2-time-to-value",
+          "order": 2,
+          "slug": "time-to-value",
+          "title": "Time to value",
+          "subtitle": "Réduire le délai jusqu'au premier résultat",
+          "duration_min": 7,
+          "difficulty": 3,
+          "xp_total": 130,
+          "concepts": ["time_to_value", "onboarding"],
+          "skills": ["méthode"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p4-m3-l1-onboarding"],
+            "required_concept_ids": ["onboarding"]
+          },
+          "unlocks": { "lesson_ids": ["p4-m4-l1-upsell-cross-sell"] },
+          "rewards": { "xp": 100, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Time to value",
+              "subtitle": "Closing · Module 3 · Leçon 2",
+              "mascot_pose": "thinking",
+              "mascot_line": "Le client ne veut pas un produit. Il veut un résultat. Vite.",
+              "objectives": [
+                "Comprendre le TTV",
+                "Le mesurer",
+                "Le réduire"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Le time-to-value, c'est quoi ?",
+                  "body_md": "Le **TTV** (time-to-value) est le délai entre la\n**signature** et le **premier résultat concret** pour\nle client.\n\nUn TTV court = adoption rapide = rétention longue.\nUn TTV long = doute, churn, mauvais bouche-à-oreille.\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "Benchmarks",
+                    "text": "SaaS B2B → viser TTV < 30 jours. Enterprise → viser < 90 jours avec un premier résultat intermédiaire à 30 jours."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Comment réduire le TTV",
+                  "body_md": "- **Préparer le client avant la signature** — kick-off\n  planifié à l'avance.\n- **Définir UN résultat cible** — pas 10.\n- **Livrer par petites victoires** — une par semaine,\n  visible.\n- **Impliquer les utilisateurs clés** — pas seulement\n  le champion.\n- **Célébrer** le premier résultat — donnée, dashboard,\n  témoignage.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Mesurer le TTV",
+                  "body_md": "Le TTV se mesure en **jours calendaires** entre :\n\n- **T0** — date de signature.\n- **T1** — date du premier résultat mesurable.\n\nOn le suit **client par client**. Le TTV moyen d'une\néquipe est un KPI de Customer Success central.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m3-l2-ex1",
+                  "kind": "mcq",
+                  "prompt": "Que mesure le time-to-value ?",
+                  "explanation_md": "Le TTV mesure le délai entre la **signature** et le\n**premier résultat concret** pour le client.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["time_to_value"],
+                  "payload": {
+                    "options": [
+                      "Le temps entre la démo et la signature",
+                      "Le temps entre la signature et le premier résultat",
+                      "Le temps entre deux renouvellements",
+                      "Le temps de mise en production"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p4-m3-l2-ex2",
+                  "kind": "multi_select",
+                  "prompt": "Comment réduire le time-to-value ?",
+                  "explanation_md": "Préparer le client avant signature, définir UN résultat\ncible, livrer par petites victoires, impliquer les\nutilisateurs clés, célébrer le premier résultat.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["time_to_value"],
+                  "payload": {
+                    "options": [
+                      "Préparer le kick-off avant la signature",
+                      "Définir UN seul résultat cible",
+                      "Livrer par petites victoires hebdomadaires",
+                      "Multiplier les réunions de suivi",
+                      "Célébrer le premier résultat"
+                    ],
+                    "correct": [0, 1, 2, 4]
+                  }
+                },
+                {
+                  "id": "p4-m3-l2-ex3",
+                  "kind": "fill_blank",
+                  "prompt": "Un TTV court mène à une rétention ______.",
+                  "explanation_md": "Plus le client voit de la valeur rapidement, plus il\nreste longtemps. TTV court = rétention longue.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["time_to_value"],
+                  "payload": {
+                    "blanks": [
+                      { "correct": ["longue", "plus longue", "élevée", "plus élevée"] }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-define-ttv",
+                "title": "Définir un résultat cible pour un client",
+                "brief_md": "Dans l'app LeadCortex, ouvre un deal gagné (ou en cours)\net note dans les commentaires **le premier résultat\ncible** que ce client doit atteindre.\n\nPrécise : le résultat (chiffré si possible), la date\ncible, et comment on le mesurera.\n",
+                "target": { "route": "/app/deals", "cta": "Voir mes deals" },
+                "validation": {
+                  "trigger": "deal.updated",
+                  "conditions": [{ "path": "deal.notes_length", "op": ">=", "value": 200 }]
+                },
+                "on_success": {
+                  "xp": 60,
+                  "mascot_line": "Résultat cible défini — tu pilotes le TTV."
+                },
+                "on_failure": {
+                  "feedback_md": "Les notes doivent contenir au moins 200 caractères.",
+                  "hint_md": "Décris le résultat, la date cible et la mesure."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "time_to_value",
+              "front": "Qu'est-ce que le time-to-value (TTV) ?",
+              "back": "Délai entre la signature et le premier résultat concret pour le client. Court = rétention longue, long = risque de churn."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p4-m4",
+      "order": 4,
+      "title": "Expansion",
+      "description": "Développer un client existant sans forcer.",
+      "prerequisites": {
+        "previous_module_ids": ["p4-m3"],
+        "required_concept_ids": ["time_to_value"]
+      },
+      "lessons": [
+        {
+          "id": "p4-m4-l1-upsell-cross-sell",
+          "order": 1,
+          "slug": "upsell-cross-sell",
+          "title": "Upsell & cross-sell",
+          "subtitle": "Développer un client sans le forcer",
+          "duration_min": 8,
+          "difficulty": 4,
+          "xp_total": 150,
+          "concepts": ["upsell", "cross_sell", "time_to_value"],
+          "skills": ["stratégie", "communication"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p4-m3-l2-time-to-value"],
+            "required_concept_ids": ["time_to_value"]
+          },
+          "unlocks": { "lesson_ids": ["p4-m4-l2-renewal-churn"] },
+          "rewards": { "xp": 110, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Upsell & cross-sell",
+              "subtitle": "Closing · Module 4 · Leçon 1",
+              "mascot_pose": "happy",
+              "mascot_line": "Vendre à un client qui vous aime coûte 5× moins cher que convaincre un nouveau.",
+              "objectives": [
+                "Distinguer upsell et cross-sell",
+                "Reconnaître les signaux d'expansion",
+                "Éviter la pression commerciale"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Upsell vs Cross-sell",
+                  "body_md": "- **Upsell** — vendre **plus** de la même chose :\n  plus de sièges, plan supérieur, plus de volume.\n- **Cross-sell** — vendre un **produit complémentaire** :\n  module additionnel, service associé, formation.\n\nLes deux augmentent le revenu par client (**NRR**),\nmais répondent à des besoins différents.\n",
+                  "callout": {
+                    "tone": "info",
+                    "title": "NRR",
+                    "text": "NRR = Net Revenue Retention. Un NRR > 100 % signifie que vos clients dépensent plus cette année que l'année dernière, sans nouveaux clients."
+                  }
+                },
+                {
+                  "id": "t2",
+                  "title": "Les signaux d'expansion",
+                  "body_md": "Un client prêt à acheter plus montre :\n\n- Une **utilisation qui sature** les limites du plan.\n- Des **demandes récurrentes** d'une fonctionnalité\n  absente.\n- Des **nouveaux cas d'usage** internes (autres\n  équipes, autres pays).\n- De **bons résultats** mesurables (ROI visible).\n- Une **croissance externe** (levée, rachat,\n  expansion).\n\nCes signaux sont **objectifs** — pas des impressions.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Les règles de l'expansion",
+                  "body_md": "- **Ne jamais pousser avant le premier résultat.**\n- **Toujours lier l'expansion à un besoin client.**\n- **Utiliser la donnée** (usage, ROI) comme argument.\n- **Associer le champion** comme allié interne.\n- **Laisser le client conclure** — pas de pression.\n\nL'expansion réussie ressemble à un **conseil de\npartenaire**, pas à une vente.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m4-l1-ex1",
+                  "kind": "mcq",
+                  "prompt": "Quelle est la différence entre upsell et cross-sell ?",
+                  "explanation_md": "**Upsell** = plus de la même chose (plan supérieur,\nplus de sièges). **Cross-sell** = un autre produit\ncomplémentaire.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["upsell", "cross_sell"],
+                  "payload": {
+                    "options": [
+                      "Upsell = vendre plus cher, cross-sell = vendre moins cher",
+                      "Upsell = plus de la même chose, cross-sell = produit complémentaire",
+                      "Upsell = aux nouveaux clients, cross-sell = aux anciens",
+                      "Upsell = en début de contrat, cross-sell = à la fin"
+                    ],
+                    "correct": 1
+                  }
+                },
+                {
+                  "id": "p4-m4-l1-ex2",
+                  "kind": "multi_select",
+                  "prompt": "Quels sont les signaux d'expansion à surveiller ?",
+                  "explanation_md": "Utilisation saturée, demandes de fonctionnalités,\nnouveaux cas d'usage, ROI visible, croissance externe.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["upsell", "cross_sell"],
+                  "payload": {
+                    "options": [
+                      "Utilisation qui sature les limites du plan",
+                      "Demandes récurrentes d'une fonctionnalité absente",
+                      "Nouveaux cas d'usage internes",
+                      "Absence de ticket support depuis 3 mois",
+                      "Bon ROI mesurable"
+                    ],
+                    "correct": [0, 1, 2, 4]
+                  }
+                },
+                {
+                  "id": "p4-m4-l1-ex3",
+                  "kind": "mcq",
+                  "prompt": "Quand faut-il éviter de pousser une expansion ?",
+                  "explanation_md": "**Jamais avant le premier résultat**. Pousser trop\ntôt fragilise la relation.\n",
+                  "xp": 15,
+                  "difficulty": 3,
+                  "concepts": ["upsell", "time_to_value"],
+                  "payload": {
+                    "options": [
+                      "Dès la signature",
+                      "Après le premier résultat client",
+                      "Après le premier renouvellement",
+                      "Uniquement quand le client le demande"
+                    ],
+                    "correct": 0
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-expansion-signal",
+                "title": "Identifier un signal d'expansion",
+                "brief_md": "Dans l'app LeadCortex, ouvre une opportunité **gagnée**\net note dans les commentaires un **signal d'expansion**\nobservé chez ce client.\n\nDécris : le signal, la valeur potentielle, et la\nprochaine étape que tu proposes.\n",
+                "target": { "route": "/app/deals", "cta": "Voir mes deals" },
+                "validation": {
+                  "trigger": "deal.updated",
+                  "conditions": [{ "path": "deal.notes_length", "op": ">=", "value": 200 }]
+                },
+                "on_success": {
+                  "xp": 70,
+                  "mascot_line": "Signal d'expansion repéré — tu construis le NRR."
+                },
+                "on_failure": {
+                  "feedback_md": "Les notes doivent contenir au moins 200 caractères.",
+                  "hint_md": "Décris le signal observé (usage, demande, croissance…)."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "upsell",
+              "front": "Qu'est-ce qu'un upsell ?",
+              "back": "Vendre plus de la même chose à un client existant : plan supérieur, plus de sièges, plus de volume."
+            },
+            {
+              "concept": "cross_sell",
+              "front": "Qu'est-ce qu'un cross-sell ?",
+              "back": "Vendre un produit complémentaire (module, service, formation) à un client existant."
+            }
+          ]
+        },
+        {
+          "id": "p4-m4-l2-renewal-churn",
+          "order": 2,
+          "slug": "renewal-churn",
+          "title": "Renouvellement & anti-churn",
+          "subtitle": "Sécuriser la reconduction",
+          "duration_min": 8,
+          "difficulty": 4,
+          "xp_total": 150,
+          "concepts": ["renewal", "churn_prevention"],
+          "skills": ["stratégie", "méthode"],
+          "prerequisites": {
+            "previous_lesson_ids": ["p4-m4-l1-upsell-cross-sell"],
+            "required_concept_ids": ["upsell"]
+          },
+          "unlocks": { "lesson_ids": [] },
+          "rewards": { "xp": 110, "hearts_refund": 0 },
+          "blocks": [
+            {
+              "type": "cover",
+              "title": "Renouvellement & anti-churn",
+              "subtitle": "Closing · Module 4 · Leçon 2",
+              "mascot_pose": "thinking",
+              "mascot_line": "Un renouvellement se prépare 6 mois avant l'échéance.",
+              "objectives": [
+                "Comprendre les leviers du renouvellement",
+                "Détecter les signaux faibles de churn",
+                "Construire un playbook anti-churn"
+              ]
+            },
+            {
+              "type": "theory",
+              "slides": [
+                {
+                  "id": "t1",
+                  "title": "Le renouvellement se prépare tôt",
+                  "body_md": "Un renouvellement réussi se prépare **6 mois avant\nl'échéance** :\n\n- **T-6 mois** — bilan trimestriel, récapituler les\n  résultats.\n- **T-4 mois** — identifier les risques internes\n  (champion parti, budget coupé).\n- **T-3 mois** — préparer le business case de\n  reconduction.\n- **T-1 mois** — proposer la reconduction (voire\n  l'expansion).\n\nAttendre le dernier mois = renouvellement à la merci\ndu premier imprévu.\n"
+                },
+                {
+                  "id": "t2",
+                  "title": "Les signaux faibles de churn",
+                  "body_md": "- **Baisse d'usage** — logins, actions clés en recul.\n- **Champion absent** — la personne qui poussait est\n  partie.\n- **Support négatif** — tickets répétés, ton frustré.\n- **Silence** — plus de retours, plus de questions.\n- **Paiement retardé** — friction administrative.\n\nUn seul signal n'est pas alarmant. **Trois signaux\nensemble** = urgence.\n"
+                },
+                {
+                  "id": "t3",
+                  "title": "Le playbook anti-churn",
+                  "body_md": "- **Détecter** — suivi automatisé des signaux.\n- **Alerter** — notification au CSM dès qu'un client\n  cumule 3 signaux.\n- **Intervenir** — appel du CSM, plan de redressement.\n- **Résoudre** — action concrète : formation, quick\n  win, ajustement de scope.\n- **Documenter** — capitaliser sur ce qui a marché.\n\nLe playbook transforme une intuition en **process**.\n"
+                }
+              ]
+            },
+            {
+              "type": "practice",
+              "exercises": [
+                {
+                  "id": "p4-m4-l2-ex1",
+                  "kind": "mcq",
+                  "prompt": "Combien de temps avant l'échéance faut-il préparer un renouvellement ?",
+                  "explanation_md": "**6 mois avant**. Attendre le dernier mois, c'est\nsubir les imprévus au lieu de les anticiper.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["renewal"],
+                  "payload": {
+                    "options": [
+                      "1 semaine avant",
+                      "1 mois avant",
+                      "3 mois avant",
+                      "6 mois avant"
+                    ],
+                    "correct": 3
+                  }
+                },
+                {
+                  "id": "p4-m4-l2-ex2",
+                  "kind": "multi_select",
+                  "prompt": "Quels sont les signaux faibles de churn ?",
+                  "explanation_md": "Baisse d'usage, champion absent, support négatif,\nsilence, paiement retardé. Cumulés = urgence.\n",
+                  "xp": 15,
+                  "difficulty": 4,
+                  "concepts": ["churn_prevention"],
+                  "payload": {
+                    "options": [
+                      "Baisse d'usage (logins, actions)",
+                      "Champion qui a quitté l'entreprise",
+                      "Support négatif (tickets répétés)",
+                      "Client qui demande plus de fonctionnalités",
+                      "Silence soudain",
+                      "Paiement retardé"
+                    ],
+                    "correct": [0, 1, 2, 4, 5]
+                  }
+                },
+                {
+                  "id": "p4-m4-l2-ex3",
+                  "kind": "fill_blank",
+                  "prompt": "Trois signaux faibles cumulés chez un client = ______.",
+                  "explanation_md": "Trois signaux cumulés déclenchent une alerte — c'est\nune urgence qui demande une intervention immédiate.\n",
+                  "xp": 10,
+                  "difficulty": 3,
+                  "concepts": ["churn_prevention"],
+                  "payload": {
+                    "blanks": [
+                      { "correct": ["urgence", "alarme", "une urgence", "une alarme"] }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "mission",
+              "mission": {
+                "id": "mission-revive-champion",
+                "title": "Créer une tâche de préparation de renouvellement",
+                "brief_md": "Dans l'app LeadCortex, ouvre **Tâches** et crée une\ntâche de **préparation de renouvellement** pour un\nclient existant.\n\nLa tâche doit inclure : la date d'échéance, les 3\npremiers signaux à surveiller, et un plan en 3 étapes.\n",
+                "target": { "route": "/app/tasks", "cta": "Créer une tâche" },
+                "validation": {
+                  "trigger": "task.created",
+                  "conditions": [
+                    { "path": "task.due_date", "op": "is_not_empty" },
+                    { "path": "task.description_length", "op": ">=", "value": 150 }
+                  ]
+                },
+                "on_success": {
+                  "xp": 80,
+                  "mascot_line": "Renouvellement préparé — tu sécurises ton revenu."
+                },
+                "on_failure": {
+                  "feedback_md": "La tâche doit avoir une date et au moins 150 caractères de description.",
+                  "hint_md": "Va dans **Tâches → Nouvelle**, choisis une date et détaille le plan."
+                },
+                "hint_after_minutes": 5,
+                "retry_allowed": true
+              }
+            },
+            {
+              "type": "debrief",
+              "sections": ["score_breakdown", "concepts_mastered", "next_recommendation"]
+            }
+          ],
+          "srs_templates": [
+            {
+              "concept": "renewal",
+              "front": "Combien de temps avant l'échéance faut-il préparer un renouvellement ?",
+              "back": "6 mois avant. Bilan à T-6, risques à T-4, business case à T-3, proposition à T-1."
+            },
+            {
+              "concept": "churn_prevention",
+              "front": "Citez 3 signaux faibles de churn.",
+              "back": "Baisse d'usage, champion absent, support négatif, silence soudain, paiement retardé. 3 cumulés = urgence."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
