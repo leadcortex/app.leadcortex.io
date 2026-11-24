@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/parser_test.go
+
 package curriculum
 
 import (
@@ -74,7 +76,6 @@ on_failure:
 	if c.Op != ">=" {
 		t.Errorf("op : attendu >=, obtenu %q", c.Op)
 	}
-	// Le décodage YAML produit un int.
 	v, ok := c.Value.(int)
 	if !ok {
 		t.Errorf("value : attendu int, obtenu %T", c.Value)

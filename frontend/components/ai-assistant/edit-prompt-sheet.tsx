@@ -1,20 +1,13 @@
+// frontend/components/ai-assistant/edit-prompt-sheet.tsx
+
 "use client";
 
-/**
- * Feuille d'édition d'un prompt utilisateur.
- *
- *  - Desktop : `<Dialog>` classique (Radix) via `DialogContent`.
- *  - Mobile  : `MobileSheet` (tire depuis le bas, suit le clavier virtuel).
- *
- * À la validation, on renvoie le nouveau texte au parent, qui se charge de
- * remplacer la bulle d'origine (badge « modifié ») et de relancer.
- */
 import { useEffect, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw } from "@/components/icons";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export function EditPromptSheet({
   open,

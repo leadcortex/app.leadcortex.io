@@ -1,8 +1,9 @@
-//frontend\components\ui\chart.tsx
+// frontend/components/ui/chart.tsx
+
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const THEMES = { light: "", dark: ".dark" } as const;
 
@@ -295,7 +296,6 @@ const ChartLegendContent = React.forwardRef<
 });
 ChartLegendContent.displayName = "ChartLegend";
 
-// Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
   if (typeof payload !== "object" || payload === null) {
     return undefined;

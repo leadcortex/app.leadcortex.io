@@ -1,3 +1,5 @@
+// academy/src/routes/index.tsx
+
 import { createFileRoute } from "@tanstack/react-router";
 import { LearningPath } from '@/components/academy/learning-path';
 export const Route = createFileRoute("/")({

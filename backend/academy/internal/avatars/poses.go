@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/poses.go
+
 package avatars
 
 import (
@@ -6,10 +8,8 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// DefaultPoseKey — clé de la pose par défaut.
 const DefaultPoseKey = "neutral"
 
-// PosesFor renvoie les poses disponibles d'un avatar.
 func PosesFor(avatarID string) ([]domain.AvatarPose, error) {
 	a, ok := Find(avatarID)
 	if !ok {
@@ -20,7 +20,6 @@ func PosesFor(avatarID string) ([]domain.AvatarPose, error) {
 	return out, nil
 }
 
-// HasPose indique si une pose donnée existe pour un avatar.
 func HasPose(avatarID, poseKey string) bool {
 	a, ok := Find(avatarID)
 	if !ok {
@@ -34,9 +33,6 @@ func HasPose(avatarID, poseKey string) bool {
 	return false
 }
 
-// ResolvePose retourne la pose demandée si elle existe, sinon la pose
-// par défaut de l'avatar. Utilisé par le pipeline pour éviter les
-// erreurs de rendu.
 func ResolvePose(avatarID, requested string) string {
 	a, ok := Find(avatarID)
 	if !ok {
@@ -53,8 +49,6 @@ func ResolvePose(avatarID, requested string) string {
 	return a.DefaultPose
 }
 
-// IsFoundingAvatar — raccourci pour savoir si un avatar est le dauphin
-// fondateur.
 func IsFoundingAvatar(avatarID string) bool {
 	a, ok := Find(avatarID)
 	if !ok {

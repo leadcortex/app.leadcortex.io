@@ -1,8 +1,9 @@
-//frontend\components\settings\panels\TimePanel.tsx
+// frontend/components/settings/panels/TimePanel.tsx
+
 import { useState } from "react";
-import { Clock } from "lucide-react";
+import { Clock } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { PanelIntro, PanelGroup, SettingsCard, RowsCard, Row } from "./primitives";
 
 export function TimePanel() {

@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_exercises_test.go
+
 package api
 
 import (
@@ -11,12 +13,7 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Helpers
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// startLesson aide les tests à démarrer une leçon pour pouvoir ensuite
-// répondre à ses exercices.
 func startLesson(t *testing.T, s *Server, learnerID, lessonID string) {
 	t.Helper()
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/lessons/"+lessonID+"/start", nil)
@@ -28,15 +25,11 @@ func startLesson(t *testing.T, s *Server, learnerID, lessonID string) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   MCQ correct
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestAnswerExercise_MCQ_Correct(t *testing.T) {
 	s := buildTestServer(t)
 	startLesson(t, s, "alice", "l1")
 
-	// ex1 : MCQ avec correct = 1.
 	body := strings.NewReader(`{"kind":"mcq","selected":1}`)
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/exercises/ex1/answer", body)
@@ -65,22 +58,18 @@ func TestAnswerExercise_MCQ_Correct(t *testing.T) {
 		t.Error("FeedbackMD ne devrait pas être vide")
 	}
 
-	// Persistance : XP a été crédité.
 	stored, _ := s.deps.Repository.GetLearner(context.Background(), "alice")
 	if stored.XP < 10 {
 		t.Errorf("XP persisté : attendu >= 10, obtenu %d", stored.XP)
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   MCQ incorrect
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestAnswerExercise_MCQ_Incorrect(t *testing.T) {
 	s := buildTestServer(t)
 	startLesson(t, s, "alice", "l1")
 
-	body := strings.NewReader(`{"kind":"mcq","selected":0}`) // correct = 1
+	body := strings.NewReader(`{"kind":"mcq","selected":0}`)
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/exercises/ex1/answer", body)
 	req.Header.Set("X-Learner-ID", "alice")
@@ -103,9 +92,6 @@ func TestAnswerExercise_MCQ_Incorrect(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   FillBlank
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestAnswerExercise_FillBlank_Correct(t *testing.T) {
 	s := buildTestServer(t)
@@ -131,15 +117,11 @@ func TestAnswerExercise_FillBlank_Correct(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Rejouer un exercice déjà réussi ne re-crédite PAS l'XP
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestAnswerExercise_NoDoubleXP(t *testing.T) {
 	s := buildTestServer(t)
 	startLesson(t, s, "alice", "l1")
 
-	// Premier appel : réussit → 10 XP.
 	body1 := strings.NewReader(`{"kind":"mcq","selected":1}`)
 	req1 := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/exercises/ex1/answer", body1)
@@ -147,7 +129,6 @@ func TestAnswerExercise_NoDoubleXP(t *testing.T) {
 	rec1 := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec1, req1)
 
-	// Second appel identique : réussit encore mais sans XP.
 	body2 := strings.NewReader(`{"kind":"mcq","selected":1}`)
 	req2 := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/exercises/ex1/answer", body2)
@@ -165,9 +146,6 @@ func TestAnswerExercise_NoDoubleXP(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Erreurs
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestAnswerExercise_UnknownExercise(t *testing.T) {
 	s := buildTestServer(t)
@@ -220,7 +198,6 @@ func TestAnswerExercise_KindMismatch(t *testing.T) {
 	s := buildTestServer(t)
 	startLesson(t, s, "alice", "l1")
 
-	// ex1 est un MCQ. On envoie kind=fill_blank.
 	body := strings.NewReader(`{"kind":"fill_blank","blanks":["a"]}`)
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/exercises/ex1/answer", body)
@@ -236,7 +213,6 @@ func TestAnswerExercise_KindMismatch(t *testing.T) {
 func TestAnswerExercise_RequiresStart(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Pas de start → LessonNotStarted → 400.
 	body := strings.NewReader(`{"kind":"mcq","selected":1}`)
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/exercises/ex1/answer", body)
@@ -249,9 +225,6 @@ func TestAnswerExercise_RequiresStart(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   findExerciseBlock (unit)
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestFindExerciseBlock(t *testing.T) {
 	lesson := &domain.Lesson{

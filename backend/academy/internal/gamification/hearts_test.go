@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/hearts_test.go
+
 package gamification
 
 import (
@@ -24,7 +26,6 @@ func TestRegenerateHearts_OneCycle(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	cfg := DefaultHeartRegenConfig()
 
-	// 2 cœurs, dernier regain il y a 45 min → 1 cycle complet.
 	r := RegenerateHearts(2, now.Add(-45*time.Minute), now, cfg)
 	if r.Hearts != 3 {
 		t.Errorf("Hearts : attendu 3, obtenu %d", r.Hearts)
@@ -38,7 +39,6 @@ func TestRegenerateHearts_MultipleCycles_CappedAtMax(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	cfg := DefaultHeartRegenConfig()
 
-	// 1 cœur, dernier regain il y a 5h → 10 cycles possibles, mais cap à 5.
 	r := RegenerateHearts(1, now.Add(-5*time.Hour), now, cfg)
 	if r.Hearts != domain.MaxHearts {
 		t.Errorf("Hearts : attendu %d, obtenu %d", domain.MaxHearts, r.Hearts)
@@ -52,7 +52,6 @@ func TestRegenerateHearts_PartialCycle(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	cfg := DefaultHeartRegenConfig()
 
-	// 3 cœurs, dernier regain il y a 10 min → pas de cycle.
 	r := RegenerateHearts(3, now.Add(-10*time.Minute), now, cfg)
 	if r.Hearts != 3 {
 		t.Errorf("Hearts : attendu 3, obtenu %d", r.Hearts)
@@ -87,7 +86,7 @@ func TestRegenerateHearts_ZeroLastRegen(t *testing.T) {
 func TestRegenerateHearts_ClockBackwards(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	cfg := DefaultHeartRegenConfig()
-	lastRegen := now.Add(time.Hour) // Dans le futur
+	lastRegen := now.Add(time.Hour)
 
 	r := RegenerateHearts(3, lastRegen, now, cfg)
 	if r.Regenerated != 0 {
@@ -102,18 +101,15 @@ func TestTimeUntilNextHeart(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	cfg := DefaultHeartRegenConfig()
 
-	// Plein → 0.
 	if d := TimeUntilNextHeart(domain.MaxHearts, now.Add(-time.Hour), now, cfg); d != 0 {
 		t.Errorf("plein : attendu 0, obtenu %v", d)
 	}
 
-	// 10 min écoulées → reste 20 min.
 	d := TimeUntilNextHeart(2, now.Add(-10*time.Minute), now, cfg)
 	if d < 19*time.Minute || d > 21*time.Minute {
 		t.Errorf("attendu ~20min, obtenu %v", d)
 	}
 
-	// Au-delà d'un cycle → 0.
 	if d := TimeUntilNextHeart(2, now.Add(-2*time.Hour), now, cfg); d != 0 {
 		t.Errorf("dépassé : attendu 0, obtenu %v", d)
 	}
@@ -123,12 +119,10 @@ func TestEstimatedFullHeartsAt(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	cfg := DefaultHeartRegenConfig()
 
-	// Plein → zéro.
 	if t0 := EstimatedFullHeartsAt(domain.MaxHearts, now, now, cfg); !t0.IsZero() {
 		t.Errorf("plein : attendu zéro, obtenu %v", t0)
 	}
 
-	// 3 cœurs, base = now → 2 cycles → +1h.
 	full := EstimatedFullHeartsAt(3, now, now, cfg)
 	expected := now.Add(2 * cfg.Interval)
 	if !full.Equal(expected) {

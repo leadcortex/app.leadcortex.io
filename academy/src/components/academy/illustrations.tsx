@@ -1,3 +1,5 @@
+// academy/src/components/academy/illustrations.tsx
+
 import astralOwl from '../../assets/collector/Astral-owl.svg';
 import lunarCat from '../../assets/collector/Lunar-cat.svg';
 import foundingDolphin from '../../assets/collector/Founding-dolphin.svg';
@@ -22,7 +24,6 @@ export type AvatarDef = {
 };
 
 export const AVATARS: AvatarDef[] = [
-  // ---- Compagnon par défaut (seul, toujours débloqué) ----
   {
     id: 'fox',
     label: 'Renard rusé',
@@ -31,7 +32,6 @@ export const AVATARS: AvatarDef[] = [
     rarity: 'default',
   },
 
-  // ---- Compagnons classiques (débloquables via coffres) ----
   {
     id: 'eagle',
     label: 'Aigle royal',
@@ -68,7 +68,6 @@ export const AVATARS: AvatarDef[] = [
     rarity: 'classic',
   },
 
-  // ---- Compagnons collector (rares, via coffres) ----
   {
     id: 'astral-owl',
     label: 'Hibou astral',
@@ -105,7 +104,6 @@ export const AVATARS: AvatarDef[] = [
     rarity: 'collector',
   },
 
-  // ---- Compagnon à édition limitée (très rare) ----
   {
     id: 'founding-dolphin',
     label: 'Dauphin fondateur',
@@ -143,10 +141,6 @@ export function getAvatarSrc(id: string): string {
   return SRC_BY_ID[id] ?? fox;
 }
 
-/* ==========================================================================
-   Avatar
-   ========================================================================== */
-
 export function Avatar({
   kind = 'fox',
   className = '',
@@ -163,10 +157,6 @@ export function Avatar({
     />
   );
 }
-
-/* ==========================================================================
-   Illustrations décoratives
-   ========================================================================== */
 
 export function Flame() {
   return (

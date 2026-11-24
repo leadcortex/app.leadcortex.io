@@ -1,20 +1,9 @@
+// frontend/components/ai-assistant/message-actions.tsx
+
 "use client";
 
-/**
- * Barre d'actions sous une réponse de l'assistant.
- *
- * Contenu (gauche → droite) :
- *   1. Copier la réponse complète
- *   2. Copier le dernier bloc de code — si la réponse en contient
- *   3. Relecture audio (désactivée — « bientôt »)
- *   4. Feedback 👍 / 👎
- *   5. Régénérer (optionnel, si `onRegenerate` est fourni)
- *
- * Les icônes sont **toujours visibles** : plus de `opacity-0` qui ne se
- * révèle qu'au survol de la bulle.
- */
-import { RefreshCw } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { RefreshCw } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { CopyButton } from "@/components/ui/copy-button";
 import { SpeakButton } from "@/components/ui/speak-button";
 import { FeedbackButtons } from "@/components/ui/feedback-buttons";
@@ -23,7 +12,6 @@ import type { AssistantMessage, FeedbackValue } from "./assistant-engine";
 
 type CodeFence = { language: string; content: string };
 
-/** Renvoie le PREMIER bloc de code au format ```lang … ``` du message. */
 function extractFirstCode(text: string): CodeFence | null {
   const lines = text.split("\n");
   let i = 0;
@@ -54,7 +42,6 @@ export function MessageActions({
   message: AssistantMessage;
   feedback: FeedbackValue;
   onFeedback: (next: FeedbackValue) => void;
-  /** Si fourni, ajoute un bouton « Régénérer » à la fin de la barre. */
   onRegenerate?: () => void;
   className?: string;
 }) {

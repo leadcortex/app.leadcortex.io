@@ -1,13 +1,12 @@
-//frontend\routes\signup.tsx
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Check, AlertCircle, X, Eye, EyeOff } from "lucide-react";
-import { BrandLogo } from "@/components/brand-logo";
+// frontend/routes/signup.tsx
+
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Check, AlertCircle, X, Eye, EyeOff } from "@/components/icons";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { useState } from "react";
 import { AuthSkeleton } from "@/components/skeletons";
-import { useFormGuard, Honeypot } from "@/lib/security/client-guard";
-import { verifyWithServer } from "@/lib/security/client-api";
-import { WavyImageFrame } from "@/components/wavy-image-frame";
-import { OtpModal } from "@/components/auth/otp-modal";
+import { WavyImageFrame } from "@/components/marketing/wavy-image-frame";
+import { betterAuthClient, betterAuthEnabled } from "@/lib/auth/better-auth-client";
 
 const GoogleIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="size-4 shrink-0">
@@ -74,10 +73,6 @@ const PASSWORD_RULES: PasswordRule[] = [
   { id: "special", label: "Un caractère spécial (!@#$…)", test: (v) => /[^A-Za-z0-9]/.test(v) },
 ];
 
-function isPasswordStrong(value: string) {
-  return PASSWORD_RULES.every((rule) => rule.test(value));
-}
-
 function passwordScore(value: string) {
   return PASSWORD_RULES.reduce((acc, rule) => acc + (rule.test(value) ? 1 : 0), 0);
 }
@@ -91,80 +86,78 @@ export const Route = createFileRoute("/signup")({
 });
 
 function SignupPage() {
-  const navigate = useNavigate();
-  const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmError, setConfirmError] = useState<string | null>(null);
   const [globalError, setGlobalError] = useState<string | null>(null);
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const guard = useFormGuard();
-
-  const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const passwordsMatch = confirmPassword.length > 0 && confirmPassword === password;
+
+  const handleGoogleSignIn = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!betterAuthEnabled) return;
+    e.preventDefault();
+    setGlobalError(null);
+    setIsSubmitting(true);
+    try {
+      const { error } = await betterAuthClient.signIn.social({
+        provider: "google",
+        callbackURL: "/app",
+        newUserCallbackURL: "/onboarding",
+      });
+      if (error) setGlobalError(error.message ?? "La connexion Google a échoué.");
+    } catch {
+      setGlobalError("La connexion Google a échoué. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (submitting) return;
+    if (betterAuthEnabled) {
+      const formData = new FormData(e.currentTarget);
+      const name = String(formData.get("fullName") ?? "").trim();
+      const email = String(formData.get("email") ?? "").trim();
+      if (!name || !email) {
+        setGlobalError("Veuillez renseigner votre nom et votre adresse e-mail.");
+        return;
+      }
+      if (!passwordsMatch) {
+        setConfirmError("Les mots de passe ne correspondent pas.");
+        return;
+      }
+      if (passwordScore(password) !== PASSWORD_RULES.length) {
+        setPasswordError("Choisissez un mot de passe qui respecte toutes les règles.");
+        return;
+      }
 
-    setGlobalError(null);
-
-    const formData = new FormData(e.currentTarget);
-    const emailValue = (formData.get("email") as string) || "";
-
-    let hasError = false;
-
-    if (!emailValue || !validateEmail(emailValue)) {
-      setEmailError("Veuillez entrer un email valide.");
-      hasError = true;
-    } else {
-      setEmailError(null);
-    }
-
-    if (!isPasswordStrong(password)) {
-      setPasswordError(
-        "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.",
-      );
-      hasError = true;
-    } else {
-      setPasswordError(null);
-    }
-
-    if (confirmPassword !== password) {
-      setConfirmError("Les mots de passe ne correspondent pas.");
-      hasError = true;
-    } else {
-      setConfirmError(null);
-    }
-
-    if (hasError) return;
-
-    setSubmitting(true);
-
-    const verdict = await verifyWithServer("signup", guard.buildPayload(), emailValue);
-
-    if (!verdict.ok) {
-      setSubmitting(false);
-      setGlobalError(verdict.message);
+      setGlobalError(null);
+      setIsSubmitting(true);
+      try {
+        const { error } = await betterAuthClient.signUp.email({
+          name,
+          email,
+          password,
+          callbackURL: "/onboarding",
+        });
+        if (error) setGlobalError(error.message ?? "Impossible de créer le compte.");
+      } catch {
+        setGlobalError("La création du compte a échoué. Veuillez réessayer.");
+      } finally {
+        setIsSubmitting(false);
+      }
       return;
     }
-
-    setEmail(emailValue);
-    setSubmitting(false);
-    setShowOtpModal(true);
-  };
-
-  const handleSocialLogin = () => {
-    navigate({ to: "/onboarding" });
-  };
-
-  const handleOtpVerify = () => {
-    navigate({ to: "/onboarding" });
+    if (import.meta.env.DEV) {
+      window.location.assign("/auth/dev-login");
+      return;
+    }
+    setGlobalError(
+      "La création de compte par e-mail n’est pas encore disponible. Utilisez Google.",
+    );
   };
 
   return (
@@ -183,28 +176,50 @@ function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <button
-                onClick={handleSocialLogin}
+              <a
+                href="/auth/google"
+                onClick={handleGoogleSignIn}
+                aria-disabled={isSubmitting}
                 className="w-full flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-2.5 text-xs md:text-sm font-medium text-foreground transition-all duration-150 hover:bg-surface active:scale-[0.97] active:bg-surface/80"
               >
                 <GoogleIcon />
-                <span>Continuer avec Google</span>
-              </button>
+                <span>{isSubmitting ? "Connexion…" : "Continuer avec Google"}</span>
+              </a>
               <button
-                onClick={handleSocialLogin}
+                type="button"
+                disabled={!import.meta.env.DEV}
+                onClick={() => window.location.assign("/auth/dev-login")}
+                title={
+                  import.meta.env.DEV
+                    ? "Ouvrir une session de test"
+                    : "Connexion Google disponible en premier"
+                }
                 className="w-full flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-2.5 text-xs md:text-sm font-medium text-foreground transition-all duration-150 hover:bg-surface active:scale-[0.97] active:bg-surface/80"
               >
                 <LinkedInIcon />
                 <span>Continuer avec LinkedIn</span>
               </button>
               <button
-                onClick={handleSocialLogin}
+                type="button"
+                disabled={!import.meta.env.DEV}
+                onClick={() => window.location.assign("/auth/dev-login")}
+                title={
+                  import.meta.env.DEV
+                    ? "Ouvrir une session de test"
+                    : "Connexion Google disponible en premier"
+                }
                 className="w-full flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-2.5 text-xs md:text-sm font-medium text-foreground transition-all duration-150 hover:bg-surface active:scale-[0.97] active:bg-surface/80"
               >
                 <AppleIcon />
                 <span>Continuer avec Apple</span>
               </button>
             </div>
+            {import.meta.env.DEV && (
+              <p className="text-xs text-muted-foreground">
+                Mode développement : ces options et le formulaire e-mail ouvrent une session de
+                test.
+              </p>
+            )}
 
             <div className="relative flex items-center">
               <div className="flex-1 border-t border-border"></div>
@@ -215,8 +230,6 @@ function SignupPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8" noValidate>
-              <Honeypot value={guard.honeypot} onChange={guard.setHoneypot} />
-
               <div className="space-y-3 md:space-y-4">
                 <Field label="Nom complet" type="text" name="fullName" placeholder="Utilisateur" />
                 <Field
@@ -224,7 +237,6 @@ function SignupPage() {
                   type="email"
                   name="email"
                   placeholder="Utilisateur@company.co"
-                  error={emailError}
                 />
 
                 <div className="space-y-2">
@@ -288,10 +300,10 @@ function SignupPage() {
 
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={isSubmitting}
                 className="w-full inline-flex items-center justify-center gap-1.5 md:gap-2 rounded-xl bg-foreground text-background px-3 md:px-4 py-2.5 md:py-3 text-xs md:text-sm font-medium hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
               >
-                {submitting ? "Vérification…" : "Créer mon workspace"}
+                {isSubmitting ? "Création…" : "Créer mon workspace"}
                 <ArrowRight className="size-3.5 md:size-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
               <p className="text-center text-[9px] md:text-xs text-muted-foreground">
@@ -313,23 +325,11 @@ function SignupPage() {
       </div>
 
       <div className="hidden lg:block relative bg-background auth-side">
-        <WavyImageFrame src="/images/login-signup.webp" alt="Vagues sur une plage de sable" />
+        <WavyImageFrame src="/images/auth/login-signup.webp" alt="Vagues sur une plage de sable" />
       </div>
-
-      <OtpModal
-        open={showOtpModal}
-        email={email}
-        onVerify={handleOtpVerify}
-        onClose={() => setShowOtpModal(false)}
-        redirectTo="/onboarding"
-      />
     </div>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Field                                                                     */
-/* -------------------------------------------------------------------------- */
 
 function Field({
   label,
@@ -359,10 +359,6 @@ function Field({
     </label>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  PasswordField                                                             */
-/* -------------------------------------------------------------------------- */
 
 function PasswordField({
   label,
@@ -414,10 +410,6 @@ function PasswordField({
     </label>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Barre de progression + checklist de robustesse                            */
-/* -------------------------------------------------------------------------- */
 
 function PasswordStrength({ password }: { password: string }) {
   const score = passwordScore(password);

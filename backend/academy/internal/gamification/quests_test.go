@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/quests_test.go
+
 package gamification
 
 import (
@@ -6,7 +8,6 @@ import (
 	"time"
 )
 
-/* ─── Génération déterministe ─────────────────────────────────────────── */
 
 func TestGenerateDailyQuests_Deterministic(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
@@ -61,7 +62,6 @@ func TestGenerateDailyQuests_TargetsInBounds(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	qs := GenerateDailyQuests(now)
 
-	// Vérifie que chaque target respecte les bornes du template.
 	for _, q := range qs {
 		var tpl *QuestTemplate
 		for i := range QuestCatalog {
@@ -80,7 +80,6 @@ func TestGenerateDailyQuests_TargetsInBounds(t *testing.T) {
 	}
 }
 
-/* ─── ProgressRatio / IsComplete / CanClaim ──────────────────────────── */
 
 func TestQuestProgressRatio(t *testing.T) {
 	q := Quest{Target: 10, Progress: 5}
@@ -121,7 +120,6 @@ func TestQuestIsCompleteAndCanClaim(t *testing.T) {
 	}
 }
 
-/* ─── ApplyQuestUpdate ───────────────────────────────────────────────── */
 
 func TestApplyQuestUpdate_PartialProgress(t *testing.T) {
 	quests := []Quest{
@@ -139,12 +137,10 @@ func TestApplyQuestUpdate_PartialProgress(t *testing.T) {
 	if updated[0].Status != QuestStatusActive {
 		t.Errorf("q1.Status : attendu active, obtenu %s", updated[0].Status)
 	}
-	// q2 (autre Kind) ne doit pas être affecté.
 	if updated[1].Progress != 0 {
 		t.Errorf("q2.Progress : attendu 0, obtenu %d", updated[1].Progress)
 	}
 
-	// L'entrée d'origine ne doit pas être mutée.
 	if quests[0].Progress != 10 {
 		t.Error("la slice d'origine a été mutée")
 	}
@@ -162,7 +158,6 @@ func TestApplyQuestUpdate_Completes(t *testing.T) {
 	if updated[0].Status != QuestStatusComplete {
 		t.Errorf("Status : attendu complete, obtenu %s", updated[0].Status)
 	}
-	// Le progress est borné au target.
 	if updated[0].Progress != 50 {
 		t.Errorf("Progress : attendu 50, obtenu %d", updated[0].Progress)
 	}
@@ -193,7 +188,6 @@ func TestApplyQuestUpdate_SkipsNonActive(t *testing.T) {
 	}
 }
 
-/* ─── ClaimQuest ─────────────────────────────────────────────────────── */
 
 func TestClaimQuest_Success(t *testing.T) {
 	quests := []Quest{
@@ -210,7 +204,6 @@ func TestClaimQuest_Success(t *testing.T) {
 	if updated[0].Status != QuestStatusClaimed {
 		t.Errorf("status : attendu claimed, obtenu %s", updated[0].Status)
 	}
-	// q2 non touché.
 	if updated[1].Status != QuestStatusActive {
 		t.Error("q2 ne devait pas être modifié")
 	}
@@ -240,7 +233,6 @@ func TestClaimQuest_NotFound(t *testing.T) {
 	}
 }
 
-/* ─── Agrégats ───────────────────────────────────────────────────────── */
 
 func TestCompletedCount(t *testing.T) {
 	quests := []Quest{
@@ -268,7 +260,6 @@ func TestTotalRewardPending(t *testing.T) {
 func TestSummarizeQuests(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	quests := GenerateDailyQuests(now)
-	// Marque une quête comme complète.
 	quests[0].Status = QuestStatusComplete
 
 	s := SummarizeQuests(quests, now)

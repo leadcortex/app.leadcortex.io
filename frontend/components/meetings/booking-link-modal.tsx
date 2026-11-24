@@ -1,4 +1,5 @@
-//frontend\components\meetings\booking-link-modal.tsx
+// frontend/components/meetings/booking-link-modal.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
@@ -19,7 +20,7 @@ import {
   Trash2,
   Users,
   Video,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
 import {
   BOOKING_BASE_URL,
@@ -37,7 +38,7 @@ import {
   type BookingLink,
   type BookingLocation,
   type BookingQuestion,
-} from "@/lib/booking-mock";
+} from "@/lib/meetings/booking-mock";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 type View = "list" | "wizard" | "success";
@@ -141,7 +142,6 @@ export function BookingLinkModal({
               : "Créer un lien de booking"}
         </DialogTitle>
 
-        {}
         <header className="flex shrink-0 items-start gap-3 border-b border-border py-3 pl-4 pr-14 md:py-4 md:pl-6 md:pr-14">
           <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
             <CalendarDays className="size-4.5" strokeWidth={1.6} />
@@ -172,7 +172,6 @@ export function BookingLinkModal({
           )}
         </header>
 
-        {}
         {view === "wizard" && (
           <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto border-b border-border px-4 py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:px-6">
             {["Détails", "Disponibilités", "Formulaire", "Aperçu"].map((label, i) => (
@@ -649,10 +648,6 @@ export function BookingLinkModal({
     </Dialog>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Helpers                                                                   */
-/* -------------------------------------------------------------------------- */
 
 const inputCls =
   "w-full rounded-lg border border-border bg-background px-3 py-2 text-[12px] outline-none transition-colors focus:border-primary/50 md:text-sm";

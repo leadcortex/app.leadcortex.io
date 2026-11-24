@@ -1,3 +1,5 @@
+// backend/academy/internal/missions/simulator_test.go
+
 package missions
 
 import (
@@ -78,7 +80,6 @@ func TestSimulator_Unexpected(t *testing.T) {
 				Payload: map[string]any{"lead": map[string]any{"score": 8}},
 			},
 		},
-		// Aucune mission attendue, mais m1 va matcher → Unexpected.
 		ExpectedMissionIDs: []string{},
 	}
 
@@ -129,7 +130,6 @@ func TestSimulator_DeduplicatesRepeats(t *testing.T) {
 	reg := newTestRegistry(t, testMissionBlock("m1", "lead.created", 7))
 	sim, _ := NewSimulator(reg)
 
-	// Deux événements qui matchent la même mission.
 	sc := Scenario{
 		Name: "Événements dupliqués",
 		Events: []SimulatedEvent{
@@ -143,14 +143,12 @@ func TestSimulator_DeduplicatesRepeats(t *testing.T) {
 	if !report.Passed {
 		t.Errorf("attendu passed, obtenu %+v", report)
 	}
-	// m1 ne doit apparaître qu'une fois.
 	if len(report.MissionsValidated) != 1 {
 		t.Errorf("attendu 1, obtenu %d", len(report.MissionsValidated))
 	}
 }
 
 func TestSimulator_InitialState(t *testing.T) {
-	// Mission dont la condition porte sur le niveau du Learner.
 	missionWithLevel := domain.MissionBlock{
 		Mission: domain.Mission{
 			ID: "m-level", LessonID: "l1", Title: "M", BriefMD: "b",

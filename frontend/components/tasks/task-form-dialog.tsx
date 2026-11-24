@@ -1,6 +1,7 @@
-//frontend\components\tasks\task-form-dialog.tsx
+// frontend/components/tasks/task-form-dialog.tsx
+
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Check, Plus, Tag, Trash2, X } from "lucide-react";
+import { Check, Plus, Tag, Trash2, X } from "@/components/icons";
 import { toast } from "sonner";
 
 import {
@@ -10,10 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CustomSelect } from "@/components/custom-select";
+import { CustomSelect } from "@/components/common/custom-select";
 import { DateTimeField } from "@/components/tasks/date-time-field";
-import { cn } from "@/lib/utils";
-import type { Subtask, Task } from "@/lib/mock-data";
+import { cn } from "@/lib/core/utils";
+import type { Subtask, Task } from "@/lib/data/mock-data";
 import {
   PRIORITY_LABELS,
   REMINDER_LABELS,
@@ -22,7 +23,7 @@ import {
   TASK_CATEGORIES,
   TYPE_LABELS,
   legacyDueLabel,
-} from "@/lib/task-utils";
+} from "@/lib/tasks/utils";
 
 export type TaskFormValues = Omit<Task, "id" | "done">;
 
@@ -159,7 +160,6 @@ export function TaskFormDialog({
         className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-h-[88vh] sm:max-w-2xl"
         aria-describedby={undefined}
       >
-        {/* En-tête — pr-14 au lieu de md:px-6 pour ne pas passer sous le X */}
         <header className="shrink-0 border-b border-border pb-3 pl-4 pr-14 pt-5 md:pl-6 md:pr-14">
           <DialogTitle className="font-display text-xl italic tracking-tight md:text-2xl">
             {mode === "edit" ? "Modifier la tâche" : "Nouvelle tâche"}

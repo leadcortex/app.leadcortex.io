@@ -1,7 +1,8 @@
-//frontend\components\mobile\mobile-list-row.tsx
+// frontend/components/mobile/mobile-list-row.tsx
+
 import { useRef, type ReactNode } from "react";
-import { ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronRight } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 
 export type MobileListRowProps = {
   leading?: ReactNode;

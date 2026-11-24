@@ -1,3 +1,5 @@
+// backend/academy/internal/api/middleware.go
+
 package api
 
 import (
@@ -12,38 +14,26 @@ import (
 	"github.com/leadcortex/academy/internal/repository"
 )
 
-// MiddlewareConfig regroupe la configuration des middlewares.
 type MiddlewareConfig struct {
-	// Logger — logger zerolog. Si zéro, un logger silencieux sera utilisé.
 	Logger logger.Logger
 
-	// CORSOrigins — origines autorisées. Vide ou ["*"] = tout autorisé.
 	CORSOrigins []string
 
-	// AllowDevFallback — si vrai, l'absence de X-Learner-ID utilise
-	// repository.DefaultLearnerID au lieu de renvoyer 401.
-	// À mettre à true en dev/staging uniquement.
 	AllowDevFallback bool
 
-	// DefaultLearnerID — identifiant de repli. Vide = repository.DefaultLearnerID.
 	DefaultLearnerID string
 }
 
-// withDefaults applique les valeurs par défaut.
 func (c MiddlewareConfig) withDefaults() MiddlewareConfig {
 	if c.DefaultLearnerID == "" {
 		c.DefaultLearnerID = repository.DefaultLearnerID
 	}
 	if c.Logger.GetLevel() == 0 && c.Logger.GetLevel().String() == "" {
-		// Logger zéro : on ne fait rien, zerolog gère.
 	}
 	return c
 }
 
-/* ─── Request ID ──────────────────────────────────────────────────────── */
 
-// WithRequestIDMiddleware lit X-Request-ID ou en génère un, l'ajoute au
-// contexte et le renvoie dans la réponse.
 func WithRequestIDMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := r.Header.Get("X-Request-ID")
@@ -56,19 +46,15 @@ func WithRequestIDMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// newRequestID génère un identifiant hexadécimal aléatoire (16 octets).
 func newRequestID() string {
 	b := make([]byte, 16)
 	if _, err := rand.Read(b); err != nil {
-		// Fallback très improbable : on retombe sur l'horodatage.
 		return "t-" + time.Now().UTC().Format("20060102150405.000000000")
 	}
 	return hex.EncodeToString(b)
 }
 
-/* ─── Logging ─────────────────────────────────────────────────────────── */
 
-// statusRecorder capture le code de réponse pour le log.
 type statusRecorder struct {
 	http.ResponseWriter
 	status int
@@ -108,7 +94,6 @@ func (s *flushableStatusRecorder) Flush() {
 	s.statusRecorder.flush()
 }
 
-// WithLoggingMiddleware journalise chaque requête.
 func WithLoggingMiddleware(l logger.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -131,9 +116,7 @@ func WithLoggingMiddleware(l logger.Logger) func(http.Handler) http.Handler {
 	}
 }
 
-/* ─── Recovery ────────────────────────────────────────────────────────── */
 
-// WithRecoveryMiddleware capture les panics et retourne une 500 JSON.
 func WithRecoveryMiddleware(l logger.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -153,9 +136,7 @@ func WithRecoveryMiddleware(l logger.Logger) func(http.Handler) http.Handler {
 	}
 }
 
-/* ─── CORS ────────────────────────────────────────────────────────────── */
 
-// WithCORSMiddleware gère les en-têtes CORS et les pré-vols OPTIONS.
 func WithCORSMiddleware(allowed []string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -182,7 +163,6 @@ func WithCORSMiddleware(allowed []string) func(http.Handler) http.Handler {
 	}
 }
 
-// isAllowedOrigin — vraie si origin est dans la liste (ou "*").
 func isAllowedOrigin(origin string, allowed []string) bool {
 	if origin == "" {
 		return false
@@ -195,23 +175,17 @@ func isAllowedOrigin(origin string, allowed []string) bool {
 	return false
 }
 
-/* ─── Learner ─────────────────────────────────────────────────────────── */
 
-// WithLearnerMiddleware extrait le LearnerID depuis l'en-tête X-Learner-ID
-// (ou le fallback dev) et l'injecte dans le contexte.
 func WithLearnerMiddleware(cfg MiddlewareConfig) func(http.Handler) http.Handler {
 	cfg = cfg.withDefaults()
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// 1. En-tête explicite.
 			id := strings.TrimSpace(r.Header.Get("X-Learner-ID"))
 
-			// 2. Fallback dev.
 			if id == "" && cfg.AllowDevFallback {
 				id = cfg.DefaultLearnerID
 			}
 
-			// 3. Rejet.
 			if id == "" {
 				WriteUnauthorized(w, "en-tête X-Learner-ID requis")
 				return
@@ -223,10 +197,7 @@ func WithLearnerMiddleware(cfg MiddlewareConfig) func(http.Handler) http.Handler
 	}
 }
 
-/* ─── Composition ─────────────────────────────────────────────────────── */
 
-// Chain applique les middlewares dans l'ordre (le premier de la liste
-// est le plus externe).
 func Chain(h http.Handler, mws ...func(http.Handler) http.Handler) http.Handler {
 	for i := len(mws) - 1; i >= 0; i-- {
 		h = mws[i](h)
@@ -234,9 +205,6 @@ func Chain(h http.Handler, mws ...func(http.Handler) http.Handler) http.Handler 
 	return h
 }
 
-// StandardMiddlewares construit la pile standard :
-//
-//	recovery → request-id → logging → CORS → learner
 func StandardMiddlewares(cfg MiddlewareConfig) []func(http.Handler) http.Handler {
 	cfg = cfg.withDefaults()
 	return []func(http.Handler) http.Handler{

@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_lessons_test.go
+
 package api
 
 import (
@@ -11,9 +13,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /lessons/{id}
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestGetLesson_ReturnsDetail(t *testing.T) {
 	s := buildTestServer(t)
@@ -36,11 +35,9 @@ func TestGetLesson_ReturnsDetail(t *testing.T) {
 	if len(dto.Blocks) == 0 {
 		t.Fatal("attendu au moins 1 bloc")
 	}
-	// Le premier bloc doit être cover.
 	if dto.Blocks[0].Type != "cover" {
 		t.Errorf("premier bloc : attendu cover, obtenu %q", dto.Blocks[0].Type)
 	}
-	// On doit trouver un bloc practice.
 	hasPractice := false
 	for _, b := range dto.Blocks {
 		if b.Type == "practice" {
@@ -68,9 +65,6 @@ func TestGetLesson_NotFound(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /lessons/{id}/start
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestStartLesson_Success(t *testing.T) {
 	s := buildTestServer(t)
@@ -97,7 +91,6 @@ func TestStartLesson_Success(t *testing.T) {
 		t.Error("Transitioned devrait être true")
 	}
 
-	// Vérifier la persistance.
 	stored, _ := s.deps.Repository.GetLearner(context.Background(), "alice")
 	lp, ok := stored.LessonProgress["l1"]
 	if !ok {
@@ -111,7 +104,6 @@ func TestStartLesson_Success(t *testing.T) {
 func TestStartLesson_Idempotent(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Premier start.
 	req1 := httptest.NewRequest(http.MethodPost, "/api/v1/lessons/l1/start", nil)
 	req1.Header.Set("X-Learner-ID", "alice")
 	rec1 := httptest.NewRecorder()
@@ -120,7 +112,6 @@ func TestStartLesson_Idempotent(t *testing.T) {
 		t.Fatalf("premier start : %d", rec1.Code)
 	}
 
-	// Second start : doit rester OK sans Transitioned.
 	req2 := httptest.NewRequest(http.MethodPost, "/api/v1/lessons/l1/start", nil)
 	req2.Header.Set("X-Learner-ID", "alice")
 	rec2 := httptest.NewRecorder()
@@ -146,21 +137,16 @@ func TestStartLesson_NotFound(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /lessons/{id}/blocks/{i}/view
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestViewBlock_RequiresStart(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Vue sans start préalable.
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/blocks/0/view", nil)
 	req.Header.Set("X-Learner-ID", "alice")
 	rec := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec, req)
 
-	// Le moteur refuse (LessonNotStarted) → 400.
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("attendu 400, obtenu %d (body=%s)", rec.Code, rec.Body.String())
 	}
@@ -169,7 +155,6 @@ func TestViewBlock_RequiresStart(t *testing.T) {
 func TestViewBlock_Success(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Démarre d'abord la leçon.
 	startReq := httptest.NewRequest(http.MethodPost, "/api/v1/lessons/l1/start", nil)
 	startReq.Header.Set("X-Learner-ID", "alice")
 	startRec := httptest.NewRecorder()
@@ -178,7 +163,6 @@ func TestViewBlock_Success(t *testing.T) {
 		t.Fatalf("start : %d", startRec.Code)
 	}
 
-	// Marque le bloc 0 comme vu.
 	body := strings.NewReader(`{"slides_consumed":1}`)
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/blocks/0/view", body)
@@ -225,9 +209,6 @@ func TestViewBlock_OutOfRange(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   ensureLessonAvailable (unit)
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestEnsureLessonAvailable_PromotesLocked(t *testing.T) {
 	lesson := &domain.Lesson{

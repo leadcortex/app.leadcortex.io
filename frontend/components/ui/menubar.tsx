@@ -1,9 +1,10 @@
-//frontend\components\ui\menubar.tsx
+// frontend/components/ui/menubar.tsx
+
 import * as React from "react";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
-import { Check, ChevronRight, Circle } from "lucide-react";
+import { Check, ChevronRight, Circle } from "@/components/icons";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 function MenubarMenu({ ...props }: React.ComponentProps<typeof MenubarPrimitive.Menu>) {
   return <MenubarPrimitive.Menu {...props} />;

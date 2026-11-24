@@ -1,6 +1,7 @@
-//frontend\components\skeletons\dashboard-skeleton.tsx
+// frontend/components/skeletons/dashboard-skeleton.tsx
+
 import { Skeleton, SkeletonRegion } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 function DashboardKpiSkeleton() {
   return (
@@ -51,7 +52,6 @@ export function DashboardSkeleton() {
       label="Chargement du tableau de bord"
       className="mx-auto w-full max-w-[1400px] pb-10"
     >
-      {}
       <div className="mb-4 md:mb-8 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-6">
         <div className="min-w-0">
           <Skeleton variant="text" className="h-2.5 w-32" />
@@ -64,28 +64,25 @@ export function DashboardSkeleton() {
         </div>
       </div>
 
-      {}
-      <div className="mb-6 grid grid-cols-2 gap-3 md:mb-8 md:grid-cols-3 md:gap-4 xl:grid-cols-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <DashboardKpiSkeleton key={i} />
-        ))}
+      <div className="@container mb-6 md:mb-8">
+        <div className="grid grid-cols-2 gap-3 @3xl:grid-cols-3 @3xl:gap-4 @7xl:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <DashboardKpiSkeleton key={i} />
+          ))}
+        </div>
       </div>
 
-      {}
-      <div className="grid gap-4 md:gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <div className="grid gap-4 md:gap-6 xl:grid-cols-[7fr_5fr]">
         <ChartCardSkeleton height={280} withActions withFooter />
         <ChartCardSkeleton height={240} withFooter />
       </div>
 
-      {}
-      <div className="mt-4 grid gap-4 md:mt-6 md:gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <div className="mt-4 grid gap-4 md:mt-6 md:gap-6 xl:grid-cols-[7fr_5fr]">
         <ChartCardSkeleton height={250} withActions withFooter />
         <ChartCardSkeleton height={240} withFooter />
       </div>
 
-      {}
-      <div className="mt-4 grid gap-4 md:mt-6 md:gap-6 xl:grid-cols-3">
-        {}
+      <div className="mt-4 grid gap-4 md:mt-6 md:gap-6 xl:grid-cols-[5fr_7fr]">
         <section className="min-w-0 rounded-2xl border border-border bg-background p-4 md:p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <Skeleton variant="text" className="h-4 w-40" />
@@ -104,7 +101,6 @@ export function DashboardSkeleton() {
           </ul>
         </section>
 
-        {}
         <section className="min-w-0 rounded-2xl border border-border bg-background p-4 md:p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -126,28 +122,8 @@ export function DashboardSkeleton() {
             ))}
           </ul>
         </section>
-
-        {}
-        <section className="min-w-0 overflow-hidden rounded-2xl border border-border bg-background p-4 md:p-6">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <Skeleton variant="text" className="h-4 w-40" />
-            <Skeleton variant="circle" className="size-4 shrink-0" />
-          </div>
-          <ul className="space-y-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <li key={i} className="flex min-w-0 gap-3 px-2 py-1.5">
-                <Skeleton className="h-12 w-16 shrink-0 rounded-lg" />
-                <div className="min-w-0 flex-1 space-y-1.5 border-l border-border pl-3">
-                  <Skeleton variant="text" className="h-2.5 w-4/5" />
-                  <Skeleton variant="text" className="h-2 w-3/5" />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
       </div>
 
-      {}
       <section className="mt-4 rounded-2xl border border-border bg-background p-4 md:mt-6 md:p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
           <Skeleton variant="text" className="h-4 w-48" />

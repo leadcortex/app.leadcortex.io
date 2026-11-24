@@ -1,4 +1,5 @@
-//frontend\lib\security\client-guard.tsx
+// frontend/lib/security/client-guard.tsx
+
 import { useEffect, useRef, useState } from "react";
 
 let cachedFingerprint: string | null = null;
@@ -52,7 +53,6 @@ export function getFingerprint(): string {
       signals.push(canvas.toDataURL());
     }
   } catch {
-    /* Intentionally ignored. */
   }
 
   try {
@@ -65,7 +65,6 @@ export function getFingerprint(): string {
       }
     }
   } catch {
-    /* Intentionally ignored. */
   }
 
   cachedFingerprint = hashString(signals.join("|"));

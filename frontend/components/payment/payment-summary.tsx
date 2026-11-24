@@ -1,5 +1,6 @@
-//frontend\components\payment\payment-summary.tsx
-import { Check, Shield, Clock, Receipt } from "lucide-react";
+// frontend/components/payment/payment-summary.tsx
+
+import { Check, Shield, Clock, Receipt } from "@/components/icons";
 
 interface PaymentSummaryProps {
   planName: string;

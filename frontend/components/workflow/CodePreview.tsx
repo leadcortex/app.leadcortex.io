@@ -1,8 +1,9 @@
-//frontend\components\workflow\CodePreview.tsx
+// frontend/components/workflow/CodePreview.tsx
+
 import { useMemo } from "react";
-import { Code2 } from "lucide-react";
+import { Code2 } from "@/components/icons";
 import type { CodeLanguageId } from "@/lib/workflow/code-languages";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 type Token = { text: string; cls: string };
 
@@ -75,10 +76,7 @@ export function CodePreview({
   height: number;
   placeholder?: string;
   className?: string;
-  /** Libellé affiché dans le petit bandeau interne (ex. "Code · JavaScript"). */
   headerLabel?: string;
-  /** Affiche un bouton « Éditer » dans le bandeau interne, sans réserver
-   *  d'espace supplémentaire au-dessus du conteneur. */
   onEdit?: () => void;
 }) {
   const lines = useMemo(() => (code ? code.replace(/\n$/, "").split("\n") : []), [code]);
@@ -112,7 +110,7 @@ export function CodePreview({
         </div>
       )}
       <div
-        className="wf-code-scroll min-h-0 flex-1 overflow-auto"
+        className="wf-code-scroll scrollbar-compact min-h-0 flex-1 overflow-auto"
         onWheel={(e) => e.stopPropagation()}
       >
         {lines.length === 0 ? (

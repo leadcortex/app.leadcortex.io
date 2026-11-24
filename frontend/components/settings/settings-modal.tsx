@@ -1,4 +1,5 @@
-//frontend\components\settings\settings-modal.tsx
+// frontend/components/settings/settings-modal.tsx
+
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Settings as SettingsIcon,
@@ -16,10 +17,11 @@ import {
   Monitor,
   Search,
   X,
+  ArrowLeft,
   Link2,
   type LucideIcon,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   SETTINGS_GROUPS,
@@ -54,7 +56,8 @@ export function SettingsModal() {
 }
 
 function DesktopSettingsModal() {
-  const { open, section, setSection, closeSettings } = useSettings();
+  const { open, section, setSection, closeSettings, billingReceiptOpen, setBillingReceiptOpen } =
+    useSettings();
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -104,59 +107,89 @@ function DesktopSettingsModal() {
         onClick={closeSettings}
       />
 
-      <div className="relative z-10 flex h-[min(92vh,860px)] w-full max-w-[1100px] overflow-hidden rounded-2xl border border-border bg-background shadow-[0_40px_120px_-20px_rgba(0,0,0,0.5)] animate-in zoom-in-95 fade-in duration-150">
-        <aside className="flex w-14 shrink-0 flex-col border-r border-border/70 bg-surface/30 md:w-[270px]">
-          <div className="hidden p-3 md:block">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Rechercher un réglage"
-                className="h-9 w-full rounded-lg border border-transparent bg-background pl-8 pr-8 text-sm outline-none transition focus:border-border focus:ring-2 focus:ring-ring/40"
-              />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  aria-label="Effacer la recherche"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:bg-surface hover:text-foreground"
-                >
-                  <X className="size-3" />
-                </button>
-              )}
+      <div
+        className={cn(
+          "relative z-10 flex h-[min(92vh,860px)] w-full overflow-hidden rounded-2xl border border-border bg-background shadow-[0_40px_120px_-20px_rgba(0,0,0,0.5)] animate-in zoom-in-95 fade-in duration-150",
+          billingReceiptOpen ? "max-w-[760px]" : "max-w-[1100px]",
+        )}
+      >
+        {!billingReceiptOpen && (
+          <aside className="flex w-14 shrink-0 flex-col border-r border-border/70 bg-surface/30 md:w-[270px]">
+            <div className="hidden p-3 md:block">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Rechercher un réglage"
+                  className="h-9 w-full rounded-lg border border-transparent bg-background pl-8 pr-8 text-sm outline-none transition focus:border-border focus:ring-2 focus:ring-ring/40"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery("")}
+                    aria-label="Effacer la recherche"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:bg-surface hover:text-foreground"
+                  >
+                    <X className="size-3" />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
 
-          <nav className="min-h-0 flex-1 overflow-y-auto scrollbar-hide px-1.5 py-2 md:px-2 md:py-1">
-            {grouped.length === 0 && (
-              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
-                Aucun réglage ne correspond à votre recherche.
-              </p>
-            )}
-            {grouped.map((g) => (
-              <NavGroup key={g.key} label={g.label}>
-                {g.items.map((m) => (
-                  <NavItem
-                    key={m.key}
-                    meta={m}
-                    active={section === m.key}
-                    onClick={() => setSection(m.key)}
-                  />
-                ))}
-              </NavGroup>
-            ))}
-          </nav>
-        </aside>
+            <nav className="min-h-0 flex-1 overflow-y-auto scrollbar-hide px-1.5 py-2 md:px-2 md:py-1">
+              {grouped.length === 0 && (
+                <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+                  Aucun réglage ne correspond à votre recherche.
+                </p>
+              )}
+              {grouped.map((g) => (
+                <NavGroup key={g.key} label={g.label}>
+                  {g.items.map((m) => (
+                    <NavItem
+                      key={m.key}
+                      meta={m}
+                      active={section === m.key}
+                      onClick={() => setSection(m.key)}
+                    />
+                  ))}
+                </NavGroup>
+              ))}
+            </nav>
+          </aside>
+        )}
 
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border/70 px-4 py-3 md:px-6">
-            <div className="min-w-0">
-              <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
-                {activeGroup?.label ?? "Paramètres"}
-              </p>
-              <h2 className="mt-0.5 truncate text-sm font-semibold md:text-base">{active.label}</h2>
-            </div>
+            {billingReceiptOpen ? (
+              <div className="flex min-w-0 items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setBillingReceiptOpen(false)}
+                  aria-label="Retour à la configuration du paiement"
+                  className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <ArrowLeft className="size-4" />
+                </button>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                    Facturation
+                  </p>
+                  <h2 className="mt-0.5 truncate text-sm font-semibold md:text-base">
+                    Impression du ticket
+                  </h2>
+                </div>
+              </div>
+            ) : (
+              <div className="min-w-0">
+                <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                  {activeGroup?.label ?? "Paramètres"}
+                </p>
+                <h2 className="mt-0.5 truncate text-sm font-semibold md:text-base">
+                  {active.label}
+                </h2>
+              </div>
+            )}
             <button
               type="button"
               onClick={closeSettings}
@@ -167,7 +200,12 @@ function DesktopSettingsModal() {
             </button>
           </header>
 
-          <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 md:px-8 md:py-7">
+          <div
+            className={cn(
+              "min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 md:px-8 md:py-7",
+              billingReceiptOpen && "px-4 md:px-6",
+            )}
+          >
             <SettingsPanel section={section} />
           </div>
         </div>

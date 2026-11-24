@@ -1,10 +1,19 @@
-//frontend\components\ai-assistant\assistant-engine.ts
+// frontend/components/ai-assistant/assistant-engine.ts
+
 export type AssistantAttachment = {
   id: string;
   name: string;
   size: number;
   kind: "image" | "document" | "context";
   url?: string;
+};
+
+export type AssistantFileContent = {
+  id: string;
+  name: string;
+  content: string;
+  encoding?: "base64";
+  mimeType?: string;
 };
 
 export type AssistantMessage = {
@@ -14,7 +23,6 @@ export type AssistantMessage = {
   createdAt: number;
   attachments?: AssistantAttachment[];
   pending?: boolean;
-  /** Vrai si le prompt a été modifié puis relancé (badge « modifié »). */
   edited?: boolean;
 };
 
@@ -128,8 +136,6 @@ export function getGreeting(name: string = "Utilisateur", date: Date = new Date(
   };
 }
 
-/* ------------------------------- Réponses -------------------------------- */
-
 const rules: { test: RegExp; reply: (ctx: string) => string }[] = [
   {
     test: /séquence|sequence|cadence/i,
@@ -168,7 +174,16 @@ const rules: { test: RegExp; reply: (ctx: string) => string }[] = [
   },
 ];
 
-export function generateReply(prompt: string, ctx: string, attachments: AssistantAttachment[]) {
+export function generateReply(
+  prompt: string,
+  ctx: string,
+  attachments: AssistantAttachment[],
+  fileContents: AssistantFileContent[] = [],
+  knowledgeContext = "",
+) {
+  const contextNote = knowledgeContext.trim()
+    ? " J'ai également reçu le contenu de votre bibliothèque de connaissances."
+    : "";
   if (attachments.length > 0) {
     const images = attachments.filter((a) => a.kind === "image").length;
     const docs = attachments.filter((a) => a.kind === "document").length;
@@ -179,14 +194,15 @@ export function generateReply(prompt: string, ctx: string, attachments: Assistan
     if (docs) parts.push(`${docs} document${docs > 1 ? "s" : ""}`);
     if (contexts) parts.push(`${contexts} contexte${contexts > 1 ? "s" : ""}`);
 
-    return `J'ai analysé ${parts.join(", ")}. J'en extrais les entités clés (sociétés, contacts, montants) et je les rapproche de vos données ${ctx}. Souhaitez-vous que je crée les enregistrements correspondants ?`;
+    const fileNote = fileContents.length
+      ? ` Fichiers texte lus : ${fileContents.map((file) => file.name).join(", ")}.`
+      : "";
+    return `J'ai analysé ${parts.join(", ")}. J'en extrais les entités clés (sociétés, contacts, montants) et je les rapproche de vos données ${ctx}. Souhaitez-vous que je crée les enregistrements correspondants ?${fileNote}${contextNote}`;
   }
   const rule = rules.find((r) => r.test.test(prompt));
-  if (rule) return rule.reply(ctx);
-  return `Compris. Dans le contexte « ${ctx} », voici ce que je propose : 1) clarifier l'objectif, 2) isoler les 10 % d'actions à fort impact, 3) exécuter et mesurer. Dites-moi par quoi on commence.`;
+  if (rule) return `${rule.reply(ctx)}${contextNote}`;
+  return `Compris. Dans le contexte « ${ctx} », voici ce que je propose : 1) clarifier l'objectif, 2) isoler les 10 % d'actions à fort impact, 3) exécuter et mesurer. Dites-moi par quoi on commence.${contextNote}`;
 }
-
-/* ─── Parsing des messages (blocs de code + tableaux) ──────────────────── */
 
 export type TableAlign = "left" | "center" | "right";
 
@@ -216,12 +232,6 @@ function parseTableAlign(sep: string, cols: number): TableAlign[] {
   return out;
 }
 
-/**
- * Découpe un texte de message en segments (texte brut, blocs de code
- * délimités par des fences ```, tableaux Markdown). Conçu pour être léger
- * et sans dépendance : pas de parseur Markdown complet, seulement les deux
- * structures qui profitent d'un rendu dédié dans l'interface de chat.
- */
 export function parseMessageSegments(text: string): MessageSegment[] {
   if (!text) return [];
   const lines = text.split("\n");
@@ -239,7 +249,6 @@ export function parseMessageSegments(text: string): MessageSegment[] {
   while (i < lines.length) {
     const line = lines[i]!;
 
-    // Bloc de code
     const fence = /^```([\w+#-]*)\s*$/.exec(line);
     if (fence) {
       flushText();
@@ -250,12 +259,11 @@ export function parseMessageSegments(text: string): MessageSegment[] {
         code.push(lines[i]!);
         i++;
       }
-      i++; // saute la fence fermante
+      i++;
       segments.push({ type: "code", language: lang, content: code.join("\n") });
       continue;
     }
 
-    // Tableau Markdown : entête avec pipes, puis séparateur |---|---|
     const next = lines[i + 1];
     if (
       line.includes("|") &&
@@ -282,8 +290,6 @@ export function parseMessageSegments(text: string): MessageSegment[] {
   return segments;
 }
 
-/* ─── Feedback (persistance locale) ────────────────────────────────────── */
-
 export type FeedbackValue = "up" | "down" | null;
 
 export type FeedbackEntry = {
@@ -296,10 +302,6 @@ export type FeedbackEntry = {
 
 const FEEDBACK_KEY = "lc.assistant.feedback.v1";
 
-/**
- * Hash stable d'un message pour retrouver son feedback au fil des
- * sessions : même rôle + même texte = même hash (FNV-1a 32 bits).
- */
 export function hashMessage(text: string, role: "user" | "agent"): string {
   const seed = `${role}:${text.trim()}`;
   let h = 2166136261;
@@ -327,11 +329,9 @@ export function persistFeedback(entry: FeedbackEntry): void {
   try {
     const all = loadFeedback().filter((e) => e.hash !== entry.hash);
     all.push(entry);
-    // On garde les 500 dernières entrées pour ne pas gonfler le stockage.
     const trimmed = all.slice(-500);
     window.localStorage.setItem(FEEDBACK_KEY, JSON.stringify(trimmed));
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
@@ -340,11 +340,6 @@ export function getFeedbackValue(hash: string): FeedbackValue {
   return found?.value ?? null;
 }
 
-/**
- * Calcule une indication textuelle sur les préférences de l'utilisateur,
- * à injecter plus tard dans le prompt système du modèle.
- * Renvoie une chaîne vide tant qu'on n'a pas assez de signaux fiables.
- */
 export function getPersonalizationHint(): string {
   const entries = loadFeedback().filter((e) => e.role === "agent" && e.value !== null);
   if (entries.length < 5) return "";

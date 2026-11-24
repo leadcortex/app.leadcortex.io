@@ -1,3 +1,5 @@
+// backend/academy/internal/assessment/feedback.go
+
 package assessment
 
 import (
@@ -7,18 +9,9 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// buildFeedback construit le message de feedback affiché à l'apprenant.
-//
-// Règles :
-//   - Si l'exercice a une ExplanationMD non vide, elle est utilisée en
-//     priorité (c'est l'explication prévue par l'auteur du contenu).
-//   - Sinon, un feedback générique est produit selon le type d'exercice
-//     et le score.
-//   - Pour les exercices multi-éléments, un récapitulatif est ajouté.
 func buildFeedback(ex domain.Exercise, res Result) string {
 	var sb strings.Builder
 
-	// 1. Verdict.
 	if res.Correct {
 		sb.WriteString("✔ **Correct** — ")
 	} else {
@@ -26,16 +19,13 @@ func buildFeedback(ex domain.Exercise, res Result) string {
 	}
 	fmt.Fprintf(&sb, "score %d/100.\n\n", res.Score)
 
-	// 2. Explication de l'auteur (si présente).
 	if ex.ExplanationMD != "" {
 		sb.WriteString(ex.ExplanationMD)
 		sb.WriteString("\n\n")
 	} else {
-		// Feedback générique selon le type.
 		sb.WriteString(genericFeedback(ex, res))
 	}
 
-	// 3. Récapitulatif des sous-résultats (si applicable).
 	if res.Details != nil {
 		if recap := buildRecap(ex, res.Details); recap != "" {
 			sb.WriteString(recap)
@@ -83,12 +73,10 @@ func genericFeedback(ex domain.Exercise, res Result) string {
 	return ""
 }
 
-// buildRecap résume les sous-résultats pour l'UI.
 func buildRecap(ex domain.Exercise, d *ResultDetails) string {
 	var sb strings.Builder
 	switch ex.Kind {
 	case domain.ExerciseMCQ:
-		// Pour un MCQ, un seul SubResult ; pas de récap séparé.
 		return ""
 	case domain.ExerciseFillBlank:
 		if len(d.BlankResults) == 0 {

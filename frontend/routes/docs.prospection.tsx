@@ -1,6 +1,7 @@
-//frontend\routes\docs.prospection.tsx
+// frontend/routes/docs.prospection.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { DocsLayout, DocCallout } from "@/components/docs-layout";
+import { DocsLayout, DocCallout } from "@/components/layout/docs-layout";
 
 export const Route = createFileRoute("/docs/prospection")({
   head: () => ({

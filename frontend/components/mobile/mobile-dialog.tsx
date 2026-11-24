@@ -1,4 +1,5 @@
-//frontend\components\mobile\mobile-dialog.tsx
+// frontend/components/mobile/mobile-dialog.tsx
+
 import { type ReactNode } from "react";
 import {
   Dialog,
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type MobileDialogProps = {
   open: boolean;

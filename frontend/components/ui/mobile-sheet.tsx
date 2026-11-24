@@ -1,12 +1,9 @@
-//frontend\components\ui\mobile-sheet.tsx
-// • ⭐ Suit le clavier virtuel iOS via visualViewport : la sheet remonte
-
-// • ⭐ Bornage en paysage (max-height: 92dvh, jamais plus que l'écran).
+// frontend/components/ui/mobile-sheet.tsx
 
 import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ArrowLeft, X } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 let bodyLockCount = 0;
@@ -28,9 +25,6 @@ function unlockBodyScroll() {
     document.body.style.overflow = savedBodyOverflow;
   }
 }
-
-/*  le haut via margin-bottom: var(--msheet-kb). Utilise visualViewport        */
-/*  (iOS Safari 13+, Chrome Android 61+). Fallback silencieux si absent.       */
 
 function useKeyboardOffset(active: boolean) {
   useEffect(() => {
@@ -57,32 +51,16 @@ function useKeyboardOffset(active: boolean) {
   }, [active]);
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Types                                                                     */
-/* -------------------------------------------------------------------------- */
-
 export type MobileSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  /** Si fourni, affiche une flèche retour à gauche (et la croix passe à droite). */
   onBack?: () => void;
-  /** Bouton optionnel à droite du header (icône seule, size-9). */
   headerAction?: ReactNode;
-  /** Contenu scrollable. */
   children: ReactNode;
-  /** Classe additionnelle sur le panneau. */
   className?: string;
-  /**
-   * `true` = la sheet ne peut pas être agrandie au-delà du contenu (fit-content).
-   * Utile pour les action sheets courts. Par défaut : `false` (92dvh).
-   */
   compact?: boolean;
 };
-
-/* -------------------------------------------------------------------------- */
-/*  Composant                                                                 */
-/* -------------------------------------------------------------------------- */
 
 export function MobileSheet({
   open,
@@ -96,17 +74,14 @@ export function MobileSheet({
 }: MobileSheetProps) {
   const isMobile = useIsMobile();
 
-  /* Verrou body (compteur) */
   useEffect(() => {
     if (!open) return;
     lockBodyScroll();
     return () => unlockBodyScroll();
   }, [open]);
 
-  /* Suivi clavier virtuel */
   useKeyboardOffset(open && isMobile);
 
-  /* Esc ferme */
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -143,9 +118,7 @@ export function MobileSheet({
           className,
         )}
         style={{
-          // Remonte la sheet au-dessus du clavier virtuel iOS.
           marginBottom: "var(--msheet-kb, 0px)",
-          // Garantit qu'on ne dépasse jamais la hauteur visible réelle.
           maxHeight: "min(92dvh, calc(100dvh - var(--msheet-kb, 0px)))",
           transition: "margin-bottom 180ms ease-out",
         }}
@@ -199,9 +172,6 @@ export function MobileSheet({
         <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide">
           <div
             className="pb-[max(1rem,env(safe-area-inset-bottom))]"
-            // Le padding-bottom réserve la safe area iOS même quand la sheet
-            // est scrollée jusqu'en bas. Combiné au marginBottom clavier plus
-            // haut, le résultat est robuste dans tous les cas.
           >
             {children}
           </div>

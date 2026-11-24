@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/conditions_test.go
+
 package gamification
 
 import (
@@ -20,7 +22,6 @@ func learnerWith(customize func(*domain.Learner)) *domain.Learner {
 	return l
 }
 
-/* ─── ConditionGroup : All / Any / Not ────────────────────────────────── */
 
 func TestEvaluate_EmptyGroup_IsTrue(t *testing.T) {
 	ctx := NewContext(learnerWith(nil), fixedTime())
@@ -51,7 +52,6 @@ func TestEvaluate_All(t *testing.T) {
 		t.Error("attendu : all=true")
 	}
 
-	// Une condition fausse → tout le groupe est faux.
 	group.All = append(group.All, domain.Condition{
 		Path: "learner.xp", Op: domain.OpGreaterThan, Value: 500,
 	})
@@ -79,7 +79,6 @@ func TestEvaluate_Any(t *testing.T) {
 		t.Error("attendu : any=true (le 2e matche)")
 	}
 
-	// Aucune ne matche → false.
 	group.Any = []domain.Condition{
 		{Path: "learner.xp", Op: domain.OpGreaterThanEqual, Value: 1000},
 		{Path: "learner.streak_days", Op: domain.OpGreaterThanEqual, Value: 30},
@@ -121,7 +120,6 @@ func TestEvaluate_NilLearner(t *testing.T) {
 	}
 }
 
-/* ─── Opérateurs ──────────────────────────────────────────────────────── */
 
 func TestEvaluateOne_AllOperators(t *testing.T) {
 	l := learnerWith(func(l *domain.Learner) {
@@ -206,7 +204,6 @@ func TestEvaluateOne_UnknownPath(t *testing.T) {
 	}
 }
 
-/* ─── Chemins du Learner ──────────────────────────────────────────────── */
 
 func TestResolveLearnerPaths(t *testing.T) {
 	l := learnerWith(func(l *domain.Learner) {
@@ -257,7 +254,6 @@ func TestResolveLearnerPaths(t *testing.T) {
 	}
 }
 
-/* ─── Contexte (Values libres) ────────────────────────────────────────── */
 
 func TestContext_WithValue(t *testing.T) {
 	l := learnerWith(nil)
@@ -272,7 +268,6 @@ func TestContext_WithValue(t *testing.T) {
 	}
 }
 
-/* ─── Comparaisons typées ─────────────────────────────────────────────── */
 
 func TestEvaluateOne_BoolComparison(t *testing.T) {
 	l := learnerWith(nil)

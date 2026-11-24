@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\expressions.ts
+// frontend/lib/workflow-engine/expressions.ts
+
 import { WorkflowBlockError } from "./errors";
 
 export type ExpressionScope = {
@@ -160,7 +161,6 @@ export function safeStringify(value: unknown): string {
   }
 }
 
-/** Résout récursivement toutes les expressions d'une valeur de configuration. */
 export function resolveDeep(value: unknown, scope: ExpressionScope, depth = 0): unknown {
   if (depth > 8) return value;
   if (typeof value === "string") return resolveTemplate(value, scope);
@@ -173,10 +173,6 @@ export function resolveDeep(value: unknown, scope: ExpressionScope, depth = 0): 
   }
   return value;
 }
-
-/* ------------------------------------------------------------------ */
-/* DSL de condition                                                    */
-/* ------------------------------------------------------------------ */
 
 export type ComparisonOperator =
   | "=="
@@ -204,10 +200,6 @@ export type ConditionNode =
 const OPERATOR_PATTERN =
   /\s(==|!=|>=|<=|>|<|contains|not_contains|starts_with|ends_with|in|not_in|matches)\s/;
 
-/**
- * Parse une expression textuelle en AST restreint.
- * Grammaire : `expr := term (('and'|'or') term)*`, `term := ref op literal | ref op`.
- */
 export function parseCondition(expression: string): ConditionNode {
   const source = expression.trim();
   if (!source) throw invalid(expression);
@@ -396,7 +388,6 @@ function isEmpty(value: unknown): boolean {
   return false;
 }
 
-/** Regex bornée : longueur limitée pour éviter les catastrophic backtracking évidents. */
 function safeMatches(input: string, pattern: string): boolean {
   if (pattern.length > 200 || input.length > 10_000) return false;
   try {

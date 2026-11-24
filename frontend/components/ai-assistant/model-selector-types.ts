@@ -1,4 +1,5 @@
-//frontend\components\ai-assistant\model-selector-types.ts
+// frontend/components/ai-assistant/model-selector-types.ts
+
 export type AiBrand =
   "claude" | "gemini" | "chatgpt" | "perplexity" | "deepseek" | "mistral" | "groq";
 
@@ -105,6 +106,10 @@ export function getProviderLabel(provider: ApiProvider): string {
   return found?.providerLabel ?? provider;
 }
 
+export function brandsForProvider(provider: ApiProvider): AiBrandInfo[] {
+  return AI_BRANDS.filter((b) => b.providerKey === provider);
+}
+
 export interface TeamConfig {
   research: AiBrand;
 
@@ -113,12 +118,20 @@ export interface TeamConfig {
 
 export type SelectionType = "app" | "user-key";
 
+export type ApiKeyStatus = "active" | "paused" | "revoked";
+
 export interface StoredApiKey {
   id: string;
   provider: ApiProvider;
   apiKey: string;
 
   label?: string;
+
+  status?: ApiKeyStatus;
+  createdAt?: number;
+  lastUsedAt?: number;
+  revokedAt?: number;
+  hint?: string;
 }
 
 export interface UserApiKeyConfig {
@@ -146,13 +159,76 @@ export const DEFAULT_MODEL_CONFIG: ModelConfig = {
 export const MODEL_STORAGE_KEY = "leadcortex_model_config";
 export const API_KEYS_STORAGE_KEY = "leadcortex_api_keys";
 
+export const PROVIDER_CONSOLES: Record<
+  ApiProvider,
+  { label: string; url: string; placeholder: string }
+> = {
+  anthropic: {
+    label: "Console Anthropic",
+    url: "https://console.anthropic.com/settings/keys",
+    placeholder: "sk-ant-…",
+  },
+  openai: {
+    label: "Plateforme OpenAI",
+    url: "https://platform.openai.com/api-keys",
+    placeholder: "sk-…",
+  },
+  google: {
+    label: "Google AI Studio",
+    url: "https://aistudio.google.com/app/apikey",
+    placeholder: "AIza…",
+  },
+  perplexity: {
+    label: "Paramètres Perplexity",
+    url: "https://www.perplexity.ai/settings/api",
+    placeholder: "pplx-…",
+  },
+  deepseek: {
+    label: "Plateforme DeepSeek",
+    url: "https://platform.deepseek.com/api_keys",
+    placeholder: "sk-…",
+  },
+  mistral: {
+    label: "Console Mistral",
+    url: "https://console.mistral.ai/api-keys",
+    placeholder: "Collez votre clé",
+  },
+  groq: {
+    label: "Console Groq",
+    url: "https://console.groq.com/keys",
+    placeholder: "gsk_…",
+  },
+};
+
+export function getKeyStatus(key: StoredApiKey): ApiKeyStatus {
+  return key.status ?? "active";
+}
+
+export function isKeyUsable(key: StoredApiKey): boolean {
+  return getKeyStatus(key) === "active" && key.apiKey.length > 0;
+}
+
+export function keyLast4(key: StoredApiKey): string {
+  return key.apiKey ? key.apiKey.slice(-4) : (key.hint ?? "");
+}
+
+export function usableProviders(keys: StoredApiKey[]): Set<ApiProvider> {
+  return new Set(keys.filter(isKeyUsable).map((k) => k.provider));
+}
+
+function isStoredApiKey(value: unknown): value is StoredApiKey {
+  if (!value || typeof value !== "object") return false;
+  const v = value as Partial<StoredApiKey>;
+  return typeof v.id === "string" && typeof v.provider === "string" && typeof v.apiKey === "string";
+}
+
 export function loadApiKeys(): StoredApiKey[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(API_KEYS_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as StoredApiKey[]) : [];
+    return Array.isArray(parsed) ? parsed.filter(isStoredApiKey) : [];
   } catch {
     return [];
   }
@@ -163,11 +239,9 @@ export function saveApiKeys(keys: StoredApiKey[]): void {
   try {
     window.localStorage.setItem(API_KEYS_STORAGE_KEY, JSON.stringify(keys));
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
-/** Garde-fou : la valeur stockée doit ressembler au nouveau format. */
 export function isModelConfig(value: unknown): value is ModelConfig {
   if (!value || typeof value !== "object") return false;
   const v = value as Partial<ModelConfig>;

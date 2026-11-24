@@ -1,4 +1,5 @@
-//frontend\components\settings\settings-panels.tsx
+// frontend/components/settings/settings-panels.tsx
+
 import type { SettingsSection } from "./settings-context";
 import { BillingPanel } from "./billing-panel";
 import { GeneralPanel } from "./panels/GeneralPanel";

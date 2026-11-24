@@ -1,7 +1,8 @@
-//frontend\components\mobile\mobile-page-header.tsx
+// frontend/components/mobile/mobile-page-header.tsx
+
 import type { ReactNode } from "react";
-import { ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ArrowLeft } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 
 export type MobilePageHeaderProps = {
   title: string;
@@ -59,7 +60,7 @@ export function MobilePageHeader({
           )}
         </div>
 
-        {action && <div className="grid size-11 shrink-0 place-items-center">{action}</div>}
+        {action && <div className="flex shrink-0 items-center gap-1">{action}</div>}
       </div>
 
       {actions && (

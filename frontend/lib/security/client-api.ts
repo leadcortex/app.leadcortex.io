@@ -1,4 +1,5 @@
-//frontend\lib\security\client-api.ts
+// frontend/lib/security/client-api.ts
+
 import type { FormGuardPayload } from "./client-guard";
 
 export type VerifyResponse =
@@ -20,8 +21,6 @@ export async function verifyWithServer(
     const data = (await res.json()) as VerifyResponse;
     return data;
   } catch {
-    // Fail-open sur erreur réseau : on ne bloque pas un user légitime
-    // dont le réseau est instable. À ajuster selon votre tolérance au risque.
     return { ok: true };
   }
 }

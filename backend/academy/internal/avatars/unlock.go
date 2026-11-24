@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/unlock.go
+
 package avatars
 
 import (
@@ -10,25 +12,16 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// Context regroupe les informations nécessaires pour évaluer un
-// déblocage d'avatar.
 type Context struct {
-	// Learner — l'apprenant.
 	Learner *domain.Learner
 
-	// Registry — registre du curriculum (utilisé pour vérifier les
-	// programmes terminés).
 	Registry *curriculum.Registry
 
-	// Now — instant d'évaluation.
 	Now time.Time
 
-	// Values — valeurs libres, utilisées pour les déblocages `secret`
-	// et `founding`. Ex. `Values["level-20"] = true`.
 	Values map[string]any
 }
 
-// NewContext crée un contexte de déblocage minimal.
 func NewContext(
 	learner *domain.Learner,
 	registry *curriculum.Registry,
@@ -42,7 +35,6 @@ func NewContext(
 	}
 }
 
-// WithValue ajoute une valeur au contexte (fluent).
 func (c Context) WithValue(key string, v any) Context {
 	if c.Values == nil {
 		c.Values = map[string]any{}
@@ -51,7 +43,6 @@ func (c Context) WithValue(key string, v any) Context {
 	return c
 }
 
-// Evaluate renvoie true si l'avatar est débloqué pour ce contexte.
 func Evaluate(a domain.Avatar, ctx Context) (bool, error) {
 	if ctx.Learner == nil {
 		return false, fmt.Errorf("%w : learner nil", ErrInvalidContext)
@@ -77,7 +68,6 @@ func Evaluate(a domain.Avatar, ctx Context) (bool, error) {
 	}
 }
 
-// EvaluateByID — raccourci pour Evaluate depuis un ID.
 func EvaluateByID(avatarID string, ctx Context) (bool, error) {
 	a, ok := Find(avatarID)
 	if !ok {
@@ -86,17 +76,14 @@ func EvaluateByID(avatarID string, ctx Context) (bool, error) {
 	return Evaluate(a, ctx)
 }
 
-/* ─── Évaluateurs par kind ────────────────────────────────────────────── */
 
 func evaluateProgram(programID string, ctx Context) (bool, error) {
 	if programID == "" {
 		return false, fmt.Errorf("%w : program vide", ErrInvalidUnlockValue)
 	}
-	// 1. Le Learner a-t-il marqué le programme terminé ?
 	if pp, ok := ctx.Learner.ProgramProgress[programID]; ok && pp.IsCompleted() {
 		return true, nil
 	}
-	// 2. Sinon, vérifions les leçons via le registre.
 	if ctx.Registry == nil {
 		return false, nil
 	}
@@ -163,7 +150,6 @@ func evaluateAllPrograms(ctx Context) (bool, error) {
 		return false, nil
 	}
 	for _, p := range programs {
-		// On saute les programmes qui n'ont pas encore de contenu.
 		if p.TotalLessons() == 0 {
 			continue
 		}
@@ -175,11 +161,6 @@ func evaluateAllPrograms(ctx Context) (bool, error) {
 	return true, nil
 }
 
-// evaluateSecret utilise ctx.Values pour les conditions cachées.
-//
-// La `Value` de l'avatar sert de clé (ex. "level-20"). Si la clé est
-// présente et truthy, le déblocage est accordé. Le service est
-// responsable de la peupler (via le niveau réel, un compteur, etc.).
 func evaluateSecret(key string, ctx Context) (bool, error) {
 	if key == "" {
 		return false, fmt.Errorf("%w : clé secret vide", ErrInvalidUnlockValue)
@@ -194,11 +175,6 @@ func evaluateSecret(key string, ctx Context) (bool, error) {
 	return toBool(v), nil
 }
 
-// evaluateFounding — condition spéciale : la complétion totale.
-//
-// On s'appuie sur ctx.Values["founding"] qui est positionné par le
-// service quand toutes les conditions sont remplies (tous programmes
-// terminés ET Founding Dolphin non encore débloqué).
 func evaluateFounding(ctx Context) (bool, error) {
 	if ctx.Values == nil {
 		return false, nil
@@ -206,11 +182,9 @@ func evaluateFounding(ctx Context) (bool, error) {
 	if v, ok := ctx.Values["founding"]; ok {
 		return toBool(v), nil
 	}
-	// Fallback : tous les programmes terminés.
 	return evaluateAllPrograms(ctx)
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────── */
 
 func parsePositiveInt(raw string) (int, error) {
 	raw = strings.TrimSpace(raw)

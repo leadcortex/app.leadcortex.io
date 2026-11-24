@@ -1,3 +1,5 @@
+// backend/academy/internal/api/errors.go
+
 package api
 
 import (
@@ -16,27 +18,16 @@ import (
 	"github.com/leadcortex/academy/internal/srs"
 )
 
-// apiError est le format standard d'une erreur HTTP renvoyée par l'API.
-//
-// Toutes les erreurs — succès ou échec — sont sérialisées en JSON avec
-// le même schéma, pour que le client React ait un traitement uniforme.
 type apiError struct {
-	// Error — code machine stable, snake_case, ex. "not_found".
 	Error string `json:"error"`
 
-	// Message — description lisible par un humain.
 	Message string `json:"message"`
 
-	// Code — code HTTP (redondant avec le status, mais pratique côté
-	// client pour éviter de dépendre du status).
 	Code int `json:"code"`
 
-	// Fields — optionnel : erreurs par champ, pour les formulaires.
 	Fields map[string]string `json:"fields,omitempty"`
 }
 
-// Codes machine stables — utilisés par le client pour distinguer les
-// cas et afficher le bon message.
 const (
 	CodeBadRequest    = "bad_request"
 	CodeUnauthorized  = "unauthorized"
@@ -48,12 +39,7 @@ const (
 	CodeUnavailable   = "service_unavailable"
 )
 
-/* ─── Helpers d'écriture ──────────────────────────────────────────────── */
 
-// WriteError écrit la réponse HTTP correspondant à `err`.
-//
-// La classification utilise errors.Is / errors.As sur les sentinelles
-// des packages internes. Toute erreur non reconnue devient une 500.
 func WriteError(w http.ResponseWriter, err error) {
 	status, code, message := classify(err)
 	writeJSON(w, status, apiError{
@@ -63,7 +49,6 @@ func WriteError(w http.ResponseWriter, err error) {
 	})
 }
 
-// WriteBadRequest écrit une 400 avec un message personnalisé.
 func WriteBadRequest(w http.ResponseWriter, message string) {
 	writeJSON(w, http.StatusBadRequest, apiError{
 		Error:   CodeBadRequest,
@@ -72,7 +57,6 @@ func WriteBadRequest(w http.ResponseWriter, message string) {
 	})
 }
 
-// WriteValidation écrit une 400 avec des erreurs par champ.
 func WriteValidation(w http.ResponseWriter, fields map[string]string) {
 	writeJSON(w, http.StatusBadRequest, apiError{
 		Error:   CodeBadRequest,
@@ -82,7 +66,6 @@ func WriteValidation(w http.ResponseWriter, fields map[string]string) {
 	})
 }
 
-// WriteUnauthorized écrit une 401.
 func WriteUnauthorized(w http.ResponseWriter, message string) {
 	writeJSON(w, http.StatusUnauthorized, apiError{
 		Error:   CodeUnauthorized,
@@ -91,7 +74,6 @@ func WriteUnauthorized(w http.ResponseWriter, message string) {
 	})
 }
 
-// WriteForbidden écrit une 403.
 func WriteForbidden(w http.ResponseWriter, message string) {
 	writeJSON(w, http.StatusForbidden, apiError{
 		Error:   CodeForbidden,
@@ -100,7 +82,6 @@ func WriteForbidden(w http.ResponseWriter, message string) {
 	})
 }
 
-// WriteNotFound écrit une 404.
 func WriteNotFound(w http.ResponseWriter, message string) {
 	writeJSON(w, http.StatusNotFound, apiError{
 		Error:   CodeNotFound,
@@ -109,7 +90,6 @@ func WriteNotFound(w http.ResponseWriter, message string) {
 	})
 }
 
-// WriteConflict écrit une 409.
 func WriteConflict(w http.ResponseWriter, message string) {
 	writeJSON(w, http.StatusConflict, apiError{
 		Error:   CodeConflict,
@@ -118,7 +98,6 @@ func WriteConflict(w http.ResponseWriter, message string) {
 	})
 }
 
-// WriteUnprocessable écrit une 422.
 func WriteUnprocessable(w http.ResponseWriter, message string) {
 	writeJSON(w, http.StatusUnprocessableEntity, apiError{
 		Error:   CodeUnprocessable,
@@ -127,12 +106,10 @@ func WriteUnprocessable(w http.ResponseWriter, message string) {
 	})
 }
 
-// WriteInternal écrit une 500 en masquant les détails techniques.
-// Le message technique est destiné au log, pas à la réponse.
 func WriteInternal(w http.ResponseWriter, logMessage string) {
 	msg := "une erreur interne est survenue"
 	if logMessage != "" {
-		msg = logMessage // dev : on remonte le vrai message
+		msg = logMessage
 	}
 	writeJSON(w, http.StatusInternalServerError, apiError{
 		Error:   CodeInternalError,
@@ -141,7 +118,6 @@ func WriteInternal(w http.ResponseWriter, logMessage string) {
 	})
 }
 
-// WriteUnavailable écrit une 503.
 func WriteUnavailable(w http.ResponseWriter, message string) {
 	writeJSON(w, http.StatusServiceUnavailable, apiError{
 		Error:   CodeUnavailable,
@@ -150,24 +126,16 @@ func WriteUnavailable(w http.ResponseWriter, message string) {
 	})
 }
 
-// WriteJSON sérialise une valeur en JSON et écrit le statut.
-// Utilitaire public pour les handlers.
 func WriteJSON(w http.ResponseWriter, status int, v any) {
 	writeJSON(w, status, v)
 }
 
-/* ─── Classification ─────────────────────────────────────────────────── */
 
-// classify traduit une erreur interne en (status, code machine, message).
-//
-// L'ordre des tests est important : les erreurs les plus spécifiques
-// d'abord, puis les sentinelles génériques.
 func classify(err error) (int, string, string) {
 	if err == nil {
 		return http.StatusOK, "", ""
 	}
 
-	// ── Repository ────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, repository.ErrNotFound):
 		return http.StatusNotFound, CodeNotFound, "ressource introuvable"
@@ -181,7 +149,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusNotImplemented, CodeInternalError, "non implémenté"
 	}
 
-	// ── Domain ────────────────────────────────────────────────────────
 	var ve *domain.ValidationError
 	if errors.As(err, &ve) {
 		return http.StatusBadRequest, CodeBadRequest, ve.Error()
@@ -201,7 +168,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusConflict, CodeConflict, "déjà effectué"
 	}
 
-	// ── Progress ──────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, progress.ErrLessonNotInRegistry):
 		return http.StatusNotFound, CodeNotFound, "leçon introuvable"
@@ -221,7 +187,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusConflict, CodeConflict, te.Error()
 	}
 
-	// ── Assessment ────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, assessment.ErrInvalidAnswer):
 		return http.StatusBadRequest, CodeBadRequest, "réponse invalide"
@@ -233,7 +198,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusInternalServerError, CodeInternalError, "payload manquant"
 	}
 
-	// ── Quêtes ────────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, gamification.ErrQuestNotFound):
 		return http.StatusNotFound, CodeNotFound, "quête introuvable"
@@ -243,7 +207,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusConflict, CodeConflict, "quête déjà réclamée"
 	}
 
-	// ── SRS ───────────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, srs.ErrCardNotFound):
 		return http.StatusNotFound, CodeNotFound, "carte introuvable"
@@ -257,7 +220,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusBadRequest, CodeBadRequest, "aucun template SRS"
 	}
 
-	// ── Missions ──────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, missions.ErrUnknownMission):
 		return http.StatusNotFound, CodeNotFound, "mission introuvable"
@@ -269,7 +231,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusBadRequest, CodeBadRequest, "type d'événement inconnu"
 	}
 
-	// ── Avatars ───────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, avatars.ErrUnknownAvatar):
 		return http.StatusNotFound, CodeNotFound, "avatar introuvable"
@@ -279,7 +240,6 @@ func classify(err error) (int, string, string) {
 		return http.StatusBadRequest, CodeBadRequest, "contexte invalide"
 	}
 
-	// ── Adaptivity ────────────────────────────────────────────────────
 	switch {
 	case errors.Is(err, adaptivity.ErrInvalidMode):
 		return http.StatusBadRequest, CodeBadRequest, "mode de plan invalide"
@@ -289,14 +249,10 @@ func classify(err error) (int, string, string) {
 		return http.StatusInternalServerError, CodeInternalError, "registre manquant"
 	}
 
-	// ── Fallback ──────────────────────────────────────────────────────
 	return http.StatusInternalServerError, CodeInternalError, "une erreur interne est survenue"
 }
 
-/* ─── Sérialisation ──────────────────────────────────────────────────── */
 
-// writeJSON est la primitive commune. Ne pas appeler directement depuis
-// les handlers : préférer WriteJSON ou WriteError.
 func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)

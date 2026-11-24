@@ -1,11 +1,5 @@
-//frontend\lib\workflow\code-lint.ts
-/**
- * Validation syntaxique légère utilisée par l'éditeur de code avancé.
- *
- * Volontairement sans service de langage lourd : on couvre les erreurs les
- * plus fréquentes (JSON invalide, JavaScript non parsable, délimiteurs non
- * équilibrés) avec un diagnostic positionné sur la ligne fautive.
- */
+// frontend/lib/workflow/code-lint.ts
+
 import type { CodeLanguageId } from "./code-languages";
 
 export type CodeIssue = {
@@ -72,7 +66,6 @@ function checkBalance(code: string): CodeIssue[] {
   return [];
 }
 
-/** Position (offset) approximative d'une ligne/colonne renvoyée par un parseur. */
 function offsetOfLine(code: string, line: number): number {
   const lines = code.split("\n");
   let offset = 0;
@@ -80,7 +73,6 @@ function offsetOfLine(code: string, line: number): number {
   return offset;
 }
 
-/** Analyse le code et renvoie les problèmes détectés (liste vide = code valide). */
 export function findIssues(code: string, language: CodeLanguageId): CodeIssue[] {
   if (!code.trim()) return [];
 
@@ -101,7 +93,6 @@ export function findIssues(code: string, language: CodeLanguageId): CodeIssue[] 
     if (balance.length) return balance;
     if (language === "javascript") {
       try {
-        // Analyse syntaxique sans exécution : le corps n'est jamais appelé.
         new Function(code);
         return [];
       } catch (error) {

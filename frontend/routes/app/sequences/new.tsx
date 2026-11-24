@@ -1,6 +1,7 @@
-//frontend\routes\app\sequences\new.tsx
+// frontend/routes/app/sequences/new.tsx
+
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { PageHeader } from "@/components/ui-primitives";
+import { PageHeader } from "@/components/common/ui-primitives";
 import {
   ArrowLeft,
   Save,
@@ -18,15 +19,15 @@ import {
   Target,
   Users,
   Tag,
-} from "lucide-react";
+} from "@/components/icons";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { useAppStore, DEFAULT_SEQUENCE_SETTINGS, type SequenceSettings } from "@/lib/store";
-import { CustomSelect } from "@/components/custom-select";
+import { useAppStore, DEFAULT_SEQUENCE_SETTINGS, type SequenceSettings } from "@/lib/state/store";
+import { CustomSelect } from "@/components/common/custom-select";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { CreateFormSkeleton } from "@/components/skeletons";
-import { generateSequence } from "@/lib/sequence-ai.functions";
+import { generateSequence } from "@/lib/ai/sequence.functions";
 
 export const Route = createFileRoute("/app/sequences/new")({
   head: () => ({
@@ -292,7 +293,6 @@ function NewSequencePage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {}
         <div className="rounded-xl border border-border bg-surface/40 p-6 space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-2.5">
@@ -593,7 +593,6 @@ function NewSequencePage() {
           </DragDropContext>
         </div>
 
-        {}
         <Section
           title="Options avancées"
           subtitle="Fenêtre d'envoi, quotas, suivi et priorité."

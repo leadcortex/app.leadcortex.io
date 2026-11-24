@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/badges_test.go
+
 package gamification
 
 import (
@@ -77,7 +79,7 @@ func TestEvaluateAndAwardBadges_AlreadyEarned(t *testing.T) {
 }
 
 func TestEvaluateAndAwardBadges_ConditionNotMet(t *testing.T) {
-	l := learnerWith(nil) // 0 leçons complétées
+	l := learnerWith(nil)
 	badge := badgeFixture("first-lesson", domain.ConditionGroup{
 		All: []domain.Condition{
 			{Path: "learner.lessons_completed", Op: domain.OpGreaterThanEqual, Value: 1},
@@ -93,7 +95,6 @@ func TestEvaluateAndAwardBadges_ConditionNotMet(t *testing.T) {
 
 func TestEvaluateAndAwardBadges_EmptyCondition_Skipped(t *testing.T) {
 	l := learnerWith(nil)
-	// Badge sans condition → ignoré.
 	badge := badgeFixture("no-condition", domain.ConditionGroup{})
 	reg := testRegistry(t, badge)
 
@@ -145,7 +146,6 @@ func TestApplyBadgeAwards(t *testing.T) {
 		t.Errorf("EarnedBadges : attendu 2, obtenu %d", len(l.EarnedBadges))
 	}
 
-	// Idempotent : re-apply ne doit rien ajouter.
 	added = ApplyBadgeAwards(l, awards)
 	if len(added) != 0 {
 		t.Errorf("re-apply : attendu 0, obtenu %d", len(added))
@@ -171,11 +171,9 @@ func TestHasBadge(t *testing.T) {
 }
 
 func TestEvaluateAndAwardBadges_NilInputs(t *testing.T) {
-	// Learner nil → rien.
 	if awards := EvaluateAndAwardBadges(nil, testRegistry(t), NewContext(nil, fixedTime())); awards != nil {
 		t.Error("learner nil : attendu nil")
 	}
-	// Registry nil → rien.
 	l := learnerWith(nil)
 	if awards := EvaluateAndAwardBadges(l, nil, NewContext(l, fixedTime())); awards != nil {
 		t.Error("registry nil : attendu nil")

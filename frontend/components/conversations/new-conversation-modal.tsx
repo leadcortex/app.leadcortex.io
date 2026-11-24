@@ -1,7 +1,8 @@
-//frontend\components\conversations\new-conversation-modal.tsx
+// frontend/components/conversations/new-conversation-modal.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { Check, UserPlus, X, Building2, Briefcase } from "lucide-react";
+import { Check, UserPlus, X, Building2, Briefcase } from "@/components/icons";
 import { toast } from "sonner";
 import {
   CHANNELS,
@@ -9,10 +10,10 @@ import {
   type ChannelId,
   type ProspectThread,
 } from "@/lib/conversations-mock";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { SearchSelect, type SearchSelectOption } from "@/components/search-select";
+import { SearchSelect, type SearchSelectOption } from "@/components/common/search-select";
 
 const HANDLE_FIELDS: Record<ChannelId, { placeholder: string; type: string }> = {
   whatsapp: { placeholder: "+33 6 12 34 56 78", type: "tel" },
@@ -197,9 +198,6 @@ export function NewConversationModal({
     onClose();
   };
 
-  /* ─────────────────────────────────────────────────────────────────── */
-  /* Contenu commun (formulaire)                                         */
-  /* ─────────────────────────────────────────────────────────────────── */
   const formFields = (
     <>
       <div className="grid grid-cols-2 gap-3">
@@ -341,9 +339,6 @@ export function NewConversationModal({
     </>
   );
 
-  /* ─────────────────────────────────────────────────────────────────── */
-  /* Pied (boutons Annuler / Créer) — utilisé dans les deux versions     */
-  /* ─────────────────────────────────────────────────────────────────── */
   const footer = (
     <>
       <span className="text-[11px] text-muted-foreground">
@@ -367,9 +362,6 @@ export function NewConversationModal({
     </>
   );
 
-  /* ─────────────────────────────────────────────────────────────────── */
-  /* Version mobile — MobileSheet                                        */
-  /* ─────────────────────────────────────────────────────────────────── */
   if (isMobile) {
     return (
       <MobileSheet
@@ -396,9 +388,6 @@ export function NewConversationModal({
     );
   }
 
-  /* ─────────────────────────────────────────────────────────────────── */
-  /* Version desktop — modale centrée (comportement existant)            */
-  /* ─────────────────────────────────────────────────────────────────── */
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -438,8 +427,6 @@ export function NewConversationModal({
     document.body,
   );
 }
-
-/* -------------------------------------------------------------------------- */
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

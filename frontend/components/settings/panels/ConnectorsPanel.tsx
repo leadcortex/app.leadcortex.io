@@ -1,5 +1,6 @@
-//frontend\components\settings\panels\ConnectorsPanel.tsx
-import { Plug } from "lucide-react";
+// frontend/components/settings/panels/ConnectorsPanel.tsx
+
+import { Plug } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
 

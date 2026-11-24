@@ -1,4 +1,5 @@
-//frontend\components\workflow\BottomToolbar.tsx
+// frontend/components/workflow/BottomToolbar.tsx
+
 import {
   MousePointer2,
   Hand,
@@ -14,10 +15,10 @@ import {
   Magnet,
   Network,
   Wand2,
-} from "lucide-react";
+} from "@/components/icons";
 import { useWorkflow } from "@/lib/workflow/store";
 import type { CanvasMode } from "./Canvas";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export const MOBILE_TOOLBAR_HEIGHT = 44;
 

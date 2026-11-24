@@ -1,13 +1,14 @@
-//frontend\components\workflow\BlockPalette.tsx
+// frontend/components/workflow/BlockPalette.tsx
+
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search, LayoutGrid } from "lucide-react";
+import { Search, LayoutGrid } from "@/components/icons";
 import {
   BLOCKS,
   CATEGORIES,
   type CategoryKey,
   type BlockDef,
 } from "@/data/workflow-blocks-catalog";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 export function BlockPalette({
@@ -83,7 +84,6 @@ export function BlockPalette({
       >
         <DialogTitle className="sr-only">Ajouter un bloc</DialogTitle>
 
-        {}
         <div className="flex shrink-0 items-center gap-2 border-b border-border py-2 pl-3 pr-14">
           <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
           <input
@@ -100,9 +100,7 @@ export function BlockPalette({
           />
         </div>
 
-        {}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col sm:flex-row">
-          {}
           <aside className="hidden w-[196px] shrink-0 overflow-y-auto border-r border-border py-1.5 sm:block">
             <button
               type="button"

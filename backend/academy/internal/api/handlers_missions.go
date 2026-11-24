@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_missions.go
+
 package api
 
 import (
@@ -12,9 +14,6 @@ import (
 	"github.com/leadcortex/academy/internal/progress"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   DTOs
-   ═══════════════════════════════════════════════════════════════════════ */
 
 type MissionWithStatusDTO struct {
 	MissionDTO
@@ -39,9 +38,6 @@ type MissionAttemptResponse struct {
 	Reason     string `json:"reason,omitempty"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /api/v1/missions
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handleListMissions(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -92,7 +88,6 @@ func (s *Server) handleListMissions(w http.ResponseWriter, r *http.Request) {
 		case string(domain.MissionStatusCompleted):
 			resp.Completed++
 		case string(domain.MissionStatusLocked):
-			// rien
 		default:
 			resp.Pending++
 		}
@@ -101,9 +96,6 @@ func (s *Server) handleListMissions(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusOK, resp)
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /api/v1/missions/{missionID}/attempt
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handleAttemptMission(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -198,7 +190,6 @@ func (s *Server) handleAttemptMission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ─── Progression des quêtes ──────────────────────────────────────
 	var questUpdates []gamification.QuestUpdate
 	questUpdates = append(questUpdates, gamification.QuestUpdate{
 		Kind:   gamification.QuestMissions,
@@ -230,9 +221,6 @@ func (s *Server) handleAttemptMission(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusOK, resp)
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   HELPERS
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func findMissionByID(s *Server, missionID string) (domain.Mission, string, bool) {
 	if s.deps.Orchestrator != nil {

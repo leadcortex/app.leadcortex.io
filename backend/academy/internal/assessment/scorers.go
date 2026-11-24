@@ -1,3 +1,5 @@
+// backend/academy/internal/assessment/scorers.go
+
 package assessment
 
 import (
@@ -7,12 +9,8 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// scorer — signature commune à tous les scorers.
-// Retourne un Result (Score 0-100, Details éventuels) et éventuellement
-// une erreur si la réponse ne correspond pas au type d'exercice.
 type scorer func(ex domain.Exercise, ans Answer, passingScore int) (Result, error)
 
-// ─── MCQ ───────────────────────────────────────────────────────────────
 
 func scoreMCQ(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	payload, ok := ex.Payload.(domain.MCqPayload)
@@ -46,11 +44,7 @@ func scoreMCQ(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	}, nil
 }
 
-// ─── MultiSelect ───────────────────────────────────────────────────────
 
-// scoreMultiSelect utilise un score de Jaccard : |A ∩ B| / |A ∪ B|.
-// Pour éviter qu'une réponse qui coche tout obtienne un score élevé,
-// on pénalise les faux positifs et les faux négatifs de la même façon.
 func scoreMultiSelect(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	payload, ok := ex.Payload.(domain.MultiSelectPayload)
 	if !ok {
@@ -82,7 +76,6 @@ func scoreMultiSelect(ex domain.Exercise, ans Answer, passing int) (Result, erro
 	}
 	score := (intersection * 100) / union
 
-	// Construction du détail : un SubResult par option.
 	details := &ResultDetails{}
 	for i, opt := range payload.Options {
 		_, wantIt := expected[i]
@@ -103,10 +96,7 @@ func scoreMultiSelect(ex domain.Exercise, ans Answer, passing int) (Result, erro
 	}, nil
 }
 
-// ─── FillBlank ─────────────────────────────────────────────────────────
 
-// scoreFillBlank compare chaque trou à la liste des réponses acceptées.
-// La comparaison utilise NormalizeText (casse, accents, ponctuation).
 func scoreFillBlank(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	payload, ok := ex.Payload.(domain.FillBlankPayload)
 	if !ok {
@@ -158,14 +148,7 @@ func scoreFillBlank(ex domain.Exercise, ans Answer, passing int) (Result, error)
 	}, nil
 }
 
-// ─── OrderSteps ────────────────────────────────────────────────────────
 
-// scoreOrderSteps utilise une variante de Kendall tau : on compte le nombre
-// de paires correctement ordonnées parmi toutes les paires possibles.
-//
-// Avantages vs comptage brut de positions correctes :
-//   - Une étape légèrement décalée (A B C D au lieu de A C B D) est moins
-//     pénalisée qu'une étape complètement à l'envers.
 func scoreOrderSteps(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	payload, ok := ex.Payload.(domain.OrderStepsPayload)
 	if !ok {
@@ -183,19 +166,16 @@ func scoreOrderSteps(ex domain.Exercise, ans Answer, passing int) (Result, error
 		return Result{Score: 100, Correct: true, ConceptsTouched: conceptsOf(ex)}, nil
 	}
 
-	// Position attendue de chaque étape (par libellé normalisé).
 	expectedIndex := make(map[string]int, len(expected))
 	for i, s := range expected {
 		expectedIndex[NormalizeText(s)] = i
 	}
 
-	// Position effective dans la réponse.
 	gotIndex := make(map[string]int, len(a.Steps))
 	for i, s := range a.Steps {
 		gotIndex[NormalizeText(s)] = i
 	}
 
-	// Compte les paires concordantes.
 	total := 0
 	concordant := 0
 	for i := 0; i < len(expected); i++ {
@@ -219,7 +199,6 @@ func scoreOrderSteps(ex domain.Exercise, ans Answer, passing int) (Result, error
 		score = (concordant * 100) / total
 	}
 
-	// Détail par étape : correcte si à la bonne position.
 	details := &ResultDetails{}
 	for i, s := range expected {
 		gotPos := -1
@@ -243,14 +222,7 @@ func scoreOrderSteps(ex domain.Exercise, ans Answer, passing int) (Result, error
 	}, nil
 }
 
-// ─── MatchPairs ────────────────────────────────────────────────────────
 
-// scoreMatchPairs évalue chaque paire indépendamment.
-// Score final = (nombre de paires correctes / total) * 100.
-//
-// Les paires sont comparées par libellé normalisé : si l'apprenant associe
-// « A » à « B », c'est correct même si l'ordre de gauche/droite n'est pas
-// dans le même ordre que la solution.
 func scoreMatchPairs(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	payload, ok := ex.Payload.(domain.MatchPairsPayload)
 	if !ok {
@@ -263,7 +235,6 @@ func scoreMatchPairs(ex domain.Exercise, ans Answer, passing int) (Result, error
 			"réponse MatchPairs attendue", ErrInvalidAnswer)
 	}
 
-	// Index des paires attendues par libellé gauche.
 	want := make(map[string]string, len(payload.Pairs))
 	for _, p := range payload.Pairs {
 		want[NormalizeText(p.Left)] = NormalizeText(p.Right)
@@ -298,17 +269,7 @@ func scoreMatchPairs(ex domain.Exercise, ans Answer, passing int) (Result, error
 	}, nil
 }
 
-// ─── FreeText ──────────────────────────────────────────────────────────
 
-// scoreFreeText évalue une réponse texte libre.
-//
-// Version locale (sans LLM) :
-//   - Pénalise si le nombre de mots est inférieur à MinWords (score plafonné à 50).
-//   - Récompense la présence des ExpectedKeywords (jusqu'à 100 si tous présents).
-//   - Si aucun mot-clé n'est déclaré, le score = min(100, words/MinWords * 100).
-//
-// Cette implémentation est conçue pour être remplacée par un appel LLM
-// sans changer la signature. Voir doc.go pour la note d'évolutivité.
 func scoreFreeText(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	payload, ok := ex.Payload.(domain.FreeTextPayload)
 	if !ok {
@@ -326,20 +287,15 @@ func scoreFreeText(ex domain.Exercise, ans Answer, passing int) (Result, error) 
 
 	score := 0
 
-	// Règle 1 : nombre minimum de mots.
 	if wordCount < payload.MinWords {
-		// Score plafonné à 50 si trop court.
 		ratio := float64(wordCount) / float64(payload.MinWords)
 		score = int(ratio * 50)
 	} else if len(payload.ExpectedKeywords) == 0 {
-		// Aucun mot-clé : réussite dès que le nombre de mots est atteint.
 		score = 100
 	} else {
-		// Score basé sur les mots-clés.
 		score = (len(found) * 100) / len(payload.ExpectedKeywords)
 	}
 
-	// Pénalité de concision : si MaxWords est défini et dépassé.
 	if payload.MaxWords > 0 && wordCount > payload.MaxWords {
 		over := wordCount - payload.MaxWords
 		penalty := over * 2
@@ -364,10 +320,7 @@ func scoreFreeText(ex domain.Exercise, ans Answer, passing int) (Result, error) 
 	}, nil
 }
 
-// ─── Scenario ──────────────────────────────────────────────────────────
 
-// scoreScenario évalue chaque étape d'un scénario.
-// Score = (étapes correctes / total) * 100.
 func scoreScenario(ex domain.Exercise, ans Answer, passing int) (Result, error) {
 	payload, ok := ex.Payload.(domain.ScenarioPayload)
 	if !ok {
@@ -388,7 +341,6 @@ func scoreScenario(ex domain.Exercise, ans Answer, passing int) (Result, error) 
 		if i < len(a.Choices) {
 			got = a.Choices[i]
 		}
-		// Trouver l'index du bon choix.
 		expectedIdx := -1
 		for j, c := range step.Choices {
 			if c.Correct {
@@ -420,7 +372,6 @@ func scoreScenario(ex domain.Exercise, ans Answer, passing int) (Result, error) 
 	}, nil
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────── */
 
 func indexSet(xs []int) map[int]struct{} {
 	out := make(map[int]struct{}, len(xs))

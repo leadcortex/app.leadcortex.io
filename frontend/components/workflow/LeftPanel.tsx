@@ -1,4 +1,5 @@
-//frontend\components\workflow\LeftPanel.tsx
+// frontend/components/workflow/LeftPanel.tsx
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronRight,
@@ -14,7 +15,7 @@ import {
   Blocks,
   GripVertical,
   Plus,
-} from "lucide-react";
+} from "@/components/icons";
 import { useWorkflow } from "@/lib/workflow/store";
 import { categoryMap, BLOCK_DRAG_MIME } from "@/lib/workflow/geometry";
 import {
@@ -28,7 +29,7 @@ import {
   totalBlocksCount,
   type BlockDef,
 } from "@/data/workflow-blocks-catalog";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 function Section({
   title,
@@ -272,10 +273,6 @@ export function TreeFields({
   );
 }
 
-/**
- * Sous-accordéon (imbriqué dans une catégorie) — même logique que `Section`
- * mais plus compact, pour empiler les catégories de blocs sans encombrer.
- */
 function SubSection({
   title,
   color,
@@ -318,23 +315,13 @@ function SubSection({
   );
 }
 
-/** Distance (px) à parcourir avant qu'un appui sur la poignée devienne un glisser. */
 const TOUCH_DRAG_ACTIVATION = 6;
 
-/**
- * Une ligne de bloc dans la bibliothèque : cliquable (ajout instantané au
- * centre de la vue) et glissable vers le canevas.
- *  - desktop : drag-and-drop natif HTML5 sur toute la ligne ;
- *  - mode `touch` (tiroir mobile) : glisser depuis la poignée à droite, piloté
- *    par Pointer Events (voir `block-touch-drag.ts`) — fiable au doigt, et sans
- *    conflit avec le défilement vertical de la liste.
- */
 function DraggableBlockRow({ block, touch = false }: { block: BlockDef; touch?: boolean }) {
   const { addBlock, setDraggingBlockId } = useWorkflow();
   const c = categoryMap[block.category];
   const Icon = block.icon;
 
-  // Nettoyage si la ligne disparaît en plein geste (filtre modifié, démontage).
   const cleanupRef = useRef<(() => void) | null>(null);
   useEffect(() => () => cleanupRef.current?.(), []);
 
@@ -455,12 +442,6 @@ function DraggableBlockRow({ block, touch = false }: { block: BlockDef; touch?: 
   );
 }
 
-/**
- * Contenu "Bibliothèque de blocs" — tous les blocs du catalogue, organisés
- * par catégorie repliable, glissables (drag-and-drop) directement sur le
- * canevas. Vient en complément de la modale d'ajout (Shift+A / double-clic)
- * pour enchaîner rapidement les ajouts sans ouvrir de fenêtre.
- */
 export function BlockLibraryFields({ touch = false }: { touch?: boolean } = {}) {
   const [q, setQ] = useState("");
   const [openCats, setOpenCats] = useState<Set<string>>(new Set());
@@ -515,8 +496,6 @@ export function BlockLibraryFields({ touch = false }: { touch?: boolean } = {}) 
       </div>
       <div>
         {grouped.map(({ def, blocks }) => {
-          // Avec un filtre actif, on déplie automatiquement les catégories
-          // qui matchent pour éviter à l'utilisateur un clic superflu.
           const open = needle ? true : openCats.has(def.key);
           return (
             <SubSection
@@ -544,30 +523,6 @@ export function BlockLibraryFields({ touch = false }: { touch?: boolean } = {}) 
 
 export { Section as LeftPanelSection };
 
-/**
- * Panneau gauche desktop — deux sections **indépendantes** en hauteur et en
- * scroll :
- *
- *   ┌───────────────────────────────┐
- *   │ ARBORESCENCE      20 %        │ ← header fixe
- *   │ ┌───────────────────────────┐ │
- *   │ │ liste scrollable          │ │ ← scroll #1 (indépendant)
- *   │ └───────────────────────────┘ │
- *   ├───────────────────────────────┤
- *   │ BIBLIOTHÈQUE DE BLOCS  80 %   │ ← header fixe
- *   │ ┌───────────────────────────┐ │
- *   │ │ liste scrollable          │ │ ← scroll #2 (indépendant)
- *   │ └───────────────────────────┘ │
- *   └───────────────────────────────┘
- *
- * Chaque section a son propre `overflow-y-auto` + `overscroll-contain` : le
- * scroll de l'une ne déborde donc jamais sur l'autre (auparavant, tout était
- * dans un unique conteneur scrollable, si bien que faire défiler la
- * bibliothèque faisait disparaître l'arborescence hors de la vue).
- * La répartition 1 : 4 est assurée par `flex-[1_1_0%]` / `flex-[4_1_0%]`,
- * avec un plancher (`min-h-[80px]`) pour que l'arborescence ne disparaisse
- * jamais complètement quand la fenêtre est très courte.
- */
 export function LeftPanel() {
   const { doc } = useWorkflow();
   const itemCount = doc.nodes.length + doc.comments.length + doc.edges.length;

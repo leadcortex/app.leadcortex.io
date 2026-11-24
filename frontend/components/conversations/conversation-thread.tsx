@@ -1,7 +1,8 @@
-//frontend\components\conversations\conversation-thread.tsx
+// frontend/components/conversations/conversation-thread.tsx
+
 import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Check, CheckCheck, FileText, Phone, Settings2, Video } from "lucide-react";
+import { ArrowLeft, Check, CheckCheck, FileText, Phone, Settings2, Video } from "@/components/icons";
 import { toast } from "sonner";
 import {
   CHANNELS,
@@ -11,7 +12,7 @@ import {
   type ChatMessage,
   type ProspectThread,
 } from "@/lib/conversations-mock";
-import { BrandLogoMark } from "@/components/brand-logo-mark";
+import { BrandLogoMark } from "@/components/brand/brand-logo-mark";
 import { LetterAvatar } from "@/components/ui/letter-avatar";
 import { MessageComposer } from "./message-composer";
 
@@ -41,7 +42,6 @@ export function ConversationThread({
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
-      {}
       <header
         className="shrink-0 border-b border-border px-2 py-2 md:px-4 md:py-3"
         style={{ backgroundColor: `color-mix(in oklab, ${theme.accent} 7%, transparent)` }}
@@ -233,7 +233,6 @@ function HeaderBtn({
       aria-label={label}
       title={label}
       onClick={onClick}
-      // 40 px en mobile (cible tactile confortable), 32 px en desktop.
       className={`grid size-10 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface hover:text-foreground active:bg-surface/80 md:size-8 ${className}`}
     >
       {children}

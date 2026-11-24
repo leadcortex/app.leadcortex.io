@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_adaptive_test.go
+
 package api
 
 import (
@@ -10,9 +12,6 @@ import (
 	"github.com/leadcortex/academy/internal/adaptivity"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /me/recommendation
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestRecommendation_FreshLearner(t *testing.T) {
 	s := buildTestServer(t)
@@ -29,7 +28,6 @@ func TestRecommendation_FreshLearner(t *testing.T) {
 	if err := json.NewDecoder(rec.Body).Decode(&reco); err != nil {
 		t.Fatalf("decode : %v", err)
 	}
-	// Un Learner vierge doit recevoir une recommandation StartLesson.
 	if reco.Kind != adaptivity.RecoStartLesson {
 		t.Errorf("Kind : attendu start_lesson, obtenu %q", reco.Kind)
 	}
@@ -54,9 +52,6 @@ func TestRecommendation_ResumeLesson(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /me/plan
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestPlan_DefaultMode(t *testing.T) {
 	s := buildTestServer(t)

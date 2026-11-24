@@ -1,5 +1,4 @@
-//frontend\components\settings\mobile-settings-sheet.tsx
-// • Flèche retour : setView("menu"), sans jamais re-déclencher la vue section.
+// frontend/components/settings/mobile-settings-sheet.tsx
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -23,9 +22,9 @@ import {
   Wrench,
   X,
   type LucideIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import {
   SETTINGS_GROUPS,
@@ -64,7 +63,8 @@ type GroupedSection = {
 };
 
 export function MobileSettingsSheet() {
-  const { open, section, setSection, closeSettings } = useSettings();
+  const { open, section, setSection, closeSettings, billingReceiptOpen, setBillingReceiptOpen } =
+    useSettings();
 
   const [view, setView] = useState<View>("menu");
   const [query, setQuery] = useState("");
@@ -87,7 +87,6 @@ export function MobileSettingsSheet() {
     }
 
     wasOpenRef.current = open;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, section]);
 
   const openSection = (key: SettingsSection) => {
@@ -128,8 +127,20 @@ export function MobileSettingsSheet() {
       onOpenChange={(v) => {
         if (!v) handleClose();
       }}
-      title={view === "menu" ? "Paramètres" : (activeSection?.label ?? "Paramètres")}
-      onBack={view !== "menu" ? handleBack : undefined}
+      title={
+        billingReceiptOpen
+          ? "Impression du ticket"
+          : view === "menu"
+            ? "Paramètres"
+            : (activeSection?.label ?? "Paramètres")
+      }
+      onBack={
+        billingReceiptOpen
+          ? () => setBillingReceiptOpen(false)
+          : view !== "menu"
+            ? handleBack
+            : undefined
+      }
       headerAction={
         view === "menu" ? (
           <button
@@ -165,7 +176,6 @@ function MenuView({
 }) {
   return (
     <div className="px-3 py-4">
-      {}
       <div className="relative mb-4">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <input
@@ -186,7 +196,6 @@ function MenuView({
         )}
       </div>
 
-      {}
       {grouped.length === 0 && (
         <p className="py-10 text-center text-sm text-muted-foreground">
           Aucun réglage ne correspond.

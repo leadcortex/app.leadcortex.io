@@ -1,30 +1,13 @@
+// frontend/components/ai-assistant/message-content.tsx
+
 "use client";
 
-/**
- * Rendu d'un message assistant : découpe le texte en segments
- * (paragraphes, blocs de code, tableaux) et affiche chacun avec le bon
- * composant.
- *
- * Format reconnu dans le texte brut :
- *
- *   ```lang
- *   code…
- *   ```
- *
- *   | Col 1 | Col 2 |
- *   |-------|-------|
- *   | a     | b     |
- *
- * Tout le reste est rendu comme texte avec un mini-Markdown inline
- * (gras, italique, code inline) + listes à puces.
- */
 import type { ReactNode } from "react";
 import { CodeBlock } from "@/components/ui/code-block";
 import { ScrollableTable } from "@/components/ui/scrollable-table";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { parseMessageSegments, type TableAlign } from "./assistant-engine";
 
-/** Mini-Markdown inline : **gras**, *italique*, `code`. */
 function inline(text: string): ReactNode[] {
   const out: ReactNode[] = [];
   const re = /(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g;

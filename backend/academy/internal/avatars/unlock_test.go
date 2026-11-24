@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/unlock_test.go
+
 package avatars
 
 import (
@@ -17,13 +19,12 @@ func newLearner() *domain.Learner {
 	return domain.NewLearner("u-test", "Test", "t@example.com")
 }
 
-/* ─── Conditions : streak ─────────────────────────────────────────────── */
 
 func TestEvaluate_Streak_Met(t *testing.T) {
 	l := newLearner()
 	l.StreakDays = 10
 
-	a := MustFind("fox") // streak 7
+	a := MustFind("fox")
 	ok, err := Evaluate(a, NewContext(l, nil, fixedTime()))
 	if err != nil {
 		t.Fatalf("Evaluate : %v", err)
@@ -44,7 +45,6 @@ func TestEvaluate_Streak_NotMet(t *testing.T) {
 	}
 }
 
-/* ─── Conditions : lessons ────────────────────────────────────────────── */
 
 func TestEvaluate_Lessons(t *testing.T) {
 	l := newLearner()
@@ -55,7 +55,7 @@ func TestEvaluate_Lessons(t *testing.T) {
 		}
 	}
 
-	a := MustFind("panda") // 5 leçons
+	a := MustFind("panda")
 	ok, err := Evaluate(a, NewContext(l, nil, fixedTime()))
 	if err != nil {
 		t.Fatalf("Evaluate : %v", err)
@@ -64,7 +64,6 @@ func TestEvaluate_Lessons(t *testing.T) {
 		t.Error("5 leçons complétées : attendu true")
 	}
 
-	// 4 leçons → pas encore.
 	l2 := newLearner()
 	for i := 0; i < 4; i++ {
 		l2.LessonProgress[lessonID(i)] = domain.LessonProgress{
@@ -82,7 +81,6 @@ func lessonID(i int) string {
 	return "l" + string(rune('0'+i))
 }
 
-/* ─── Conditions : mission_count ──────────────────────────────────────── */
 
 func TestEvaluate_MissionCount(t *testing.T) {
 	l := newLearner()
@@ -93,7 +91,7 @@ func TestEvaluate_MissionCount(t *testing.T) {
 		}
 	}
 
-	a := MustFind("owl") // 10 missions
+	a := MustFind("owl")
 	ok, err := Evaluate(a, NewContext(l, nil, fixedTime()))
 	if err != nil {
 		t.Fatalf("Evaluate : %v", err)
@@ -103,7 +101,6 @@ func TestEvaluate_MissionCount(t *testing.T) {
 	}
 }
 
-/* ─── Conditions : program ────────────────────────────────────────────── */
 
 func TestEvaluate_Program_Completed(t *testing.T) {
 	l := newLearner()
@@ -132,19 +129,16 @@ func TestEvaluate_Program_NotCompleted(t *testing.T) {
 	}
 }
 
-/* ─── Conditions : secret ─────────────────────────────────────────────── */
 
 func TestEvaluate_Secret_Level(t *testing.T) {
 	l := newLearner()
-	a := MustFind("cat") // secret: "level-20"
+	a := MustFind("cat")
 
-	// Sans contexte enrichi → false.
 	ok, _ := Evaluate(a, NewContext(l, nil, fixedTime()))
 	if ok {
 		t.Error("secret sans Value : attendu false")
 	}
 
-	// Avec la Value positionnée → true.
 	ctx := NewContext(l, nil, fixedTime()).WithValue("level-20", true)
 	ok, err := Evaluate(a, ctx)
 	if err != nil {
@@ -155,7 +149,6 @@ func TestEvaluate_Secret_Level(t *testing.T) {
 	}
 }
 
-/* ─── Conditions : founding ───────────────────────────────────────────── */
 
 func TestEvaluate_Founding_ViaValues(t *testing.T) {
 	l := newLearner()
@@ -172,7 +165,6 @@ func TestEvaluate_Founding_ViaValues(t *testing.T) {
 }
 
 func TestEvaluate_Founding_FallbackAllPrograms(t *testing.T) {
-	// Deux programmes, tous les deux complétés.
 	lesson1 := domain.Lesson{
 		ID: "l1", ModuleID: "m1", Order: 1, Title: "L1",
 		DurationMin: 5, Difficulty: 1, XPTotal: 0,
@@ -213,7 +205,6 @@ func TestEvaluate_Founding_FallbackAllPrograms(t *testing.T) {
 	}
 }
 
-/* ─── Erreurs ─────────────────────────────────────────────────────────── */
 
 func TestEvaluate_NilLearner(t *testing.T) {
 	a := MustFind("eagle")
@@ -233,7 +224,6 @@ func TestEvaluateByID_Unknown(t *testing.T) {
 
 func TestEvaluate_InvalidUnlockValue(t *testing.T) {
 	l := newLearner()
-	// Créer un avatar fictif avec un streak non numérique.
 	bad := domain.Avatar{
 		ID: "bad", Name: "Bad", Tier: domain.AvatarTierClassic,
 		SVGPath: "/x.svg", DefaultPose: "neutral",

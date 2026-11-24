@@ -1,3 +1,5 @@
+// backend/academy/internal/missions/validator.go
+
 package missions
 
 import (
@@ -8,15 +10,6 @@ import (
 	"github.com/leadcortex/academy/internal/gamification"
 )
 
-// ValidateMission vérifie si une mission est validée par un événement
-// métier donné.
-//
-// Retourne (true, nil) si la mission doit être marquée comme réussie.
-// Retourne (false, nil) si l'événement ne la concerne pas ou si ses
-// conditions ne sont pas satisfaites.
-//
-// Le Learner est utilisé pour évaluer les chemins `learner.*` dans les
-// conditions. Il n'est jamais muté.
 func ValidateMission(
 	mission *domain.Mission,
 	learner *domain.Learner,
@@ -32,15 +25,12 @@ func ValidateMission(
 		return false, fmt.Errorf("%w : nil", ErrInvalidEvent)
 	}
 
-	// 1. Trigger.
 	if !triggerMatches(mission.Validation.Trigger, event.Kind()) {
 		return false, nil
 	}
 
-	// 2. Construire le contexte d'évaluation.
 	ctx := buildValidationContext(learner, event)
 
-	// 3. Évaluer les conditions.
 	ok, err := gamification.Evaluate(mission.Validation.Conditions, ctx)
 	if err != nil {
 		return false, fmt.Errorf("mission %s : %w", mission.ID, err)
@@ -48,7 +38,6 @@ func ValidateMission(
 	return ok, nil
 }
 
-// ValidateMissionByID — raccourci via registry.
 func (o *Orchestrator) ValidateMissionByID(
 	missionID string,
 	learner *domain.Learner,
@@ -61,14 +50,7 @@ func (o *Orchestrator) ValidateMissionByID(
 	return ValidateMission(mission, learner, event)
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────── */
 
-// triggerMatches renvoie vrai si la mission doit être testée contre cet
-// événement.
-//
-//   - Si le Trigger est vide, la mission N'EST PAS validée par événement :
-//     elle relève d'un mécanisme de polling d'état.
-//   - Sinon, le Kind doit correspondre exactement.
 func triggerMatches(trigger, eventKind string) bool {
 	if trigger == "" {
 		return false
@@ -76,11 +58,6 @@ func triggerMatches(trigger, eventKind string) bool {
 	return trigger == eventKind
 }
 
-// buildValidationContext construit un gamification.Context prêt à
-// évaluer les conditions, en injectant :
-//   - le Learner ;
-//   - le payload aplati (chemins pointés) ;
-//   - `event.kind` et `event.at`.
 func buildValidationContext(
 	learner *domain.Learner,
 	event BusinessEvent,
@@ -94,14 +71,6 @@ func buildValidationContext(
 	return ctx
 }
 
-// flattenPayload aplatit récursivement une map imbriquée en chemins
-// pointés.
-//
-//	{"lead": {"score": 8, "country": "FR"}}
-//	→ {"lead.score": 8, "lead.country": "FR"}
-//
-// Les valeurs non-map (scalaires, slices, booléens…) sont conservées
-// telles quelles.
 func flattenPayload(m map[string]any) map[string]any {
 	out := make(map[string]any, len(m))
 	if len(m) == 0 {

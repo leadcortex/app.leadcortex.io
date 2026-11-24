@@ -1,3 +1,5 @@
+// backend/academy/internal/progress/snapshot.go
+
 package progress
 
 import (
@@ -7,48 +9,35 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// Snapshot est une vue sérialisable et immuable de la progression d'un
-// apprenant, optimisée pour l'UI React.
-//
-// Contrairement au Learner, qui contient TOUT l'état, le Snapshot ne
-// contient que ce qui est nécessaire à l'affichage : statuts, ratios,
-// recommandations. Il est pensé pour être envoyé tel quel au client via
-// JSON.
 type Snapshot struct {
-	// ─── En-tête ──────────────────────────────────────────────────────
 
 	LearnerID   string    `json:"learner_id"`
 	DisplayName string    `json:"display_name"`
 	GeneratedAt time.Time `json:"generated_at"`
 
-	// ─── Progression globale ──────────────────────────────────────────
 
 	XP            int `json:"xp"`
 	Level         int `json:"level"`
 	XPForNext     int `json:"xp_for_next_level"`
-	LevelProgress float64 `json:"level_progress"` // 0-1
+	LevelProgress float64 `json:"level_progress"`
 
 	StreakDays     int `json:"streak_days"`
 	BestStreakDays int `json:"best_streak_days"`
 	Hearts         int `json:"hearts"`
 	MaxHearts      int `json:"max_hearts"`
 
-	// ─── Programmes ───────────────────────────────────────────────────
 
 	Programs []ProgramSnapshot `json:"programs"`
 
-	// ─── Recommandation ───────────────────────────────────────────────
 
 	Recommendation Recommendation `json:"recommendation"`
 
-	// ─── Collection ───────────────────────────────────────────────────
 
 	UnlockedAvatarIDs []string `json:"unlocked_avatar_ids"`
 	EquippedAvatarID  string   `json:"equipped_avatar_id"`
 	EarnedBadgeIDs    []string `json:"earned_badge_ids"`
 }
 
-// ProgramSnapshot est la vue d'un programme dans le Snapshot.
 type ProgramSnapshot struct {
 	ProgramID      string  `json:"program_id"`
 	Title          string  `json:"title"`
@@ -66,7 +55,6 @@ type ProgramSnapshot struct {
 	Modules []ModuleSnapshot `json:"modules"`
 }
 
-// ProgramStatus résume l'état d'un programme.
 type ProgramStatus string
 
 const (
@@ -76,7 +64,6 @@ const (
 	ProgramStatusCompleted   ProgramStatus = "completed"
 )
 
-// ModuleSnapshot est la vue d'un module.
 type ModuleSnapshot struct {
 	ModuleID       string  `json:"module_id"`
 	Title          string  `json:"title"`
@@ -89,7 +76,6 @@ type ModuleSnapshot struct {
 	Lessons []LessonSnapshot `json:"lessons"`
 }
 
-// LessonSnapshot est la vue d'une leçon dans le Snapshot.
 type LessonSnapshot struct {
 	LessonID      string `json:"lesson_id"`
 	Title         string `json:"title"`
@@ -101,16 +87,10 @@ type LessonSnapshot struct {
 	Status        domain.LessonStatus `json:"status"`
 	ProgressRatio float64             `json:"progress_ratio"`
 	IsLocked      bool                `json:"is_locked"`
-	// UnlockReason — texte expliquant pourquoi la leçon est verrouillée.
 	UnlockReason string `json:"unlock_reason,omitempty"`
 }
 
-// ─── Construction ──────────────────────────────────────────────────────
 
-// BuildSnapshot construit un Snapshot prêt à envoyer à l'UI.
-//
-// Le registry est nécessaire pour calculer les ratios et les états
-// manquants (leçons non encore commencées).
 func BuildSnapshot(
 	registry *curriculum.Registry,
 	engine *Engine,
@@ -133,7 +113,6 @@ func BuildSnapshot(
 		EquippedAvatarID:  learner.EquippedAvatarID,
 	}
 
-	// Progression dans le niveau.
 	curLevelXP := domain.XPForLevel(learner.Level)
 	nextLevelXP := domain.XPForLevel(learner.Level + 1)
 	if nextLevelXP > curLevelXP {
@@ -142,17 +121,14 @@ func BuildSnapshot(
 		snap.LevelProgress = 1
 	}
 
-	// Badges.
 	for _, b := range learner.EarnedBadges {
 		snap.EarnedBadgeIDs = append(snap.EarnedBadgeIDs, b.BadgeID)
 	}
 
-	// Programmes.
 	for _, p := range registry.AllPrograms() {
 		snap.Programs = append(snap.Programs, buildProgramSnapshot(registry, engine, learner, p))
 	}
 
-	// Recommandation.
 	if engine != nil {
 		snap.Recommendation = engine.Recommend(learner)
 	}
@@ -197,7 +173,6 @@ func buildProgramSnapshot(
 		ps.Status = ProgramStatusAvailable
 	}
 
-	// Un programme est locked si son premier module n'est pas accessible.
 	if len(ps.Modules) > 0 && ps.Modules[0].Status == ProgramStatusLocked {
 		ps.Status = ProgramStatusLocked
 	}
@@ -238,7 +213,6 @@ func buildModuleSnapshot(
 	case ms.CompletedCount > 0:
 		ms.Status = ProgramStatusInProgress
 	default:
-		// Vérifier si le module est débloqué.
 		if engine != nil {
 			unlock := engine.gate.EvaluateModule(learner, module.ID)
 			if unlock.Unlocked {
@@ -269,7 +243,6 @@ func buildLessonSnapshot(
 
 	progress, ok := learner.LessonProgress[lesson.ID]
 	if !ok {
-		// Leçon jamais touchée : état calculé par le gate.
 		ls.Status = domain.LessonStatusLocked
 		if engine != nil {
 			unlock := engine.gate.EvaluateLesson(learner, lesson.ID)

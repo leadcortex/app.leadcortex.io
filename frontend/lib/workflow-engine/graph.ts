@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\graph.ts
+// frontend/lib/workflow-engine/graph.ts
+
 import { BLOCK_META_BY_ID, isExecutableBlock, isTriggerBlock, outputPortsOf } from "./catalog";
 import { LIMITS } from "./policies";
 import type { ValidationIssue, WorkflowDocument } from "./types";
@@ -68,7 +69,6 @@ export function validateGraph(doc: WorkflowDocument): ValidationIssue[] {
     });
   }
 
-  // Identifiants uniques
   const seen = new Set<string>();
   for (const node of doc.nodes) {
     if (seen.has(node.id)) {
@@ -90,7 +90,6 @@ export function validateGraph(doc: WorkflowDocument): ValidationIssue[] {
     }
   }
 
-  // Arêtes cohérentes
   for (const edge of doc.edges) {
     const source = index.byId[edge.source];
     const target = index.byId[edge.target];
@@ -139,7 +138,6 @@ export function validateGraph(doc: WorkflowDocument): ValidationIssue[] {
     }
   }
 
-  // Déclencheur
   const triggers = doc.nodes.filter((n) => isTriggerBlock(n.blockId) && n.muted !== true);
   if (triggers.length === 0) {
     issues.push({
@@ -159,7 +157,6 @@ export function validateGraph(doc: WorkflowDocument): ValidationIssue[] {
     }
   }
 
-  // Cycles
   for (const cycle of findCycles(index)) {
     issues.push({
       code: "GRAPH_CYCLE",
@@ -169,7 +166,6 @@ export function validateGraph(doc: WorkflowDocument): ValidationIssue[] {
     });
   }
 
-  // Atteignabilité et terminaison
   const reachable = reachableFrom(index, index.entryNodeIds);
   for (const nodeId of index.executableNodeIds) {
     if (!reachable.has(nodeId)) {

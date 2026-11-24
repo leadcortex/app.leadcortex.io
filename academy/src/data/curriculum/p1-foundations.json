@@ -36,7 +36,7 @@
     {
       "id": "icp_vs_persona",
       "label": "ICP vs Persona",
-      "description": "ICP = entreprise ; Persona = personne."
+      "description": "L'ICP désigne une entreprise, le persona une personne."
     },
     {
       "id": "buyer_journey",
@@ -120,7 +120,7 @@
                   "callout": {
                     "tone": "info",
                     "title": "À retenir",
-                    "text": "Outbound = aller chercher. Inbound = attirer."
+                    "text": "L'outbound consiste à aller chercher les clients. L'inbound consiste à les attirer à vous."
                   }
                 },
                 {

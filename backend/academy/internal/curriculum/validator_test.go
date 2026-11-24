@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/validator_test.go
+
 package curriculum
 
 import (
@@ -66,12 +68,10 @@ func TestValidateAll_MissingMission(t *testing.T) {
 			},
 		},
 	}
-	// On injecte le concept manuellement (pas dans le YAML ici).
 	program.Modules[0].Lessons[0].Concepts = []string{"c1"}
 
 	issues := ValidateAll([]*domain.Program{program}, nil, nil)
 
-	// On s'attend à au moins une erreur "mission manquante".
 	found := false
 	for _, i := range issues {
 		if i.Severity == SeverityError && i.Entity == "Lesson" &&

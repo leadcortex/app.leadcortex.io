@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/hearts.go
+
 package gamification
 
 import (
@@ -6,20 +8,14 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// DefaultHeartRegenInterval — durée par défaut entre deux régénérations
-// de cœur (1 cœur toutes les 30 minutes).
 const DefaultHeartRegenInterval = 30 * time.Minute
 
-// HeartRegenConfig paramètre la régénération des cœurs.
 type HeartRegenConfig struct {
-	// Interval — durée nécessaire pour regagner 1 cœur.
 	Interval time.Duration
 
-	// MaxHearts — plafond (par défaut domain.MaxHearts).
 	MaxHearts int
 }
 
-// DefaultHeartRegenConfig — configuration standard.
 func DefaultHeartRegenConfig() HeartRegenConfig {
 	return HeartRegenConfig{
 		Interval:  DefaultHeartRegenInterval,
@@ -27,34 +23,18 @@ func DefaultHeartRegenConfig() HeartRegenConfig {
 	}
 }
 
-// HeartRegenResult décrit le résultat d'une tentative de régénération.
 type HeartRegenResult struct {
-	// Hearts — nombre de cœurs après régénération.
 	Hearts int `json:"hearts"`
 
-	// Regenerated — nombre de cœurs effectivement regagnés.
 	Regenerated int `json:"regenerated"`
 
-	// LastRegenAt — nouvel horodatage de référence. À stocker côté
-	// appelant (le Learner du domaine ne porte pas ce champ).
 	LastRegenAt time.Time `json:"last_regen_at"`
 
-	// NextRegenAt — instant du prochain regain (zéro si plein).
 	NextRegenAt time.Time `json:"next_regen_at,omitempty"`
 
-	// ProgressRatio — progression vers le prochain cœur (0-1).
 	ProgressRatio float64 `json:"progress_ratio"`
 }
 
-// RegenerateHearts calcule les cœurs regagnés depuis `lastRegenAt`.
-//
-// Cas particuliers :
-//   - Cœurs déjà pleins : renvoie 0 regagné, pas de next.
-//   - `lastRegenAt` zéro : considère la regen comme démarrant maintenant.
-//   - Intervalle <= 0 : utilise la valeur par défaut.
-//
-// Cette fonction est PURE : elle ne mute aucun état. L'appelant doit
-// mettre à jour le Learner (Hearts) et persister `LastRegenAt`.
 func RegenerateHearts(
 	currentHearts int,
 	lastRegenAt, now time.Time,
@@ -68,7 +48,6 @@ func RegenerateHearts(
 		max = domain.MaxHearts
 	}
 
-	// Plafond.
 	if currentHearts < 0 {
 		currentHearts = 0
 	}
@@ -80,7 +59,6 @@ func RegenerateHearts(
 		}
 	}
 
-	// Premier appel : on démarre le timer.
 	if lastRegenAt.IsZero() {
 		return HeartRegenResult{
 			Hearts:        currentHearts,
@@ -91,10 +69,8 @@ func RegenerateHearts(
 		}
 	}
 
-	// Combien de cycles complets depuis lastRegenAt ?
 	elapsed := now.Sub(lastRegenAt)
 	if elapsed < 0 {
-		// Horloge inversée : on ne donne rien.
 		return HeartRegenResult{
 			Hearts:        currentHearts,
 			Regenerated:   0,
@@ -106,7 +82,6 @@ func RegenerateHearts(
 
 	cycles := int(elapsed / cfg.Interval)
 	if cycles <= 0 {
-		// Pas encore un cycle complet : on expose la progression.
 		return HeartRegenResult{
 			Hearts:        currentHearts,
 			Regenerated:   0,
@@ -116,7 +91,6 @@ func RegenerateHearts(
 		}
 	}
 
-	// Appliquer les cycles, plafonner aux max.
 	missing := max - currentHearts
 	regenerated := cycles
 	if regenerated > missing {
@@ -124,10 +98,6 @@ func RegenerateHearts(
 	}
 	newHearts := currentHearts + regenerated
 
-	// Nouvel horodatage de référence :
-	//  - si plein : on remet lastRegen à zéro pour repartir proprement
-	//    au prochain regain.
-	//  - sinon : on avance du nombre de cycles consommés.
 	var newLast, next time.Time
 	if newHearts >= max {
 		newLast = time.Time{}
@@ -137,8 +107,6 @@ func RegenerateHearts(
 		next = newLast.Add(cfg.Interval)
 	}
 
-	// Si les cycles dépassent largement, on peut réinitialiser à now
-	// pour éviter d'accumuler une dette artificielle.
 	if !newLast.IsZero() && now.Sub(newLast) > cfg.Interval {
 		newLast = now
 		next = now.Add(cfg.Interval)
@@ -153,8 +121,6 @@ func RegenerateHearts(
 	}
 }
 
-// TimeUntilNextHeart renvoie le temps restant avant le prochain cœur.
-// Retourne 0 si les cœurs sont pleins ou si la config est invalide.
 func TimeUntilNextHeart(
 	currentHearts int,
 	lastRegenAt, now time.Time,
@@ -177,8 +143,6 @@ func TimeUntilNextHeart(
 	return next.Sub(now)
 }
 
-// EstimatedFullHeartsAt — instant estimé où les cœurs seront pleins.
-// Retourne zéro si déjà plein.
 func EstimatedFullHeartsAt(
 	currentHearts int,
 	lastRegenAt, now time.Time,
@@ -200,7 +164,6 @@ func EstimatedFullHeartsAt(
 	}
 	base := lastRegenAt
 	if base.Before(now) && now.Sub(base) > cfg.Interval {
-		// Repartir de maintenant si le timer est dépassé depuis longtemps.
 		base = now
 	}
 	return base.Add(time.Duration(missing) * cfg.Interval)

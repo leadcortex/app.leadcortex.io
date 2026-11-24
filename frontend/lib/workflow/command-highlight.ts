@@ -1,4 +1,5 @@
-//frontend\lib\workflow\command-highlight.ts
+// frontend/lib/workflow/command-highlight.ts
+
 import { blockMap, categoryMap } from "./geometry";
 import { COMMAND_NAMES } from "./terminal-commands";
 

@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_events.go
+
 package api
 
 import (
@@ -10,9 +12,6 @@ import (
 	"github.com/leadcortex/academy/internal/progress"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   DTO
-   ═══════════════════════════════════════════════════════════════════════ */
 
 type PublishEventResponse struct {
 	Event          string   `json:"event"`
@@ -21,9 +20,6 @@ type PublishEventResponse struct {
 	XPAwardedTotal int      `json:"xp_awarded_total"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /api/v1/events
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handlePublishEvent(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -104,7 +100,6 @@ func (s *Server) handlePublishEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ─── Progression des quêtes ──────────────────────────────────────
 	if len(resp.ValidatedIDs) > 0 {
 		var updates []gamification.QuestUpdate
 		updates = append(updates, gamification.QuestUpdate{

@@ -1,6 +1,7 @@
-//frontend\routes\legal.cgv.tsx
+// frontend/routes/legal.cgv.tsx
+
 import { createFileRoute } from "@tanstack/react-router";
-import { LegalLayout } from "@/components/legal-layout";
+import { LegalLayout } from "@/components/layout/legal-layout";
 
 export const Route = createFileRoute("/legal/cgv")({
   head: () => ({

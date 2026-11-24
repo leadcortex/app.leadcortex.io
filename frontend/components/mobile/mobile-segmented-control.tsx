@@ -1,8 +1,7 @@
-//frontend\components\mobile\mobile-segmented-control.tsx
-// • Ne déborde JAMAIS horizontalement (overflow-x-auto dans un flex min-w-0)
+// frontend/components/mobile/mobile-segmented-control.tsx
 
 import { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type MobileSegmentedOption<T extends string> = {
   value: T;
@@ -90,7 +89,6 @@ export function MobileSegmentedControl<T extends string>({
                 </span>
               )}
 
-              {}
               <span
                 aria-hidden
                 className={cn(

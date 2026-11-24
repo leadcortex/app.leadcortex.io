@@ -1,11 +1,12 @@
-//frontend\lib\__tests__\pinned-messages-store.test.ts
+// frontend/lib/__tests__/pinned-messages-store.test.ts
+
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   clearPins,
   isPinned,
   loadPins,
   togglePin,
-} from "@/lib/pinned-messages-store";
+} from "@/lib/ai/pinned-messages-store";
 
 const KEY = "lc.assistant.pins.v1";
 

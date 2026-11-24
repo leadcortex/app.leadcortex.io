@@ -1,10 +1,11 @@
-//frontend\components\workflow\CommentCard.tsx
+// frontend/components/workflow/CommentCard.tsx
+
 import { useState } from "react";
-import { CornerDownRight, Pencil, Check, X } from "lucide-react";
+import { CornerDownRight, Pencil, Check, X } from "@/components/icons";
 import type { WComment, WNode } from "@/lib/workflow/types";
 import { NODE_W, nodeHeight } from "@/lib/workflow/geometry";
 import { Markdown } from "./Markdown";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 type Props = {
   comment: WComment;

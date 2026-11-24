@@ -1,18 +1,10 @@
-//frontend\components\ai-assistant\message-demo.ts
-import type { AssistantMessage } from "./assistant-engine";
+// frontend/components/ai-assistant/message-demo.ts
+
+import type { AssistantAttachment, AssistantMessage } from "./assistant-engine";
 
 let seq = 0;
 const id = () => `demo_${Date.now()}_${seq++}`;
 
-/**
- * Conversation de démonstration — couvre tous les composants visuels :
- *  - texte + listes + code inline,
- *  - bloc de code (TypeScript) avec scroll interne,
- *  - tableau scrollable,
- *  - phrases courtes pour tester le rail.
- *
- * Utilisée par le bouton « Démo » dans l'en-tête de l'assistant.
- */
 export function demoConversation(): AssistantMessage[] {
   const now = Date.now();
   return [
@@ -96,5 +88,40 @@ export function demoConversation(): AssistantMessage[] {
       ].join("\n"),
       createdAt: now - 15_000,
     },
+    {
+      id: id(),
+      role: "user",
+      text: "Démo fichiers : envoi d'un CSV, d'une note TXT et d'un fichier JSON.",
+      createdAt: now - 10_000,
+      attachments: [
+        { id: id(), name: "prospects.csv", size: 12_480, kind: "document" },
+        { id: id(), name: "brief.txt", size: 2_104, kind: "document" },
+        { id: id(), name: "parametres.json", size: 3_260, kind: "document" },
+      ],
+    },
+    {
+      id: id(),
+      role: "agent",
+      text: [
+        "Les fichiers **CSV**, **TXT** et **JSON** peuvent être lus et transmis avec la demande.",
+        "",
+        "Les fichiers **Adobe** (PSD, AI…), **3D** (BLEND…), **audio**, **vidéo**, les archives ZIP et les PDF/Office binaires restent dans la zone de dépôt : le modèle ne reçoit pas leur contenu dans cette version.",
+        "",
+        "La limite est de 8 fichiers texte et 40 000 caractères par envoi. Les fichiers conservés ne sont pas envoyés tant que vous ne les retirez pas.",
+      ].join("\n"),
+      createdAt: now - 5_000,
+    },
+  ];
+}
+
+export function demoQueuedAttachments(): AssistantAttachment[] {
+  return [
+    { id: id(), name: "maquette.psd", size: 4_800_000, kind: "document" },
+    { id: id(), name: "logo.ai", size: 1_240_000, kind: "document" },
+    { id: id(), name: "scene.blend", size: 8_510_000, kind: "document" },
+    { id: id(), name: "podcast.wav", size: 12_100_000, kind: "document" },
+    { id: id(), name: "presentation.mp4", size: 18_400_000, kind: "document" },
+    { id: id(), name: "archive.zip", size: 860_000, kind: "document" },
+    { id: id(), name: "rapport.pdf", size: 640_000, kind: "document" },
   ];
 }

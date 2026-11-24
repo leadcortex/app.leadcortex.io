@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/streak_test.go
+
 package gamification
 
 import (
@@ -7,7 +9,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── BonusForStreakDay ───────────────────────────────────────────────── */
 
 func TestBonusForStreakDay(t *testing.T) {
 	cases := []struct {
@@ -44,7 +45,6 @@ func TestBonusForStreakDay_ReturnsCopy(t *testing.T) {
 	if a == nil || b == nil {
 		t.Fatal("palier 7 introuvable")
 	}
-	// Modifier `a` ne doit pas affecter le catalogue.
 	a.XP = 99999
 	c := BonusForStreakDay(7)
 	if c.XP == 99999 {
@@ -68,7 +68,6 @@ func TestBonusForStreakDay_MilestoneContent(t *testing.T) {
 	}
 }
 
-/* ─── ComputeStreakBonus ──────────────────────────────────────────────── */
 
 func TestComputeStreakBonus_SingleMilestone(t *testing.T) {
 	bonuses := ComputeStreakBonus(2, 3)
@@ -81,7 +80,6 @@ func TestComputeStreakBonus_SingleMilestone(t *testing.T) {
 }
 
 func TestComputeStreakBonus_MultipleMilestones(t *testing.T) {
-	// Passage direct de 0 à 10 : doit passer par 3 et 7.
 	bonuses := ComputeStreakBonus(0, 10)
 	if len(bonuses) != 2 {
 		t.Fatalf("attendu 2 bonus (3 et 7), obtenu %d", len(bonuses))
@@ -92,7 +90,6 @@ func TestComputeStreakBonus_MultipleMilestones(t *testing.T) {
 }
 
 func TestComputeStreakBonus_ExactMilestoneOnly(t *testing.T) {
-	// De 3 à 7 : seul le palier 7 doit être renvoyé (pas 3 déjà passé).
 	bonuses := ComputeStreakBonus(3, 7)
 	if len(bonuses) != 1 {
 		t.Fatalf("attendu 1 bonus, obtenu %d", len(bonuses))
@@ -109,7 +106,6 @@ func TestComputeStreakBonus_NoChange(t *testing.T) {
 }
 
 func TestComputeStreakBonus_Regression(t *testing.T) {
-	// Régression : previous > current, aucun bonus.
 	if b := ComputeStreakBonus(10, 5); b != nil {
 		t.Errorf("régression : attendu nil, obtenu %v", b)
 	}
@@ -138,7 +134,6 @@ func TestComputeStreakBonus_OrderAscending(t *testing.T) {
 	}
 }
 
-/* ─── CanFreeze ───────────────────────────────────────────────────────── */
 
 func TestCanFreeze(t *testing.T) {
 	cases := []struct {
@@ -150,7 +145,7 @@ func TestCanFreeze(t *testing.T) {
 		{MaxFreezes - 1, true},
 		{MaxFreezes, false},
 		{MaxFreezes + 1, false},
-		{-1, true}, // valeur négative traitée comme "aucun freeze stocké"
+		{-1, true},
 	}
 	for _, tc := range cases {
 		got := CanFreeze(tc.freezes)
@@ -160,7 +155,6 @@ func TestCanFreeze(t *testing.T) {
 	}
 }
 
-/* ─── IsStreakBroken ──────────────────────────────────────────────────── */
 
 func TestIsStreakBroken_SameDay(t *testing.T) {
 	last := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
@@ -195,7 +189,6 @@ func TestIsStreakBroken_LongAbsence(t *testing.T) {
 }
 
 func TestIsStreakBroken_JustBeforeMidnight(t *testing.T) {
-	// Deux activités à 23h59 et 00h01 le lendemain : J+1, non cassé.
 	last := time.Date(2026, 1, 15, 23, 59, 0, 0, time.UTC)
 	now := time.Date(2026, 1, 16, 0, 1, 0, 0, time.UTC)
 	if IsStreakBroken(last, now) {
@@ -203,11 +196,10 @@ func TestIsStreakBroken_JustBeforeMidnight(t *testing.T) {
 	}
 }
 
-/* ─── ShouldFreezeOnAbsence ───────────────────────────────────────────── */
 
 func TestShouldFreezeOnAbsence_BrokenWithFreeze(t *testing.T) {
 	last := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
-	now := time.Date(2026, 1, 18, 10, 0, 0, 0, time.UTC) // J+3
+	now := time.Date(2026, 1, 18, 10, 0, 0, 0, time.UTC)
 
 	if !ShouldFreezeOnAbsence(last, now, 1) {
 		t.Error("streak cassé + 1 freeze dispo : devrait consommer un freeze")
@@ -225,14 +217,13 @@ func TestShouldFreezeOnAbsence_BrokenNoFreeze(t *testing.T) {
 
 func TestShouldFreezeOnAbsence_NotBroken(t *testing.T) {
 	last := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
-	now := time.Date(2026, 1, 16, 10, 0, 0, 0, time.UTC) // J+1
+	now := time.Date(2026, 1, 16, 10, 0, 0, 0, time.UTC)
 
 	if ShouldFreezeOnAbsence(last, now, 1) {
 		t.Error("streak non cassé : ne devrait pas consommer de freeze")
 	}
 }
 
-/* ─── BuildStreakStatus ───────────────────────────────────────────────── */
 
 func TestBuildStreakStatus_ActiveToday(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
@@ -265,7 +256,6 @@ func TestBuildStreakStatus_NextMilestone(t *testing.T) {
 
 	s := BuildStreakStatus(l, 0, now)
 
-	// Prochain palier après 5 = 7.
 	if s.NextMilestoneDay != 7 {
 		t.Errorf("NextMilestoneDay : attendu 7, obtenu %d", s.NextMilestoneDay)
 	}
@@ -281,11 +271,10 @@ func TestBuildStreakStatus_JustReachedMilestone(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	l := domain.NewLearner("u-1", "Test", "t@example.com")
 	l.LastActivityAt = now
-	l.StreakDays = 7 // pile sur un palier
+	l.StreakDays = 7
 
 	s := BuildStreakStatus(l, 0, now)
 
-	// Le prochain palier strictement supérieur à 7 = 14.
 	if s.NextMilestoneDay != 14 {
 		t.Errorf("NextMilestoneDay : attendu 14, obtenu %d", s.NextMilestoneDay)
 	}
@@ -298,7 +287,7 @@ func TestBuildStreakStatus_BeyondLastMilestone(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	l := domain.NewLearner("u-1", "Test", "t@example.com")
 	l.LastActivityAt = now
-	l.StreakDays = 250 // au-delà de 100
+	l.StreakDays = 250
 
 	s := BuildStreakStatus(l, 0, now)
 
@@ -317,7 +306,7 @@ func TestBuildStreakStatus_BeyondLastMilestone(t *testing.T) {
 func TestBuildStreakStatus_NotActiveToday(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	l := domain.NewLearner("u-1", "Test", "t@example.com")
-	l.LastActivityAt = now.AddDate(0, 0, -2) // avant-hier
+	l.LastActivityAt = now.AddDate(0, 0, -2)
 	l.StreakDays = 5
 
 	s := BuildStreakStatus(l, 0, now)
@@ -342,23 +331,19 @@ func TestBuildStreakStatus_ZeroStreak(t *testing.T) {
 	if s.BestDays != 12 {
 		t.Errorf("BestDays : attendu 12, obtenu %d", s.BestDays)
 	}
-	// Prochain palier = 3 (le premier).
 	if s.NextMilestoneDay != 3 {
 		t.Errorf("NextMilestoneDay : attendu 3, obtenu %d", s.NextMilestoneDay)
 	}
 }
 
-/* ─── Intégration avec le domaine ─────────────────────────────────────── */
 
 func TestIsStreakBroken_UsesUTCDates(t *testing.T) {
-	// Deux instants proches mais sur deux jours calendaires différents.
 	last := time.Date(2026, 1, 15, 23, 30, 0, 0, time.UTC)
 	now := time.Date(2026, 1, 16, 0, 30, 0, 0, time.UTC)
 	if IsStreakBroken(last, now) {
 		t.Error("J+1 UTC : non cassé")
 	}
 
-	// 48h plus tard : cassé.
 	now2 := time.Date(2026, 1, 17, 0, 30, 0, 0, time.UTC)
 	if !IsStreakBroken(last, now2) {
 		t.Error("J+2 UTC : devrait être cassé")

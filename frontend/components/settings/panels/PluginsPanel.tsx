@@ -1,5 +1,6 @@
-//frontend\components\settings\panels\PluginsPanel.tsx
-import { Boxes } from "lucide-react";
+// frontend/components/settings/panels/PluginsPanel.tsx
+
+import { Boxes } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
 

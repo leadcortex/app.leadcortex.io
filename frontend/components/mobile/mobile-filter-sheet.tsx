@@ -1,12 +1,13 @@
-//frontend\components\mobile\mobile-filter-sheet.tsx
-import { useEffect, useMemo, useState } from "react";
-import { RotateCcw, Check } from "lucide-react";
+// frontend/components/mobile/mobile-filter-sheet.tsx
+
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { RotateCcw, Check } from "@/components/icons";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type MobileFilterOption = {
   value: string;
-  label: string;
+  label: ReactNode;
   description?: string;
   count?: number;
 };
@@ -17,6 +18,8 @@ export type MobileFilterSection = {
 
   mode?: "single" | "multi";
   options: MobileFilterOption[];
+
+  scrollable?: boolean;
 };
 
 export type MobileFilterValue = Record<string, string | string[] | null>;
@@ -90,7 +93,6 @@ export function MobileFilterSheet({
   return (
     <MobileSheet open={open} onOpenChange={onOpenChange} title={title}>
       <div className="flex min-h-0 flex-col overflow-hidden">
-        {}
         <div className="min-h-0 flex-1 space-y-4 px-4 pt-2">
           {sections.map((section) => {
             const selected = draft[section.key];
@@ -103,7 +105,13 @@ export function MobileFilterSheet({
                 <h3 className="border-b border-border/60 px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                   {section.label}
                 </h3>
-                <ul className="divide-y divide-border/50">
+                <ul
+                  className={cn(
+                    "divide-y divide-border/50",
+                    section.scrollable &&
+                      "max-h-[280px] overflow-y-auto overscroll-contain scrollbar-hide",
+                  )}
+                >
                   {section.options.map((opt) => {
                     const active = isMulti
                       ? Array.isArray(selected) && selected.includes(opt.value)
@@ -159,7 +167,6 @@ export function MobileFilterSheet({
           })}
         </div>
 
-        {}
         <div className="shrink-0 border-t border-border/60 bg-background px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="flex items-center gap-3">
             <button

@@ -1,4 +1,5 @@
-//frontend\lib\workflow\use-auto-pan.ts
+// frontend/lib/workflow/use-auto-pan.ts
+
 import { useEffect, useRef } from "react";
 import type { Viewport } from "./types";
 
@@ -15,12 +16,10 @@ type Options = {
   onPan?: () => void;
 };
 
-/** Largeur de la zone tampon (px) à l'intérieur de chaque bord du viewport. */
 const EDGE_MOUSE = 44;
 const EDGE_TOUCH = 64;
 
 const MAX_SPEED = 1100;
-/** Bornes de temps entre deux frames pour éviter les sauts (onglet en arrière-plan). */
 const MAX_DT = 0.032;
 
 export function useAutoPan({ active, containerRef, pointerRef, setViewport, onPan }: Options) {

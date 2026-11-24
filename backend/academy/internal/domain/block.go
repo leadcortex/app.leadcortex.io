@@ -1,6 +1,7 @@
+// backend/academy/internal/domain/block.go
+
 package domain
 
-// BlockType énumère les types de blocs qui composent une leçon.
 type BlockType string
 
 const (
@@ -11,7 +12,6 @@ const (
 	BlockTypeDebrief  BlockType = "debrief"
 )
 
-// IsKnownBlockType indique si un BlockType est reconnu.
 func IsKnownBlockType(t BlockType) bool {
 	switch t {
 	case BlockTypeCover, BlockTypeTheory, BlockTypePractice, BlockTypeMission, BlockTypeDebrief:
@@ -20,25 +20,18 @@ func IsKnownBlockType(t BlockType) bool {
 	return false
 }
 
-// Block est l'interface commune à tous les types de blocs.
-// Les implémentations concrètes sont : CoverBlock, TheoryBlock,
-// PracticeBlock, MissionBlock, DebriefBlock.
 type Block interface {
-	// BlockType — discriminant pour le switch.
 	BlockType() BlockType
-	// Validate — invariants spécifiques au bloc.
 	Validate() error
 }
 
-// ─── COVER ──────────────────────────────────────────────────────────────
 
-// CoverBlock est le premier bloc d'une leçon : titre, objectifs, mascotte.
 type CoverBlock struct {
 	Title       string
 	Subtitle    string
-	MascotPose  string   // "curious", "happy"… résolu côté UI
-	MascotLine  string   // phrase affichée dans la bulle
-	Objectives  []string // 2-4 objectifs d'apprentissage
+	MascotPose  string
+	MascotLine  string
+	Objectives  []string
 }
 
 func (b CoverBlock) BlockType() BlockType { return BlockTypeCover }
@@ -53,9 +46,7 @@ func (b CoverBlock) Validate() error {
 	return nil
 }
 
-// ─── THEORY ─────────────────────────────────────────────────────────────
 
-// TheoryBlock est une séquence de slides théoriques.
 type TheoryBlock struct {
 	Slides []TheorySlide
 }
@@ -78,27 +69,19 @@ func (b TheoryBlock) Validate() error {
 	return nil
 }
 
-// TheorySlide est un écran théorique.
 type TheorySlide struct {
-	// ID — identifiant du slide (unique dans le bloc), ex. "t1".
 	ID string
 
-	// Title — titre affiché en haut.
 	Title string
 
-	// BodyMD — corps au format Markdown.
 	BodyMD string
 
-	// Callout — encart optionnel (info, warning…).
 	Callout *Callout
 
-	// Quote — citation optionnelle.
 	Quote *Quote
 
-	// Visual — visuel optionnel (diagramme, capture, comparaison).
 	Visual *Visual
 
-	// QuizInline — quiz d'ancrage, non noté.
 	QuizInline *InlineQuiz
 }
 
@@ -126,7 +109,6 @@ func (s TheorySlide) Validate() error {
 	return nil
 }
 
-// CalloutTone énumère les tons possibles d'un encart.
 type CalloutTone string
 
 const (
@@ -136,11 +118,10 @@ const (
 	CalloutDanger  CalloutTone = "danger"
 )
 
-// Callout est un encart visuel avec un ton.
 type Callout struct {
 	Tone   CalloutTone
-	Text   string // Markdown court
-	Title  string // optionnel
+	Text   string
+	Title  string
 }
 
 func (c Callout) Validate() error {
@@ -156,13 +137,11 @@ func (c Callout) Validate() error {
 	return nil
 }
 
-// Quote est une citation mise en avant.
 type Quote struct {
 	Text   string
 	Author string
 }
 
-// VisualKind énumère les types de visuels supportés.
 type VisualKind string
 
 const (
@@ -174,13 +153,12 @@ const (
 	VisualMiniCase   VisualKind = "mini_case_study"
 )
 
-// Visual est un visuel affiché dans un slide.
 type Visual struct {
 	Kind        VisualKind
-	Asset       string // chemin relatif, ex. "/academy/img/icp.svg"
+	Asset       string
 	Alt         string
 	Caption     string
-	Payload     map[string]any // données spécifiques (chart, comparaison…)
+	Payload     map[string]any
 }
 
 func (v Visual) Validate() error {
@@ -197,11 +175,10 @@ func (v Visual) Validate() error {
 	return nil
 }
 
-// InlineQuiz est un quiz d'ancrage non noté.
 type InlineQuiz struct {
 	Question string
 	Options  []string
-	Answer   int // index 0-based
+	Answer   int
 }
 
 func (q InlineQuiz) Validate() error {
@@ -217,9 +194,7 @@ func (q InlineQuiz) Validate() error {
 	return nil
 }
 
-// ─── PRACTICE ───────────────────────────────────────────────────────────
 
-// PracticeBlock contient les exercices d'une leçon.
 type PracticeBlock struct {
 	Exercises []Exercise
 }
@@ -242,9 +217,7 @@ func (b PracticeBlock) Validate() error {
 	return nil
 }
 
-// ─── MISSION ────────────────────────────────────────────────────────────
 
-// MissionBlock enveloppe une Mission dans un bloc.
 type MissionBlock struct {
 	Mission Mission
 }
@@ -255,9 +228,7 @@ func (b MissionBlock) Validate() error {
 	return b.Mission.Validate()
 }
 
-// ─── DEBRIEF ────────────────────────────────────────────────────────────
 
-// DebriefSection énumère les sections possibles du débriefing.
 type DebriefSection string
 
 const (
@@ -267,10 +238,8 @@ const (
 	DebriefNextRecommendation DebriefSection = "next_recommendation"
 )
 
-// DebriefBlock est le bloc final de la leçon.
 type DebriefBlock struct {
 	Sections []DebriefSection
-	// CustomMascotLine — phrase personnalisée de la mascotte (optionnel).
 	CustomMascotLine string
 }
 

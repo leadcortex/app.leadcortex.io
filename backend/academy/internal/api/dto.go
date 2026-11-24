@@ -1,14 +1,12 @@
+// backend/academy/internal/api/dto.go
+
 package api
 
 import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   PROFIL / LEARNER
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// LearnerDTO est la vue sérialisable d'un Learner pour l'UI.
 type LearnerDTO struct {
 	ID               string   `json:"id"`
 	DisplayName      string   `json:"display_name"`
@@ -27,7 +25,6 @@ type LearnerDTO struct {
 	EarnedBadgeIDs   []string `json:"earned_badge_ids"`
 }
 
-// ToLearnerDTO construit la vue d'un Learner.
 func ToLearnerDTO(l *domain.Learner) LearnerDTO {
 	if l == nil {
 		return LearnerDTO{}
@@ -60,14 +57,7 @@ func ToLearnerDTO(l *domain.Learner) LearnerDTO {
 	return dto
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   PROGRAMMES / MODULES / LEÇONS
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// ProgramDTO est la vue d'un programme.
-//
-// Un ProgramDTO « summary » n'a pas de Modules ; un ProgramDTO « complet »
-// en a. Deux mappers distincts produisent l'un ou l'autre.
 type ProgramDTO struct {
 	ID               string      `json:"id"`
 	Order            int         `json:"order"`
@@ -82,7 +72,6 @@ type ProgramDTO struct {
 	Modules          []ModuleDTO `json:"modules,omitempty"`
 }
 
-// ModuleDTO est la vue d'un module.
 type ModuleDTO struct {
 	ID               string      `json:"id"`
 	ProgramID        string      `json:"program_id"`
@@ -94,7 +83,6 @@ type ModuleDTO struct {
 	Lessons          []LessonDTO `json:"lessons,omitempty"`
 }
 
-// LessonDTO est la vue d'une leçon (sans le détail des blocs).
 type LessonDTO struct {
 	ID          string   `json:"id"`
 	ModuleID    string   `json:"module_id"`
@@ -110,14 +98,11 @@ type LessonDTO struct {
 	BlockCount  int      `json:"block_count"`
 }
 
-// LessonDetailDTO ajoute les blocs à la vue d'une leçon.
 type LessonDetailDTO struct {
 	LessonDTO
 	Blocks []BlockDTO `json:"blocks"`
 }
 
-// BlockDTO est une vue polymorphe d'un bloc. Un seul des pointeurs est
-// non nil, selon Type.
 type BlockDTO struct {
 	Index    int              `json:"index"`
 	Type     string           `json:"type"`
@@ -128,7 +113,6 @@ type BlockDTO struct {
 	Debrief  *DebriefBlockDTO `json:"debrief,omitempty"`
 }
 
-// CoverBlockDTO — bloc de couverture.
 type CoverBlockDTO struct {
 	Title      string   `json:"title"`
 	Subtitle   string   `json:"subtitle,omitempty"`
@@ -137,12 +121,10 @@ type CoverBlockDTO struct {
 	Objectives []string `json:"objectives"`
 }
 
-// TheoryBlockDTO — bloc théorique.
 type TheoryBlockDTO struct {
 	Slides []TheorySlideDTO `json:"slides"`
 }
 
-// TheorySlideDTO — slide théorique.
 type TheorySlideDTO struct {
 	ID         string         `json:"id"`
 	Title      string         `json:"title"`
@@ -153,20 +135,17 @@ type TheorySlideDTO struct {
 	QuizInline *InlineQuizDTO `json:"quiz_inline,omitempty"`
 }
 
-// CalloutDTO — encart.
 type CalloutDTO struct {
 	Tone  string `json:"tone"`
 	Title string `json:"title,omitempty"`
 	Text  string `json:"text"`
 }
 
-// QuoteDTO — citation.
 type QuoteDTO struct {
 	Text   string `json:"text"`
 	Author string `json:"author,omitempty"`
 }
 
-// VisualDTO — visuel.
 type VisualDTO struct {
 	Kind    string         `json:"kind"`
 	Asset   string         `json:"asset,omitempty"`
@@ -175,35 +154,26 @@ type VisualDTO struct {
 	Payload map[string]any `json:"payload,omitempty"`
 }
 
-// InlineQuizDTO — quiz d'ancrage non noté.
 type InlineQuizDTO struct {
 	Question string   `json:"question"`
 	Options  []string `json:"options"`
 	Answer   int      `json:"answer"`
 }
 
-// PracticeBlockDTO — bloc d'exercices.
 type PracticeBlockDTO struct {
 	Exercises []ExerciseDTO `json:"exercises"`
 }
 
-// MissionBlockDTO — bloc de mission in-app.
 type MissionBlockDTO struct {
 	Mission MissionDTO `json:"mission"`
 }
 
-// DebriefBlockDTO — bloc de fin de leçon.
 type DebriefBlockDTO struct {
 	Sections         []string `json:"sections"`
 	CustomMascotLine string   `json:"custom_mascot_line,omitempty"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   EXERCICES
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// ExerciseDTO est la vue d'un exercice. Le payload varie selon Kind et
-// ne contient JAMAIS la bonne réponse.
 type ExerciseDTO struct {
 	ID         string   `json:"id"`
 	Kind       string   `json:"kind"`
@@ -214,50 +184,40 @@ type ExerciseDTO struct {
 	Payload    any      `json:"payload"`
 }
 
-// MCqPayloadDTO — payload MCQ (sans la bonne réponse).
 type MCqPayloadDTO struct {
 	Options []string `json:"options"`
 }
 
-// MultiSelectPayloadDTO — payload MultiSelect (sans les bonnes réponses).
 type MultiSelectPayloadDTO struct {
 	Options []string `json:"options"`
 }
 
-// FillBlankPayloadDTO — payload FillBlank (sans les réponses).
 type FillBlankPayloadDTO struct {
 	BlankCount int `json:"blank_count"`
 }
 
-// OrderStepsPayloadDTO — payload OrderSteps (ordre canonique, à mélanger
-// côté client pour l'affichage).
 type OrderStepsPayloadDTO struct {
 	Steps []string `json:"steps"`
 }
 
-// MatchPairsPayloadDTO — payload MatchPairs.
 type MatchPairsPayloadDTO struct {
 	Pairs []MatchPairDTO `json:"pairs"`
 }
 
-// MatchPairDTO — une paire.
 type MatchPairDTO struct {
 	Left  string `json:"left"`
 	Right string `json:"right"`
 }
 
-// FreeTextPayloadDTO — payload FreeText (rubric masquée).
 type FreeTextPayloadDTO struct {
 	MinWords int `json:"min_words"`
 	MaxWords int `json:"max_words,omitempty"`
 }
 
-// ScenarioPayloadDTO — payload Scenario (sans les drapeaux correct).
 type ScenarioPayloadDTO struct {
 	Steps []ScenarioStepDTO `json:"steps"`
 }
 
-// ScenarioStepDTO — une étape de scénario.
 type ScenarioStepDTO struct {
 	ID        string   `json:"id"`
 	Situation string   `json:"situation"`
@@ -265,17 +225,11 @@ type ScenarioStepDTO struct {
 	Choices   []string `json:"choices"`
 }
 
-// InAppMissionPayloadDTO — renvoi vers une mission.
 type InAppMissionPayloadDTO struct {
 	MissionID string `json:"mission_id"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   MISSIONS
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// MissionDTO — vue d'une mission (sans les conditions de validation
-// détaillées, qui pourraient guider la triche).
 type MissionDTO struct {
 	ID               string                `json:"id"`
 	LessonID         string                `json:"lesson_id"`
@@ -289,29 +243,22 @@ type MissionDTO struct {
 	OnFailure        MissionOnFailureDTO   `json:"on_failure"`
 }
 
-// MissionTargetDTO — route + CTA.
 type MissionTargetDTO struct {
 	Route string `json:"route"`
 	CTA   string `json:"cta"`
 }
 
-// MissionOnSuccessDTO — récompenses publiques.
 type MissionOnSuccessDTO struct {
 	XP         int    `json:"xp"`
 	MascotLine string `json:"mascot_line,omitempty"`
 }
 
-// MissionOnFailureDTO — feedback en cas d'échec.
 type MissionOnFailureDTO struct {
 	FeedbackMD string `json:"feedback_md"`
 	HintMD     string `json:"hint_md,omitempty"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   ÉVALUATION
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// EvaluationResponse est la réponse à un POST d'exercice.
 type EvaluationResponse struct {
 	Score           int               `json:"score"`
 	Correct         bool              `json:"correct"`
@@ -322,7 +269,6 @@ type EvaluationResponse struct {
 	LessonStatus    string            `json:"lesson_status,omitempty"`
 }
 
-// ResultDetailsDTO — détail par sous-question.
 type ResultDetailsDTO struct {
 	BlankResults    []SubResultDTO `json:"blank_results,omitempty"`
 	PairResults     []SubResultDTO `json:"pair_results,omitempty"`
@@ -333,7 +279,6 @@ type ResultDetailsDTO struct {
 	WordCount       int            `json:"word_count,omitempty"`
 }
 
-// SubResultDTO — un élément de détail.
 type SubResultDTO struct {
 	Index    int    `json:"index"`
 	Expected string `json:"expected,omitempty"`
@@ -341,79 +286,52 @@ type SubResultDTO struct {
 	Correct  bool   `json:"correct"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   REQUÊTES (INPUTS)
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// EquipAvatarRequest — corps de PATCH /me/equip-avatar.
 type EquipAvatarRequest struct {
 	AvatarID string `json:"avatar_id"`
 }
 
-// ViewBlockRequest — corps de POST /lessons/{id}/blocks/{i}/view.
 type ViewBlockRequest struct {
 	SlidesConsumed int `json:"slides_consumed,omitempty"`
 }
 
-// AnswerExerciseRequest — corps de POST /lessons/{id}/exercises/{eid}/answer.
-//
-// Les champs utilisés dépendent du Kind de l'exercice. Le handler valide
-// la cohérence.
 type AnswerExerciseRequest struct {
 	Kind string `json:"kind"`
 
-	// MCQ.
 	Selected int `json:"selected,omitempty"`
 
-	// MultiSelect.
 	SelectedMultiple []int `json:"selected_multiple,omitempty"`
 
-	// FillBlank.
 	Blanks []string `json:"blanks,omitempty"`
 
-	// OrderSteps.
 	Steps []string `json:"steps,omitempty"`
 
-	// MatchPairs.
 	Pairs []MatchPairDTO `json:"pairs,omitempty"`
 
-	// FreeText.
 	Text string `json:"text,omitempty"`
 
-	// Scenario.
 	Choices []int `json:"choices,omitempty"`
 }
 
-// MissionAttemptRequest — corps de POST /missions/{id}/attempt.
 type MissionAttemptRequest struct {
-	// Payload optionnel fourni par l'app LeadCortex.
 	Payload map[string]any `json:"payload,omitempty"`
 }
 
-// ReviewCardRequest — corps de POST /srs/cards/{id}/review.
 type ReviewCardRequest struct {
-	// Button ∈ {again, hard, good, easy}.
 	Button string `json:"button"`
 }
 
-// PlanSessionRequest — corps de POST /me/plan.
 type PlanSessionRequest struct {
-	// Mode ∈ {micro, standard, deep, review_only}.
 	Mode string `json:"mode"`
 }
 
-// PublishEventRequest — corps de POST /events.
 type PublishEventRequest struct {
 	Kind    string         `json:"kind"`
 	At      string         `json:"at,omitempty"`
 	Payload map[string]any `json:"payload,omitempty"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   MAPPERS (domain → DTO)
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// ToProgramSummaryDTO convertit un Programme sans ses modules.
 func ToProgramSummaryDTO(p *domain.Program) ProgramDTO {
 	if p == nil {
 		return ProgramDTO{}
@@ -432,7 +350,6 @@ func ToProgramSummaryDTO(p *domain.Program) ProgramDTO {
 	}
 }
 
-// ToProgramDTO convertit un Programme complet (avec modules).
 func ToProgramDTO(p *domain.Program) ProgramDTO {
 	dto := ToProgramSummaryDTO(p)
 	if p == nil {
@@ -445,7 +362,6 @@ func ToProgramDTO(p *domain.Program) ProgramDTO {
 	return dto
 }
 
-// ToModuleDTO convertit un Module (avec leçons).
 func ToModuleDTO(m *domain.Module) ModuleDTO {
 	if m == nil {
 		return ModuleDTO{}
@@ -466,7 +382,6 @@ func ToModuleDTO(m *domain.Module) ModuleDTO {
 	return dto
 }
 
-// ToLessonDTO convertit une Leçon (sans blocs).
 func ToLessonDTO(l *domain.Lesson) LessonDTO {
 	if l == nil {
 		return LessonDTO{}
@@ -487,7 +402,6 @@ func ToLessonDTO(l *domain.Lesson) LessonDTO {
 	}
 }
 
-// ToLessonDetailDTO convertit une Leçon complète (avec blocs).
 func ToLessonDetailDTO(l *domain.Lesson) LessonDetailDTO {
 	dto := LessonDetailDTO{LessonDTO: ToLessonDTO(l)}
 	if l == nil {
@@ -500,8 +414,6 @@ func ToLessonDetailDTO(l *domain.Lesson) LessonDetailDTO {
 	return dto
 }
 
-// ToExerciseDTO convertit un Exercice. Le payload expose les options
-// mais JAMAIS les réponses correctes.
 func ToExerciseDTO(e domain.Exercise) ExerciseDTO {
 	dto := ExerciseDTO{
 		ID:         e.ID,
@@ -546,14 +458,11 @@ func ToExerciseDTO(e domain.Exercise) ExerciseDTO {
 	case domain.InAppMissionPayload:
 		dto.Payload = InAppMissionPayloadDTO{MissionID: p.MissionID}
 	default:
-		// Type inconnu : on renvoie nil (l'UI affichera un fallback).
 		dto.Payload = nil
 	}
 	return dto
 }
 
-// ToMissionDTO convertit une Mission. Les conditions de validation ne
-// sont PAS exposées.
 func ToMissionDTO(m domain.Mission) MissionDTO {
 	return MissionDTO{
 		ID:       m.ID,
@@ -578,7 +487,6 @@ func ToMissionDTO(m domain.Mission) MissionDTO {
 	}
 }
 
-/* ─── Mappers internes ────────────────────────────────────────────────── */
 
 func toBlockDTO(index int, b domain.Block) BlockDTO {
 	switch blk := b.(type) {

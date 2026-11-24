@@ -1,7 +1,8 @@
-//frontend\components\conversations\conversation-settings.tsx
+// frontend/components/conversations/conversation-settings.tsx
+
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, BellOff, Building2, MapPin, Star, Tag, User, X } from "lucide-react";
+import { Bell, BellOff, Building2, MapPin, Star, Tag, User, X } from "@/components/icons";
 import { toast } from "sonner";
 import {
   CHANNELS,
@@ -12,7 +13,7 @@ import {
 import { LetterAvatar } from "@/components/ui/letter-avatar";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export function ConversationSettings({
   open,
@@ -46,7 +47,6 @@ export function ConversationSettings({
 
   const content = (
     <>
-      {}
       {isMobile && (
         <section
           className="rounded-2xl border border-border p-4"
@@ -187,9 +187,6 @@ export function ConversationSettings({
     </>
   );
 
-  /* ─────────────────────────────────────────────────────────────────── */
-  /* Version mobile — MobileSheet                                        */
-  /* ─────────────────────────────────────────────────────────────────── */
   if (isMobile) {
     return (
       <MobileSheet
@@ -202,9 +199,6 @@ export function ConversationSettings({
     );
   }
 
-  /* ─────────────────────────────────────────────────────────────────── */
-  /* Version desktop — drawer latéral (comportement existant)            */
-  /* ─────────────────────────────────────────────────────────────────── */
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -233,8 +227,6 @@ export function ConversationSettings({
     document.body,
   );
 }
-
-/* -------------------------------------------------------------------------- */
 
 function Info({
   icon: Icon,
@@ -265,7 +257,6 @@ function OptionRow({
   label: string;
   onClick: () => void;
   active: boolean;
-  /** Cible tactile élargie (mobile) : hauteur ≥ 48 px. */
   large?: boolean;
 }) {
   return (

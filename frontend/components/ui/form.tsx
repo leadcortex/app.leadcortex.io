@@ -1,4 +1,5 @@
-//frontend\components\ui\form.tsx
+// frontend/components/ui/form.tsx
+
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
@@ -11,7 +12,7 @@ import {
   type FieldValues,
 } from "react-hook-form";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { Label } from "@/components/ui/label";
 
 const Form = FormProvider;

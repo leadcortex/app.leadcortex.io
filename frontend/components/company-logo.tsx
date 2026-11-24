@@ -1,16 +1,57 @@
-//frontend\components\company-logo.tsx
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { LetterAvatar } from "@/components/ui/letter-avatar";
-import { guessDomainFromName } from "@/lib/company-database";
+// frontend/components/company-logo.tsx
+
+import { useState } from "react";
+import { cn } from "@/lib/core/utils";
+import { knownDomainFromName } from "@/lib/companies/database";
 
 function googleFaviconUrl(domain: string, size: number): string {
   const px = size <= 32 ? 64 : size <= 64 ? 128 : 256;
-  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=${px}`;
+  return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&nfrd=1&size=${px}&url=${encodeURIComponent(`https://${domain}`)}`;
 }
 
 function duckduckgoIconUrl(domain: string): string {
   return `https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`;
+}
+
+const MIN_FAVICON_PX = 32;
+
+const noUsableIconCache = new Set<string>();
+
+const NO_LOGO_SRC = "/images/app/company-placeholder.svg";
+
+function NoLogoBadge({
+  name,
+  size,
+  radiusClass,
+  className,
+}: {
+  name: string;
+  size: number;
+  radiusClass: string;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      title={name}
+      className={cn(
+        "grid shrink-0 place-items-center overflow-hidden bg-white ring-1 ring-inset ring-black/5",
+        radiusClass,
+        className,
+      )}
+      style={{ width: size, height: size }}
+    >
+      <img
+        src={NO_LOGO_SRC}
+        alt=""
+        width={size}
+        height={size}
+        decoding="async"
+        draggable={false}
+        className="size-full object-contain p-0.5"
+      />
+    </span>
+  );
 }
 
 function normalizeDomain(raw: string): string {
@@ -23,60 +64,94 @@ function normalizeDomain(raw: string): string {
     .replace(/:\d+$/, "");
 }
 
+export type CompanyAvatarProps = {
+  name: string;
+  domain?: string | null;
+  logoUrl?: string | null;
+  size?: number;
+  shape?: "rounded" | "circle" | "square";
+  className?: string;
+  title?: string;
+};
+
+export function CompanyAvatar({
+  name,
+  domain,
+  logoUrl,
+  size = 36,
+  shape = "rounded",
+  className,
+}: CompanyAvatarProps) {
+  const rounded = shape === "circle" ? "full" : shape === "square" ? "md" : "lg";
+  const shapeClass =
+    shape === "rounded" ? "rounded-[22%]" : shape === "square" ? "rounded-sm" : undefined;
+  return (
+    <CompanyLogo
+      name={name}
+      domain={domain}
+      logoUrl={logoUrl}
+      size={size}
+      rounded={rounded}
+      className={cn(shapeClass, className)}
+    />
+  );
+}
+
 export type CompanyLogoProps = {
   domain?: string | null;
-
+  logoUrl?: string | null;
   name: string;
-
   size?: number;
   className?: string;
-
   rounded?: "md" | "lg" | "full";
 };
 
 export function CompanyLogo({
   domain,
+  logoUrl,
   name,
   size = 28,
   className,
   rounded = "md",
 }: CompanyLogoProps) {
-  const rawDomain = domain || guessDomainFromName(name) || "";
-  const resolvedDomain = rawDomain ? normalizeDomain(rawDomain) : "";
+  const resolvedDomain = domain ? normalizeDomain(domain) : (knownDomainFromName(name) ?? "");
 
-  const [sourceIndex, setSourceIndex] = useState(0);
-
-  useEffect(() => {
-    setSourceIndex(0);
-  }, [resolvedDomain, name]);
+  const identity = `${name}|${resolvedDomain}|${logoUrl ?? ""}`;
+  const [attempt, setAttempt] = useState<{ identity: string; index: number; logoFailed: boolean }>({
+    identity,
+    index: 0,
+    logoFailed: false,
+  });
+  const current =
+    attempt.identity === identity ? attempt : { identity, index: 0, logoFailed: false };
+  const sourceIndex = current.index;
+  const logoUrlFailed = current.logoFailed;
 
   const radiusClass =
     rounded === "full" ? "rounded-full" : rounded === "lg" ? "rounded-lg" : "rounded-md";
 
-  if (!resolvedDomain) {
-    return (
-      <LetterAvatar
-        name={name}
-        size={size}
-        shape={rounded === "full" ? "circle" : "rounded"}
-        className={className}
-      />
-    );
+  const hasProvidedLogo = Boolean(logoUrl && !logoUrlFailed);
+  const skipFavicons = !resolvedDomain || noUsableIconCache.has(resolvedDomain);
+
+  if (!hasProvidedLogo && (skipFavicons || sourceIndex >= 2)) {
+    return <NoLogoBadge name={name} size={size} radiusClass={radiusClass} className={className} />;
   }
 
-  if (sourceIndex >= 2) {
-    return (
-      <LetterAvatar
-        name={name}
-        size={size}
-        shape={rounded === "full" ? "circle" : "rounded"}
-        className={className}
-      />
-    );
-  }
+  const advance = () => {
+    if (hasProvidedLogo) {
+      setAttempt({ identity, index: 0, logoFailed: true });
+      return;
+    }
+    if (sourceIndex + 1 >= 2 && resolvedDomain) noUsableIconCache.add(resolvedDomain);
+    setAttempt({ identity, index: sourceIndex + 1, logoFailed: false });
+  };
 
   const src =
-    sourceIndex === 0 ? googleFaviconUrl(resolvedDomain, size) : duckduckgoIconUrl(resolvedDomain);
+    logoUrl && !logoUrlFailed
+      ? logoUrl
+      : sourceIndex === 0
+        ? googleFaviconUrl(resolvedDomain, size)
+        : duckduckgoIconUrl(resolvedDomain);
 
   return (
     <span
@@ -84,6 +159,8 @@ export function CompanyLogo({
       title={name}
       className={cn(
         "grid shrink-0 place-items-center overflow-hidden bg-white ring-1 ring-inset ring-black/5",
+        "transition-[box-shadow] duration-150",
+        "hover:ring-primary/30 hover:shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_12%,transparent)]",
         radiusClass,
         className,
       )}
@@ -97,8 +174,10 @@ export function CompanyLogo({
         loading="lazy"
         decoding="async"
         className="size-full object-contain p-0.5"
-        onError={() => {
-          setSourceIndex((i) => i + 1);
+        onError={advance}
+        onLoad={(event) => {
+          if (hasProvidedLogo) return;
+          if (event.currentTarget.naturalWidth < MIN_FAVICON_PX) advance();
         }}
       />
     </span>

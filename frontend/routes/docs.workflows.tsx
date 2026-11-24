@@ -1,6 +1,7 @@
-//frontend\routes\docs.workflows.tsx
+// frontend/routes/docs.workflows.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { DocsLayout, DocCallout } from "@/components/docs-layout";
+import { DocsLayout, DocCallout } from "@/components/layout/docs-layout";
 
 export const Route = createFileRoute("/docs/workflows")({
   head: () => ({
@@ -31,13 +32,10 @@ function Page() {
         d'un signal jusqu'à l'entrée en séquence, sans écrire une ligne de code.
       </p>
 
-      {/* ⚠️ ACCÈS : workflow est réservé aux plans payants */}
-      <DocCallout tone="warning" title="Accès réservé aux plans payants">
+      <DocCallout tone="warning" title="Plans Founder et Studio">
         <p>
-          L'éditeur de workflows n'est <strong>pas inclus dans l'essai gratuit</strong>. Il
-          nécessite un abonnement actif (Founder ou Studio). Cette exclusion s'explique par les
-          coûts d'infrastructure élevés (exécution continue, stockage d'historique, files
-          d'attente), qui ne sont pas soutenables sur un essai illimité.
+          L'éditeur de workflows n'est inclus ni dans l'essai gratuit ni dans Starter. Il nécessite
+          un abonnement Founder ou Studio.
         </p>
         <p className="mt-2">
           Pour comparer les exécutions incluses par plan, voir la{" "}

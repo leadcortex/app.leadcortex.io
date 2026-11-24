@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_srs_test.go
+
 package api
 
 import (
@@ -11,19 +13,7 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Helpers : complète une leçon pour déclencher l'instanciation SRS
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// completeLesson joue tous les blocs d'une leçon de test via l'API.
-//
-// Le registre de test contient 4 blocs (cover, practice×2 ex, mission,
-// debrief). Cette fonction :
-//   - démarre la leçon
-//   - marque cover (index 0) vu
-//   - répond correctement à ex1 et ex2
-//   - réussit la mission
-//   - marque debrief (index 3) vu
 func completeLesson(t *testing.T, s *Server, learnerID, lessonID string) {
 	t.Helper()
 
@@ -53,9 +43,6 @@ func completeLesson(t *testing.T, s *Server, learnerID, lessonID string) {
 	do(http.MethodGet, "/api/v1/srs/queue", "")
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /srs/queue
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestSrsQueue_EmptyBeforeCompletion(t *testing.T) {
 	s := buildTestServer(t)
@@ -129,15 +116,11 @@ func TestSrsQueue_MaxParam(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /srs/cards/{id}/review
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestSrsReview_Success(t *testing.T) {
 	s := buildTestServer(t)
 	completeLesson(t, s, "alice", "l1")
 
-	// Récupère l'ID de la première carte.
 	cards, _ := s.deps.Repository.GetSrsCards(context.Background(), "alice")
 	if len(cards) == 0 {
 		t.Fatal("aucune carte persistée après complétion")
@@ -226,9 +209,6 @@ func TestSrsReview_InvalidJSON(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /srs/stats
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestSrsStats(t *testing.T) {
 	s := buildTestServer(t)
@@ -267,9 +247,6 @@ func TestSrsStats(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /srs/forecast
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestSrsForecast(t *testing.T) {
 	s := buildTestServer(t)
@@ -300,7 +277,6 @@ func TestSrsForecast(t *testing.T) {
 	if len(resp.Forecast) != 7 {
 		t.Errorf("Forecast : attendu 7 entrées, obtenu %d", len(resp.Forecast))
 	}
-	// Aujourd'hui (offset 0) doit contenir les 2 cartes neuves.
 	if resp.Forecast[0].DueCount != 2 {
 		t.Errorf("J0 DueCount : attendu 2, obtenu %d", resp.Forecast[0].DueCount)
 	}
@@ -324,21 +300,16 @@ func TestSrsForecast_DefaultDays(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   syncSrsCards : idempotence
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestSyncSrsCards_Idempotent(t *testing.T) {
 	s := buildTestServer(t)
 	completeLesson(t, s, "alice", "l1")
 
-	// Appel 1.
 	req1 := httptest.NewRequest(http.MethodGet, "/api/v1/srs/queue", nil)
 	req1.Header.Set("X-Learner-ID", "alice")
 	rec1 := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec1, req1)
 
-	// Appel 2 : ne doit pas dupliquer.
 	req2 := httptest.NewRequest(http.MethodGet, "/api/v1/srs/queue", nil)
 	req2.Header.Set("X-Learner-ID", "alice")
 	rec2 := httptest.NewRecorder()
@@ -350,9 +321,6 @@ func TestSyncSrsCards_Idempotent(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Vérification du registre test : l1 a bien 2 SrsTemplates
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestTestRegistry_HasSrsTemplates(t *testing.T) {
 	s := buildTestServer(t)
@@ -365,5 +333,4 @@ func TestTestRegistry_HasSrsTemplates(t *testing.T) {
 	}
 }
 
-// sanity check pour éviter unused (domain)
 var _ = domain.SrsCardTemplate{}

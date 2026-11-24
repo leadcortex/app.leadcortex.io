@@ -1,15 +1,8 @@
+// frontend/components/ui/scrollable-table.tsx
+
 "use client";
 
-/**
- * Tableau en lecture seule, style chat IA.
- *
- *  - hauteur plafonnée (défaut 280 px) et scroll vertical interne ;
- *  - header collant avec fond opaque ;
- *  - scroll horizontal si les colonnes débordent ;
- *  - alignement par colonne (left | center | right) ;
- *  - zébrures discrètes et bordure douce.
- */
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type TableAlign = "left" | "center" | "right";
 
@@ -46,7 +39,7 @@ export function ScrollableTable({
   return (
     <div
       className={cn(
-        "not-prose my-2 flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-sm",
+        "not-prose my-2 flex flex-col overflow-hidden table-tactile",
         className,
       )}
     >
@@ -56,17 +49,17 @@ export function ScrollableTable({
         </div>
       )}
       <div
-        className="min-h-0 overflow-auto overscroll-contain"
+        className="scrollbar-compact min-h-0 overflow-auto overscroll-contain"
         style={{ maxHeight: `min(${maxHeight}px, 55vh)` }}
       >
         <table className="w-full border-collapse text-[11.5px]">
           <thead className="sticky top-0 z-10">
-            <tr className="bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80">
+            <tr>
               {headers.map((h, i) => (
                 <th
                   key={i}
                   className={cn(
-                    "border-b border-border px-3 py-2 text-[10.5px] font-semibold uppercase tracking-wide text-muted-foreground",
+                    "px-3 py-2 text-[10.5px]",
                     alignClass(align[i]),
                   )}
                 >
@@ -77,13 +70,7 @@ export function ScrollableTable({
           </thead>
           <tbody>
             {rows.map((row, ri) => (
-              <tr
-                key={ri}
-                className={cn(
-                  "border-b border-border/50 last:border-b-0",
-                  ri % 2 === 1 && "bg-secondary/20",
-                )}
-              >
+              <tr key={ri}>
                 {headers.map((_, ci) => (
                   <td
                     key={ci}

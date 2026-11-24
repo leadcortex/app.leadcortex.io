@@ -1,3 +1,5 @@
+// backend/academy/internal/adaptivity/planner_test.go
+
 package adaptivity
 
 import (
@@ -7,7 +9,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Erreurs ─────────────────────────────────────────────────────────── */
 
 func TestPlanSession_NilLearner(t *testing.T) {
 	_, err := PlanSession(nil, PlanStandard, PlanOptions{Now: fixedTime()})
@@ -24,7 +25,6 @@ func TestPlanSession_InvalidMode(t *testing.T) {
 	}
 }
 
-/* ─── PlanMode.IsKnown ────────────────────────────────────────────────── */
 
 func TestPlanMode_IsKnown(t *testing.T) {
 	cases := []struct {
@@ -45,7 +45,6 @@ func TestPlanMode_IsKnown(t *testing.T) {
 	}
 }
 
-/* ─── Mode : Micro ────────────────────────────────────────────────────── */
 
 func TestPlanSession_Micro(t *testing.T) {
 	reg := buildTestRegistry(t)
@@ -66,7 +65,6 @@ func TestPlanSession_Micro(t *testing.T) {
 	}
 }
 
-/* ─── Mode : Standard ─────────────────────────────────────────────────── */
 
 func TestPlanSession_Standard(t *testing.T) {
 	reg := buildTestRegistry(t)
@@ -90,7 +88,6 @@ func TestPlanSession_Standard(t *testing.T) {
 	}
 }
 
-/* ─── Mode : Deep ─────────────────────────────────────────────────────── */
 
 func TestPlanSession_Deep(t *testing.T) {
 	reg := buildTestRegistry(t)
@@ -118,7 +115,6 @@ func TestPlanSession_Deep(t *testing.T) {
 	}
 }
 
-/* ─── Mode : ReviewOnly ───────────────────────────────────────────────── */
 
 func TestPlanSession_ReviewOnly(t *testing.T) {
 	l := newLearner()
@@ -136,7 +132,6 @@ func TestPlanSession_ReviewOnly(t *testing.T) {
 	if len(plan.Steps) == 0 {
 		t.Error("ReviewOnly : attendu au moins une étape")
 	}
-	// Toutes les étapes doivent être des révisions.
 	for _, s := range plan.Steps {
 		if s.Kind != RecoReviewConcept {
 			t.Errorf("ReviewOnly : étape non-révision : %s", s.Kind)
@@ -146,19 +141,16 @@ func TestPlanSession_ReviewOnly(t *testing.T) {
 
 func TestPlanSession_ReviewOnly_NoWeakConcepts(t *testing.T) {
 	l := newLearner()
-	// Aucun concept fragile.
 
 	plan, err := PlanSession(l, PlanReviewOnly, PlanOptions{Now: fixedTime()})
 	if err != nil {
 		t.Fatalf("PlanSession : %v", err)
 	}
-	// Fallback : au moins une étape générique.
 	if len(plan.Steps) == 0 {
 		t.Error("ReviewOnly sans fragile : attendu fallback")
 	}
 }
 
-/* ─── Invariants ──────────────────────────────────────────────────────── */
 
 func TestPlanSession_TotalMinutesIsSum(t *testing.T) {
 	reg := buildTestRegistry(t)

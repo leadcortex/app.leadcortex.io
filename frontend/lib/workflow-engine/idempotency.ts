@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\idempotency.ts
+// frontend/lib/workflow-engine/idempotency.ts
+
 export type IdempotencyRecord = {
   key: string;
   createdAt: number;
@@ -55,7 +56,6 @@ export function buildIdempotencyKey(parts: (string | number | undefined)[]): str
   return `idem_${hashString(parts.filter((p) => p !== undefined).join("|"))}`;
 }
 
-/** FNV-1a 32 bits — suffisant pour de la déduplication locale, pas pour la crypto. */
 export function hashString(input: string): string {
   let hash = 0x811c9dc5;
   for (let i = 0; i < input.length; i += 1) {
@@ -65,7 +65,6 @@ export function hashString(input: string): string {
   return hash.toString(16).padStart(8, "0");
 }
 
-/** Exécute `factory` une seule fois par clé pendant `ttlMs`. */
 export async function withIdempotency<T>(
   key: string,
   ttlMs: number,

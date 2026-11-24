@@ -1,4 +1,5 @@
-//frontend\lib\workflow\terminal-commands.ts
+// frontend/lib/workflow/terminal-commands.ts
+
 import { BLOCKS, type BlockDef, type ConfigField } from "@/data/workflow-blocks-catalog";
 
 const blockById = (id: string): BlockDef | undefined => BLOCKS.find((b) => b.id === id);
@@ -128,23 +129,12 @@ const norm = (s: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 
-/* ------------------------------------------------------------------ */
-/* Session de console (état partagé entre commandes)                   */
-/* ------------------------------------------------------------------ */
-
 export const session = {
-  /** Réorganisation automatique du canevas après chaque création. */
   autoLayout: true,
-  /** Dernier bloc créé — cible de `@last` / `@dernier`. */
   lastNodeId: null as string | null,
-  /** Historique des commandes réellement exécutées (humain + agent). */
   history: [] as { at: number; source: "user" | "agent"; text: string }[],
 };
 
-/**
- * Résout un identifiant de bloc du canevas : id exact, `@last`, index `#n`,
- * suffixe court, ou fragment de titre unique.
- */
 function resolveNode(doc: WDoc, ref: string): WNode | null {
   if (!ref) return null;
   let key = ref;
@@ -169,12 +159,10 @@ function resolveNode(doc: WDoc, ref: string): WNode | null {
   return null;
 }
 
-/** Une référence désigne-t-elle un bloc EXISTANT plutôt qu'un type du catalogue ? */
 function isNodeRef(ref: string) {
   return ref.startsWith("@") || ref.startsWith("#") || ref.startsWith("node_");
 }
 
-/** Convertit une valeur textuelle en valeur de configuration typée. */
 function coerce(value: string): string | number | boolean {
   if (value === "true") return true;
   if (value === "false") return false;
@@ -190,7 +178,6 @@ function nodeLabel(n: WNode, index: number) {
   return `${String(index + 1).padStart(2, " ")}. ${n.id.padEnd(10)} ${n.blockId.padEnd(22)} ${n.title}`;
 }
 
-/** Adapte le `WDoc` du canevas au contrat du moteur d'exécution. */
 function toEngineDoc(doc: WDoc) {
   return {
     nodes: doc.nodes.map((n) => ({
@@ -212,10 +199,6 @@ function toEngineDoc(doc: WDoc) {
     })),
   };
 }
-
-/* ------------------------------------------------------------------ */
-/* Commandes                                                           */
-/* ------------------------------------------------------------------ */
 
 export const COMMANDS: CommandSpec[] = [
   {
@@ -742,10 +725,6 @@ export const COMMANDS: CommandSpec[] = [
     },
   },
 
-  /* ---------------------------------------------------------------- */
-  /* Construction en lot : flow / mk / chain                           */
-  /* ---------------------------------------------------------------- */
-
   {
     name: "flow",
     aliases: ["pipe"],
@@ -944,10 +923,6 @@ export const COMMANDS: CommandSpec[] = [
     },
   },
 
-  /* ---------------------------------------------------------------- */
-  /* Inspection fine                                                   */
-  /* ---------------------------------------------------------------- */
-
   {
     name: "ports",
     aliases: ["io"],
@@ -966,9 +941,6 @@ export const COMMANDS: CommandSpec[] = [
       }
       const def = blockById(ref);
       if (!def) return [`Introuvable : ${ref}`];
-      // `BlockDef` ne porte pas les ports finaux (ils dépendent de la
-      // catégorie, des branches et du drapeau `terminal`) : on fabrique un
-      // nœud temporaire pour lire exactement les ports que le canevas créera.
       const sample = makeNode(def.id, 0, 0);
       return [
         `${def.title} — ${def.id} (catalogue)`,
@@ -1037,10 +1009,6 @@ export const COMMANDS: CommandSpec[] = [
       return out;
     },
   },
-
-  /* ---------------------------------------------------------------- */
-  /* Édition rapide                                                    */
-  /* ---------------------------------------------------------------- */
 
   {
     name: "rename",
@@ -1267,7 +1235,6 @@ function findCommand(name: string): CommandSpec | undefined {
 
 export const COMMAND_NAMES = COMMANDS.flatMap((c) => [c.name, ...(c.aliases ?? [])]);
 
-/** Commandes qui attendent un identifiant du CATALOGUE en argument. */
 const CATALOG_COMMANDS = new Set([
   "add",
   "new",
@@ -1283,7 +1250,6 @@ const CATALOG_COMMANDS = new Set([
   "ports",
   "io",
 ]);
-/** Commandes qui attendent une référence de bloc EXISTANT. */
 const NODE_COMMANDS = new Set([
   "set",
   "config",
@@ -1312,10 +1278,6 @@ const NODE_COMMANDS = new Set([
   "clone",
 ]);
 
-/**
- * Complétion Tab : commandes, identifiants du catalogue, blocs du canevas et
- * sections du livre selon la position du curseur.
- */
 export function complete(input: string, doc?: WDoc): string[] {
   const tokens = tokenize(input);
   const trailingSpace = /\s$/.test(input);
@@ -1348,16 +1310,6 @@ export function complete(input: string, doc?: WDoc): string[] {
   return [...new Set(out)].slice(0, 24);
 }
 
-/* ------------------------------------------------------------------ */
-/* Exécution                                                           */
-/* ------------------------------------------------------------------ */
-
-/**
- * Enveloppe l'API du store pour que `api.doc` renvoie TOUJOURS le document
- * frais (`getDoc()`). Sans cela, une rafale de commandes exécutées dans le
- * même tick React travaillerait sur un instantané périmé : les blocs créés
- * par la commande précédente seraient invisibles pour la suivante.
- */
 export function liveApi(api: TerminalApi): TerminalApi {
   return new Proxy(api, {
     get(target, prop, receiver) {
@@ -1377,13 +1329,10 @@ const kindForText = (text: string): LineKind =>
         : "info";
 
 export type RunOptions = {
-  /** Origine de la commande (journal + historique de session). */
   source?: "user" | "agent";
-  /** Ne jamais déclencher la réorganisation automatique. */
   noLayout?: boolean;
 };
 
-/** Exécute UNE ligne de commande et renvoie les lignes de sortie. */
 export function runCommand(
   input: string,
   api: TerminalApi,
@@ -1427,8 +1376,6 @@ export function runCommand(
     return [makeLine("error", `✖ Erreur : ${e instanceof Error ? e.message : String(e)}`)];
   }
 
-  // Réorganisation automatique : toute création de bloc ou de connexion
-  // repositionne le graphe pour qu'aucun bloc ne s'empile au même endroit.
   const after = live.doc;
   const grew = after.nodes.length + after.edges.length > beforeCount;
   const skip =
@@ -1443,7 +1390,6 @@ export function runCommand(
       live.autoLayout();
       lines.push(makeLine("muted", "↻ canevas réorganisé (layout --auto on)"));
     } catch {
-      /* la réorganisation ne doit jamais faire échouer une commande */
     }
   }
   if (grew && !session.autoLayout && !skip) {
@@ -1453,10 +1399,6 @@ export function runCommand(
   return lines;
 }
 
-/**
- * Découpe un script en commandes : sauts de ligne, et `;` hors guillemets.
- * (`;` à l'intérieur d'une chaîne — `note "a; b"` — n'est pas un séparateur.)
- */
 export function splitScript(script: string): string[] {
   const out: string[] = [];
   let current = "";
@@ -1483,11 +1425,6 @@ export function splitScript(script: string): string[] {
   return out.map((l) => l.trim()).filter(Boolean);
 }
 
-/**
- * Exécute un script de plusieurs commandes (une par ligne ou séparées par
- * `;`). C'est le point d'entrée utilisé par l'agent IA : un seul appel
- * d'outil suffit à construire un workflow entier.
- */
 export function runScript(
   script: string,
   api: TerminalApi,
@@ -1505,8 +1442,6 @@ export function runScript(
     const echo = makeLine("input", `❯ ${command}`);
     all.push(echo);
     options.onLine?.(echo, command);
-    // Une seule réorganisation à la fin du lot : inutile de ranger le canevas
-    // entre chaque ligne, c'est du travail (et du rendu) pour rien.
     const lines = runCommand(command, live, { ...options, noLayout: true });
     for (const l of lines) {
       all.push(l);
@@ -1526,7 +1461,6 @@ export function runScript(
       all.push(line);
       options.onLine?.(line, "layout");
     } catch {
-      /* ignoré : la réorganisation est un confort, pas une garantie */
     }
   }
 

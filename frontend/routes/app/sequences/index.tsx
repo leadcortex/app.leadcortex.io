@@ -1,7 +1,8 @@
-//frontend\routes\app\sequences\index.tsx
+// frontend/routes/app/sequences/index.tsx
+
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { PageHeader, Badge, Kpi } from "@/components/ui-primitives";
-import DataTable, { type Column } from "@/components/data-table";
+import { PageHeader, Badge, Kpi } from "@/components/common/ui-primitives";
+import DataTable, { type Column } from "@/components/common/data-table";
 import {
   Plus,
   Play,
@@ -16,12 +17,12 @@ import {
   Pencil,
   Eye,
   Users,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
-import { useAppStore } from "@/lib/store";
-import { EmptyState } from "@/components/empty-state";
+import { useAppStore } from "@/lib/state/store";
+import { EmptyState } from "@/components/common/empty-state";
 import { SequencesListSkeleton } from "@/components/skeletons";
-import { ActionMenu } from "@/components/action-menu";
+import { ActionMenu } from "@/components/common/action-menu";
 
 export const Route = createFileRoute("/app/sequences/")({
   head: () => ({
@@ -220,7 +221,6 @@ function SequencesPage() {
     },
   ];
 
-  // Empty state
   if (sequences.length === 0) {
     return (
       <div className="max-w-full">
@@ -240,7 +240,7 @@ function SequencesPage() {
 
         <div className="relative isolate overflow-hidden rounded-2xl">
           <img
-            src="/images/sequences.webp"
+            src="/images/app/sequences.webp"
             alt=""
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-[0.18] md:opacity-25"

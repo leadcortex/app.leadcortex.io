@@ -1,3 +1,5 @@
+// backend/academy/internal/srs/queue_test.go
+
 package srs
 
 import (
@@ -134,9 +136,9 @@ func TestComputeStats(t *testing.T) {
 func TestForecast(t *testing.T) {
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 	cards := []domain.SrsCard{
-		mkCardDue("c1", "x", now.Add(-time.Hour), 0, 0, 2.5),       // aujourd'hui
-		mkCardDue("c2", "x", now.Add(24*time.Hour), 0, 0, 2.5),      // demain
-		mkCardDue("c3", "x", now.Add(72*time.Hour), 0, 0, 2.5),      // J+3
+		mkCardDue("c1", "x", now.Add(-time.Hour), 0, 0, 2.5),
+		mkCardDue("c2", "x", now.Add(24*time.Hour), 0, 0, 2.5),
+		mkCardDue("c3", "x", now.Add(72*time.Hour), 0, 0, 2.5),
 	}
 	fc := Forecast(cards, 7, now)
 	if len(fc) != 7 {
@@ -176,7 +178,6 @@ func TestInstantiateFromLesson(t *testing.T) {
 	if cards[0].ConceptID != "c1" || cards[1].ConceptID != "c2" {
 		t.Error("concepts non respectés")
 	}
-	// Les cartes sont dues immédiatement.
 	if !IsDue(cards[0], now) {
 		t.Error("carte 1 devrait être due")
 	}
@@ -198,8 +199,8 @@ func TestMergeCards(t *testing.T) {
 		{ID: "c2", ConceptID: "x"},
 	}
 	incoming := []domain.SrsCard{
-		{ID: "c2", ConceptID: "x"}, // doublon
-		{ID: "c3", ConceptID: "y"}, // nouveau
+		{ID: "c2", ConceptID: "x"},
+		{ID: "c3", ConceptID: "y"},
 	}
 	merged, added := MergeCards(existing, incoming)
 	if len(merged) != 3 {

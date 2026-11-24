@@ -1,3 +1,5 @@
+// backend/academy/internal/srs/sm2_test.go
+
 package srs
 
 import (
@@ -68,7 +70,6 @@ func TestSM2_ThirdSuccess_Multiplies(t *testing.T) {
 	if err != nil {
 		t.Fatalf("SM2 : %v", err)
 	}
-	// ceil(6 * 2.5) = 15
 	if out.IntervalDays != 15 {
 		t.Errorf("intervalle : attendu 15, obtenu %d", out.IntervalDays)
 	}
@@ -102,7 +103,7 @@ func TestSM2_FailureResets(t *testing.T) {
 
 func TestSM2_EaseFactorFloor(t *testing.T) {
 	card := mkCard()
-	card.EaseFactor = MinEaseFactor // 1.3
+	card.EaseFactor = MinEaseFactor
 	now := time.Now().UTC()
 
 	out, _ := SM2(card, GradeBlackout, now)
@@ -113,7 +114,7 @@ func TestSM2_EaseFactorFloor(t *testing.T) {
 
 func TestSM2_EaseFactorCeiling(t *testing.T) {
 	card := mkCard()
-	card.EaseFactor = MaxEaseFactor // 2.8
+	card.EaseFactor = MaxEaseFactor
 	now := time.Now().UTC()
 
 	out, _ := SM2(card, GradeEasy, now)
@@ -175,20 +176,17 @@ func TestReviewCard(t *testing.T) {
 	if updated.IntervalDays != 1 {
 		t.Errorf("intervalle attendu 1, obtenu %d", updated.IntervalDays)
 	}
-	// La carte d'origine ne doit PAS être mutée.
 	if card.IntervalDays != 0 {
 		t.Error("la carte d'origine a été mutée")
 	}
 }
 
 func TestMasteryFromCard(t *testing.T) {
-	// Carte neuve : mastery 0.
 	fresh := mkCard()
 	if got := MasteryFromCard(fresh); got > 20 {
 		t.Errorf("carte neuve : mastery attendu bas, obtenu %d", got)
 	}
 
-	// Carte mature.
 	mature := mkCard()
 	mature.Repetitions = 6
 	mature.IntervalDays = 60
@@ -197,7 +195,6 @@ func TestMasteryFromCard(t *testing.T) {
 		t.Errorf("carte mature : mastery attendu >= 80, obtenu %d", got)
 	}
 
-	// Carte fragile.
 	fragile := mkCard()
 	fragile.Repetitions = 1
 	fragile.Lapses = 5

@@ -1,4 +1,5 @@
-//frontend\components\settings\skill-modal.tsx
+// frontend/components/settings/skill-modal.tsx
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
@@ -11,7 +12,7 @@ import {
   Target,
   Wand2,
   type LucideIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { FileDropZone, type DroppedFile } from "./file-drop-zone";
 
 export type SkillCategory = "outreach" | "qualification" | "research" | "writing" | "custom";

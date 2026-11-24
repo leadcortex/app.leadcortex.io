@@ -1,3 +1,5 @@
+// backend/academy/internal/progress/gates.go
+
 package progress
 
 import (
@@ -7,20 +9,13 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// UnlockResult décrit le résultat d'une évaluation de déblocage.
 type UnlockResult struct {
 	Unlocked bool
-	// MissingLessons — leçons prérequises non complétées.
 	MissingLessons []string
-	// MissingConcepts — concepts requis non maîtrisés.
 	MissingConcepts []string
-	// Reason — message lisible (utile pour l'UI).
 	Reason string
 }
 
-// gate évalue les conditions de déblocage d'une leçon pour un apprenant.
-//
-// Les gates sont pures : elles lisent l'état du Learner mais ne le mutent pas.
 type gate struct {
 	registry *curriculum.Registry
 }
@@ -29,7 +24,6 @@ func newGate(registry *curriculum.Registry) *gate {
 	return &gate{registry: registry}
 }
 
-// EvaluateLesson vérifie si une leçon est accessible.
 func (g *gate) EvaluateLesson(learner *domain.Learner, lessonID string) UnlockResult {
 	lesson, ok := g.registry.Lesson(lessonID)
 	if !ok {
@@ -42,7 +36,6 @@ func (g *gate) EvaluateLesson(learner *domain.Learner, lessonID string) UnlockRe
 	missingLessons := g.checkPreviousLessons(learner, lesson.Prerequisites.PreviousLessonIDs)
 	missingConcepts := g.checkRequiredConcepts(learner, lesson.Prerequisites.RequiredConceptIDs)
 
-	// Vérifier aussi les prérequis du module parent.
 	if module, ok := g.registry.Module(lesson.ModuleID); ok {
 		modMissing := g.checkPreviousModules(learner, module.Prerequisites.PreviousModuleIDs)
 		missingLessons = append(missingLessons, modMissing...)
@@ -51,7 +44,6 @@ func (g *gate) EvaluateLesson(learner *domain.Learner, lessonID string) UnlockRe
 		missingConcepts = append(missingConcepts, modMissingConcepts...)
 	}
 
-	// Vérifier aussi les prérequis du programme parent.
 	if module, ok := g.registry.Module(lesson.ModuleID); ok {
 		if program, ok := g.registry.Program(module.ProgramID); ok {
 			progMissing := g.checkPreviousPrograms(learner, program.Prerequisites.PreviousProgramIDs)
@@ -85,7 +77,6 @@ func (g *gate) EvaluateLesson(learner *domain.Learner, lessonID string) UnlockRe
 	}
 }
 
-// EvaluateModule vérifie si un module est entièrement accessible.
 func (g *gate) EvaluateModule(learner *domain.Learner, moduleID string) UnlockResult {
 	module, ok := g.registry.Module(moduleID)
 	if !ok {
@@ -107,9 +98,7 @@ func (g *gate) EvaluateModule(learner *domain.Learner, moduleID string) UnlockRe
 	}
 }
 
-/* ─── Checks élémentaires ─────────────────────────────────────────────── */
 
-// checkPreviousLessons renvoie les IDs des leçons prérequises non terminées.
 func (g *gate) checkPreviousLessons(learner *domain.Learner, lessonIDs []string) []string {
 	var missing []string
 	for _, id := range lessonIDs {
@@ -121,8 +110,6 @@ func (g *gate) checkPreviousLessons(learner *domain.Learner, lessonIDs []string)
 	return missing
 }
 
-// checkPreviousModules renvoie les IDs des leçons des modules précédents
-// non terminées.
 func (g *gate) checkPreviousModules(learner *domain.Learner, moduleIDs []string) []string {
 	var missing []string
 	for _, mid := range moduleIDs {
@@ -140,8 +127,6 @@ func (g *gate) checkPreviousModules(learner *domain.Learner, moduleIDs []string)
 	return missing
 }
 
-// checkPreviousPrograms vérifie que tous les programmes précédents sont
-// terminés (toutes les leçons de chaque module).
 func (g *gate) checkPreviousPrograms(learner *domain.Learner, programIDs []string) []string {
 	var missing []string
 	for _, pid := range programIDs {
@@ -161,7 +146,6 @@ func (g *gate) checkPreviousPrograms(learner *domain.Learner, programIDs []strin
 	return missing
 }
 
-// checkRequiredConcepts vérifie que les concepts requis sont maîtrisés.
 func (g *gate) checkRequiredConcepts(learner *domain.Learner, conceptIDs []string) []string {
 	var missing []string
 	for _, cid := range conceptIDs {
@@ -173,7 +157,6 @@ func (g *gate) checkRequiredConcepts(learner *domain.Learner, conceptIDs []strin
 	return missing
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────── */
 
 func dedupe(in []string) []string {
 	if len(in) == 0 {

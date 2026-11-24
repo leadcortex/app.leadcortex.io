@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\compiler.ts
+// frontend/lib/workflow-engine/compiler.ts
+
 import { z } from "zod";
 
 import { isExecutableBlock, isTriggerBlock, outputPortsOf } from "./catalog";
@@ -14,11 +15,6 @@ import type {
   WorkflowDocument,
   WorkflowPlan,
 } from "./types";
-
-/**
- * Compilation `WDoc` -> `WorkflowPlan` immuable et versionné.
- * Un run ne lit jamais un canevas en cours d'édition : il lit un plan.
- */
 
 export type CompileResult =
   | { ok: true; plan: WorkflowPlan; report: ValidationReport }
@@ -120,10 +116,6 @@ function estimateCost(nodes: CompiledNode[]): { cents: number; externalCalls: nu
   return { cents, externalCalls };
 }
 
-/**
- * Migration des configurations ambiguës : un libellé humain là où le backend
- * attend un identifiant de ressource rend le workflow non publiable.
- */
 const HUMAN_LABEL_FIELDS = ["listName", "formId", "provider", "account", "pipeline", "owner"];
 
 export function auditAmbiguousConfig(doc: WorkflowDocument): ValidationIssue[] {

@@ -1,4 +1,5 @@
-//frontend\components\workflow\Terminal.tsx
+// frontend/components/workflow/Terminal.tsx
+
 import {
   forwardRef,
   useCallback,
@@ -16,7 +17,7 @@ import {
   Trash2,
   CornerDownLeft,
   Loader2,
-} from "lucide-react";
+} from "@/components/icons";
 import { useWorkflow } from "@/lib/workflow/store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -34,12 +35,8 @@ import {
   type ConsoleEntry,
 } from "@/lib/workflow/console-bus";
 import { TOKEN_CLASS, highlightCommand, highlightOutput } from "@/lib/workflow/command-highlight";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
-/**
- * Sur écran tactile, on ne donne jamais le focus au champ automatiquement :
- * cela ouvrirait le clavier virtuel et ferait sauter la mise en page.
- */
 const canAutoFocus = () =>
   typeof window !== "undefined" && !window.matchMedia("(pointer: coarse)").matches;
 
@@ -77,12 +74,6 @@ function SynTokens({ tokens }: { tokens: ReturnType<typeof highlightCommand> }) 
   );
 }
 
-/**
- * Une ligne du journal. Les saisies (et les commandes rejouées par l'agent)
- * passent par la grammaire des commandes ; les sorties neutres se contentent
- * d'une mise en valeur des identifiants. Les lignes typées (succès, erreur,
- * avertissement) gardent leur couleur d'état, plus lisible qu'un arc-en-ciel.
- */
 function LogLine({ entry }: { entry: ConsoleEntry }) {
   const colored =
     entry.kind === "input" ? (
@@ -305,7 +296,6 @@ export function Terminal({
     [channel, history, histIndex, input, submit],
   );
 
-  /* Raccourci global : Ctrl/⌘ + ù ou Ctrl+` pour ouvrir/fermer la console. */
   useEffect(() => {
     const onKey = (ev: KeyboardEvent) => {
       if ((ev.ctrlKey || ev.metaKey) && (ev.key === "`" || ev.key === "ù")) {
@@ -331,14 +321,6 @@ export function Terminal({
     <div
       className={cn(
         "terminal-shell z-30 flex flex-col overflow-hidden border-x border-t border-term-border bg-term-bg text-term-fg",
-        // Desktop : tuile arrondie façon Blender (marges latérales + coins
-        // arrondis) pour ne plus "couper" les panneaux voisins.
-        // Mobile : bande carrée pleine largeur, sans bordures latérales, qui se
-        // lit comme un seul bloc avec la barre d'outils (au-dessus) et le dock
-        // du chatbot (en dessous).
-        // La console est l'élément élastique de la pile : si dock déplié +
-        // console ouverte dépassent l'écran, c'est elle qui rétrécit (jamais
-        // sous sa barre repliée), afin que la barre d'outils reste visible.
         docked
           ? "relative shrink border-x-0"
           : "absolute inset-x-2 rounded-xl border-b shadow-node",
@@ -440,7 +422,7 @@ export function Terminal({
           <div
             ref={logRef}
             onClick={() => canAutoFocus() && inputRef.current?.focus()}
-            className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-1 font-mono text-[12px] leading-[1.55]"
+            className="terminal-log scrollbar-compact min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-1 font-mono text-[12px] leading-[1.55]"
           >
             {entries.length === 0 && (
               <pre className="whitespace-pre-wrap text-term-muted">

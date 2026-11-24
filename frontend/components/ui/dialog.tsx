@@ -1,11 +1,12 @@
-//frontend\components\ui\dialog.tsx
+// frontend/components/ui/dialog.tsx
+
 "use client";
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
+import { X } from "@/components/icons";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Dialog = DialogPrimitive.Root;
@@ -31,20 +32,6 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-/*  ─── Important sur le PADDING ─────────────────────────────────────────────
-/*  Le bouton de fermeture (X) est positionné en absolu :
-/*    • Desktop : right-4 (16px) + size-4 (16px)  → occupe jusqu'à 32px du bord
-/*    • Mobile  : right-3 (12px) + size-8 (32px)  → occupe jusqu'à 44px du bord
-/*
-/*  Pour ne JAMAIS chevaucher le contenu, on réserve :
-/*    • Desktop : pr-12 (48px) sur le DialogContent
-/*    • Mobile  : pl-4 + pr-12 (48px) sur le DialogContent
-/*
-/*  ⚠️  Les modales qui passent `p-0` (nos custom avec header intégré) doivent
-/*  gérer elles-mêmes leur `pr-14` sur le header. Les modales standards
-/*  héritent automatiquement de la bonne marge.
-/* -------------------------------------------------------------------------- */
-
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
@@ -68,12 +55,16 @@ const DialogContent = React.forwardRef<
             "data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
             "data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
             className,
+            // Toujours en dernier : en mobile la feuille occupe toute la largeur et reste
+            // collée en bas, même si le `className` fourni est pensé pour le desktop
+            // (ex. `w-[calc(100%-1rem)] max-w-4xl sm:rounded-2xl`), qui créait un vide à droite.
+            "inset-x-0 bottom-0 w-full max-w-none translate-x-0 translate-y-0",
+            "rounded-t-3xl rounded-b-none sm:rounded-t-3xl sm:rounded-b-none",
           )}
           {...props}
         >
           {children}
 
-          {}
           <DialogPrimitive.Close
             className={cn(
               "absolute right-3 top-3 z-20 grid size-8 place-items-center rounded-full",
@@ -95,7 +86,6 @@ const DialogContent = React.forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          // que le contenu ne soit jamais sous le bouton X (right-4 + size-4).
           "fixed left-[50%] top-[50%] z-50 grid w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 pr-12 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
@@ -113,7 +103,7 @@ const DialogContent = React.forwardRef<
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />
+  <div className={cn("flex flex-col space-y-3 text-center sm:text-left", className)} {...props} />
 );
 DialogHeader.displayName = "DialogHeader";
 

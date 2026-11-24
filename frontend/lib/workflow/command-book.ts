@@ -1,16 +1,4 @@
-//frontend\lib\workflow\command-book.ts
-/**
- * « Livre de commandes » de la console de workflow.
- *
- * C'est la référence unique partagée par l'humain (commande `book`) et par
- * l'agent IA (injectée dans son prompt système) : au lieu de manipuler le
- * canevas bloc par bloc à la souris — coûteux en jetons et source d'erreurs —
- * l'agent écrit un petit script de commandes que la console exécute en lot,
- * puis réorganise automatiquement le graphe.
- *
- * Aucun import runtime : ce module reste une donnée pure, consommable côté
- * client comme côté serveur (prompt système).
- */
+// frontend/lib/workflow/command-book.ts
 
 export type BookEntry = {
   name: string;

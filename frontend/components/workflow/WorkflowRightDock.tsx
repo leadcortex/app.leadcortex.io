@@ -1,29 +1,10 @@
+// frontend/components/workflow/WorkflowRightDock.tsx
+
 "use client";
 
-/**
- * Panneau droit du canevas — deux vues dans une seule barre :
- *
- *   [ Propriétés ]  [ Assistant IA ]
- *
- *  - « Propriétés » : l'inspecteur de bloc existant (`RightPanel`).
- *  - « Assistant IA » : le chat du canevas (`WorkflowChatPanel`) qui
- *    réutilise toutes les primitives de l'assistant latéral.
- *
- * Les deux vues sont **montées en permanence** et basculées via la
- * classe CSS `hidden` : le texte en cours de saisie dans le chat n'est
- * jamais perdu quand on fait un aller-retour vers les Propriétés.
- *
- * L'onglet actif est persisté (`localStorage`) — au prochain démarrage
- * l'utilisateur retrouve l'onglet qu'il préfère.
- *
- * Le composant accepte un mode `collapsed` (mobile : dock plié) où seules
- * les deux pastilles d'onglets sont rendues ; un clic sur une pastille
- * déclenche `onRequestExpand` en plus du changement d'onglet, ce qui
- * permet de déplier le dock en un geste.
- */
 import { useState } from "react";
-import { Sliders, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Sliders, Sparkles } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { RightPanel } from "./RightPanel";
 import { WorkflowChatPanel } from "./WorkflowChatPanel";
 
@@ -46,9 +27,7 @@ export function WorkflowRightDock({
   onRequestExpand,
   className,
 }: {
-  /** Dock mobile plié : seules les pastilles d'onglets sont visibles. */
   collapsed?: boolean;
-  /** Appelé quand l'utilisateur clique une pastille alors que le dock est plié. */
   onRequestExpand?: () => void;
   className?: string;
 }) {
@@ -60,7 +39,6 @@ export function WorkflowRightDock({
     try {
       window.localStorage.setItem(STORAGE_KEY, next);
     } catch {
-      /* Intentionally ignored. */
     }
   };
 

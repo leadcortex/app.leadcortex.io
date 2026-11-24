@@ -1,11 +1,8 @@
-//frontend\components\mobile\mobile-sticky-bar.tsx
-//     MobileBottomNav) → jamais masqué.
-
-// contenu scrollable ne soit jamais caché derrière la barre : pour cela,
+// frontend/components/mobile/mobile-sticky-bar.tsx
 
 import type { ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import type { LucideIcon } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 
 export type MobileStickyAction = {
   label: string;
@@ -62,13 +59,11 @@ export function MobileStickyBar({ actions, hint, className }: MobileStickyBarPro
                 "inline-flex h-12 min-w-0 items-center justify-center gap-2 rounded-xl px-4",
                 "text-[15px] font-semibold transition-colors",
                 "disabled:opacity-40 disabled:cursor-not-allowed",
-                // Bouton secondaire = outline · principal = plein.
                 isSecondary
                   ? "shrink-0 border border-border bg-background text-foreground active:bg-surface"
                   : variant === "destructive"
                     ? "flex-1 bg-destructive text-destructive-foreground active:bg-destructive/90"
                     : "flex-1 bg-primary text-primary-foreground active:bg-primary/90",
-                // Si pas secondaire et unique : plein largeur.
                 !isSecondary && actions.length === 1 && "w-full",
               )}
             >
@@ -88,15 +83,6 @@ export function MobileStickyBar({ actions, hint, className }: MobileStickyBarPro
   );
 }
 
-/**
- * Espaceur à poser en fin de contenu scrollable pour que la barre ne
- * recouvre jamais le dernier élément.
- *
- *   <div className="space-y-3">
- *     {items.map(...)}
- *     <MobileStickyBar.Spacer />   ← réserve la hauteur de la barre + nav + safe-area
- *   </div>
- */
 MobileStickyBar.Spacer = function MobileStickyBarSpacer() {
   return (
     <div

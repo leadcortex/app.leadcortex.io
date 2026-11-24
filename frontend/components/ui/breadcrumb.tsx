@@ -1,9 +1,10 @@
-//frontend\components\ui\breadcrumb.tsx
+// frontend/components/ui/breadcrumb.tsx
+
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { ChevronRight, MoreHorizontal } from "lucide-react";
+import { ChevronRight, MoreHorizontal } from "@/components/icons";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,

@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_exercises.go
+
 package api
 
 import (
@@ -14,9 +16,6 @@ import (
 	"github.com/leadcortex/academy/internal/progress"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /api/v1/lessons/{lessonID}/exercises/{exerciseID}/answer
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handleAnswerExercise(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -106,7 +105,6 @@ func (s *Server) handleAnswerExercise(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ─── Progression des quêtes quotidiennes ─────────────────────────
 	var questUpdates []gamification.QuestUpdate
 	if res.Correct {
 		questUpdates = append(questUpdates, gamification.QuestUpdate{
@@ -141,9 +139,6 @@ func (s *Server) handleAnswerExercise(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusOK, toEvaluationResponse(res, xpAwarded, finalStatus))
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   HELPERS (inchangés)
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func findExerciseBlock(
 	lesson *domain.Lesson,

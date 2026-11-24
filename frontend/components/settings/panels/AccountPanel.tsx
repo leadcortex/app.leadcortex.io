@@ -1,37 +1,28 @@
-//frontend\components\settings\panels\AccountPanel.tsx
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+// frontend/components/settings/panels/AccountPanel.tsx
+
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
   AlertCircle,
   AlertTriangle,
-  Building2,
   Camera,
   Check,
   CheckCircle2,
-  ChevronDown,
-  Globe2,
   LogOut,
   Mail,
-  Search,
   Trash2,
   Upload,
   UserRound,
   UsersRound,
-} from "lucide-react";
+} from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { LetterAvatar } from "@/components/ui/letter-avatar";
-import { ConfirmDialog } from "@/components/confirm-dialog";
-import { cn } from "@/lib/utils";
-import { useAppStore } from "@/lib/store";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
+import { cn } from "@/lib/core/utils";
+import { useAppStore } from "@/lib/state/store";
+import { useCurrentUser, useUpdateCurrentUser } from "@/hooks/use-current-user";
 import { LoadingButton } from "../loading-button";
 import { ConnectionsBlock } from "./ConnectionsBlock";
 import {
@@ -40,188 +31,9 @@ import {
   SettingsCard,
   Field,
   inputCls,
-  SELECT_Z,
   fakeRequest,
 } from "./primitives";
 
-type TimezoneOption = { value: string; label: string; region: string };
-
-const TIMEZONES: TimezoneOption[] = [
-  { value: "Indian/Mauritius", label: "Maurice (UTC+4)", region: "Afrique / Océan Indien" },
-  { value: "Africa/Casablanca", label: "Casablanca (UTC+1)", region: "Afrique" },
-  { value: "Africa/Algiers", label: "Alger (UTC+1)", region: "Afrique" },
-  { value: "Africa/Tunis", label: "Tunis (UTC+1)", region: "Afrique" },
-  { value: "Africa/Dakar", label: "Dakar (UTC+0)", region: "Afrique" },
-  { value: "Africa/Abidjan", label: "Abidjan (UTC+0)", region: "Afrique" },
-  { value: "Africa/Lagos", label: "Lagos (UTC+1)", region: "Afrique" },
-  { value: "Africa/Nairobi", label: "Nairobi (UTC+3)", region: "Afrique" },
-  { value: "Europe/Paris", label: "Paris (UTC+1/+2)", region: "Europe" },
-  { value: "Europe/London", label: "Londres (UTC+0/+1)", region: "Europe" },
-  { value: "Europe/Brussels", label: "Bruxelles (UTC+1/+2)", region: "Europe" },
-  { value: "Europe/Madrid", label: "Madrid (UTC+1/+2)", region: "Europe" },
-  { value: "Europe/Berlin", label: "Berlin (UTC+1/+2)", region: "Europe" },
-  { value: "Europe/Rome", label: "Rome (UTC+1/+2)", region: "Europe" },
-  { value: "Europe/Amsterdam", label: "Amsterdam (UTC+1/+2)", region: "Europe" },
-  { value: "Europe/Lisbon", label: "Lisbonne (UTC+0/+1)", region: "Europe" },
-  { value: "Europe/Zurich", label: "Zurich (UTC+1/+2)", region: "Europe" },
-  { value: "Europe/Athens", label: "Athènes (UTC+2/+3)", region: "Europe" },
-  { value: "America/New_York", label: "New York (UTC-5/-4)", region: "Amérique du Nord" },
-  { value: "America/Chicago", label: "Chicago (UTC-6/-5)", region: "Amérique du Nord" },
-  { value: "America/Denver", label: "Denver (UTC-7/-6)", region: "Amérique du Nord" },
-  { value: "America/Los_Angeles", label: "Los Angeles (UTC-8/-7)", region: "Amérique du Nord" },
-  { value: "America/Toronto", label: "Toronto (UTC-5/-4)", region: "Amérique du Nord" },
-  { value: "America/Mexico_City", label: "Mexico (UTC-6)", region: "Amérique du Nord" },
-  { value: "America/Sao_Paulo", label: "São Paulo (UTC-3)", region: "Amérique du Sud" },
-  { value: "America/Buenos_Aires", label: "Buenos Aires (UTC-3)", region: "Amérique du Sud" },
-  { value: "Asia/Dubai", label: "Dubaï (UTC+4)", region: "Asie / Moyen-Orient" },
-  { value: "Asia/Tel_Aviv", label: "Tel Aviv (UTC+2/+3)", region: "Asie / Moyen-Orient" },
-  { value: "Asia/Riyadh", label: "Riyad (UTC+3)", region: "Asie / Moyen-Orient" },
-  { value: "Asia/Istanbul", label: "Istanbul (UTC+3)", region: "Asie / Moyen-Orient" },
-  { value: "Asia/Kolkata", label: "New Delhi (UTC+5:30)", region: "Asie" },
-  { value: "Asia/Singapore", label: "Singapour (UTC+8)", region: "Asie" },
-  { value: "Asia/Hong_Kong", label: "Hong Kong (UTC+8)", region: "Asie" },
-  { value: "Asia/Shanghai", label: "Shanghai (UTC+8)", region: "Asie" },
-  { value: "Asia/Tokyo", label: "Tokyo (UTC+9)", region: "Asie" },
-  { value: "Asia/Seoul", label: "Séoul (UTC+9)", region: "Asie" },
-  { value: "Australia/Sydney", label: "Sydney (UTC+10/+11)", region: "Océanie" },
-  { value: "Australia/Melbourne", label: "Melbourne (UTC+10/+11)", region: "Océanie" },
-  { value: "Pacific/Auckland", label: "Auckland (UTC+12/+13)", region: "Océanie" },
-  { value: "UTC", label: "UTC", region: "Autres" },
-];
-
-function TimezoneSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const current = TIMEZONES.find((tz) => tz.value === value) ?? TIMEZONES[0]!;
-
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (open) {
-      const t = window.setTimeout(() => inputRef.current?.focus(), 40);
-      return () => window.clearTimeout(t);
-    }
-  }, [open]);
-
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return TIMEZONES;
-    return TIMEZONES.filter(
-      (tz) =>
-        tz.label.toLowerCase().includes(q) ||
-        tz.value.toLowerCase().includes(q) ||
-        tz.region.toLowerCase().includes(q),
-    );
-  }, [search]);
-
-  const grouped = useMemo(() => {
-    const map = new Map<string, TimezoneOption[]>();
-    for (const tz of filtered) {
-      const arr = map.get(tz.region) ?? [];
-      arr.push(tz);
-      map.set(tz.region, arr);
-    }
-    return Array.from(map.entries());
-  }, [filtered]);
-
-  return (
-    <div ref={wrapRef} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className={cn(
-          "flex h-10 w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-3 text-sm transition-all",
-          "focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
-          "hover:border-primary/30",
-        )}
-      >
-        <span className="flex min-w-0 items-center gap-2">
-          <Globe2 className="size-3.5 shrink-0 text-muted-foreground" />
-          <span className="min-w-0 truncate text-left">{current.label}</span>
-        </span>
-        <ChevronDown
-          className={cn(
-            "size-4 shrink-0 text-muted-foreground transition-transform",
-            open && "rotate-180",
-          )}
-        />
-      </button>
-
-      {open && (
-        <div
-          role="listbox"
-          className="absolute left-0 right-0 top-[calc(100%+4px)] z-[70] overflow-hidden rounded-lg border border-border bg-popover shadow-lg animate-in fade-in zoom-in-95"
-        >
-          <div className="relative border-b border-border/60 p-2">
-            <Search className="pointer-events-none absolute left-4 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-            <input
-              ref={inputRef}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher un fuseau (Paris, Tokyo…)"
-              className="h-8 w-full rounded-md border border-transparent bg-surface/60 pl-8 pr-2 text-xs outline-none transition focus:border-border focus:bg-background focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
-          <div className="max-h-[240px] overflow-y-auto overscroll-contain p-1">
-            {grouped.length === 0 && (
-              <p className="px-3 py-6 text-center text-xs text-muted-foreground">
-                Aucun fuseau ne correspond.
-              </p>
-            )}
-            {grouped.map(([region, items]) => (
-              <div key={region} className="mb-1 last:mb-0">
-                <p className="px-2 pb-1 pt-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
-                  {region}
-                </p>
-                {items.map((tz) => {
-                  const selected = tz.value === value;
-                  return (
-                    <button
-                      key={tz.value}
-                      type="button"
-                      onClick={() => {
-                        onChange(tz.value);
-                        setOpen(false);
-                        setSearch("");
-                      }}
-                      className={cn(
-                        "flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-colors",
-                        selected
-                          ? "bg-primary/10 text-primary"
-                          : "text-foreground hover:bg-surface",
-                      )}
-                    >
-                      <span className="truncate">{tz.label}</span>
-                      {selected && <Check className="size-3.5 shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 function AvatarUploader({
   name,
@@ -293,10 +105,6 @@ function AvatarUploader({
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium">Photo de profil</p>
-        <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
-          Glissez un fichier ici, ou cliquez sur l'icône appareil photo. PNG, JPG ou WebP — 2 Mo
-          max.
-        </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <Button
             type="button"
@@ -338,12 +146,11 @@ function LogoutBlock() {
     <>
       <SettingsCard
         title="Déconnexion"
-        description="Fermer la session sur cet appareil."
         icon={LogOut}
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            Vous serez redirigé vers la page de connexion. Vos données locales restent intactes.
+            Fermer la session sur cet appareil.
           </p>
           <Button
             variant="outline"
@@ -383,12 +190,10 @@ function purgeAllLocalData() {
     }
     keysToRemove.forEach((k) => window.localStorage.removeItem(k));
   } catch {
-    /* Intentionally ignored. */
   }
   try {
     window.sessionStorage.clear();
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
@@ -430,7 +235,6 @@ function DangerZoneBlock() {
     try {
       reset();
     } catch {
-      /* Intentionally ignored. */
     }
 
     toast.dismiss(t);
@@ -522,18 +326,13 @@ function DangerZoneBlock() {
                   <h2 className="text-base font-semibold md:text-lg">Supprimer votre compte ?</h2>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-muted-foreground md:text-sm">
-                  Cette action est <b className="text-foreground">définitive</b>. Toutes vos données
-                  locales (prospects, entreprises, séquences, workflows, réglages) seront effacées.
-                  Vous serez redirigé vers l'accueil.
+                  Cette action est <b className="text-foreground">définitive</b>. Toutes vos données seront effacées.
                 </p>
               </div>
 
               <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-5 pb-5 md:px-6">
                 <div className="rounded-lg border border-destructive/30 bg-destructive/[0.05] p-3 text-[11px] text-destructive">
                   <p className="font-medium">Pour confirmer, tapez « {REQUIRED} »</p>
-                  <p className="mt-0.5 text-destructive/80">
-                    Cela évite les suppressions accidentelles.
-                  </p>
                 </div>
 
                 <label className="block">
@@ -595,28 +394,35 @@ function DangerZoneBlock() {
 }
 
 export function AccountPanel() {
-  const [avatar, setAvatar] = useState<string | null>(null);
-  const [firstName, setFirstName] = useState("Jean");
-  const [lastName, setLastName] = useState("Dupont");
-  const [email, setEmail] = useState("utilisateur@leadcortex.io");
+  const currentUser = useCurrentUser();
+  const updateCurrentUser = useUpdateCurrentUser();
+  const [avatar, setAvatar] = useState<string | null>(currentUser.avatarUrl);
+  const [firstName, setFirstName] = useState(currentUser.firstName);
+  const [lastName, setLastName] = useState(currentUser.lastName);
   const [phone, setPhone] = useState("+33 6 12 34 56 78");
-  const [organization, setOrganization] = useState("Acme B2B");
-  const [role, setRole] = useState("Founder");
-  const [teamSize, setTeamSize] = useState("1-5");
-  const [timezone, setTimezone] = useState("Europe/Paris");
-  const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
-  const [currency, setCurrency] = useState("EUR");
   const [saving, setSaving] = useState(false);
 
-  const fullName = `${firstName} ${lastName}`.trim() || "Utilisateur";
+  useEffect(() => {
+    setFirstName(currentUser.firstName);
+    setLastName(currentUser.lastName);
+    setAvatar(currentUser.avatarUrl);
+  }, [currentUser.firstName, currentUser.lastName, currentUser.avatarUrl]);
+
+  const fullName = `${firstName} ${lastName}`.trim() || currentUser.fullName;
 
   const save = async () => {
     setSaving(true);
     const t = toast.loading("Enregistrement du profil…");
-    await fakeRequest(700);
-    toast.dismiss(t);
-    setSaving(false);
-    toast.success("Profil enregistré");
+    try {
+      await updateCurrentUser({ firstName, lastName });
+      await fakeRequest(700);
+      toast.success("Profil enregistré");
+    } catch {
+      toast.error("Impossible d’enregistrer le profil. Veuillez réessayer.");
+    } finally {
+      toast.dismiss(t);
+      setSaving(false);
+    }
   };
 
   return (
@@ -624,13 +430,11 @@ export function AccountPanel() {
       <PanelIntro
         icon={UsersRound}
         title="Compte"
-        description="Identité, organisation, comptes connectés et session. Modifiables à tout moment."
       />
 
       <PanelGroup label="Profil">
         <SettingsCard
           title="Identité"
-          description="Ces informations apparaissent dans l'application."
           icon={UserRound}
         >
           <AvatarUploader name={fullName} src={avatar} onChange={setAvatar} />
@@ -656,18 +460,18 @@ export function AccountPanel() {
             <Field
               label="Email professionnel"
               icon={Mail}
-              hint={email.includes("@") ? "Vérifié" : undefined}
+              hint={currentUser.email ? "Compte Google vérifié" : undefined}
             >
               <div className="relative">
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={currentUser.email}
+                  readOnly
                   className={cn(inputCls, "pr-9")}
                   placeholder="vous@entreprise.com"
                   autoComplete="email"
                 />
-                {email.includes("@") && (
+                {currentUser.email && (
                   <CheckCircle2 className="pointer-events-none absolute right-3 top-1/2 size-3.5 -translate-y-1/2 text-success" />
                 )}
               </div>
@@ -685,114 +489,6 @@ export function AccountPanel() {
           </div>
         </SettingsCard>
 
-        <SettingsCard
-          title="Organisation"
-          description="Ces informations apparaissent sur vos factures."
-          icon={Building2}
-        >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nom de l'organisation">
-              <input
-                value={organization}
-                onChange={(e) => setOrganization(e.target.value)}
-                className={inputCls}
-                placeholder="Acme B2B"
-                autoComplete="organization"
-              />
-            </Field>
-            <Field label="Votre rôle">
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
-                  {[
-                    "Founder",
-                    "CEO",
-                    "CTO",
-                    "Sales Manager",
-                    "Growth",
-                    "Marketing",
-                    "Customer Success",
-                    "Autre",
-                  ].map((r) => (
-                    <SelectItem key={r} value={r}>
-                      {r}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field label="Taille de l'équipe">
-              <Select value={teamSize} onValueChange={setTeamSize}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
-                  {[
-                    { value: "solo", label: "Solo" },
-                    { value: "1-5", label: "1 – 5 personnes" },
-                    { value: "6-20", label: "6 – 20 personnes" },
-                    { value: "21-50", label: "21 – 50 personnes" },
-                    { value: "50+", label: "50+ personnes" },
-                  ].map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
-        </SettingsCard>
-
-        <SettingsCard
-          title="Région & préférences"
-          description="Format des dates, devise et fuseau horaire."
-          icon={Globe2}
-        >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <Field label="Fuseau horaire" hint="Utilisé pour les envois programmés">
-                <TimezoneSelect value={timezone} onChange={setTimezone} />
-              </Field>
-            </div>
-            <Field label="Format de date">
-              <Select value={dateFormat} onValueChange={setDateFormat}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
-                  {["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"].map((f) => (
-                    <SelectItem key={f} value={f}>
-                      {f}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field label="Devise">
-              <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
-                  {[
-                    { value: "EUR", label: "Euro (€)" },
-                    { value: "USD", label: "Dollar US ($)" },
-                    { value: "GBP", label: "Livre sterling (£)" },
-                    { value: "CHF", label: "Franc suisse (CHF)" },
-                    { value: "MUR", label: "Roupie mauricienne (Rs)" },
-                  ].map((c) => (
-                    <SelectItem key={c.value} value={c.value}>
-                      {c.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
-        </SettingsCard>
       </PanelGroup>
 
       <PanelGroup label="Connexions">
@@ -801,7 +497,6 @@ export function AccountPanel() {
 
       <PanelGroup
         label="Session & zone à risque"
-        description="Actions irréversibles concernant votre compte et votre session."
       >
         <LogoutBlock />
         <DangerZoneBlock />

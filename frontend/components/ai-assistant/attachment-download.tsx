@@ -1,22 +1,10 @@
+// frontend/components/ai-assistant/attachment-download.tsx
+
 "use client";
 
-/**
- * Restitution de pièces jointes reçues.
- *
- * Deux exports :
- *  - `AttachmentDownloadCard` : carte individuelle (aperçu + nom + bouton
- *    de téléchargement). Se branche sur `attachment.url` quand il existe,
- *    sinon déclenche un toast « bientôt disponible ».
- *  - `AttachmentDownloadList` : liste **scrollable** (max-height plafonnée)
- *    qui empile les cartes, avec compteur et état vide. À utiliser dans une
- *    bulle de message IA pour restituer un lot de fichiers.
- *
- * Accepte à la fois les `AssistantAttachment` de l'assistant latéral et les
- * `ChatAttachment` du canevas — les champs communs suffisent.
- */
-import { Download, FileText } from "lucide-react";
+import { Download, FileText } from "@/components/icons";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { FileKindIcon, getFileKind } from "./file-type-icons";
 
 export type AttachmentLike = {
@@ -72,7 +60,7 @@ export function AttachmentDownloadCard({
         />
       ) : (
         <span className="grid size-10 shrink-0 place-items-center">
-          <FileKindIcon kind={getFileKind(fileName)} size={36} />
+          <FileKindIcon kind={getFileKind(fileName)} name={fileName} size={36} />
         </span>
       )}
       <div className="min-w-0 flex-1">

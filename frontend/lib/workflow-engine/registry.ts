@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\registry.ts
+// frontend/lib/workflow-engine/registry.ts
+
 import type { z } from "zod";
 
 import { BLOCK_META_BY_ID, isExecutableBlock, outputPortsOf } from "./catalog";

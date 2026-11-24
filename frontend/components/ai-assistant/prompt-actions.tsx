@@ -1,20 +1,9 @@
+// frontend/components/ai-assistant/prompt-actions.tsx
+
 "use client";
 
-/**
- * Barre d'actions sous un prompt utilisateur.
- *
- * Contenu (gauche → droite) :
- *   1. Copier le prompt (le texte exact envoyé à l'IA)
- *   2. Modifier — ouvre la feuille d'édition ; à la validation, remplace
- *      le texte de la bulle d'origine (badge « modifié ») et régénère la
- *      réponse à partir de ce point (tout ce qui suit est ignoré).
- *   3. Relancer — supprime tout ce qui suit ce prompt et régénère la
- *      réponse de l'agent, sans modifier le texte du prompt.
- *
- * Icônes **toujours visibles** (plus de `opacity-0` au repos).
- */
-import { Pencil, RotateCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Pencil, RotateCcw } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { AssistantMessage } from "./assistant-engine";
@@ -56,9 +45,7 @@ export function PromptActions({
   className,
 }: {
   message: AssistantMessage;
-  /** Relance l'agent sur ce prompt (coupe tout ce qui suit). */
   onRelaunch: () => void;
-  /** Ouvre la feuille de modification + relance. */
   onEdit: () => void;
   disabled?: boolean;
   className?: string;

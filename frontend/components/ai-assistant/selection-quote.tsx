@@ -1,28 +1,14 @@
+// frontend/components/ai-assistant/selection-quote.tsx
+
 "use client";
 
-/**
- * Sélection de texte → citation dans le prochain prompt.
- *
- * Deux exports :
- *  - `useTextSelection()` : hook qui observe `document.selectionchange`
- *    et renvoie la sélection **si elle est dans un élément portant
- *    `data-message-id`** (c.-à-d. une bulle de message), avec sa position
- *    écran pour placer un bouton flottant.
- *  - `SelectionQuoteButton` : bouton flottant « Citer » ancré au-dessus de
- *    la sélection. Clic = le texte entre guillemets Markdown (`> …`) est
- *    injecté dans le champ de saisie du parent.
- *
- * Aucun listener `mousedown` sur le bouton lui-même (`preventDefault`) pour
- * que la sélection ne soit pas perdue avant le clic.
- */
 import { useCallback, useEffect, useState } from "react";
-import { Quote } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Quote } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 
 export type SelectionInfo = {
   text: string;
   messageId: string;
-  /** Coordonnées viewport (px) pour ancrer le bouton flottant. */
   x: number;
   y: number;
 } | null;

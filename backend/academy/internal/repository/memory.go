@@ -1,3 +1,5 @@
+// backend/academy/internal/repository/memory.go
+
 package repository
 
 import (
@@ -9,31 +11,17 @@ import (
 	"github.com/leadcortex/academy/internal/gamification"
 )
 
-// Memory est l'implémentation in-memory du Repository.
-//
-// Elle est safe en lecture/écriture concurrente. Les données sont
-// conservées en RAM jusqu'à Close (ou fin de process). Utilisée :
-//
-//   - en développement (pas de PostgreSQL requis)
-//   - dans les tests d'API (seed rapide)
-//
-// # Deep-copy défensif
-//
-// Toutes les valeurs écrites ou lues sont copiées. Aucun pointeur interne
-// n'est exposé.
 type Memory struct {
 	mu       sync.RWMutex
 	learners map[string]*domain.Learner
 	srsCards map[string][]domain.SrsCard
-	quests   map[string]map[string][]gamification.Quest // learnerID → dateKey → quests
-	events   map[string][]StoredEvent                   // learnerID → event log
+	quests   map[string]map[string][]gamification.Quest
+	events   map[string][]StoredEvent
 	closed   bool
 
-	// maxEvents — capacité par apprenant du journal d'événements.
 	maxEvents int
 }
 
-// NewMemory construit un repository in-memory vide.
 func NewMemory() *Memory {
 	return &Memory{
 		learners:  make(map[string]*domain.Learner),
@@ -44,8 +32,6 @@ func NewMemory() *Memory {
 	}
 }
 
-// NewMemoryWithEvents construit un repository in-memory avec une capacité
-// de journal d'événements surchargée.
 func NewMemoryWithEvents(maxEvents int) *Memory {
 	m := NewMemory()
 	if maxEvents > 0 {
@@ -54,7 +40,6 @@ func NewMemoryWithEvents(maxEvents int) *Memory {
 	return m
 }
 
-/* ─── Learner ─────────────────────────────────────────────────────────── */
 
 func (m *Memory) GetLearner(_ context.Context, learnerID string) (*domain.Learner, error) {
 	if learnerID == "" {
@@ -117,7 +102,6 @@ func (m *Memory) ListLearners(_ context.Context) ([]*domain.Learner, error) {
 	return out, nil
 }
 
-/* ─── SRS ─────────────────────────────────────────────────────────────── */
 
 func (m *Memory) GetSrsCards(_ context.Context, learnerID string) ([]domain.SrsCard, error) {
 	if learnerID == "" {
@@ -152,7 +136,6 @@ func (m *Memory) SaveSrsCards(_ context.Context, learnerID string, cards []domai
 	return nil
 }
 
-/* ─── Quests ──────────────────────────────────────────────────────────── */
 
 func (m *Memory) GetQuests(_ context.Context, learnerID string, date time.Time) ([]gamification.Quest, error) {
 	if learnerID == "" {
@@ -204,7 +187,6 @@ func (m *Memory) SaveQuests(_ context.Context, learnerID string, date time.Time,
 	return nil
 }
 
-/* ─── Event log ───────────────────────────────────────────────────────── */
 
 func (m *Memory) AppendEvent(_ context.Context, learnerID string, ev StoredEvent) error {
 	if learnerID == "" {
@@ -222,7 +204,6 @@ func (m *Memory) AppendEvent(_ context.Context, learnerID string, ev StoredEvent
 	log := m.events[learnerID]
 	log = append(log, cloneStoredEvent(ev))
 
-	// Éjection FIFO si au-delà de la capacité.
 	if len(log) > m.maxEvents {
 		overflow := len(log) - m.maxEvents
 		log = log[overflow:]
@@ -245,7 +226,6 @@ func (m *Memory) ListRecentEvents(_ context.Context, learnerID string, limit int
 		return []StoredEvent{}, nil
 	}
 
-	// Copie inversée (du plus récent au plus ancien).
 	n := len(log)
 	if limit > 0 && limit < n {
 		n = limit
@@ -257,7 +237,6 @@ func (m *Memory) ListRecentEvents(_ context.Context, learnerID string, limit int
 	return out, nil
 }
 
-/* ─── Cycle de vie ────────────────────────────────────────────────────── */
 
 func (m *Memory) Ping(_ context.Context) error {
 	m.mu.RLock()
@@ -282,29 +261,23 @@ func (m *Memory) Close() error {
 	return nil
 }
 
-/* ─── Helpers : deep-copy ─────────────────────────────────────────────── */
 
-// cloneLearner retourne une copie profonde du Learner.
-// Toutes les maps et slices sont dupliquées.
 func cloneLearner(src *domain.Learner) *domain.Learner {
 	if src == nil {
 		return nil
 	}
 	dst := *src
 
-	// UnlockedAvatarIDs.
 	if src.UnlockedAvatarIDs != nil {
 		dst.UnlockedAvatarIDs = make([]string, len(src.UnlockedAvatarIDs))
 		copy(dst.UnlockedAvatarIDs, src.UnlockedAvatarIDs)
 	}
 
-	// EarnedBadges.
 	if src.EarnedBadges != nil {
 		dst.EarnedBadges = make([]domain.BadgeEarned, len(src.EarnedBadges))
 		copy(dst.EarnedBadges, src.EarnedBadges)
 	}
 
-	// ConceptMastery.
 	if src.ConceptMastery != nil {
 		dst.ConceptMastery = make(map[string]domain.Mastery, len(src.ConceptMastery))
 		for k, v := range src.ConceptMastery {
@@ -312,7 +285,6 @@ func cloneLearner(src *domain.Learner) *domain.Learner {
 		}
 	}
 
-	// ProgramProgress.
 	if src.ProgramProgress != nil {
 		dst.ProgramProgress = make(map[string]domain.ProgramProgress, len(src.ProgramProgress))
 		for k, v := range src.ProgramProgress {
@@ -326,7 +298,6 @@ func cloneLearner(src *domain.Learner) *domain.Learner {
 		}
 	}
 
-	// LessonProgress.
 	if src.LessonProgress != nil {
 		dst.LessonProgress = make(map[string]domain.LessonProgress, len(src.LessonProgress))
 		for k, v := range src.LessonProgress {
@@ -334,7 +305,6 @@ func cloneLearner(src *domain.Learner) *domain.Learner {
 		}
 	}
 
-	// MissionProgress.
 	if src.MissionProgress != nil {
 		dst.MissionProgress = make(map[string]domain.MissionProgress, len(src.MissionProgress))
 		for k, v := range src.MissionProgress {
@@ -353,7 +323,6 @@ func cloneLearner(src *domain.Learner) *domain.Learner {
 	return &dst
 }
 
-// cloneLessonProgress duplique les maps et slices internes.
 func cloneLessonProgress(src domain.LessonProgress) domain.LessonProgress {
 	dst := src
 	if src.BlockStates != nil {
@@ -375,23 +344,18 @@ func cloneLessonProgress(src domain.LessonProgress) domain.LessonProgress {
 	return dst
 }
 
-// cloneSrsCards retourne une copie de la slice. SrsCard est un struct
-// de valeurs (pas de map/slice interne), une copie superficielle suffit.
 func cloneSrsCards(src []domain.SrsCard) []domain.SrsCard {
 	out := make([]domain.SrsCard, len(src))
 	copy(out, src)
 	return out
 }
 
-// cloneQuests retourne une copie de la slice de quêtes. Quest est un
-// struct de valeurs.
 func cloneQuests(src []gamification.Quest) []gamification.Quest {
 	out := make([]gamification.Quest, len(src))
 	copy(out, src)
 	return out
 }
 
-// cloneStoredEvent duplique le payload (map[string]any).
 func cloneStoredEvent(src StoredEvent) StoredEvent {
 	dst := src
 	if src.Payload != nil {
@@ -403,7 +367,6 @@ func cloneStoredEvent(src StoredEvent) StoredEvent {
 	return dst
 }
 
-// dateKey normalise une date en clé "YYYY-MM-DD" (UTC).
 func dateKey(t time.Time) string {
 	return t.UTC().Format("2006-01-02")
 }

@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/registry.go
+
 package curriculum
 
 import (
@@ -6,8 +8,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// Registry est un index immuable en lecture seule des programmes chargés.
-// Il permet des lookups O(1) par ID.
 type Registry struct {
 	programsByID map[string]*domain.Program
 	modulesByID  map[string]*domain.Module
@@ -20,9 +20,6 @@ type Registry struct {
 	orderedLessons  []*domain.Lesson
 }
 
-// NewRegistry construit un registre à partir de programmes, avatars et badges.
-//
-// Le registre copie les pointeurs — les entités restent immuables.
 func NewRegistry(
 	programs []*domain.Program,
 	avatars []*domain.Avatar,
@@ -59,7 +56,6 @@ func NewRegistry(
 		r.badgesByID[b.ID] = b
 	}
 
-	// Tri stable par (Order) puis par ID.
 	sort.SliceStable(r.orderedPrograms, func(i, j int) bool {
 		if r.orderedPrograms[i].Order != r.orderedPrograms[j].Order {
 			return r.orderedPrograms[i].Order < r.orderedPrograms[j].Order
@@ -70,7 +66,6 @@ func NewRegistry(
 	return r
 }
 
-/* ─── Lookups ────────────────────────────────────────────────────────── */
 
 func (r *Registry) Program(id string) (*domain.Program, bool) {
 	p, ok := r.programsByID[id]
@@ -102,7 +97,6 @@ func (r *Registry) Badge(id string) (*domain.Badge, bool) {
 	return b, ok
 }
 
-/* ─── Listes ─────────────────────────────────────────────────────────── */
 
 func (r *Registry) AllPrograms() []*domain.Program { return r.orderedPrograms }
 
@@ -126,9 +120,7 @@ func (r *Registry) AllBadges() []*domain.Badge {
 	return out
 }
 
-/* ─── Statistiques ───────────────────────────────────────────────────── */
 
-// Stats résume le contenu du registre.
 type Stats struct {
 	Programs int
 	Modules  int

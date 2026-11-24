@@ -1,6 +1,7 @@
-//frontend\components\enrichment\provider-badge.tsx
-import { providerBrand } from "@/lib/enrichment-mock";
-import { cn } from "@/lib/utils";
+// frontend/components/enrichment/provider-badge.tsx
+
+import { providerBrand } from "@/lib/enrichment/mock";
+import { cn } from "@/lib/core/utils";
 
 export function ProviderBadge({
   slug,

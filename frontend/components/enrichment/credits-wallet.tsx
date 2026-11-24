@@ -1,6 +1,7 @@
-//frontend\components\enrichment\credits-wallet.tsx
-import { AlertTriangle, Plus, Wallet } from "lucide-react";
-import { cn } from "@/lib/utils";
+// frontend/components/enrichment/credits-wallet.tsx
+
+import { AlertTriangle, Plus, Wallet } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 
 export function CreditsWallet({
   total,

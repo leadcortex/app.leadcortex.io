@@ -1,5 +1,6 @@
-//frontend\components\ui\letter-avatar.tsx
-import { cn } from "@/lib/utils";
+// frontend/components/ui/letter-avatar.tsx
+
+import { cn } from "@/lib/core/utils";
 
 const LETTER_COLORS: Record<string, string> = {
   A: "#B96A52",
@@ -78,38 +79,16 @@ export function LetterAvatar({
         width: size,
         height: size,
         backgroundColor: color,
+        backgroundImage:
+          "linear-gradient(135deg, rgba(255,255,255,0.10), transparent 55%)",
+        boxShadow:
+          "inset 0 -1px 0 rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.06)",
         fontSize: size * 0.44,
         lineHeight: 1,
+        textShadow: "0 1px 0 rgba(0,0,0,0.12)",
       }}
     >
       {letter}
     </span>
-  );
-}
-
-export function CompanyAvatar({
-  name,
-  domain: _domain,
-  size = 36,
-  shape = "rounded",
-  className,
-  title,
-}: {
-  name: string;
-
-  domain?: string;
-  size?: number;
-  shape?: LetterAvatarShape;
-  className?: string;
-  title?: string;
-}) {
-  return (
-    <LetterAvatar
-      name={name}
-      size={size}
-      shape={shape}
-      className={className}
-      title={title ?? name}
-    />
   );
 }

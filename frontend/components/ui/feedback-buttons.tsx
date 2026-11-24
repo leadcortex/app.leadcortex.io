@@ -1,12 +1,9 @@
+// frontend/components/ui/feedback-buttons.tsx
+
 "use client";
 
-/**
- * Boutons d'approbation 👍/👎 — sélection exclusive, cliquables pour
- * annuler (re-cliquer sur le même pouce le retire). Le parent persiste la
- * valeur ; ce composant est purement contrôlé.
- */
-import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ThumbsDown, ThumbsUp } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export type FeedbackValue = "up" | "down" | null;

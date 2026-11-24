@@ -1,4 +1,5 @@
-//frontend\components\workflow\xy-nodes.tsx
+// frontend/components/workflow/xy-nodes.tsx
+
 import React, { memo } from "react";
 import type { WNode } from "@/lib/workflow/types";
 

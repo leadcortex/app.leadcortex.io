@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/catalog_test.go
+
 package avatars
 
 import (
@@ -77,7 +79,6 @@ func TestCatalog_DefensiveCopy(t *testing.T) {
 	if len(a) == 0 || len(b) == 0 {
 		t.Fatal("catalogue vide")
 	}
-	// Modifier a ne doit pas affecter b.
 	a[0].Name = "MODIFIED"
 	if b[0].Name == "MODIFIED" {
 		t.Error("All() ne retourne pas une copie défensive")
@@ -91,7 +92,6 @@ func TestCatalog_DefensivePosesCopy(t *testing.T) {
 		t.Fatal("eagle sans poses")
 	}
 	a1.Poses[0].Label = "MODIFIED"
-	// Re-fetch : la pose ne doit pas avoir changé.
 	a3, _ := Find("eagle")
 	if a3.Poses[0].Label == "MODIFIED" {
 		t.Error("Find ne retourne pas une copie défensive des poses")

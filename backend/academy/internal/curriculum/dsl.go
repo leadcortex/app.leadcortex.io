@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/dsl.go
+
 package curriculum
 
 import (
@@ -7,11 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// ─── Racine ─────────────────────────────────────────────────────────────
 
-// ProgramYAML est la représentation brute d'un programme.
-// Les structs de ce fichier portent à la fois des tags YAML et JSON :
-// le loader choisit le décodeur selon l'extension du fichier.
 type ProgramYAML struct {
 	SchemaVersion string   `yaml:"schema_version" json:"schema_version"`
 	ID            string   `yaml:"id" json:"id"`
@@ -32,21 +30,18 @@ type ProgramYAML struct {
 	Badges        []BadgeYAML       `yaml:"badges" json:"badges,omitempty"`
 }
 
-// ProgramPrereqYAML — prérequis d'un programme.
 type ProgramPrereqYAML struct {
 	PreviousProgramIDs []string `yaml:"previous_program_ids" json:"previous_program_ids"`
 	MinLevel           int      `yaml:"min_level" json:"min_level"`
 	MinXP              int      `yaml:"min_xp" json:"min_xp"`
 }
 
-// ConceptYAML — déclaration d'un concept.
 type ConceptYAML struct {
 	ID          string `yaml:"id" json:"id"`
 	Label       string `yaml:"label" json:"label"`
 	Description string `yaml:"description" json:"description"`
 }
 
-// ─── Module ─────────────────────────────────────────────────────────────
 
 type ModuleYAML struct {
 	ID            string           `yaml:"id" json:"id"`
@@ -63,7 +58,6 @@ type ModulePrereqYAML struct {
 	RequiredConceptIDs []string `yaml:"required_concept_ids" json:"required_concept_ids"`
 }
 
-// ─── Leçon ──────────────────────────────────────────────────────────────
 
 type LessonYAML struct {
 	ID          string   `yaml:"id" json:"id"`
@@ -106,10 +100,7 @@ type SrsTemplateYAML struct {
 	Back    string `yaml:"back" json:"back"`
 }
 
-// ─── Bloc polymorphe ────────────────────────────────────────────────────
 
-// BlockYAML est un bloc polymorphe discriminé par `type`.
-// Un seul des champs Cover/Theory/Practice/Mission/Debrief est non-nil.
 type BlockYAML struct {
 	Type     string
 	Cover    *CoverBlockYAML
@@ -119,7 +110,6 @@ type BlockYAML struct {
 	Debrief  *DebriefBlockYAML
 }
 
-// UnmarshalYAML implémente la logique de dispatch sur `type` (format YAML).
 func (b *BlockYAML) UnmarshalYAML(node *yaml.Node) error {
 	var head struct {
 		Type string `yaml:"type"`
@@ -166,8 +156,6 @@ func (b *BlockYAML) UnmarshalYAML(node *yaml.Node) error {
 	return nil
 }
 
-// UnmarshalJSON implémente la logique de dispatch sur `type` (format JSON).
-// Le comportement est identique à UnmarshalYAML — juste le décodeur qui change.
 func (b *BlockYAML) UnmarshalJSON(data []byte) error {
 	var head struct {
 		Type string `json:"type"`
@@ -214,7 +202,6 @@ func (b *BlockYAML) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ─── Cover ──────────────────────────────────────────────────────────────
 
 type CoverBlockYAML struct {
 	Title      string   `yaml:"title" json:"title"`
@@ -224,7 +211,6 @@ type CoverBlockYAML struct {
 	Objectives []string `yaml:"objectives" json:"objectives"`
 }
 
-// ─── Theory ─────────────────────────────────────────────────────────────
 
 type TheoryBlockYAML struct {
 	Slides []TheorySlideYAML `yaml:"slides" json:"slides"`
@@ -265,21 +251,11 @@ type InlineQuizYAML struct {
 	Answer   int      `yaml:"answer" json:"answer"`
 }
 
-// ─── Practice ───────────────────────────────────────────────────────────
 
 type PracticeBlockYAML struct {
 	Exercises []ExerciseYAML `yaml:"exercises" json:"exercises"`
 }
 
-// ExerciseYAML est polymorphe sur `kind`.
-//
-// Le payload arrive dans DEUX champs distincts selon le décodeur :
-//   - PayloadYAML : rempli par yaml.Unmarshal (yaml.Node)
-//   - PayloadJSON : rempli par json.Unmarshal (json.RawMessage)
-//
-// Le parser choisit celui qui est non-vide. Les tags `json:"-"` et
-// `yaml:"-"` évitent que l'autre décodeur ne tente de remplir le mauvais
-// champ.
 type ExerciseYAML struct {
 	ID            string          `yaml:"id" json:"id"`
 	Kind          string          `yaml:"kind" json:"kind"`
@@ -292,7 +268,6 @@ type ExerciseYAML struct {
 	PayloadJSON   json.RawMessage `yaml:"-" json:"payload"`
 }
 
-// ─── Mission ────────────────────────────────────────────────────────────
 
 type MissionBlockYAML struct {
 	Mission MissionYAML `yaml:"mission" json:"mission"`
@@ -339,14 +314,12 @@ type MissionFailureYAML struct {
 	HintMD     string `yaml:"hint_md" json:"hint_md"`
 }
 
-// ─── Debrief ────────────────────────────────────────────────────────────
 
 type DebriefBlockYAML struct {
 	Sections         []string `yaml:"sections" json:"sections"`
 	CustomMascotLine string   `yaml:"custom_mascot_line" json:"custom_mascot_line"`
 }
 
-// ─── Avatar / Badge (déclarations inline) ───────────────────────────────
 
 type AvatarYAML struct {
 	ID          string           `yaml:"id" json:"id"`

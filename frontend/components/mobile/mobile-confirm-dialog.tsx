@@ -1,7 +1,6 @@
-//frontend\components\mobile\mobile-confirm-dialog.tsx
-// ⚠️  Depuis la refonte des modales, `ConfirmDialog` (dans
+// frontend/components/mobile/mobile-confirm-dialog.tsx
 
 export {
   ConfirmDialog as MobileConfirmDialog,
   type ConfirmDialogProps as MobileConfirmDialogProps,
-} from "@/components/confirm-dialog";
+} from "@/components/common/confirm-dialog";

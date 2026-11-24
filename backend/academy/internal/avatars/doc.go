@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/doc.go
+
 // Package avatars gère le catalogue, les déblocages et le rendu des
 // avatars de LeadCortex Academy.
 //

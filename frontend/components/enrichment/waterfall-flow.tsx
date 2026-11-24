@@ -1,7 +1,8 @@
-//frontend\components\enrichment\waterfall-flow.tsx
-import { ArrowRight, Check, CircleDashed, Pause, Plus, Sparkles, X } from "lucide-react";
-import type { EnrichmentProvider } from "@/lib/enrichment-mock";
-import { cn } from "@/lib/utils";
+// frontend/components/enrichment/waterfall-flow.tsx
+
+import { ArrowRight, Check, CircleDashed, Pause, Plus, Sparkles, X } from "@/components/icons";
+import type { EnrichmentProvider } from "@/lib/enrichment/mock";
+import { cn } from "@/lib/core/utils";
 import { ProviderBadge } from "./provider-badge";
 
 export function WaterfallFlow({
@@ -18,7 +19,6 @@ export function WaterfallFlow({
   return (
     <div className={cn("overflow-x-auto overscroll-x-contain scrollbar-hide", className)}>
       <div className="flex min-w-max items-center gap-2 px-1 py-1">
-        {}
         <Endpoint icon={Sparkles} label="Lead" tone="start" />
 
         {ordered.map((p) => (

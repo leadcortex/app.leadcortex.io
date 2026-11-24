@@ -1,9 +1,4 @@
-//frontend\lib\workflow-engine\catalog.ts
-/**
- * Métadonnées d'exécution des blocs — générées à partir du catalogue visuel
- * mais **volontairement dupliquées** ici : le backend ne doit pas dépendre de
- * `BlockDef` (React/lucide). Seul l'identifiant textuel est partagé.
- */
+// frontend/lib/workflow-engine/catalog.ts
 
 export type BlockCategory =
   | "trigger"
@@ -39,7 +34,6 @@ export type BlockMeta = {
   branches?: string[];
 
   inputs?: string[];
-  /** Bloc terminal : jamais de sortie. */
   terminal?: boolean;
 
   executable?: boolean;

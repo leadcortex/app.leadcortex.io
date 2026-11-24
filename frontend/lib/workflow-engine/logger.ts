@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\logger.ts
+// frontend/lib/workflow-engine/logger.ts
+
 import { redactDeep } from "./errors";
 import type { EventLevel, EventType, RunEvent } from "./types";
 
@@ -54,7 +55,6 @@ export class RunLogger {
     return event;
   }
 
-  /** Logger restreint exposé aux handlers de bloc. */
   forNode(scope: { nodeId: string; blockId: string; nodeExecutionId: string; attempt: number }) {
     const base = { ...scope };
     const write = (level: EventLevel, message: string, data?: Record<string, unknown>) => {
@@ -84,7 +84,6 @@ export class RunLogger {
   }
 }
 
-/** Aperçu borné et redacted d'une valeur métier destinée à la console. */
 export function previewValue(
   value: unknown,
   maxChars = 600,

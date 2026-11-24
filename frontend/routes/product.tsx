@@ -1,6 +1,7 @@
-//frontend\routes\product.tsx
+// frontend/routes/product.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { SiteNav, SiteFooter } from "@/components/site-nav";
+import { SiteNav, SiteFooter } from "@/components/layout/site-nav";
 import {
   Users,
   Building2,
@@ -22,7 +23,7 @@ import {
   Search,
   KeyRound,
   Brain,
-} from "lucide-react";
+} from "@/components/icons";
 import { ContentPageSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/product")({
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/product")({
       {
         name: "description",
         content:
-          "Une équipe d'agents IA pour la prospection B2B : une IA de recherche, une IA de travail. Prospects, entreprises, séquences, emails, appels, deals. Un seul workspace, partageable en équipe.",
+          "Une équipe d'agents IA pour la prospection B2B : une IA qui cherche, une IA qui écrit. Un seul workspace, partageable en équipe.",
       },
     ],
   }),
@@ -43,154 +44,55 @@ export const Route = createFileRoute("/product")({
 const pillars = [
   {
     label: "Votre équipe d'agents",
-    subtitle: "Deux IA, deux rôles. Composez-les comme vous voulez.",
+    subtitle: "Deux IA, deux rôles.",
     items: [
-      {
-        icon: Search,
-        name: "IA de recherche",
-        desc: "Collecte, vérifie et synthétise. Elle scanne les bases, croise les sources, score les leads et détecte les signaux d'achat. C'est elle qui alimente tout le reste.",
-      },
-      {
-        icon: Sparkles,
-        name: "IA de travail",
-        desc: "Analyse, rédige et structure. Elle transforme les données brutes en emails personnalisés, en notes de meeting et en plans d'action concrets.",
-      },
+      { icon: Search, name: "IA de recherche", desc: "Trouve, vérifie et classe vos prospects." },
+      { icon: Sparkles, name: "IA de travail", desc: "Écrit vos messages et vos notes." },
       {
         icon: KeyRound,
-        name: "Modèles inclus ou BYOK",
-        desc: "Utilisez les modèles inclus par défaut, ou branchez vos propres clés Anthropic, OpenAI, Google, Groq, DeepSeek ou Mistral. Attribuez une clé à chaque rôle pour un contrôle total.",
+        name: "Modèles inclus ou vos clés",
+        desc: "Rien à configurer. Vos clés en option.",
       },
-      {
-        icon: Brain,
-        name: "Mémoire et compétences",
-        desc: "L'équipe retient vos préférences, votre ICP, votre ton et vos objections fréquentes. Elle s'améliore à chaque échange sans que vous ayez à répéter.",
-      },
+      { icon: Brain, name: "Mémoire", desc: "Retient votre cible et votre ton." },
     ],
   },
   {
-    label: "Prospecter & enrichir",
-    subtitle: "Trouvez les bons comptes, les bons contacts, la bonne donnée.",
+    label: "Prospecter",
+    subtitle: "Les bons contacts, la bonne donnée.",
     items: [
-      {
-        icon: Users,
-        name: "Prospects",
-        desc: "Recherche par langage naturel, filtres firmographiques et signaux d'achat. L'IA de recherche score chaque lead selon votre thèse.",
-      },
-      {
-        icon: Building2,
-        name: "Entreprises",
-        desc: "Bases enrichies avec effectifs, tech stack, funding, recrutements en cours. Suivi par industrie.",
-      },
-      {
-        icon: ListChecks,
-        name: "Listes",
-        desc: "Segmentation dynamique, tags partagés, exports CSV natifs. Vos listes travaillent pour vous.",
-      },
-      {
-        icon: Wand2,
-        name: "Enrichissement",
-        desc: "Waterfall de providers, vérification SMTP, téléphones directs. Vous ne payez que ce qui aboutit.",
-      },
+      { icon: Users, name: "Prospects", desc: "Recherche en langage naturel." },
+      { icon: Building2, name: "Entreprises", desc: "Effectifs, levées, recrutements." },
+      { icon: ListChecks, name: "Listes", desc: "Segments partagés, export CSV." },
+      { icon: Wand2, name: "Enrichissement", desc: "Vous ne payez que ce qui aboutit." },
     ],
   },
   {
     label: "Engager",
-    subtitle: "Écrivez, envoyez, appelez. Les agents orchestrent, vous validez.",
+    subtitle: "Les agents préparent. Vous validez.",
     items: [
-      {
-        icon: Send,
-        name: "Séquences",
-        desc: "Multi-touch email + LinkedIn, personnalisées par lead par l'IA de travail. A/B testing intégré.",
-      },
-      {
-        icon: Mail,
-        name: "Emails",
-        desc: "Inbox unifiée multi-comptes (Gmail, Outlook, IMAP), réponses suggérées, warmup automatique. La deliverability, pas les templates plaqués.",
-      },
-      {
-        icon: Phone,
-        name: "Appels",
-        desc: "Numérotation intégrée, notes structurées, transcription. Chaque conversation nourrit le CRM.",
-      },
-      {
-        icon: CheckSquare,
-        name: "Tâches",
-        desc: "Ce que les agents vous demandent de faire aujourd'hui. Rien de plus, rien de moins.",
-      },
+      { icon: Send, name: "Séquences", desc: "Email et LinkedIn, personnalisés par prospect." },
+      { icon: Mail, name: "Emails", desc: "Gmail et Outlook dans une seule boîte." },
+      { icon: Phone, name: "Appels", desc: "Notes et transcription automatiques." },
+      { icon: CheckSquare, name: "Tâches", desc: "Ce qu'il reste à faire aujourd'hui." },
     ],
   },
   {
-    label: "Gagner",
-    subtitle: "Transformez les réponses en revenus.",
+    label: "Conclure",
+    subtitle: "Des réponses aux rendez-vous.",
     items: [
-      {
-        icon: CalendarDays,
-        name: "Meetings",
-        desc: "Liens de réservation, rappels automatiques, sync calendrier. Zero back-and-forth.",
-      },
-      {
-        icon: MessageSquare,
-        name: "Conversations",
-        desc: "Messagerie unifiée multicanal : LinkedIn, WhatsApp, Email, SMS, Instagram. Le contexte complet, un scroll.",
-      },
-      {
-        icon: Target,
-        name: "Opportunités",
-        desc: "Pipeline par étapes, prévisionnel simple, alertes de risque. Le CRM que vous ne remplirez pas à contrecœur.",
-        wide: true,
-      },
+      { icon: CalendarDays, name: "Meetings", desc: "Liens de réservation et rappels." },
+      { icon: MessageSquare, name: "Conversations", desc: "Tous vos canaux au même endroit." },
+      { icon: Target, name: "Opportunités", desc: "Un pipeline qui se remplit seul.", wide: true },
     ],
   },
   {
-    label: "Collaborer",
-    subtitle: "Solo, duo ou équipe complète — le workspace s'adapte.",
+    label: "Automatiser",
+    subtitle: "Seul ou en équipe.",
     items: [
-      {
-        icon: Users,
-        name: "Workspaces partagés",
-        desc: "Invitez vos collègues, chacun avec un rôle : édition ou lecture. Une seule base de données, tout le monde dessus.",
-      },
-      {
-        icon: ListChecks,
-        name: "Projets communs",
-        desc: "Campagnes, comptes stratégiques, workflows : tout se pilote à plusieurs sans dupliquer la donnée.",
-      },
-      {
-        icon: BarChart3,
-        name: "Analyses d'équipe",
-        desc: "Filtrez par SDR ou AE, voyez la performance par personne et par segment. Les chiffres sans la friction.",
-      },
-      {
-        icon: Workflow,
-        name: "Workflows partagés",
-        desc: "Un workflow s'ouvre dans un onglet dédié : vous pouvez continuer à piloter une campagne sans perdre votre brouillon.",
-      },
-    ],
-  },
-  {
-    label: "Automatiser & mesurer",
-    subtitle: "Le socle qui fait tenir tout le reste.",
-    items: [
-      {
-        icon: Workflow,
-        name: "Workflows",
-        desc: "Déclencheurs et actions en langage naturel. Les agents construisent les règles pour vous.",
-      },
-      {
-        icon: BarChart3,
-        name: "Analyses",
-        desc: "Funnel, cohortes, ROI par séquence. Voyez ce qui convertit avant de scaler.",
-      },
-      {
-        icon: Eye,
-        name: "Visiteurs",
-        desc: "Identification anonyme des visiteurs de votre site, alertes en temps réel sur les comptes cibles.",
-      },
-      {
-        icon: FileInput,
-        name: "Formulaires",
-        desc: "Capture inbound, routage automatique vers l'équipe IA. Vos leads chauds arrivent qualifiés.",
-      },
+      { icon: Workflow, name: "Workflows", desc: "Un canevas visuel, partagé avec l'équipe." },
+      { icon: BarChart3, name: "Analyses", desc: "Ce qui marche, par personne et par séquence." },
+      { icon: Eye, name: "Visiteurs", desc: "Qui visite votre site, en temps réel." },
+      { icon: FileInput, name: "Formulaires", desc: "Les leads entrants arrivent qualifiés." },
     ],
   },
 ];
@@ -211,10 +113,7 @@ function ProductPage() {
             <span className="italic">Toute la prospection.</span>
           </h1>
           <p className="mt-3 md:mt-6 text-base md:text-lg text-muted-foreground max-w-[54ch]">
-            LeadCortex remplace votre stack — Apollo, Lemlist, Clay, Instantly, HubSpot — par un
-            seul workspace piloté par une équipe d'agents IA. Une IA de recherche qui collecte et
-            vérifie, une IA de travail qui analyse et rédige. Solo ou à plusieurs, vous décrivez ce
-            que vous voulez, les agents exécutent, vous validez.
+            Vous décrivez. Les agents exécutent. Vous validez.
           </p>
           <div className="mt-4 md:mt-8 flex flex-wrap gap-2 md:gap-3">
             <Link
@@ -234,15 +133,13 @@ function ProductPage() {
         </div>
       </section>
 
-      {}
       <section className="mx-auto max-w-7xl px-4 md:px-6 pb-10 md:pb-16">
         <div className="rounded-2xl md:rounded-3xl border border-border bg-surface/40 p-2 md:p-4">
           <div className="rounded-xl md:rounded-2xl border border-border overflow-hidden bg-background">
             <div className="flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2.5 md:py-3.5 border-b border-border bg-surface/60">
               <Sparkles className="size-3.5 md:size-4 text-primary shrink-0" strokeWidth={1.5} />
               <span className="text-xs md:text-sm text-muted-foreground leading-snug">
-                « Trouve-moi 30 CTO de PME industrielles françaises qui recrutent en R&D, et prépare
-                une séquence de 4 emails. »
+                « Trouve-moi des CTO de PME industrielles qui recrutent, et prépare une séquence. »
               </span>
               <span className="ml-auto shrink-0 text-[8px] md:text-[10px] px-1.5 md:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium uppercase tracking-wide">
                 Équipe
@@ -250,12 +147,9 @@ function ProductPage() {
             </div>
             <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
               {[
-                {
-                  t: "1 · Recherche",
-                  d: "127 comptes correspondants. 89 avec signaux d'intention.",
-                },
-                { t: "2 · Enrichissement", d: "84 emails vérifiés. 46 mobiles directs." },
-                { t: "3 · Rédaction", d: "4 emails contextualisés par prospect, prêts à valider." },
+                { t: "Recherche", d: "Les comptes qui recrutent, repérés." },
+                { t: "Enrichissement", d: "Emails et téléphones vérifiés." },
+                { t: "Rédaction", d: "Un message par prospect, prêt à valider." },
               ].map((s) => (
                 <div key={s.t} className="p-4 md:p-6">
                   <p className="text-[9px] md:text-xs font-medium uppercase tracking-[0.15em] text-primary">
@@ -315,8 +209,7 @@ function ProductPage() {
           Voyez l'équipe tourner.
         </h2>
         <p className="mt-2 md:mt-4 text-xs md:text-sm text-muted-foreground max-w-[46ch] mx-auto">
-          50 crédits offerts. Aucune carte bancaire. Modèles inclus par défaut, BYOK disponible en
-          30 secondes.
+          Essai gratuit. Sans carte bancaire.
         </p>
         <div className="mt-4 md:mt-8">
           <Link

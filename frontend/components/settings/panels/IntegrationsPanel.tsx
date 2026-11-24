@@ -1,5 +1,6 @@
-//frontend\components\settings\panels\IntegrationsPanel.tsx
-import { AlertCircle, Link2, LockKeyhole, ShieldCheck } from "lucide-react";
+// frontend/components/settings/panels/IntegrationsPanel.tsx
+
+import { AlertCircle, Link2, LockKeyhole, ShieldCheck } from "@/components/icons";
 import { ConnectionsBlock } from "./ConnectionsBlock";
 import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
 
@@ -19,10 +20,10 @@ export function IntegrationsPanel() {
       <PanelGroup label="Configuration OAuth">
         <SettingsCard title="Scope Gmail restreint" icon={AlertCircle}>
           <p className="text-xs leading-relaxed text-muted-foreground">
-            L'accès complet à Gmail (lecture et envoi) est un scope restreint chez Google. En
-            production, il nécessite une{" "}
-            <b className="text-foreground">vérification d'application</b>. En phase de test, l'accès
-            est limité à 100 utilisateurs.
+            La première version demande uniquement le scope de lecture Gmail. Google le classe parmi
+            les scopes sensibles ou restreints selon l’usage ; une{" "}
+            <b className="text-foreground">vérification d'application</b> peut être exigée avant la
+            production. En phase de test, l’accès est limité aux utilisateurs de test configurés.
           </p>
         </SettingsCard>
 
@@ -35,8 +36,8 @@ export function IntegrationsPanel() {
 
         <SettingsCard title="Révocation" icon={LockKeyhole}>
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Vous pouvez révoquer un accès à tout moment. Les mails copiés et les tokens associés
-            sont alors supprimés (conformité RGPD).
+            Vous pouvez révoquer un accès à tout moment. La révocation supprime les jetons et les
+            métadonnées du compte stockés par LeadCortex ; les messages ne sont pas copiés en base.
           </p>
         </SettingsCard>
       </PanelGroup>

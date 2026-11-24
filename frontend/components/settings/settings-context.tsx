@@ -1,4 +1,5 @@
-//frontend\components\settings\settings-context.tsx
+// frontend/components/settings/settings-context.tsx
+
 import {
   createContext,
   useCallback,
@@ -9,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useTabContextValue, useTabs } from "@/components/app-tabs";
+import { useTabContextValue, useTabs } from "@/components/layout/app-tabs";
 
 export type SettingsSection =
   | "account"
@@ -185,9 +186,11 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
 type SettingsContextValue = {
   open: boolean;
   section: SettingsSection;
+  billingReceiptOpen: boolean;
   openSettings: (section?: SettingsSection) => void;
   closeSettings: () => void;
   setSection: (section: SettingsSection) => void;
+  setBillingReceiptOpen: (open: boolean) => void;
 };
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -203,6 +206,7 @@ export function useSettings(): SettingsContextValue {
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [billingReceiptOpen, setBillingReceiptOpen] = useState(false);
 
   const [section, setSectionRaw] = useTabContextValue<SettingsSection>(
     TAB_SECTION_KEY,
@@ -226,28 +230,35 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     if (prevActiveId.current !== activeId) {
       prevActiveId.current = activeId;
       setOpen(false);
+      setBillingReceiptOpen(false);
     }
   }, [activeId]);
 
   const openSettings = useCallback(
     (s?: SettingsSection) => {
       if (s) setSection(s);
+      setBillingReceiptOpen(false);
       setOpen(true);
     },
     [setSection],
   );
 
-  const closeSettings = useCallback(() => setOpen(false), []);
+  const closeSettings = useCallback(() => {
+    setOpen(false);
+    setBillingReceiptOpen(false);
+  }, []);
 
   const value = useMemo<SettingsContextValue>(
     () => ({
       open,
       section: safeSection,
+      billingReceiptOpen,
       openSettings,
       closeSettings,
       setSection,
+      setBillingReceiptOpen,
     }),
-    [open, safeSection, openSettings, closeSettings, setSection],
+    [open, safeSection, billingReceiptOpen, openSettings, closeSettings, setSection],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

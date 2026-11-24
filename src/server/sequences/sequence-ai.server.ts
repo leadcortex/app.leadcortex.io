@@ -1,4 +1,5 @@
-//src\server\sequences\sequence-ai.server.ts
+// src/server/sequences/sequence-ai.server.ts
+
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText, Output } from "ai";
 import { z } from "zod";

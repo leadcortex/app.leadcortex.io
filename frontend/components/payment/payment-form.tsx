@@ -1,5 +1,6 @@
-//frontend\components\payment\payment-form.tsx
-import { CreditCard, Lock, User, Mail } from "lucide-react";
+// frontend/components/payment/payment-form.tsx
+
+import { CreditCard, Lock, User, Mail } from "@/components/icons";
 import { useState } from "react";
 
 interface PaymentFormProps {

@@ -1,3 +1,5 @@
+// backend/academy/internal/progress/engine_test.go
+
 package progress
 
 import (
@@ -8,15 +10,11 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Fixtures ────────────────────────────────────────────────────────── */
 
-// fixedClock — horloge figée pour les tests.
 type fixedClock struct{ t time.Time }
 
 func (c fixedClock) Now() time.Time { return c.t }
 
-// buildTestRegistry crée un petit registre en mémoire pour les tests.
-// 2 modules, 3 leçons au total.
 func buildTestRegistry(t *testing.T) *curriculum.Registry {
 	t.Helper()
 
@@ -117,7 +115,6 @@ func newTestLearner() *domain.Learner {
 	return domain.NewLearner("learner-1", "Test User", "test@example.com")
 }
 
-/* ─── Tests : évaluation d'accès ──────────────────────────────────────── */
 
 func TestCanStart_FirstLessonUnlocked(t *testing.T) {
 	e := newTestEngine(t)
@@ -152,7 +149,6 @@ func TestCanStart_UnknownLesson(t *testing.T) {
 	}
 }
 
-/* ─── Tests : application d'événements ───────────────────────────────── */
 
 func TestApply_LessonStarted(t *testing.T) {
 	e := newTestEngine(t)
@@ -195,14 +191,12 @@ func TestApply_FullLessonFlow(t *testing.T) {
 	learner := newTestLearner()
 	now := time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 
-	// Démarrer la leçon.
 	if _, err := e.Apply(learner, LessonStarted{
 		At: now, LearnerID: learner.ID, LessonID: "l1",
 	}); err != nil {
 		t.Fatalf("start : %v", err)
 	}
 
-	// Voir le cover.
 	if _, err := e.Apply(learner, LessonBlockViewed{
 		At: now, LearnerID: learner.ID, LessonID: "l1",
 		BlockIndex: 0,
@@ -210,7 +204,6 @@ func TestApply_FullLessonFlow(t *testing.T) {
 		t.Fatalf("cover : %v", err)
 	}
 
-	// Répondre à l'exercice.
 	if _, err := e.Apply(learner, ExerciseAnswered{
 		At: now, LearnerID: learner.ID, LessonID: "l1",
 		BlockIndex: 1, ExerciseID: "ex1", Score: 100, AttemptNumber: 1, XPAwarded: 10,
@@ -218,7 +211,6 @@ func TestApply_FullLessonFlow(t *testing.T) {
 		t.Fatalf("exercise : %v", err)
 	}
 
-	// Réussir la mission.
 	if _, err := e.Apply(learner, MissionSucceeded{
 		At: now, LearnerID: learner.ID, LessonID: "l1",
 		BlockIndex: 2, MissionID: "m1-l1-mission",
@@ -226,7 +218,6 @@ func TestApply_FullLessonFlow(t *testing.T) {
 		t.Fatalf("mission : %v", err)
 	}
 
-	// Voir le debrief.
 	res, err := e.Apply(learner, LessonBlockViewed{
 		At: now, LearnerID: learner.ID, LessonID: "l1",
 		BlockIndex: 3,
@@ -235,14 +226,12 @@ func TestApply_FullLessonFlow(t *testing.T) {
 		t.Fatalf("debrief : %v", err)
 	}
 
-	// Vérifier la complétion.
 	progress := learner.LessonProgress["l1"]
 	if progress.Status != domain.LessonStatusCompleted &&
 		progress.Status != domain.LessonStatusMastered {
 		t.Errorf("statut final : attendu completed ou mastered, obtenu %s", progress.Status)
 	}
 
-	// Vérifier l'émission de l'événement LessonCompleted.
 	hasCompleted := false
 	for _, ev := range res.Emitted {
 		if _, ok := ev.(LessonCompleted); ok {
@@ -253,7 +242,6 @@ func TestApply_FullLessonFlow(t *testing.T) {
 		t.Errorf("attendu : événement LessonCompleted émis, obtenu %v", res.Emitted)
 	}
 
-	// XP vérifiée.
 	if learner.XP < 60 {
 		t.Errorf("XP : attendu >= 60 (10 ex + 50 mission), obtenu %d", learner.XP)
 	}
@@ -279,7 +267,6 @@ func TestApply_BlockOutOfOrder(t *testing.T) {
 	}
 }
 
-/* ─── Tests : recommandation ──────────────────────────────────────────── */
 
 func TestRecommend_FreshLearner(t *testing.T) {
 	e := newTestEngine(t)
@@ -294,7 +281,6 @@ func TestRecommend_FreshLearner(t *testing.T) {
 	}
 }
 
-/* ─── Tests : snapshot ────────────────────────────────────────────────── */
 
 func TestBuildSnapshot_Structure(t *testing.T) {
 	e := newTestEngine(t)
@@ -319,7 +305,6 @@ func TestBuildSnapshot_Structure(t *testing.T) {
 	}
 }
 
-/* ─── Tests : FSM ─────────────────────────────────────────────────────── */
 
 func TestCanTransition_Allowed(t *testing.T) {
 	allowed := []struct {

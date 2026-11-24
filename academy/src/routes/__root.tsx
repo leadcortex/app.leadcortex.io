@@ -1,3 +1,5 @@
+// academy/src/routes/__root.tsx
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -9,10 +11,10 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-
+import { startQueueAutoFlush } from "@/lib/offline-queue";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { AcademyProvider } from '@/components/academy/academy-shell';
+import { AcademyProvider } from "@/components/academy/academy-shell";
 
 function NotFoundComponent() {
   return (
@@ -36,6 +38,17 @@ function NotFoundComponent() {
   );
 }
 
+export function RootComponent() {
+  useEffect(() => {
+    startQueueAutoFlush();
+  }, []);
+
+  return (
+    <AcademyProvider>
+      <Outlet />
+    </AcademyProvider>
+  );
+}
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
@@ -120,7 +133,6 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <AcademyProvider><Outlet /></AcademyProvider>
     </QueryClientProvider>
   );

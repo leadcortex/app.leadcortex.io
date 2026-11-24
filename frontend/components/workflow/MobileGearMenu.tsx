@@ -1,9 +1,10 @@
-//frontend\components\workflow\MobileGearMenu.tsx
+// frontend/components/workflow/MobileGearMenu.tsx
+
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Settings } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import type { MenuEntry, MenuSection } from "./menu-model";
 
 function resolveLevel(root: MenuEntry[], path: number[]) {

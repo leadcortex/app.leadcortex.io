@@ -1,4 +1,5 @@
-//frontend\components\workflow\CanvasContextMenu.tsx
+// frontend/components/workflow/CanvasContextMenu.tsx
+
 import { useEffect, useLayoutEffect, useRef } from "react";
 import {
   Plus,
@@ -13,7 +14,7 @@ import {
   EyeOff,
   MousePointerSquareDashed,
   Code2,
-} from "lucide-react";
+} from "@/components/icons";
 
 export type MenuTarget = { type: "node" | "comment" | "edge"; id: string } | null;
 

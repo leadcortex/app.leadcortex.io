@@ -1,12 +1,13 @@
-//frontend\components\ui\sheet.tsx
+// frontend/components/ui/sheet.tsx
+
 "use client";
 
 import * as React from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
-import { X } from "lucide-react";
+import { X } from "@/components/icons";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const Sheet = SheetPrimitive.Root;
 
@@ -73,7 +74,7 @@ const SheetContent = React.forwardRef<
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
 const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)} {...props} />
+  <div className={cn("flex flex-col space-y-3 text-center sm:text-left", className)} {...props} />
 );
 SheetHeader.displayName = "SheetHeader";
 

@@ -1,19 +1,9 @@
+// frontend/components/ai-assistant/assistant-error-boundary.tsx
+
 "use client";
 
-/**
- * Garde-fou d'erreur pour l'assistant.
- *
- * Objectif : si une exception inattendue se produit dans l'arbre de
- * l'assistant (message malformé, listener cassé…), le reste de
- * l'application **doit continuer à fonctionner**. Le panneau se contente
- * d'afficher un état de repli sobre, avec un bouton « Réinitialiser » qui
- * démonte et remonte l'arbre.
- *
- * Aucun log serveur : le message d'erreur est affiché en clair pour le
- * développeur, sans exposer les internes à l'utilisateur final.
- */
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import { AlertTriangle, RefreshCw } from "@/components/icons";
 
 type Props = { children: ReactNode };
 type State = { hasError: boolean; message: string };

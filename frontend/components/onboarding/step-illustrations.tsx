@@ -1,29 +1,8 @@
-//frontend\components\onboarding\step-illustrations.tsx
-/**
- * Illustrations des 4 étapes d'onboarding (hero + cartes).
- *
- * ─────────────────────────────────────────────────────────────────────────
- *  Principe
- * ─────────────────────────────────────────────────────────────────────────
- *  Chaque scène est UN SEUL <svg> (viewBox 240 × 180) qui contient :
- *    1. une tache beige douce (optionnelle),
- *    2. la vraie mascotte — tracés exacts de la planche, via <LeadMascot />,
- *    3. un accessoire propre à l'étape (loupe, laptop, enveloppe, graphique).
- *
- *  Tout est dans le même repère : la scène se met à l'échelle d'un bloc
- *  (`w-full h-auto`), sans jamais décaler la mascotte par rapport à son
- *  accessoire, quelle que soit la taille d'affichage. Aucun texte dans le
- *  SVG, donc rien qui puisse déborder.
- *
- *  Les couleurs passent par les tokens du design system (`fill-primary/10`,
- *  `fill-background`…) : la scène suit le thème clair/sombre. Seuls les
- *  bruns de la mascotte (loupe, laptop) sont figés pour rester cohérents
- *  avec elle.
- * ─────────────────────────────────────────────────────────────────────────
- */
+// frontend/components/onboarding/step-illustrations.tsx
+
 import { LeadMascot, type MascotPose } from "@/components/ui/lead-mascot";
 import type { OnboardingStepKind } from "@/lib/onboarding";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type StepIllustrationKind = OnboardingStepKind;
 
@@ -57,7 +36,6 @@ function Sparkle({ cx, cy, r = 10 }: { cx: number; cy: number; r?: number }) {
   );
 }
 
-/** Mini-fiche contact : avatar + deux lignes de texte (sans texte réel). */
 function ContactCard({ x, y, w = 62, h = 24 }: { x: number; y: number; w?: number; h?: number }) {
   return (
     <g transform={`translate(${x} ${y})`}>
@@ -89,10 +67,6 @@ function ContactCard({ x, y, w = 62, h = 24 }: { x: number; y: number; w?: numbe
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Étape 1 — Ajouter des prospects : loupe + liste de contacts               */
-/* -------------------------------------------------------------------------- */
-
 function AddProps() {
   return (
     <g>
@@ -123,10 +97,6 @@ function AddProps() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Étape 2 — Enrichir : laptop + fiches de données                           */
-/* -------------------------------------------------------------------------- */
-
 function EnrichProps() {
   return (
     <g>
@@ -151,10 +121,6 @@ function EnrichProps() {
     </g>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Étape 3 — Séquence : enveloppe + avion en papier                          */
-/* -------------------------------------------------------------------------- */
 
 function SequenceProps() {
   return (
@@ -198,10 +164,6 @@ function SequenceProps() {
     </g>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Étape 4 — Résultats : barres ascendantes + flèche de tendance             */
-/* -------------------------------------------------------------------------- */
 
 function TrackProps() {
   const bars = [
@@ -253,13 +215,8 @@ const PROPS: Record<StepIllustrationKind, () => React.JSX.Element> = {
   track: TrackProps,
 };
 
-/* -------------------------------------------------------------------------- */
-/*  Composant public                                                          */
-/* -------------------------------------------------------------------------- */
-
 type StepIllustrationProps = {
   kind: StepIllustrationKind;
-  /** Affiche la tache beige derrière la scène (désactivée dans les cartes, qui ont leur propre fond). */
   blob?: boolean;
   className?: string;
 };

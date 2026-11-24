@@ -1,3 +1,5 @@
+// backend/academy/internal/adaptivity/signals_test.go
+
 package adaptivity
 
 import (
@@ -8,7 +10,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Fixtures ────────────────────────────────────────────────────────── */
 
 func fixedTime() time.Time {
 	return time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
@@ -18,7 +19,6 @@ func newLearner() *domain.Learner {
 	return domain.NewLearner("u-test", "Test", "t@example.com")
 }
 
-// buildTestRegistry crée un registry à 2 leçons (l1, l2 -> l1 requis).
 func buildTestRegistry(t *testing.T) *curriculum.Registry {
 	t.Helper()
 
@@ -53,7 +53,6 @@ func buildTestRegistry(t *testing.T) *curriculum.Registry {
 	return curriculum.NewRegistry([]*domain.Program{program}, nil, nil)
 }
 
-/* ─── DefaultSignalOptions ────────────────────────────────────────────── */
 
 func TestDefaultSignalOptions(t *testing.T) {
 	now := fixedTime()
@@ -75,7 +74,6 @@ func TestDefaultSignalOptions(t *testing.T) {
 	}
 }
 
-/* ─── Nil learner ─────────────────────────────────────────────────────── */
 
 func TestDetectSignals_NilLearner(t *testing.T) {
 	sigs := DetectSignals(nil, DefaultSignalOptions(fixedTime()))
@@ -84,13 +82,12 @@ func TestDetectSignals_NilLearner(t *testing.T) {
 	}
 }
 
-/* ─── SignalWeakConcept ───────────────────────────────────────────────── */
 
 func TestDetectSignals_WeakConcept(t *testing.T) {
 	l := newLearner()
 	l.ConceptMastery["c1"] = domain.Mastery{
 		ConceptID: "c1",
-		Level:     30, // < 60
+		Level:     30,
 		Attempts:  3,
 		Correct:   1,
 	}
@@ -114,7 +111,7 @@ func TestDetectSignals_MasteredConceptNotFlagged(t *testing.T) {
 	l := newLearner()
 	l.ConceptMastery["c1"] = domain.Mastery{
 		ConceptID: "c1",
-		Level:     domain.MasteryMastered, // 80
+		Level:     domain.MasteryMastered,
 		Attempts:  5,
 		Correct:   5,
 	}
@@ -127,15 +124,14 @@ func TestDetectSignals_MasteredConceptNotFlagged(t *testing.T) {
 	}
 }
 
-/* ─── SignalLowScores ─────────────────────────────────────────────────── */
 
 func TestDetectSignals_LowScores(t *testing.T) {
 	l := newLearner()
 	l.ConceptMastery["c1"] = domain.Mastery{
 		ConceptID: "c1",
-		Level:     domain.MasteryMastered, // pas weak
+		Level:     domain.MasteryMastered,
 		Attempts:  10,
-		Correct:   5, // accuracy 50% < 60
+		Correct:   5,
 	}
 
 	sigs := DetectSignals(l, DefaultSignalOptions(fixedTime()))
@@ -150,7 +146,6 @@ func TestDetectSignals_LowScores(t *testing.T) {
 	}
 }
 
-/* ─── SignalLapsedCards ───────────────────────────────────────────────── */
 
 func TestDetectSignals_LapsedCards(t *testing.T) {
 	l := newLearner()
@@ -173,12 +168,11 @@ func TestDetectSignals_LapsedCards(t *testing.T) {
 	}
 }
 
-/* ─── SignalOverdueReviews ────────────────────────────────────────────── */
 
 func TestDetectSignals_OverdueReviews(t *testing.T) {
 	l := newLearner()
 	card := *domain.NewSrsCard("card-1", "c1", "Q", "A")
-	card.DueAt = fixedTime().AddDate(0, 0, -5) // 5 jours en retard
+	card.DueAt = fixedTime().AddDate(0, 0, -5)
 
 	sigs := DetectSignals(l, SignalOptions{
 		Now:      fixedTime(),
@@ -195,12 +189,11 @@ func TestDetectSignals_OverdueReviews(t *testing.T) {
 	}
 }
 
-/* ─── SignalStreakBroken ──────────────────────────────────────────────── */
 
 func TestDetectSignals_StreakBroken(t *testing.T) {
 	l := newLearner()
 	l.StreakDays = 0
-	l.LastActivityAt = fixedTime().AddDate(0, 0, -5) // 5 jours sans activité
+	l.LastActivityAt = fixedTime().AddDate(0, 0, -5)
 
 	sigs := DetectSignals(l, DefaultSignalOptions(fixedTime()))
 	found := false
@@ -217,7 +210,7 @@ func TestDetectSignals_StreakBroken(t *testing.T) {
 func TestDetectSignals_NotStalledIfRecent(t *testing.T) {
 	l := newLearner()
 	l.StreakDays = 0
-	l.LastActivityAt = fixedTime().Add(-time.Hour) // il y a 1h
+	l.LastActivityAt = fixedTime().Add(-time.Hour)
 
 	sigs := DetectSignals(l, DefaultSignalOptions(fixedTime()))
 	for _, s := range sigs {
@@ -227,13 +220,10 @@ func TestDetectSignals_NotStalledIfRecent(t *testing.T) {
 	}
 }
 
-/* ─── SignalBlockedLesson ─────────────────────────────────────────────── */
 
 func TestDetectSignals_BlockedLesson(t *testing.T) {
 	reg := buildTestRegistry(t)
 	l := newLearner()
-	// l2 requiert l1 ; on n'a pas de LessonProgress → l2 bloquée avec
-	// exactement 1 prérequis manquant.
 
 	sigs := DetectSignals(l, SignalOptions{
 		Now:      fixedTime(),
@@ -250,7 +240,6 @@ func TestDetectSignals_BlockedLesson(t *testing.T) {
 	}
 }
 
-/* ─── Tri par sévérité ────────────────────────────────────────────────── */
 
 func TestDetectSignals_SortedBySeverity(t *testing.T) {
 	l := newLearner()
@@ -258,7 +247,7 @@ func TestDetectSignals_SortedBySeverity(t *testing.T) {
 		ConceptID: "c1", Level: 30, Attempts: 3, Correct: 1,
 	}
 	l.StreakDays = 0
-	l.LastActivityAt = fixedTime().AddDate(0, 0, -14) // sévérité 1.0
+	l.LastActivityAt = fixedTime().AddDate(0, 0, -14)
 
 	sigs := DetectSignals(l, DefaultSignalOptions(fixedTime()))
 	if len(sigs) < 2 {

@@ -1,17 +1,9 @@
+// frontend/components/ai-assistant/message-search.tsx
+
 "use client";
 
-/**
- * Barre de recherche dans la conversation.
- *
- *  - S'ouvre par Ctrl/⌘+F (géré par le parent), se ferme par Échap.
- *  - Navigation : Entrée = suivant, Maj+Entrée = précédent, ou les flèches.
- *  - Compteur « n / N » ; saisie vide → compteur masqué.
- *  - Au saut vers un message, un flash lumineux (Web Animations API) attire
- *    l'œil sans toucher au rendu du message lui-même : aucune classe CSS
- *    globale n'est requise, aucune modification de `MessageContent`.
- */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronUp, Search, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Search, X } from "@/components/icons";
 import type { AssistantMessage } from "./assistant-engine";
 
 export function MessageSearch({
@@ -51,7 +43,6 @@ export function MessageSearch({
     setActiveIdx(0);
   }, [query]);
 
-  /** Saut vers un message + flash lumineux. */
   const jumpTo = useCallback(
     (id: string) => {
       const el = scrollRef.current?.querySelector<HTMLElement>(`[data-message-id="${id}"]`);
@@ -66,7 +57,6 @@ export function MessageSearch({
           { duration: 1100, easing: "ease-out" },
         );
       } catch {
-        /* Web Animations API indisponible → silencieux */
       }
     },
     [scrollRef],

@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\scheduler.ts
+// frontend/lib/workflow-engine/scheduler.ts
+
 export type ScheduledJobKind = "resume-run" | "recurring-trigger";
 
 export type ScheduledJob = {
@@ -65,7 +66,6 @@ export class Scheduler {
     return [...this.jobs.values()].sort((a, b) => a.runAt - b.runAt);
   }
 
-  /** Prend un lease sur les jobs échus et les exécute. Idempotent. */
   async processDueJobs(now = Date.now()): Promise<number> {
     const runner = this.runner;
     if (!runner) return 0;
@@ -82,7 +82,6 @@ export class Scheduler {
         processed += 1;
       } catch {
         job.leaseUntil = null;
-        // Backoff simple : on repousse le job, il sera rejoué au prochain tick.
         job.runAt = now + Math.min(60_000, 1000 * 2 ** Math.min(job.attempts, 5));
         if (job.attempts > 8) this.jobs.delete(job.jobId);
       }
@@ -96,7 +95,6 @@ export class Scheduler {
     this.timer = setInterval(() => {
       void this.processDueJobs();
     }, 1000);
-    // Ne bloque pas la fermeture du process quand l'API le supporte.
     (this.timer as unknown as { unref?: () => void }).unref?.();
   }
 
@@ -109,11 +107,6 @@ export class Scheduler {
 
 export const scheduler = new Scheduler();
 
-/* ------------------------------------------------------------------ */
-/* Calendrier : cron minimal, jours ouvrés, fuseaux                     */
-/* ------------------------------------------------------------------ */
-
-/** Convertit une durée `{value, unit}` en millisecondes. */
 export function durationToMs(value: number, unit: string): number {
   const factors: Record<string, number> = {
     ms: 1,
@@ -128,14 +121,12 @@ export function durationToMs(value: number, unit: string): number {
 
 export type BusinessHours = {
   timezone: string;
-  /** 1 = lundi … 7 = dimanche. */
   days: number[];
   startHour: number;
   endHour: number;
   holidays?: string[];
 };
 
-/** Renvoie la prochaine date ouvrée à partir de `from` (précision : heure). */
 export function nextBusinessTime(from: Date, hours: BusinessHours): Date {
   const cursor = new Date(from.getTime());
   for (let i = 0; i < 24 * 14; i += 1) {
@@ -185,12 +176,6 @@ export function zonedParts(
   };
 }
 
-/**
- * Cron minimal `minute hour dayOfMonth month dayOfWeek` : valeurs, listes,
- * plages, joker et pas (étoile suivie de slash n).
-
- * Renvoie la prochaine occurrence UTC après `from`.
- */
 export function nextCronOccurrence(expression: string, from = new Date()): Date | null {
   const fields = expression.trim().split(/\s+/);
   if (fields.length !== 5) return null;

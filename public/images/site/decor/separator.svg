@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="268" viewBox="0 0 2048 268">
+  <title>Séparateur décoratif en courbes dorées</title>
+  <desc>Illustration vectorielle composée de courbes de Bézier, de lignes pointillées et de petits cercles dans des tons dorés et beige.</desc>
+  <rect width="2048" height="268" fill="#fbfaf7"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Courbes fines d'arrière-plan -->
+    <path d="M0 136 C110 136 145 135 174 136 C258 139 312 97 421 91 C515 86 575 108 661 119 C755 131 832 112 908 121 C1015 134 1070 162 1164 155 C1284 147 1340 112 1438 110 C1527 108 1572 121 1658 119 C1766 117 1818 89 1908 101 C1962 108 2004 136 2048 136" stroke="#eadcc8" stroke-width="1.4"/>
+    <path d="M0 153 C94 153 141 173 210 166 C289 157 352 121 432 119 C529 116 588 147 674 157 C765 167 835 188 923 193 C1018 198 1093 191 1176 179 C1271 166 1332 153 1416 151 C1502 149 1577 166 1650 157 C1743 145 1797 119 1877 123 C1940 127 1990 137 2048 137" stroke="#f0e6d8" stroke-width="1.2"/>
+    <path d="M0 136 L162 136 C243 119 310 91 431 101 C528 109 589 133 675 144 C770 157 831 183 923 193 C1014 202 1085 196 1176 180 C1274 162 1348 133 1443 136 C1532 139 1593 116 1669 111 C1766 105 1830 115 1903 136 L2048 136" stroke="#c7a16b" stroke-width="1.35" opacity=".8"/>
+    <path d="M0 168 C104 166 148 176 219 162 C293 147 357 126 434 127 C534 128 597 143 681 160 C760 176 830 207 919 211 C1022 216 1094 197 1180 179 C1280 157 1356 137 1442 137 C1537 138 1607 158 1687 150 C1774 141 1827 125 1903 136" stroke="#d6bd99" stroke-width="1.15" opacity=".75"/>
+    <!-- Courbe principale -->
+    <path d="M0 136 C65 136 113 136 162 136 C251 136 324 127 433 127 C542 127 625 154 756 168 C866 180 918 198 1026 196 C1144 194 1225 176 1320 155 C1370 144 1405 136 1443 136 C1544 136 1605 113 1691 112 C1772 111 1837 127 1903 136 C1950 136 1998 136 2048 136" stroke="#b58a4f" stroke-width="1.55"/>
+    <!-- Tracés pointillés supérieurs et inférieurs -->
+    <path d="M163 136 C245 105 327 77 427 70 C523 63 586 79 700 111 C753 126 798 145 862 159" stroke="#c7a16b" stroke-width="1.55" stroke-dasharray="1.6 9" opacity=".95"/>
+    <path d="M295 178 C366 195 427 192 500 180 C593 164 645 155 708 169 C783 186 851 218 932 223 C1046 230 1115 215 1204 190 C1292 166 1365 153 1440 151 C1513 149 1573 151 1648 146 C1738 140 1817 140 1904 151" stroke="#c7a16b" stroke-width="1.55" stroke-dasharray="1.4 9" opacity=".88"/>
+    <path d="M1028 121 C1105 143 1177 154 1251 151 C1339 147 1390 125 1460 105 C1541 82 1606 77 1680 79 C1761 81 1835 98 1902 121" stroke="#d8bf9b" stroke-width="1.1" stroke-dasharray="1.1 7" opacity=".75"/>
+    <path d="M1217 215 C1288 203 1354 194 1420 173 C1497 149 1565 121 1625 110 C1711 94 1800 104 1903 136" stroke="#d8bf9b" stroke-width="1.1" opacity=".7"/>
+    <!-- Lignes très pâles décoratives -->
+    <path d="M180 164 C279 123 345 106 435 111 C517 116 589 139 672 139 C758 139 812 115 899 119 C1001 124 1061 150 1158 151 C1253 152 1325 123 1418 115 C1510 107 1584 130 1675 126 C1760 122 1830 104 1903 119" stroke="#f0e6d9" stroke-width="1.2"/>
+    <path d="M915 109 C982 101 1034 94 1095 99 C1171 105 1227 128 1286 145 C1348 163 1394 173 1452 169 C1529 163 1586 145 1648 137" stroke="#f3eadf" stroke-width="1.25"/>
+  </g>
+  <!-- Points d'accent -->
+  <g>
+    <circle cx="162.5" cy="136" r="4.4" fill="#b58f5b"/>
+    <circle cx="433.5" cy="101" r="3.1" fill="#c8a777" opacity=".9"/>
+    <circle cx="433.5" cy="127" r="4.5" fill="#b58f5b"/>
+    <circle cx="434" cy="150" r="3.4" fill="#eadbc5"/>
+    <circle cx="295.5" cy="177.5" r="3.8" fill="#e8d6bd"/>
+    <circle cx="756.5" cy="168" r="4.0" fill="#b58f5b"/>
+    <circle cx="1029" cy="122" r="2.5" fill="#c6a16e" opacity=".85"/>
+    <circle cx="1217.5" cy="215.5" r="3.8" fill="#d5bd9b"/>
+    <circle cx="1443" cy="136.5" r="4.6" fill="#ad854b"/>
+    <circle cx="1625" cy="168.5" r="3.7" fill="#e2d0b5"/>
+    <circle cx="1856.5" cy="102.5" r="3.2" fill="#dfc9a8"/>
+    <circle cx="1903" cy="136" r="4.5" fill="#b58f5b"/>
+  </g>
+</svg>

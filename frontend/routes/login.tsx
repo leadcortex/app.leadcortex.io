@@ -1,14 +1,12 @@
-//frontend\routes\login.tsx
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { BrandLogo } from "@/components/brand-logo";
-import { useAppStore } from "@/lib/store";
-import { useState } from "react";
+// frontend/routes/login.tsx
+
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, AlertCircle, Eye, EyeOff } from "@/components/icons";
+import { BrandLogo } from "@/components/brand/brand-logo";
+import { useEffect, useState } from "react";
 import { AuthSkeleton } from "@/components/skeletons";
-import { useFormGuard, Honeypot } from "@/lib/security/client-guard";
-import { verifyWithServer } from "@/lib/security/client-api";
-import { WavyImageFrame } from "@/components/wavy-image-frame";
-import { OtpModal } from "@/components/auth/otp-modal";
+import { WavyImageFrame } from "@/components/marketing/wavy-image-frame";
+import { betterAuthClient, betterAuthEnabled } from "@/lib/auth/better-auth-client";
 
 const GoogleIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="size-4 shrink-0">
@@ -70,53 +68,73 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const navigate = useNavigate();
-  const { setUser } = useAppStore();
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState<string | null>(null);
   const [globalError, setGlobalError] = useState<string | null>(null);
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const guard = useFormGuard();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    const error = new URLSearchParams(window.location.search).get("error");
+    if (error === "account_exists") {
+      setGlobalError(
+        "Un compte existe déjà avec cette adresse e-mail. Connectez-vous avec le fournisseur associé.",
+      );
+    } else if (error === "google_not_configured") {
+      setGlobalError("La connexion Google n’est pas encore configurée sur le serveur.");
+    } else if (error === "database_unavailable") {
+      setGlobalError(
+        "La base de données est indisponible ou ses migrations ne sont pas appliquées. Démarrez PostgreSQL et vérifiez les migrations avant de réessayer.",
+      );
+    } else if (error) {
+      setGlobalError("La connexion Google a échoué ou a été annulée. Veuillez réessayer.");
+    }
+  }, []);
 
-  const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const handleGoogleSignIn = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!betterAuthEnabled) return;
+    e.preventDefault();
+    setGlobalError(null);
+    setIsSubmitting(true);
+    try {
+      const { error } = await betterAuthClient.signIn.social({
+        provider: "google",
+        callbackURL: "/app",
+        newUserCallbackURL: "/onboarding",
+      });
+      if (error) setGlobalError(error.message ?? "La connexion Google a échoué.");
+    } catch {
+      setGlobalError("La connexion Google a échoué. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (submitting) return;
-
-    setGlobalError(null);
-    const formData = new FormData(e.currentTarget);
-    const emailValue = (formData.get("email") as string) || "";
-    if (!emailValue || !validateEmail(emailValue)) {
-      setEmailError("Veuillez entrer un email valide.");
+    if (betterAuthEnabled) {
+      const formData = new FormData(e.currentTarget);
+      const email = String(formData.get("email") ?? "").trim();
+      const submittedPassword = String(formData.get("password") ?? "");
+      setGlobalError(null);
+      setIsSubmitting(true);
+      try {
+        const { error } = await betterAuthClient.signIn.email({
+          email,
+          password: submittedPassword,
+          callbackURL: "/app",
+        });
+        if (error) setGlobalError(error.message ?? "Adresse e-mail ou mot de passe invalide.");
+      } catch {
+        setGlobalError("La connexion a échoué. Veuillez réessayer.");
+      } finally {
+        setIsSubmitting(false);
+      }
       return;
     }
-    setEmailError(null);
-    setSubmitting(true);
-
-    const verdict = await verifyWithServer("login", guard.buildPayload(), emailValue);
-
-    if (!verdict.ok) {
-      setSubmitting(false);
-      setGlobalError(verdict.message);
+    if (import.meta.env.DEV) {
+      window.location.assign("/auth/dev-login");
       return;
     }
-
-    setEmail(emailValue);
-    setSubmitting(false);
-    setShowOtpModal(true);
-  };
-
-  const handleSocialLogin = () => {
-    navigate({ to: "/onboarding" });
-  };
-
-  const handleOtpVerify = () => {
-    setUser(email);
-    navigate({ to: "/app" });
+    setGlobalError("La connexion par e-mail n’est pas encore disponible. Utilisez Google.");
   };
 
   return (
@@ -135,28 +153,50 @@ function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <button
-                onClick={handleSocialLogin}
+              <a
+                href="/auth/google"
+                onClick={handleGoogleSignIn}
+                aria-disabled={isSubmitting}
                 className="w-full flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-2.5 text-xs md:text-sm font-medium text-foreground transition-all duration-150 hover:bg-surface active:scale-[0.97] active:bg-surface/80"
               >
                 <GoogleIcon />
-                <span>Continuer avec Google</span>
-              </button>
+                <span>{isSubmitting ? "Connexion…" : "Continuer avec Google"}</span>
+              </a>
               <button
-                onClick={handleSocialLogin}
+                type="button"
+                disabled={!import.meta.env.DEV}
+                onClick={() => window.location.assign("/auth/dev-login")}
+                title={
+                  import.meta.env.DEV
+                    ? "Ouvrir une session de test"
+                    : "Connexion Google disponible en premier"
+                }
                 className="w-full flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-2.5 text-xs md:text-sm font-medium text-foreground transition-all duration-150 hover:bg-surface active:scale-[0.97] active:bg-surface/80"
               >
                 <LinkedInIcon />
                 <span>Continuer avec LinkedIn</span>
               </button>
               <button
-                onClick={handleSocialLogin}
+                type="button"
+                disabled={!import.meta.env.DEV}
+                onClick={() => window.location.assign("/auth/dev-login")}
+                title={
+                  import.meta.env.DEV
+                    ? "Ouvrir une session de test"
+                    : "Connexion Google disponible en premier"
+                }
                 className="w-full flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-2.5 text-xs md:text-sm font-medium text-foreground transition-all duration-150 hover:bg-surface active:scale-[0.97] active:bg-surface/80"
               >
                 <AppleIcon />
                 <span>Continuer avec Apple</span>
               </button>
             </div>
+            {import.meta.env.DEV && (
+              <p className="text-xs text-muted-foreground">
+                Mode développement : ces options et le formulaire e-mail ouvrent une session de
+                test.
+              </p>
+            )}
 
             <div className="relative flex items-center">
               <div className="flex-1 border-t border-border"></div>
@@ -166,17 +206,9 @@ function LoginPage() {
               <div className="flex-1 border-t border-border"></div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8" noValidate>
-              <Honeypot value={guard.honeypot} onChange={guard.setHoneypot} />
-
+            <form onSubmit={handleEmailSubmit} className="space-y-6 md:space-y-8" noValidate>
               <div className="space-y-3 md:space-y-4">
-                <Field
-                  label="Email"
-                  type="email"
-                  name="email"
-                  placeholder="you@founder.co"
-                  error={emailError}
-                />
+                <Field label="Email" type="email" name="email" placeholder="you@founder.co" />
                 <PasswordField
                   label="Mot de passe"
                   name="password"
@@ -196,10 +228,10 @@ function LoginPage() {
 
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={isSubmitting}
                 className="w-full inline-flex items-center justify-center gap-1.5 md:gap-2 rounded-xl bg-foreground text-background px-3 md:px-4 py-2.5 md:py-3 text-xs md:text-sm font-medium hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-all group"
               >
-                {submitting ? "Vérification…" : "Se connecter"}
+                {isSubmitting ? "Connexion…" : "Se connecter"}
                 <ArrowRight className="size-3.5 md:size-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
 
@@ -219,16 +251,8 @@ function LoginPage() {
       </div>
 
       <div className="hidden lg:block relative bg-background auth-side">
-        <WavyImageFrame src="/images/login-signup.webp" alt="Vagues sur une plage de sable" />
+        <WavyImageFrame src="/images/auth/login-signup.webp" alt="Vagues sur une plage de sable" />
       </div>
-
-      <OtpModal
-        open={showOtpModal}
-        email={email}
-        onVerify={handleOtpVerify}
-        onClose={() => setShowOtpModal(false)}
-        redirectTo="/app"
-      />
     </div>
   );
 }
@@ -261,10 +285,6 @@ function Field({
     </label>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  PasswordField                                                             */
-/* -------------------------------------------------------------------------- */
 
 function PasswordField({
   label,

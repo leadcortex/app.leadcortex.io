@@ -1,24 +1,12 @@
+// frontend/hooks/use-file-drop.ts
+
 "use client";
 
-/**
- * Hook de glisser-déposer de fichiers sur un élément.
- *
- * Renvoie :
- *  - `isDragging` : vrai tant qu'au moins un fichier survole la zone ;
- *  - `bind`       : à étaler sur l'élément cible (onDragEnter/Over/Leave/Drop).
- *
- * Le compteur interne `counter` évite le clignotement classique quand le
- * curseur traverse des enfants : seul un vrai `dragLeave` sortant de la
- * zone remet `isDragging` à false.
- */
 import { useCallback, useRef, useState, type DragEvent } from "react";
 
 export type UseFileDropOptions = {
-  /** Callback invoqué avec les fichiers déposés (déjà filtrés). */
   onDrop: (files: File[]) => void;
-  /** Filtre optionnel ; renvoyer false exclut le fichier. */
   filter?: (file: File) => boolean;
-  /** Quand `false`, le hook n'écoute plus (utile pour désactiver sur mobile). */
   enabled?: boolean;
 };
 

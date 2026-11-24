@@ -1,18 +1,10 @@
+// frontend/components/ai-assistant/history-panel.tsx
+
 "use client";
 
-/**
- * Historique des conversations de l'assistant.
- *
- * Desktop → Dialog centré.
- * Mobile  → MobileSheet tiré du bas.
- *
- * Affiche la liste triée par date de modification, avec titre, extrait du
- * dernier message, date relative et bouton de suppression. Un clic sur une
- * entrée charge la conversation (le parent se charge de l'application).
- */
 import { useEffect, useState } from "react";
-import { MessageSquare, Plus, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { MessageSquare, Plus, Trash2 } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";

@@ -1,3 +1,5 @@
+// backend/academy/internal/adaptivity/recommender.go
+
 package adaptivity
 
 import (
@@ -8,68 +10,46 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// RecommendationKind identifie la nature de l'action recommandée.
 type RecommendationKind string
 
 const (
-	// RecoReviewConcept — réviser un concept fragile (SRS en priorité).
 	RecoReviewConcept RecommendationKind = "review_concept"
 
-	// RecoPracticeConcept — s'exercer sur un concept (nouvel exercice).
 	RecoPracticeConcept RecommendationKind = "practice_concept"
 
-	// RecoResumeLesson — reprendre une leçon en cours.
 	RecoResumeLesson RecommendationKind = "resume_lesson"
 
-	// RecoStartLesson — démarrer la prochaine leçon débloquée.
 	RecoStartLesson RecommendationKind = "start_lesson"
 
-	// RecoRestDay — faire une pause, revenir demain.
 	RecoRestDay RecommendationKind = "rest_day"
 
-	// RecoNone — aucune action particulière.
 	RecoNone RecommendationKind = "none"
 )
 
-// Recommendation est l'action unique que l'UI doit mettre en avant.
 type Recommendation struct {
-	// Kind — nature de l'action.
 	Kind RecommendationKind `json:"kind"`
 
-	// LessonID — leçon concernée (si applicable).
 	LessonID string `json:"lesson_id,omitempty"`
 
-	// ConceptID — concept concerné (si applicable).
 	ConceptID string `json:"concept_id,omitempty"`
 
-	// Reason — phrase courte affichée à l'apprenant.
 	Reason string `json:"reason"`
 
-	// Priority — 0 = haute priorité, 3 = basse.
 	Priority int `json:"priority"`
 
-	// EstimatedMin — durée estimée en minutes.
 	EstimatedMin int `json:"estimated_minutes"`
 
-	// Score — valeur interne (utilisée pour le tri) 0-100.
 	Score float64 `json:"-"`
 }
 
-// RecommendOptions paramètre la recommandation.
 type RecommendOptions struct {
 	Registry *curriculum.Registry
 	SrsCards []domain.SrsCard
 	Now      time.Time
 
-	// PreferReview — si vrai, on privilégie les révisions SRS avant
-	// tout (mode "session de rattrapage").
 	PreferReview bool
 }
 
-// Recommend renvoie l'action prioritaire pour l'apprenant.
-//
-// La fonction est PURE. Elle peut renvoyer une recommandation de type
-// `RecoNone` si aucun contexte utile n'est disponible.
 func Recommend(learner *domain.Learner, opts RecommendOptions) Recommendation {
 	if learner == nil {
 		return Recommendation{
@@ -88,8 +68,6 @@ func Recommend(learner *domain.Learner, opts RecommendOptions) Recommendation {
 		}
 	}
 
-	// Tri par score décroissant, puis par priorité croissante,
-	// puis par Kind (ordre déterministe).
 	sort.SliceStable(candidates, func(i, j int) bool {
 		if candidates[i].Score != candidates[j].Score {
 			return candidates[i].Score > candidates[j].Score
@@ -103,12 +81,10 @@ func Recommend(learner *domain.Learner, opts RecommendOptions) Recommendation {
 	return candidates[0]
 }
 
-/* ─── Collecte des candidats ──────────────────────────────────────────── */
 
 func collectCandidates(l *domain.Learner, opts RecommendOptions) []Recommendation {
 	var out []Recommendation
 
-	// ─── 1. Reprendre une leçon en cours (haute priorité) ────────────
 	for lessonID, lp := range l.LessonProgress {
 		if lp.Status == domain.LessonStatusInProgress {
 			out = append(out, Recommendation{
@@ -122,13 +98,11 @@ func collectCandidates(l *domain.Learner, opts RecommendOptions) []Recommendatio
 		}
 	}
 
-	// ─── 2. Réviser un concept fragile (SRS) ─────────────────────────
 	if opts.PreferReview || learnerHasOverdueCards(l, opts) {
 		for cid, m := range l.ConceptMastery {
 			if m.IsMastered() {
 				continue
 			}
-			// Priorité selon l'écart au palier "maîtrisé".
 			gap := domain.MasteryMastered - m.Level
 			score := 70 + float64(gap)
 			out = append(out, Recommendation{
@@ -142,7 +116,6 @@ func collectCandidates(l *domain.Learner, opts RecommendOptions) []Recommendatio
 		}
 	}
 
-	// ─── 3. Démarrer une nouvelle leçon ──────────────────────────────
 	if opts.Registry != nil {
 		for _, lesson := range opts.Registry.AllLessons() {
 			lp, ok := l.LessonProgress[lesson.ID]
@@ -158,7 +131,7 @@ func collectCandidates(l *domain.Learner, opts RecommendOptions) []Recommendatio
 					EstimatedMin: lesson.DurationMin,
 					Score:        60,
 				})
-				break // première leçon débloquée seulement
+				break
 			}
 		}
 	}
@@ -166,7 +139,6 @@ func collectCandidates(l *domain.Learner, opts RecommendOptions) []Recommendatio
 	return out
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────── */
 
 func learnerHasOverdueCards(l *domain.Learner, opts RecommendOptions) bool {
 	for _, c := range opts.SrsCards {

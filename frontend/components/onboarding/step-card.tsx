@@ -1,31 +1,10 @@
-//frontend\components\onboarding\step-card.tsx
-/**
- * Carte détaillée d'une étape d'onboarding (grille 2×2 sous le hero).
- *
- * ─────────────────────────────────────────────────────────────────────────
- *  Anatomie
- * ─────────────────────────────────────────────────────────────────────────
- *  ┌──────────────────────────────────────────────────────────┐
- *  │ ┌──────────────┐   (01)                                  │
- *  │ │ illustration │   Titre                                 │
- *  │ │   (tuile)    │   Description sur deux lignes…          │
- *  │ └──────────────┘   [ Commencer → ]                       │
- *  └──────────────────────────────────────────────────────────┘
- *
- *  • La carte est elle-même un `@container` : tuile + texte passent côte à
- *    côte dès que SA largeur le permet, et s'empilent sinon. Le texte ne
- *    sort donc jamais de la carte, quelle que soit la largeur de la page.
- *  • `featured` : bouton plein (étape à faire en premier). Les autres ont
- *    un bouton « doux ».
- *  • `done` : carte verdie, bouton remplacé par « Étape validée ».
- *  • Le CTA est un <Link> TanStack vers la vraie page de l'app.
- * ─────────────────────────────────────────────────────────────────────────
- */
+// frontend/components/onboarding/step-card.tsx
+
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "@/components/icons";
 
 import type { OnboardingStepDefinition } from "@/lib/onboarding";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { StepIllustration } from "./step-illustrations";
 
 type StepCardProps = {
@@ -49,12 +28,10 @@ export function StepCard({ step, index, featured = false, done = false }: StepCa
       )}
     >
       <div className="grid items-center gap-4 @sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] @sm:gap-5 @lg:grid-cols-[minmax(0,11.5rem)_minmax(0,1fr)]">
-        {}
         <div className="mx-auto w-full max-w-[14rem] overflow-hidden rounded-2xl bg-primary/[0.08] @sm:mx-0 @sm:max-w-none">
           <StepIllustration kind={step.kind} blob={false} />
         </div>
 
-        {}
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span

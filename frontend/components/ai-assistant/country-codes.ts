@@ -1,4 +1,5 @@
-//frontend\components\ai-assistant\country-codes.ts
+// frontend/components/ai-assistant/country-codes.ts
+
 export type CountryRegion =
   "Europe" | "Afrique" | "Amériques" | "Amérique du Sud" | "Asie" | "Océanie";
 

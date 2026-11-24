@@ -1,4 +1,5 @@
-//frontend\components\workflow\CodeMirrorSurface.tsx
+// frontend/components/workflow/CodeMirrorSurface.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { autocompletion, completeAnyWord } from "@codemirror/autocomplete";

@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\blocks\triggers.ts
+// frontend/lib/workflow-engine/blocks/triggers.ts
+
 import { z } from "zod";
 
 import { branch, cfgBool, cfgNumber, cfgString, defineBlock, ok, skipped } from "./_shared";
@@ -12,7 +13,7 @@ const manualSchema = z
   .object({
     ...advanced,
     allowedRole: z.enum(["owner", "admin", "member"]).default("member"),
-    payloadSchema: z.record(z.unknown()).optional(),
+    payloadSchema: z.record(z.string(), z.unknown()).optional(),
     requireConfirmation: z.boolean().default(false),
     maxLaunchesPerHour: z.number().int().min(1).max(1000).default(60),
     testMode: z.boolean().default(true),
@@ -29,7 +30,7 @@ const scheduleSchema = z
     validUntil: z.string().datetime().optional(),
     overlapStrategy: z.enum(["skip", "queue", "allow"]).default("skip"),
     maxConcurrentInstances: z.number().int().min(1).max(20).default(1),
-    runData: z.record(z.unknown()).optional(),
+    runData: z.record(z.string(), z.unknown()).optional(),
   })
   .passthrough();
 
@@ -68,7 +69,7 @@ const formSchema = z
     ...advanced,
     formId: z.string().min(1),
     formVersion: z.number().int().min(1).default(1),
-    fieldMapping: z.record(z.string()).default({}),
+    fieldMapping: z.record(z.string(), z.string()).default({}),
     consentField: z.string().max(120).optional(),
     requireConsent: z.boolean().default(true),
     honeypotField: z.string().max(120).optional(),
@@ -80,7 +81,7 @@ const formSchema = z
       .min(0)
       .max(30 * 86_400_000)
       .default(86_400_000),
-    attribution: z.record(z.string()).default({}),
+    attribution: z.record(z.string(), z.string()).default({}),
   })
   .passthrough();
 
@@ -142,7 +143,7 @@ const meetingBookedSchema = z
       .max(30 * 86_400_000)
       .default(86_400_000),
     timezone: timezoneSchema.default("Europe/Paris"),
-    participantMapping: z.record(z.string()).default({}),
+    participantMapping: z.record(z.string(), z.string()).default({}),
   })
   .passthrough();
 
@@ -253,7 +254,6 @@ export const triggerBlocks: BlockDefinition[] = [
   passthroughTrigger("trig-email-reply", emailReplySchema, "provider"),
 ];
 
-/** Exporté pour les tests et la route webhook publique. */
 export const triggerSchemas = {
   manual: manualSchema,
   schedule: scheduleSchema,

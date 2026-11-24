@@ -1,4 +1,5 @@
-//academy\src\components\academy\academy-shell.tsx
+// academy/src/components/academy/academy-shell.tsx
+
 import {
   createContext,
   useContext,
@@ -21,7 +22,7 @@ import {
   Trophy,
   UserRound,
   Zap,
-} from "lucide-react";
+} from "../../../../frontend/components/icons";
 import { Button } from "../ui/button";
 import {
   AVATARS,
@@ -32,12 +33,11 @@ import {
   Avatar,
 } from "./illustrations";
 import { AcademyMobileSheet, useIsMobileAcademy } from "./academy-mobile-sheet";
-import { programs, type Lesson } from "../../../../model";
+import { SrsReview } from "./srs-review";
+import { useCurriculum } from "../../hooks/use-curriculum";
+import { useAvatars } from "../../hooks/use-avatars";
+import type { Lesson } from "../../lib/model";
 import { LessonPlayer } from "./lesson-player";
-
-/* ==========================================================================
-   Types
-   ========================================================================== */
 
 export type ChestReward =
   | { kind: "skin"; avatarId: string; rarity: "classic" | "collector" | "limited" }
@@ -45,7 +45,11 @@ export type ChestReward =
 
 export type SettingsTab = "companions" | "progress" | "params";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AcademyProgram = any;
+
 type AcademyState = {
+  programs: AcademyProgram[];
   programIndex: number;
   setProgramIndex: (i: number) => void;
   avatar: string;
@@ -58,10 +62,6 @@ type AcademyState = {
   openChest: () => ChestReward;
   resetProgress: () => void;
 };
-
-/* ==========================================================================
-   Provider
-   ========================================================================== */
 
 const AcademyContext = createContext<AcademyState | null>(null);
 
@@ -78,6 +78,18 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
   const [xp, setXp] = useState(0);
   const [gems, setGems] = useState(0);
   const [unlockedAvatars, setUnlockedAvatars] = useState<string[]>(DEFAULT_AVATAR_IDS);
+
+  const { programs } = useCurriculum();
+
+  const { unlockedIds: apiUnlocked } = useAvatars();
+  useEffect(() => {
+    if (apiUnlocked.length === 0) return;
+    setUnlockedAvatars((prev) => {
+      const merged = new Set([...prev, ...apiUnlocked]);
+      if (merged.size === prev.length) return prev;
+      return Array.from(merged);
+    });
+  }, [apiUnlocked]);
 
   function finish(lesson: Lesson, earned: number) {
     if (!practiced.includes(lesson.id)) {
@@ -97,7 +109,6 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
     const roll = Math.random();
 
     if (roll < CHEST_SKIN_CHANCE && hasSkin) {
-      // Tirage parmi les catégories disponibles (limited > collector > classic)
       const subRoll = Math.random();
 
       let pool: string[] | null = null;
@@ -147,6 +158,7 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AcademyState>(
     () => ({
+      programs,
       programIndex,
       setProgramIndex,
       avatar,
@@ -160,7 +172,7 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
       resetProgress,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [programIndex, avatar, practiced, xp, gems, unlockedAvatars],
+    [programs, programIndex, avatar, practiced, xp, gems, unlockedAvatars],
   );
 
   return <AcademyContext.Provider value={value}>{children}</AcademyContext.Provider>;
@@ -171,10 +183,6 @@ export function useAcademy() {
   if (!state) throw new Error('AcademyProvider is required');
   return state;
 }
-
-/* ==========================================================================
-   AcademyShell
-   ========================================================================== */
 
 export function AcademyShell({ children }: { children: ReactNode }) {
   const { xp, gems } = useAcademy();
@@ -287,10 +295,6 @@ export function AcademyShell({ children }: { children: ReactNode }) {
   );
 }
 
-/* ==========================================================================
-   Modale / Sheet de paramètres unifiée
-   ========================================================================== */
-
 function AcademySettingsModal({
   tab,
   onTabChange,
@@ -304,14 +308,15 @@ function AcademySettingsModal({
   const isMobile = useIsMobileAcademy();
   const [confirmReset, setConfirmReset] = useState(false);
   const [revision, setRevision] = useState<Lesson | null>(null);
+  const [showSrs, setShowSrs] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !revision) onClose();
+      if (e.key === 'Escape' && !revision && !showSrs) onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose, revision]);
+  }, [onClose, revision, showSrs]);
 
   const sortedAvatars = useMemo(() => {
     const unlocked = AVATARS.filter((a) => state.unlockedAvatars.includes(a.id));
@@ -319,18 +324,21 @@ function AcademySettingsModal({
     return [...unlocked, ...locked];
   }, [state.unlockedAvatars]);
 
-  const lessonsToReview = useMemo(
-    () =>
-      programs
-        .flatMap((p) => p.modules.flatMap((m) => m.lessons))
-        .filter((l) => state.practiced.includes(l.id)),
-    [state.practiced],
-  );
+  const lessonsToReview = useMemo(() => {
+    const list: Lesson[] = [];
+    for (const p of state.programs as Array<{ modules?: Array<{ lessons?: Lesson[] }> }>) {
+      for (const m of p.modules ?? []) {
+        for (const l of m.lessons ?? []) {
+          if (state.practiced.includes(l.id)) list.push(l);
+        }
+      }
+    }
+    return list;
+  }, [state.programs, state.practiced]);
 
   const unlockedCount = state.unlockedAvatars.length;
   const totalCount = AVATARS.length;
 
-  /* --- Bloc « barre d'onglets » réutilisé (desktop + sheet mobile) --- */
   const tabsBar = (
     <div className="settings-modal-tabs" role="tablist">
       <button
@@ -366,7 +374,6 @@ function AcademySettingsModal({
     </div>
   );
 
-  /* --- Bloc « contenu de l'onglet actif » réutilisé --- */
   const tabContent = (
     <>
       {tab === 'companions' && (
@@ -475,33 +482,64 @@ function AcademySettingsModal({
           </div>
 
           <div className="settings-subhead">
-            <h4>Révisions</h4>
-            <span>
-              {lessonsToReview.length} leçon{lessonsToReview.length > 1 ? 's' : ''}
-            </span>
+            <h4>Révisions espacées</h4>
+            <span>Consolide tes acquis</span>
           </div>
 
-          {lessonsToReview.length === 0 ? (
+          <div
+            className="settings-list__row"
+            style={{ marginTop: 8, alignItems: 'center' }}
+          >
+            <div>
+              <strong>Session SRS</strong>
+              <span>
+                Revois les cartes dues pour ancrer durablement tes connaissances.
+              </span>
+            </div>
+            <Button
+              variant="academy"
+              onClick={() => {
+                onClose();
+                setShowSrs(true);
+              }}
+            >
+              <Sparkles className="w-4 h-4" />
+              Lancer une session
+            </Button>
+          </div>
+
+          {lessonsToReview.length > 0 && (
+            <>
+              <div className="settings-subhead">
+                <h4>Revoir une leçon</h4>
+                <span>
+                  {lessonsToReview.length} leçon
+                  {lessonsToReview.length > 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="review-list">
+                {lessonsToReview.map((l) => (
+                  <Button
+                    key={l.id}
+                    variant="academyOutline"
+                    className="program-option"
+                    onClick={() => setRevision(l)}
+                  >
+                    <BookOpen />
+                    <span>
+                      <strong>{l.title}</strong>
+                      <small>{l.duration_min} min · Revoir cet entraînement</small>
+                    </span>
+                  </Button>
+                ))}
+              </div>
+            </>
+          )}
+
+          {lessonsToReview.length === 0 && (
             <div className="settings-empty">
               <BookOpen className="w-6 h-6" />
               <p>Tout commence par une première leçon.</p>
-            </div>
-          ) : (
-            <div className="review-list">
-              {lessonsToReview.map((l) => (
-                <Button
-                  key={l.id}
-                  variant="academyOutline"
-                  className="program-option"
-                  onClick={() => setRevision(l)}
-                >
-                  <BookOpen />
-                  <span>
-                    <strong>{l.title}</strong>
-                    <small>{l.duration_min} min · Revoir cet entraînement</small>
-                  </span>
-                </Button>
-              ))}
             </div>
           )}
         </div>
@@ -578,14 +616,13 @@ function AcademySettingsModal({
     </>
   );
 
-  /* --- Rendu mobile : sheet bottom-up --- */
   if (isMobile) {
     return (
       <>
         <AcademyMobileSheet
           open
           onOpenChange={(o) => {
-            if (!o && !revision) onClose();
+            if (!o && !revision && !showSrs) onClose();
           }}
           title="Votre espace"
         >
@@ -602,11 +639,17 @@ function AcademySettingsModal({
             onComplete={() => setRevision(null)}
           />
         )}
+
+        {showSrs && (
+          <SrsReview
+            avatar={state.avatar}
+            onClose={() => setShowSrs(false)}
+          />
+        )}
       </>
     );
   }
 
-  /* --- Rendu desktop : modale classique --- */
   return (
     <>
       <div className="modal-backdrop" onClick={onClose}>
@@ -642,6 +685,13 @@ function AcademySettingsModal({
           avatar={state.avatar}
           onClose={() => setRevision(null)}
           onComplete={() => setRevision(null)}
+        />
+      )}
+
+      {showSrs && (
+        <SrsReview
+          avatar={state.avatar}
+          onClose={() => setShowSrs(false)}
         />
       )}
     </>

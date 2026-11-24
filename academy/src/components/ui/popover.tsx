@@ -1,7 +1,9 @@
+// academy/src/components/ui/popover.tsx
+
 import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const Popover = PopoverPrimitive.Root;
 

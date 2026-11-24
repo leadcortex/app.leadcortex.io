@@ -1,10 +1,11 @@
-//frontend\components\settings\panels\MemoryPanel.tsx
+// frontend/components/settings/panels/MemoryPanel.tsx
+
 import { useState } from "react";
-import { Brain, Trash2 } from "lucide-react";
+import { Brain, Trash2 } from "@/components/icons";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { ConfirmDialog } from "@/components/confirm-dialog";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { PanelIntro, PanelGroup, SettingsCard, RowsCard, Row } from "./primitives";
 
 export function MemoryPanel() {

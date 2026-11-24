@@ -1,8 +1,9 @@
-//frontend\routes\docs.tsx
+// frontend/routes/docs.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, LifeBuoy, ShieldCheck, Scale } from "lucide-react";
-import { SiteNav, SiteFooter } from "@/components/site-nav";
-import { docSections } from "@/lib/docs-content";
+import { ArrowRight, LifeBuoy, ShieldCheck, Scale } from "@/components/icons";
+import { SiteNav, SiteFooter } from "@/components/layout/site-nav";
+import { docSections } from "@/lib/data/docs-content";
 
 export const Route = createFileRoute("/docs")({
   head: () => ({
@@ -59,11 +60,6 @@ function DocsHubPage() {
             <br />
             <span className="italic">Sans y perdre une journée.</span>
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-[56ch]">
-            Des guides écrits pour des équipes commerciales — solo, duo ou plus — qui n'ont pas de
-            temps à perdre. Pas de jargon inutile, juste ce qu'il faut savoir pour prospecter
-            efficacement avec l'équipe d'agents IA.
-          </p>
         </div>
       </section>
 

@@ -1,4 +1,5 @@
-//frontend\components\skeletons\auth-skeletons.tsx
+// frontend/components/skeletons/auth-skeletons.tsx
+
 import { Skeleton, SkeletonRegion } from "@/components/ui/skeleton";
 
 export function AuthSkeleton() {

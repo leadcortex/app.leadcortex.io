@@ -1,17 +1,9 @@
+// frontend/components/ai-assistant/density-toggle.tsx
+
 "use client";
 
-/**
- * Bascule de densité d'affichage des messages.
- *
- *  - `comfortable` (défaut) : bulles aérées, interligne généreux.
- *  - `compact`               : bulles plus serrées, gain de place vertical.
- *
- * Persisté en `localStorage` sous `lc.assistant.density`. La valeur lue est
- * appliquée au conteneur de liste via un attribut `data-density`, ce qui
- * laisse le CSS/JS décider de la mise en page sans prop drilling profond.
- */
-import { Rows3, Rows4 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Rows3, Rows4 } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export type ChatDensity = "comfortable" | "compact";
@@ -33,7 +25,6 @@ export function persistDensity(density: ChatDensity): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, density);
   } catch {
-    /* Intentionally ignored. */
   }
 }
 

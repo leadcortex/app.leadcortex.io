@@ -1,4 +1,5 @@
-//frontend\hooks\use-search.ts
+// frontend/hooks/use-search.ts
+
 import { useState, useMemo, useCallback, useEffect } from "react";
 
 export interface UseSearchOptions<T> {

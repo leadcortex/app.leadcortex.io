@@ -1,10 +1,5 @@
-// Package config charge la configuration de l'academy.
-//
-// Sources, par ordre de priorité (la plus forte gagne) :
-//   1. Flags CLI
-//   2. Variables d'environnement (préfixe ACADEMY_)
-//   3. Fichier academy.yaml (racine du projet)
-//   4. Valeurs par défaut
+// backend/academy/internal/config/config.go
+
 package config
 
 import (
@@ -17,7 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Env désigne l'environnement d'exécution.
 type Env string
 
 const (
@@ -26,14 +20,10 @@ const (
 	EnvProduction  Env = "production"
 )
 
-// IsProduction indique si l'on tourne en production (pour durcir certaines
-// vérifications : logs, secrets, endpoints exposés).
 func (e Env) IsProduction() bool { return e == EnvProduction }
 
-// IsDevelopment indique si l'on tourne en développement.
 func (e Env) IsDevelopment() bool { return e == EnvDevelopment }
 
-// Config est la configuration complète de l'academy.
 type Config struct {
 	Env      Env            `mapstructure:"env"`
 	HTTP     HTTPConfig     `mapstructure:"http"`
@@ -42,7 +32,6 @@ type Config struct {
 	Security SecurityConfig `mapstructure:"security"`
 }
 
-// HTTPConfig contrôle le serveur HTTP (partie 16).
 type HTTPConfig struct {
 	Addr            string        `mapstructure:"addr"`
 	ReadTimeout     time.Duration `mapstructure:"read_timeout"`
@@ -52,30 +41,23 @@ type HTTPConfig struct {
 	CORSOrigins     []string      `mapstructure:"cors_origins"`
 }
 
-// ContentConfig contrôle le chargement du contenu pédagogique (partie 3).
 type ContentConfig struct {
 	Dir           string        `mapstructure:"dir"`
 	WatchInterval time.Duration `mapstructure:"watch_interval"`
 	FailOnWarning bool          `mapstructure:"fail_on_warning"`
 }
 
-// LogConfig contrôle le logger.
 type LogConfig struct {
-	Level  string `mapstructure:"level"`  // debug | info | warn | error
-	Format string `mapstructure:"format"` // json | console
+	Level  string `mapstructure:"level"`
+	Format string `mapstructure:"format"`
 }
 
-// SecurityConfig regroupe les réglages de durcissement.
 type SecurityConfig struct {
-	// RequireAuthForMutations — refusera toute écriture sans utilisateur authentifié.
-	// À passer à true dès que l'auth 2.0 sera branchée (voir note dans le README).
 	RequireAuthForMutations bool `mapstructure:"require_auth_for_mutations"`
 
-	// TrustedProxies — vide = pas de proxy de confiance (X-Forwarded-For ignoré).
 	TrustedProxies []string `mapstructure:"trusted_proxies"`
 }
 
-// Default renvoie la configuration par défaut, utilisée en dev.
 func Default() Config {
 	return Config{
 		Env: EnvDevelopment,
@@ -89,7 +71,7 @@ func Default() Config {
 		},
 		Content: ContentConfig{
 			Dir:           "./content",
-			WatchInterval: 0, // pas de hot-reload par défaut
+			WatchInterval: 0,
 			FailOnWarning: false,
 		},
 		Log: LogConfig{
@@ -97,20 +79,15 @@ func Default() Config {
 			Format: "json",
 		},
 		Security: SecurityConfig{
-			RequireAuthForMutations: false, // TODO: passer à true quand l'auth 2.0 sera en place.
+			RequireAuthForMutations: false,
 			TrustedProxies:          nil,
 		},
 	}
 }
 
-// Load lit la configuration depuis toutes les sources puis la valide.
-//
-// `flags` peut être nil ; sinon les clés qu'il contient écrasent toutes les
-// autres sources (utilisé par `academy-server --addr :9090 …`).
 func Load(flags map[string]any) (Config, error) {
 	v := viper.New()
 
-	// ─── 1. Défauts ───────────────────────────────────────────────────
 	def := Default()
 	v.SetDefault("env", string(def.Env))
 	v.SetDefault("http.addr", def.HTTP.Addr)
@@ -127,7 +104,6 @@ func Load(flags map[string]any) (Config, error) {
 	v.SetDefault("security.require_auth_for_mutations", def.Security.RequireAuthForMutations)
 	v.SetDefault("security.trusted_proxies", def.Security.TrustedProxies)
 
-	// ─── 2. Fichier academy.yaml (optionnel) ──────────────────────────
 	v.SetConfigName("academy")
 	v.SetConfigType("yaml")
 	v.AddConfigPath(".")
@@ -139,25 +115,21 @@ func Load(flags map[string]any) (Config, error) {
 		}
 	}
 
-	// ─── 3. Variables d'environnement ─────────────────────────────────
 	v.SetEnvPrefix("ACADEMY")
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.AutomaticEnv()
 
-	// ─── 4. Flags ─────────────────────────────────────────────────────
 	if flags != nil {
 		for key, val := range flags {
 			v.Set(key, val)
 		}
 	}
 
-	// ─── Décodage ─────────────────────────────────────────────────────
 	var cfg Config
 	if err := v.Unmarshal(&cfg); err != nil {
 		return Config{}, fmt.Errorf("décodage de la configuration : %w", err)
 	}
 
-	// ─── Validation ───────────────────────────────────────────────────
 	if err := cfg.validate(); err != nil {
 		return Config{}, err
 	}
@@ -214,8 +186,6 @@ func (c Config) validate() error {
 	return nil
 }
 
-// IsDevelopmentLike — raccourci pour les branches de code qui n'exposent des
-// routes de debug qu'en dev/staging.
 func (c Config) IsDevelopmentLike() bool {
 	return c.Env.IsDevelopment() || c.Env == EnvStaging
 }

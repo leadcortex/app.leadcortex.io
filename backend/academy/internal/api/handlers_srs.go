@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_srs.go
+
 package api
 
 import (
@@ -13,14 +15,7 @@ import (
 	"github.com/leadcortex/academy/internal/srs"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   HELPERS : synchronisation des cartes SRS
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// syncSrsCards parcourt les leçons complétées du Learner, instancie les
-// cartes manquantes depuis leurs SrsTemplates, et persiste le résultat.
-//
-// Idempotent : un second appel ne crée pas de doublons (dédup par ID).
 func (s *Server) syncSrsCards(r *http.Request, learner *domain.Learner) error {
 	existing, err := s.deps.Repository.GetSrsCards(r.Context(), learner.ID)
 	if err != nil {
@@ -61,9 +56,6 @@ func (s *Server) syncSrsCards(r *http.Request, learner *domain.Learner) error {
 	return s.deps.Repository.SaveSrsCards(r.Context(), learner.ID, merged)
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /api/v1/srs/queue
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handleSrsQueue(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -116,9 +108,6 @@ func (s *Server) handleSrsQueue(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /api/v1/srs/cards/{cardID}/review
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handleSrsReview(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -187,9 +176,6 @@ func (s *Server) handleSrsReview(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /api/v1/srs/stats
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handleSrsStats(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -219,9 +205,6 @@ func (s *Server) handleSrsStats(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /api/v1/srs/forecast
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func (s *Server) handleSrsForecast(w http.ResponseWriter, r *http.Request) {
 	learnerID := MustLearnerID(r.Context())
@@ -258,11 +241,7 @@ func (s *Server) handleSrsForecast(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   DTO + MAPPERS
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// SrsCardDTO est la vue sérialisable d'une carte SRS.
 type SrsCardDTO struct {
 	ID             string  `json:"id"`
 	ConceptID      string  `json:"concept_id"`

@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/pipeline.go
+
 package avatars
 
 import (
@@ -7,15 +9,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// AssetURL construit le chemin d'asset SVG pour un avatar et une pose
-// donnés.
-//
-//	AssetURL("eagle", "happy") → "/images/SVG-avatar/classic/Eagle.svg#happy"
-//
-// La pose est transmise en ancre (`#`) : le SVG reste identique, seul le
-// rendu React change (il lit l'ancre pour choisir la pose).
-//
-// Si la pose demandée n'existe pas, la pose par défaut est utilisée.
 func AssetURL(avatarID, poseKey string) (string, error) {
 	a, ok := Find(avatarID)
 	if !ok {
@@ -26,30 +19,20 @@ func AssetURL(avatarID, poseKey string) (string, error) {
 	return base + "#" + pose, nil
 }
 
-// TierStyle décrit les couleurs et effets visuels associés à un tier.
 type TierStyle struct {
-	// Key — identifiant du tier.
 	Key domain.AvatarTier
 
-	// Label — libellé affiché.
 	Label string
 
-	// AccentColor — couleur d'accent (hex).
 	AccentColor string
 
-	// BackgroundGradient — dégradé CSS pour la carte d'avatar.
 	BackgroundGradient string
 
-	// HasGlow — vrai si une lueur doit être appliquée autour de la
-	// carte (tier collector).
 	HasGlow bool
 
-	// HasStar — vrai si une étoile décorative doit être affichée
-	// (avatars fondateurs).
 	HasStar bool
 }
 
-// TierStyles — table des styles par tier.
 var TierStyles = map[domain.AvatarTier]TierStyle{
 	domain.AvatarTierClassic: {
 		Key:                domain.AvatarTierClassic,
@@ -69,8 +52,6 @@ var TierStyles = map[domain.AvatarTier]TierStyle{
 	},
 }
 
-// StyleFor renvoie le style d'un tier. Panique si le tier est inconnu
-// (ce cas ne devrait jamais arriver, les tiers sont énumérés).
 func StyleFor(tier domain.AvatarTier) TierStyle {
 	if s, ok := TierStyles[tier]; ok {
 		return s
@@ -78,8 +59,6 @@ func StyleFor(tier domain.AvatarTier) TierStyle {
 	return TierStyles[domain.AvatarTierClassic]
 }
 
-// StyleForAvatar renvoie le style d'un avatar, avec le flag HasStar
-// activé pour le Founding Dolphin.
 func StyleForAvatar(avatarID string) (TierStyle, error) {
 	a, ok := Find(avatarID)
 	if !ok {
@@ -93,10 +72,6 @@ func StyleForAvatar(avatarID string) (TierStyle, error) {
 	return style, nil
 }
 
-// Render — structure prête à être sérialisée en JSON pour l'UI.
-//
-// Regroupe toutes les informations nécessaires au composant React pour
-// afficher un avatar.
 type Render struct {
 	AvatarID    string `json:"avatar_id"`
 	Name        string `json:"name"`
@@ -113,7 +88,6 @@ type Render struct {
 	Equipped    bool   `json:"equipped"`
 }
 
-// BuildRender construit un Render complet pour un avatar.
 func BuildRender(avatarID, poseKey string, learner *domain.Learner) (Render, error) {
 	a, ok := Find(avatarID)
 	if !ok {
@@ -158,8 +132,6 @@ func BuildRender(avatarID, poseKey string, learner *domain.Learner) (Render, err
 	return r, nil
 }
 
-// BuildCatalog construit un Render pour chaque avatar du catalogue, en
-// utilisant la pose par défaut. Utilisé par l'API pour la galerie.
 func BuildCatalog(learner *domain.Learner) []Render {
 	initCatalog()
 	out := make([]Render, 0, len(catalogList))

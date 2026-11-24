@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\blocks\logic.ts
+// frontend/lib/workflow-engine/blocks/logic.ts
+
 import { z } from "zod";
 
 import {
@@ -20,11 +21,6 @@ import { WorkflowBlockError } from "../errors";
 import { durationToMs, nextBusinessTime } from "../scheduler";
 import { advancedOptionsSchema, expressionSchema, timezoneSchema } from "../schemas";
 import type { BlockDefinition } from "../registry";
-
-/**
- * Blocs exécutables 100 % localement : conditions, variables, boucles, délais,
- * utilitaires de flux, fins de workflow et gestion d'erreur.
- */
 
 const advanced = { _advanced: advancedOptionsSchema };
 const cfg = (shape: z.ZodRawShape) => z.object({ ...advanced, ...shape }).passthrough();
@@ -163,7 +159,6 @@ export const logicBlocks: BlockDefinition[] = [
     },
   }),
 
-  /* ---------------------------- Variables ----------------------------- */
   defineBlock({
     blockId: "var-set",
     kind: "local",
@@ -253,7 +248,6 @@ export const logicBlocks: BlockDefinition[] = [
     },
   }),
 
-  /* ------------------------------ Délais ------------------------------ */
   defineBlock({
     blockId: "delay-wait",
     kind: "local",
@@ -337,7 +331,6 @@ export const logicBlocks: BlockDefinition[] = [
     },
   }),
 
-  /* ------------------------------ Boucles ----------------------------- */
   defineBlock({
     blockId: "loop-foreach",
     kind: "local",
@@ -399,7 +392,6 @@ export const logicBlocks: BlockDefinition[] = [
     },
   }),
 
-  /* --------------------------- Flux / fins ---------------------------- */
   defineBlock({
     blockId: "util-merge",
     kind: "local",

@@ -1,4 +1,5 @@
-//frontend\hooks\use-resizable-panel.ts
+// frontend/hooks/use-resizable-panel.ts
+
 import {
   useCallback,
   useEffect,

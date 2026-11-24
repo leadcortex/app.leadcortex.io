@@ -1,3 +1,5 @@
+// backend/academy/internal/assessment/evaluator_test.go
+
 package assessment
 
 import (
@@ -37,7 +39,6 @@ func TestEvaluator_MCQ_KindMismatch(t *testing.T) {
 		XP: 10, Difficulty: 1,
 		Payload: domain.MCqPayload{Options: []string{"A", "B"}, Correct: 0},
 	}
-	// Answer de type FillBlank fourni pour un MCQ.
 	_, err := ev.Evaluate(ex, FillBlankAnswer{Blanks: []string{"A"}})
 	if err == nil {
 		t.Fatal("attendu : erreur de type de réponse")
@@ -64,7 +65,6 @@ func TestEvaluator_InAppMission_NotEvaluable(t *testing.T) {
 }
 
 func TestEvaluator_PassingScore(t *testing.T) {
-	// Scorer MultiSelect : 2/4 correct → 50.
 	ev := NewEvaluator(60)
 	ex := domain.Exercise{
 		ID: "ex", Kind: domain.ExerciseMultiSelect, Prompt: "?",
@@ -87,11 +87,11 @@ func TestEvaluator_PassingScore(t *testing.T) {
 }
 
 func TestEvaluator_DefaultsToPassingScore70(t *testing.T) {
-	ev := NewEvaluator(0) // → 70
+	ev := NewEvaluator(0)
 	if ev.PassingScore != 70 {
 		t.Errorf("attendu 70, obtenu %d", ev.PassingScore)
 	}
-	ev = NewEvaluator(150) // → 70 (clampé)
+	ev = NewEvaluator(150)
 	if ev.PassingScore != 70 {
 		t.Errorf("attendu 70 (clampé), obtenu %d", ev.PassingScore)
 	}
@@ -112,7 +112,6 @@ func TestEvaluator_NilPayload(t *testing.T) {
 	ex := domain.Exercise{
 		ID: "ex", Kind: domain.ExerciseMCQ, Prompt: "?",
 		XP: 10, Difficulty: 1,
-		// Payload nil.
 	}
 	_, err := ev.Evaluate(ex, MCQAnswer{Selected: 0})
 	if err == nil {

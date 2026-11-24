@@ -1,6 +1,7 @@
-//frontend\components\skeletons\layout-skeletons.tsx
+// frontend/components/skeletons/layout-skeletons.tsx
+
 import { Skeleton, SkeletonRegion } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export function PageHeaderSkeleton({
   withActions = "double",

@@ -1,3 +1,5 @@
+// backend/academy/internal/repository/memory_test.go
+
 package repository
 
 import (
@@ -11,7 +13,6 @@ import (
 	"github.com/leadcortex/academy/internal/gamification"
 )
 
-/* ─── Fixtures ────────────────────────────────────────────────────────── */
 
 func newTestLearner(id string) *domain.Learner {
 	l := domain.NewLearner(id, "Test "+id, id+"@example.com")
@@ -22,7 +23,6 @@ func fixedDate() time.Time {
 	return time.Date(2026, 1, 15, 10, 0, 0, 0, time.UTC)
 }
 
-/* ─── Learner : CRUD ──────────────────────────────────────────────────── */
 
 func TestMemory_SaveAndGetLearner(t *testing.T) {
 	repo := NewMemory()
@@ -123,7 +123,6 @@ func TestMemory_DeleteLearner(t *testing.T) {
 		t.Errorf("attendu ErrNotFound après delete, obtenu %v", err)
 	}
 
-	// Idempotent.
 	if err := repo.DeleteLearner(ctx, "u1"); err != nil {
 		t.Errorf("second delete : attendu nil, obtenu %v", err)
 	}
@@ -146,7 +145,6 @@ func TestMemory_ListLearners(t *testing.T) {
 	}
 }
 
-/* ─── Deep-copy défensif ──────────────────────────────────────────────── */
 
 func TestMemory_DeepCopyLearner(t *testing.T) {
 	repo := NewMemory()
@@ -165,7 +163,6 @@ func TestMemory_DeepCopyLearner(t *testing.T) {
 
 	_ = repo.SaveLearner(ctx, l)
 
-	// Modifier l'objet d'origine ne doit pas affecter le repository.
 	l.UnlockedAvatarIDs = append(l.UnlockedAvatarIDs, "fox")
 	l.LessonProgress["l1"].Scores["ex1"] = 0
 
@@ -177,7 +174,6 @@ func TestMemory_DeepCopyLearner(t *testing.T) {
 		t.Errorf("Scores[ex1] devrait être 100, obtenu %d", got.LessonProgress["l1"].Scores["ex1"])
 	}
 
-	// Modifier l'objet retourné ne doit pas affecter le repository non plus.
 	got.UnlockedAvatarIDs[0] = "MODIFIED"
 	got2, _ := repo.GetLearner(ctx, "u1")
 	if got2.UnlockedAvatarIDs[0] != "eagle" {
@@ -185,7 +181,6 @@ func TestMemory_DeepCopyLearner(t *testing.T) {
 	}
 }
 
-/* ─── SRS ─────────────────────────────────────────────────────────────── */
 
 func TestMemory_SrsCards_RoundTrip(t *testing.T) {
 	repo := NewMemory()
@@ -246,7 +241,6 @@ func TestMemory_SrsCards_Replace(t *testing.T) {
 	}
 }
 
-/* ─── Quests ──────────────────────────────────────────────────────────── */
 
 func TestMemory_Quests_RoundTrip(t *testing.T) {
 	repo := NewMemory()
@@ -314,7 +308,6 @@ func TestMemory_Quests_ZeroDate(t *testing.T) {
 	}
 }
 
-/* ─── Event log ───────────────────────────────────────────────────────── */
 
 func TestMemory_AppendAndListEvents(t *testing.T) {
 	repo := NewMemory()
@@ -340,7 +333,6 @@ func TestMemory_AppendAndListEvents(t *testing.T) {
 	if len(got) != 3 {
 		t.Fatalf("attendu 3, obtenu %d", len(got))
 	}
-	// Le plus récent en premier.
 	if got[0].ID != "ev2" {
 		t.Errorf("premier : attendu ev2, obtenu %s", got[0].ID)
 	}
@@ -391,13 +383,11 @@ func TestMemory_EventLog_BoundedCapacity(t *testing.T) {
 	if len(got) != 3 {
 		t.Errorf("capacité 3 : attendu 3, obtenu %d", len(got))
 	}
-	// Les 3 derniers (ev7, ev8, ev9) doivent rester.
 	if got[0].ID != "ev9" {
 		t.Errorf("le plus récent : attendu ev9, obtenu %s", got[0].ID)
 	}
 }
 
-/* ─── Concurrence ─────────────────────────────────────────────────────── */
 
 func TestMemory_ConcurrentAccess(t *testing.T) {
 	repo := NewMemory()
@@ -428,7 +418,6 @@ func TestMemory_ConcurrentAccess(t *testing.T) {
 	}
 }
 
-/* ─── Close / Ping ────────────────────────────────────────────────────── */
 
 func TestMemory_Ping(t *testing.T) {
 	repo := NewMemory()
@@ -443,11 +432,9 @@ func TestMemory_Close(t *testing.T) {
 	if err := repo.Close(); err != nil {
 		t.Fatalf("Close : %v", err)
 	}
-	// Idempotent.
 	if err := repo.Close(); err != nil {
 		t.Errorf("second Close : %v", err)
 	}
-	// Opérations après close → ErrClosed.
 	_, err := repo.GetLearner(context.Background(), "u1")
 	if !errors.Is(err, ErrClosed) {
 		t.Errorf("attendu ErrClosed, obtenu %v", err)

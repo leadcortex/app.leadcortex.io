@@ -1,4 +1,5 @@
-//frontend\components\workflow\Canvas.tsx
+// frontend/components/workflow/Canvas.tsx
+
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useWorkflow } from "@/lib/workflow/store";
 import {
@@ -27,7 +28,7 @@ import {
   BLOCK_TOUCH_DRAG_MOVE,
   type BlockTouchDragDetail,
 } from "@/lib/workflow/block-touch-drag";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 type Drag =
   | { kind: "pan"; startX: number; startY: number; vx: number; vy: number }
@@ -120,12 +121,6 @@ export function Canvas({
       longPress.current = null;
     }
   }, []);
-  /**
-   * Nombre de doigts actuellement posés sur le canevas. Alimenté par l'écouteur
-   * de pincement (phase de capture, donc AVANT les `onPointerDown` React) : dès
-   * que ce nombre dépasse 1, les gestes à un doigt (panoramique, déplacement de
-   * bloc, câble, lasso) sont ignorés pour ne jamais se battre avec le pincement.
-   */
   const touchCountRef = useRef(0);
   const boundsRef = useRef({ size, settings });
   boundsRef.current = { size, settings };
@@ -153,7 +148,6 @@ export function Canvas({
     const el = ref.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
-      // du canevas ; sans ce garde-fou, faire défiler la molette au-dessus
       if ((e.target as HTMLElement | null)?.closest('[role="dialog"]')) return;
       e.preventDefault();
       const r = el.getBoundingClientRect();
@@ -175,21 +169,6 @@ export function Canvas({
     return () => el.removeEventListener("wheel", onWheel);
   }, [setViewport]);
 
-  /* ---- tactile : pincement à deux doigts (zoom) + tap à deux doigts (menu contextuel) ----
-   * On écoute en phase de capture, directement sur le conteneur du canevas,
-   * pour voir passer TOUS les pointeurs tactiles même si un `pointerdown`
-   * enfant (bloc, note) a appelé `stopPropagation()` en phase de bouillonnement
-   * (ex: `startMove`). C'est indispensable pour détecter le deuxième doigt
-   * qui se pose pendant qu'un premier doigt est déjà en train de glisser un
-   * bloc ou de faire du panoramique.
-   *
-   * ANCRAGE GÉOMÉTRIQUE ABSOLU : quand les deux doigts sont posés, on mémorise
-   * le point MONDE situé sous leur milieu, plus l'écartement et le zoom de
-   * départ. À chaque image, la vue est recalculée depuis ces valeurs de départ
-   * pour que ce point monde reste exactement sous le milieu des doigts.
-   * Aucune erreur ne s'accumule (contrairement à un zoom incrémental) et peu
-   * importe lequel des deux doigts bouge le plus vite ou a touché en premier.
-   */
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -374,12 +353,6 @@ export function Canvas({
     };
   }, [setViewport, toWorld, cancelLongPress]);
 
-  /* ---- iOS/Safari : neutralise le zoom natif de la page ----
-   * Safari émet des évènements `gesture*` propriétaires (pincement) et un
-   * zoom au double-tap qui, sur le canevas, feraient grossir toute la page
-   * au lieu du graphe et casseraient le placement des blocs. Le canevas gère
-   * lui-même pincement et zoom, on annule donc le comportement natif.
-   */
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -424,10 +397,6 @@ export function Canvas({
   const snap = (v: number) =>
     settings.snap ? Math.round(v / settings.gridSize) * settings.gridSize : Math.round(v);
 
-  /**
-   * "Murs" du canevas : un bloc ou une note ne peut jamais être déposé hors de
-   * la surface de travail — le déplacement bute physiquement sur la bordure.
-   */
   const clampX = (x: number, w: number) =>
     settings.bounded ? Math.min(Math.max(0, x), Math.max(0, settings.width - w)) : x;
   const clampY = (y: number, h: number) =>
@@ -476,10 +445,6 @@ export function Canvas({
     return fan;
   }, [doc.edges]);
 
-  /**
-   * Id du bloc unique en cours de déplacement (l'insertion sur câble n'a de
-   * sens que pour un seul bloc à la fois).
-   */
   const movingNodeId = useMemo(() => {
     if (drag?.kind !== "move") return null;
     const ids = Object.keys(drag.origins);
@@ -488,15 +453,9 @@ export function Canvas({
     return doc.nodes.some((n) => n.id === id) ? id : null;
   }, [drag, doc.nodes]);
 
-  /* ---- global pointer move/up ---- */
   useEffect(() => {
     if (!drag && !link) return;
 
-    /**
-     * Applique le geste courant à partir d'une position écran. Extrait du
-     * gestionnaire d'événement pour pouvoir être rejoué par l'auto-pan à
-     * chaque frame, curseur immobile.
-     */
     const moveTo = (clientX: number, clientY: number) => {
       if (link) {
         const w = toWorld(clientX, clientY);
@@ -511,8 +470,6 @@ export function Canvas({
           y: drag.vy + (clientY - drag.startY),
         }));
       } else if (drag.kind === "move") {
-        // Le delta est calculé en coordonnées monde : si la vue défile
-        // (auto-pan) pendant le geste, le bloc suit naturellement le curseur.
         const w = toWorld(clientX, clientY);
         const dx = w.x - drag.startWorld.x;
         const dy = w.y - drag.startWorld.y;
@@ -538,8 +495,6 @@ export function Canvas({
           }),
           false,
         );
-        // Insertion dynamique : si le bloc glissé recouvre un câble, on
-        // repère le câble le plus proche pour proposer l'insertion.
         if (movingNodeId) {
           const origin = drag.origins[movingNodeId]!;
           const node = doc.nodes.find((n) => n.id === movingNodeId)!;
@@ -595,8 +550,6 @@ export function Canvas({
     applyDragRef.current = moveTo;
 
     const move = (e: PointerEvent) => {
-      // Plusieurs doigts posés = pincement en cours : un glissement à un doigt
-      // ne doit jamais déplacer la vue en parallèle (c'était la cause des sauts).
       if (e.pointerType === "touch" && touchCountRef.current > 1) return;
       pointerRef.current = { x: e.clientX, y: e.clientY, type: e.pointerType };
       if (longPress.current) {
@@ -609,10 +562,6 @@ export function Canvas({
     };
 
     const up = (e: PointerEvent) => {
-      // Fin d'un câble : on résout la cible géométriquement (elementFromPoint)
-      // plutôt qu'en s'appuyant sur `pointerup` du port survolé, car en tactile
-      // la capture implicite du pointeur renvoie toujours l'événement au port
-      // de départ — le câble semblait alors « repoussé » par l'entrée visée.
       if (link) {
         const target = document
           .elementsFromPoint(e.clientX, e.clientY)
@@ -629,8 +578,6 @@ export function Canvas({
         }
       }
       if (drag?.kind === "move") {
-        // Le bloc a été déposé sur un câble : on scinde la liaison
-        // (A ➔ N ➔ B) sans manipulation manuelle des connexions.
         if (insertHover && movingNodeId && insertHover.nodeId === movingNodeId) {
           insertNodeOnEdge(insertHover.edgeId, movingNodeId);
         }
@@ -703,11 +650,6 @@ export function Canvas({
     cancelLongPress,
   ]);
 
-  /* ---- auto-pan (suivi de caméra façon Figma) ----
-   * Actif dès qu'un bloc est glissé ou qu'un câble est tiré : dès que le
-   * pointeur entre dans la zone tampon d'un bord, la vue défile et le geste
-   * est rejoué à chaque frame (cf. `useAutoPan`).
-   */
   useAutoPan({
     active: drag?.kind === "move" || Boolean(link),
     containerRef: ref,
@@ -719,7 +661,6 @@ export function Canvas({
     },
   });
 
-  /* ---- handlers ---- */
   const startPan = (e: React.PointerEvent) => {
     setDrag({
       kind: "pan",
@@ -744,22 +685,18 @@ export function Canvas({
 
   const onBackgroundDown = (e: React.PointerEvent) => {
     if (e.button === 2) return;
-    // 2e doigt : c'est un pincement, pas un nouveau panoramique / lasso.
     if (isMultiTouch(e)) return;
     setMenu(null);
     cancelLongPress();
     pointerRef.current = { x: e.clientX, y: e.clientY, type: e.pointerType };
 
-    // Mode Sélection (ou clic droit-milieu exclu) : lasso rectangulaire.
     if (!space && !backgroundPans && e.button !== 1) {
       startMarquee(e.clientX, e.clientY, e.shiftKey);
       return;
     }
 
-    // Mode Smart / Main : le fond se déplace (curseur main).
     startPan(e);
 
-    // Tactile en mode Smart : un appui long sans mouvement bascule en lasso.
     if (e.pointerType === "touch" && backgroundPans && !space) {
       const { clientX, clientY } = e;
       longPress.current = {
@@ -775,7 +712,6 @@ export function Canvas({
 
   const startMove = (id: string) => (e: React.PointerEvent) => {
     if (e.button === 2) return;
-    // 2e doigt posé sur un bloc : pincement prioritaire, on ne démarre aucun déplacement.
     if (isMultiTouch(e)) {
       e.stopPropagation();
       return;
@@ -805,15 +741,11 @@ export function Canvas({
   const onPortDown =
     (nodeId: string) => (port: string, side: "in" | "out", e: React.PointerEvent) => {
       e.stopPropagation();
-      // 2e doigt posé sur un port : pas de tracé de câble pendant un pincement.
       if (isMultiTouch(e)) return;
       pointerRef.current = { x: e.clientX, y: e.clientY, type: e.pointerType };
       const w = toWorld(e.clientX, e.clientY);
       setLink({ node: nodeId, port, side, cx: w.x, cy: w.y });
     };
-
-  // La fermeture d'un lien est gérée globalement dans le `pointerup` ci-dessus
-  // (compatible souris + tactile), il n'y a donc plus de `onPortUp` par port.
 
   const openMenu = (e: React.MouseEvent, target: MenuTarget) => {
     e.preventDefault();
@@ -823,7 +755,6 @@ export function Canvas({
     setMenu({ x: e.clientX - r.left, y: e.clientY - r.top, world: { x: w.x, y: w.y }, target });
   };
 
-  /* ---- drag-and-drop natif depuis la bibliothèque de blocs (barre latérale) ---- */
   const onCanvasDragEnter = (e: React.DragEvent) => {
     if (!e.dataTransfer.types.includes(BLOCK_DRAG_MIME)) return;
     e.preventDefault();
@@ -844,7 +775,6 @@ export function Canvas({
     if (dragCounter.current === 0) setDropGhost(null);
   };
 
-  /** Dépose un bloc de la bibliothèque à une position écran (drop natif ou tactile). */
   const dropBlockAt = (blockId: string, clientX: number, clientY: number) => {
     const w = toWorld(clientX, clientY);
     addBlock(blockId, clampX(w.x - NODE_W / 2, NODE_W), clampY(w.y - 24, 96));
@@ -860,12 +790,9 @@ export function Canvas({
     dropBlockAt(blockId, e.clientX, e.clientY);
   };
 
-  /* ---- glisser-déposer TACTILE depuis le tiroir mobile (voir block-touch-drag.ts) ---- */
   const dropBlockAtRef = useRef(dropBlockAt);
   dropBlockAtRef.current = dropBlockAt;
   useEffect(() => {
-    // Le doigt est "sur le canevas" si l'élément touché en fait partie : la
-    // barre d'outils, la console ou le tiroir (frères du canevas) sont exclus.
     const overCanvas = (x: number, y: number) => {
       const el = document.elementFromPoint(x, y);
       return !!el && !!ref.current?.contains(el);
@@ -895,7 +822,6 @@ export function Canvas({
   const ghostBlock = draggingBlockId ? blockMap[draggingBlockId] : null;
   const ghostCategory = ghostBlock ? categoryMap[ghostBlock.category] : null;
 
-  /* ---- fond à points, deux niveaux, responsive au zoom ---- */
   const z = viewport.zoom;
   const step = settings.gridSize * z;
   const major = step * 5;
@@ -906,8 +832,6 @@ export function Canvas({
       ref={ref}
       className={cn(
         "wf-canvas relative h-full w-full overflow-hidden bg-canvas transition-shadow",
-        // Curseur dynamique : main sur le fond (smart/pan), flèche en mode
-        // Sélection, croix pendant le tracé d'un lasso ou d'un câble.
         drag?.kind === "pan"
           ? "cursor-grabbing"
           : drag?.kind === "marquee" || link
@@ -924,11 +848,6 @@ export function Canvas({
       onDragLeave={onCanvasDragLeave}
       onDrop={onCanvasDrop}
       onDoubleClick={(e) => {
-        // La modale d'ajout de bloc ne doit s'ouvrir que sur un double-clic
-        // dans le vide du canevas : un double-clic à l'intérieur d'un bloc
-        // (ou d'un commentaire), y compris sur un champ number à flèches,
-        // doit rester libre d'interagir avec les commandes sans déclencher
-        // l'ouverture de la modale.
         const target = e.target as HTMLElement;
         if (
           target.closest(
@@ -968,7 +887,6 @@ export function Canvas({
         style={{ transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})` }}
       >
         {settings.bounded && (
-          /* Mur physique : la vue et les blocs ne peuvent pas le franchir. */
           <div
             className="wf-canvas-wall pointer-events-none absolute rounded-2xl"
             style={{ left: 0, top: 0, width: settings.width, height: settings.height }}
@@ -990,9 +908,6 @@ export function Canvas({
             const active =
               selection.includes(e.id) || selection.includes(s.id) || selection.includes(t.id);
             const fan = edgeFan.get(e.id);
-            // Pendant qu'un bloc est glissé, il cesse d'être un obstacle : le
-            // câble reste sous le bloc pour permettre l'aimantage/insertion,
-            // et l'évitement reprend dès le dépôt.
             const obstacles = nodeRects.filter(
               (r) => r.id !== e.source && r.id !== e.target && r.id !== movingNodeId,
             );

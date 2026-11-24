@@ -1,26 +1,12 @@
+// frontend/components/workflow/WorkflowChatPanel.tsx
+
 "use client";
 
-/**
- * Chat du canevas de workflow.
- *
- * Réutilise les primitives visuelles de l'assistant latéral :
- *  - `MessageContent` (blocs de code + tableaux + Markdown inline)
- *  - `MessageActions` (copie réponse + copie code + audio + feedback + régénérer + coût)
- *  - `MessageScrollRail` (navigation rapide)
- *  - `SelectionQuoteButton` (citation dans le prochain prompt)
- *  - `MessageSearch` (Ctrl/⌘+F)
- *  - `DensityToggle` (comfortable / compact)
- *  - `useTypewriter` (streaming simulé)
- *  - `useFileDrop` (drag-and-drop de fichiers)
- *
- * Parle au store du workflow (`chat`, `attachments`, `sendChat`,
- * `removeAttachment`) — aucune donnée dupliquée.
- */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Loader2, Paperclip, Search, Send, Sparkles, X } from "lucide-react";
+import { Loader2, Paperclip, Search, Send, Sparkles, X } from "@/components/icons";
 import { useWorkflow } from "@/lib/workflow/store";
 import { categoryMap } from "@/lib/workflow/geometry";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { MessageContent } from "@/components/ai-assistant/message-content";
 import { MessageActions } from "@/components/ai-assistant/message-actions";
 import { MessageScrollRail } from "@/components/ai-assistant/message-scroll-rail";
@@ -45,11 +31,8 @@ import {
 import { useTypewriter } from "@/hooks/use-typewriter";
 import { useFileDrop } from "@/hooks/use-file-drop";
 
-/** Durée minimale du streaming simulé (ms). */
 const STREAM_MIN_MS = 600;
-/** Vitesse du streaming (caractères / seconde). */
 const STREAM_CPS = 220;
-/** Délai entre prompt envoyé et première réponse (ms). */
 const THINKING_DELAY_MS = 420;
 
 function AgentText({
@@ -79,7 +62,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
   const listRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  /* Adaptation des messages du store → forme attendue par les primitives. */
   const messages = useMemo<AssistantMessage[]>(
     () =>
       chat.map((m, i) => ({
@@ -99,11 +81,9 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
     persistDensity(density);
   }, [density]);
 
-  /* Raccourci global Ctrl/⌘+F pour ouvrir la recherche in-chat. */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "f") {
-        // Ne s'active que si le focus est dans ce panneau (ou nulle part).
         const active = document.activeElement as HTMLElement | null;
         const inThisPanel = listRef.current?.contains(active) || !active;
         if (inThisPanel) {
@@ -116,7 +96,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  /* Restaure les feedbacks persistés pour les réponses déjà notées. */
   useEffect(() => {
     setFeedbackMap((prev) => {
       let changed = false;
@@ -151,15 +130,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
     [messages],
   );
 
-  /**
-   * Envoi : pousse le message utilisateur dans le store, puis déclenche un
-   * streaming simulé sur la réponse qui sera ajoutée par le store.
-   *
-   * Le store ajoute lui-même la réponse via `sendChat`, avec un délai de
-   * 420 ms (déjà dans `store.tsx`). On profite de ce délai pour basculer
-   * `thinking`, puis on marque le nouvel id de réponse comme « streaming »
-   * dès qu'il apparaît.
-   */
   const pendingReplyIds = useRef<Set<string>>(new Set());
 
   const send = useCallback(() => {
@@ -169,7 +139,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
     sendChat(value);
     setInput("");
     setThinking(true);
-    // Repère les nouveaux messages assistant pour le streaming.
     const timer = window.setInterval(() => {
       const current = chat.find((m) => m.role === "assistant" && !before.has(m.id));
       if (current) {
@@ -192,7 +161,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
         }, durationMs + 300);
       }
     }, 60);
-    // Filet de sécurité : si au bout de 5 s rien n'est arrivé, on arrête.
     window.setTimeout(() => {
       window.clearInterval(timer);
       setThinking(false);
@@ -229,12 +197,8 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
     [clearSelection],
   );
 
-  /* Drag-and-drop de fichiers sur la zone de conversation. */
   const { isDragging, bind: dropBind } = useFileDrop({
     onDrop: (files) => {
-      // Le store du canevas ne gère que des blocs. On informe l'utilisateur
-      // qu'un fichier n'a pas de sens ici et on ne l'ajoute pas : le clic
-      // "paperclip" du composeur reste le seul canal d'ajout côté canevas.
       void files;
       // eslint-disable-next-line no-console
       console.info(
@@ -243,7 +207,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
     },
   });
 
-  /* Dernier message agent — cible du bouton Régénérer. */
   const lastAgentId = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
       if (messages[i]!.role === "agent") return messages[i]!.id;
@@ -251,7 +214,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
     return null;
   }, [messages]);
 
-  /* Classes de densité — un seul jeu de deux lignes, pas de feuille externe. */
   const spacing = density === "compact" ? "space-y-1.5 py-2" : "space-y-3 py-3";
   const bubbleText = density === "compact" ? "text-[12px] leading-snug" : "text-[12.5px] leading-relaxed";
 
@@ -341,7 +303,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
                   onRegenerate={
                     m.id === lastAgentId
                       ? () => {
-                          // Relance sur le dernier prompt utilisateur.
                           const lastUser = [...messages]
                             .reverse()
                             .find((x) => x.role === "user");

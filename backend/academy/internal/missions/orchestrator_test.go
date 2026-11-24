@@ -1,3 +1,5 @@
+// backend/academy/internal/missions/orchestrator_test.go
+
 package missions
 
 import (
@@ -11,9 +13,7 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Fixtures ────────────────────────────────────────────────────────── */
 
-// testMissionBlock construit un MissionBlock standard.
 func testMissionBlock(id, trigger string, minScore int) domain.MissionBlock {
 	return domain.MissionBlock{
 		Mission: domain.Mission{
@@ -39,8 +39,6 @@ func testMissionBlock(id, trigger string, minScore int) domain.MissionBlock {
 	}
 }
 
-// newTestRegistry construit un registre avec une seule leçon contenant
-// plusieurs missions.
 func newTestRegistry(t *testing.T, missions ...domain.MissionBlock) *curriculum.Registry {
 	t.Helper()
 	blocks := []domain.Block{
@@ -68,7 +66,6 @@ func newTestRegistry(t *testing.T, missions ...domain.MissionBlock) *curriculum.
 	return curriculum.NewRegistry([]*domain.Program{program}, nil, nil)
 }
 
-/* ─── Constructeur ────────────────────────────────────────────────────── */
 
 func TestNewOrchestrator_NilRegistry(t *testing.T) {
 	_, err := NewOrchestrator(nil, nil)
@@ -88,14 +85,12 @@ func TestNewOrchestrator_NoBus(t *testing.T) {
 	}
 }
 
-/* ─── Process ─────────────────────────────────────────────────────────── */
 
 func TestProcess_NoMatch(t *testing.T) {
 	reg := newTestRegistry(t, testMissionBlock("m1", "lead.created", 7))
 	o, _ := NewOrchestrator(reg, nil)
 	l := newLearner()
 
-	// Score trop bas.
 	ev := NewEvent("lead.created", fixedTime(),
 		map[string]any{"lead": map[string]any{"score": 3}})
 	validated, err := o.Process(l, ev)
@@ -190,7 +185,6 @@ func TestProcess_NilEvent(t *testing.T) {
 	}
 }
 
-/* ─── AllMissions / PendingMissions ───────────────────────────────────── */
 
 func TestAllMissions(t *testing.T) {
 	reg := newTestRegistry(t,
@@ -227,7 +221,6 @@ func TestPendingMissions(t *testing.T) {
 	}
 }
 
-/* ─── Run ─────────────────────────────────────────────────────────────── */
 
 func TestRun_HandlerCalled(t *testing.T) {
 	reg := newTestRegistry(t, testMissionBlock("m1", "lead.created", 7))
@@ -248,21 +241,17 @@ func TestRun_HandlerCalled(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Lance la boucle.
 	done := make(chan struct{})
 	go func() {
 		_ = o.Run(ctx, l, handler)
 		close(done)
 	}()
 
-	// Laisse la boucle s'installer.
 	time.Sleep(20 * time.Millisecond)
 
-	// Publie un événement qui matche.
 	_ = bus.Publish(NewEvent("lead.created", fixedTime(),
 		map[string]any{"lead": map[string]any{"score": 8}}))
 
-	// Attend que le handler soit appelé.
 	deadline := time.Now().Add(500 * time.Millisecond)
 	for time.Now().Before(deadline) {
 		if atomic.LoadInt32(&handlerCalls) > 0 {
@@ -321,7 +310,6 @@ func TestRun_BusClosed(t *testing.T) {
 
 	select {
 	case err := <-done:
-		// Bus fermé → Run retourne nil (fin normale).
 		if err != nil {
 			t.Errorf("attendu nil, obtenu %v", err)
 		}
@@ -368,7 +356,6 @@ func TestRun_NilHandler(t *testing.T) {
 	}
 }
 
-/* ─── ValidateMissionByID ─────────────────────────────────────────────── */
 
 func TestValidateMissionByID(t *testing.T) {
 	reg := newTestRegistry(t, testMissionBlock("m1", "lead.created", 7))

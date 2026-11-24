@@ -1,8 +1,9 @@
-//frontend\components\ui\tabs.tsx
+// frontend/components/ui/tabs.tsx
+
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const Tabs = TabsPrimitive.Root;
 

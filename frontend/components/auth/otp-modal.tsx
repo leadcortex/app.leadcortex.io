@@ -1,9 +1,10 @@
-//frontend\components\auth\otp-modal.tsx
+// frontend/components/auth/otp-modal.tsx
+
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ArrowRight, Check } from "lucide-react";
+import { AlertCircle, ArrowRight, Check } from "@/components/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type OtpModalProps = {
   open: boolean;
@@ -128,7 +129,6 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
       >
         <DialogTitle className="sr-only">Vérification du code</DialogTitle>
 
-        {}
         <div className="hidden shrink-0 border-b border-border p-4 md:block md:px-6">
           <div className="relative aspect-[7/5] w-full overflow-hidden rounded-xl border border-border bg-surface/30">
             <video
@@ -146,7 +146,6 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
           </div>
         </div>
 
-        {}
         <div className="shrink-0 space-y-1 pb-3 pl-4 pr-14 pt-5 md:pl-6 md:pt-6 md:pr-14">
           <DialogTitle asChild>
             <h2 className="font-display text-xl italic">Vérification</h2>
@@ -157,7 +156,6 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
           </DialogDescription>
         </div>
 
-        {}
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 md:px-6">
           <div className="flex justify-center gap-2" onPaste={handlePaste}>
             {otp.map((digit, index) => (

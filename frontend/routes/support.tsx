@@ -1,7 +1,8 @@
-//frontend\routes\support.tsx
+// frontend/routes/support.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mail, MessageCircle, BookOpen } from "lucide-react";
-import { SiteNav, SiteFooter } from "@/components/site-nav";
+import { Mail, MessageCircle, BookOpen } from "@/components/icons";
+import { SiteNav, SiteFooter } from "@/components/layout/site-nav";
 import {
   Accordion,
   AccordionItem,
@@ -16,8 +17,7 @@ export const Route = createFileRoute("/support")({
       { title: "Centre d'aide — LeadCortex" },
       {
         name: "description",
-        content:
-          "Questions fréquentes sur LeadCortex : facturation, prix dégressif, crédits, équipes IA, collaboration, et comment contacter l'équipe support.",
+        content: "Questions fréquentes sur LeadCortex et contact du support.",
       },
     ],
   }),
@@ -29,21 +29,21 @@ const contactOptions = [
   {
     icon: Mail,
     title: "Écrire au support",
-    desc: "Réponse sous 24h ouvrées, souvent bien plus vite.",
+    desc: "Une vraie personne vous répond.",
     action: "support@leadcortex.io",
     href: "mailto:support@leadcortex.io",
   },
   {
     icon: MessageCircle,
     title: "Chat dans l'application",
-    desc: "Depuis l'app, la bulle en bas à droite atteint directement l'équipe.",
+    desc: "La bulle en bas à droite de l'app.",
     action: "Ouvrir l'application",
     href: "/login",
   },
   {
     icon: BookOpen,
     title: "Consulter la documentation",
-    desc: "Guides détaillés sur chaque fonctionnalité du produit.",
+    desc: "Un guide par fonctionnalité.",
     action: "Voir la documentation",
     href: "/docs",
   },
@@ -52,59 +52,35 @@ const contactOptions = [
 const faqs = [
   {
     q: "Comment fonctionne l'essai gratuit ?",
-    a: "L'essai vous donne accès aux fonctionnalités principales avec un quota de crédits d'enrichissement réduit, sans carte bancaire requise. Certaines fonctionnalités à coût d'infrastructure élevé (éditeur de workflows, intégrations WhatsApp/Instagram illimitées, accès API) sont réservées aux plans payants. À l'issue de la période d'essai, vous choisissez un plan payant pour continuer, ou votre compte reste accessible en lecture seule.",
+    a: "Vous recevez des crédits offerts, sans carte bancaire. Les workflows, l'API et les volumes WhatsApp/Instagram élevés demandent un plan payant.",
   },
   {
     q: "Comment fonctionne le prix dégressif ?",
-    a: "Notre engagement est simple : plus vous restez, moins vous payez. Votre mensualité baisse automatiquement de 2 % par mois de fidélité, jusqu'à un plafond de -20 % atteint après 10 mois. Aucune action requise, aucune condition cachée. La réduction s'applique sur le tarif mensuel ou annuel selon votre cycle de facturation, et reste acquise tant que votre abonnement est actif. Vous pouvez simuler le prix à venir directement depuis Réglages → Facturation.",
+    a: "Votre mensualité baisse chaque mois où vous restez, automatiquement. Le détail est sur la page Tarifs.",
   },
   {
-    q: "Pourquoi le workflow n'est-il pas inclus dans l'essai ?",
-    a: "L'éditeur de workflows est une fonctionnalité à coût d'infrastructure élevé : exécution continue en arrière-plan, files d'attente, stockage d'historique d'exécution, gestion d'événements. Ces coûts ne sont pas soutenables sur un essai gratuit illimité. Le workflow est donc inclus à partir du plan Founder, avec un quota d'exécutions mensuelles qui augmente avec le plan. Voir le détail sur la page tarifs.",
+    q: "Dois-je fournir mes propres clés IA ?",
+    a: "Non. Les modèles sont inclus sur tous les plans. Brancher vos clés est une option, elle aussi disponible sur tous les plans.",
   },
   {
-    q: "Qu'est-ce que le BYOK, et est-ce obligatoire ?",
-    a: "BYOK signifie « bring your own key » : vous connectez vos propres clés API de fournisseurs de modèles IA (Anthropic, OpenAI, Google, Groq, DeepSeek, Mistral, Perplexity) plutôt que de payer une marge sur un usage revendu par LeadCortex. Ce n'est PAS obligatoire : les modèles inclus (Claude, ChatGPT, Gemini, Perplexity) fonctionnent par défaut sur tous les plans. Le BYOK est disponible sur les trois plans, y compris Starter. Bonus BYOK : le chat avec les agents devient illimité.",
+    q: "Puis-je travailler en équipe ?",
+    a: "Oui, à partir de Founder. Tout le monde partage les mêmes prospects, listes, séquences et workflows.",
   },
   {
-    q: "Quelles sont les limites sur WhatsApp et Instagram ?",
-    a: "Les intégrations WhatsApp et Instagram sont facturées par Meta au message envoyé. Pour cette raison, elles sont limitées à 20 messages/jour cumulés sur Starter, 200 messages/jour cumulés sur Founder, et sans restriction majeure sur Studio. Ces limites sont cumulatives entre les deux canaux.",
+    q: "Les crédits non utilisés sont-ils reportés ?",
+    a: "Non. Ils se renouvellent à chaque cycle de facturation.",
   },
   {
-    q: "Quelles sont les limites des assistants IA sur les plans inférieurs ?",
-    a: "Sur Starter, les assistants IA inclus (Claude, ChatGPT, Gemini) sont accessibles mais avec un usage modéré — adapté à une utilisation de découverte ou à un volume léger. À partir de Founder, l'usage des assistants est illimité en interne. Sur Studio, tous les fournisseurs sont accessibles sans restriction, y compris via BYOK. L'objectif n'est pas de frustrer mais de refléter la réalité des coûts d'infrastructure IA.",
+    q: "Comment changer de plan ou résilier ?",
+    a: "Depuis Réglages → Facturation, à tout moment. Après résiliation, vos données sont conservées 30 jours puis supprimées.",
   },
   {
-    q: "Puis-je travailler en équipe sur le même workspace ?",
-    a: "Oui. Starter est mono-utilisateur. Founder inclut 1 siège édition + 1 invité en lecture seule (idéal pour un duo fondateur). Studio inclut 5 sièges avec rôles différenciés édition/lecture, multi-workspaces et projets partagés. Dans tous les cas, les membres d'un workspace partagent les mêmes prospects, listes, séquences et workflows.",
-  },
-  {
-    q: "Les crédits non utilisés sont-ils reportés au mois suivant ?",
-    a: "Non, sauf mention contraire indiquée sur votre plan. Les crédits d'enrichissement se renouvellent en début de cycle de facturation et ne sont pas cumulables. Le détail de ce qui consomme un crédit est expliqué dans la documentation, section Comprendre les crédits d'enrichissement.",
-  },
-  {
-    q: "Puis-je changer de plan à tout moment ?",
-    a: "Oui, depuis Réglages → Facturation. Un changement à la hausse s'applique immédiatement avec un prorata ; un changement à la baisse prend effet au début du cycle suivant. Votre réduction fidélité est conservée lors d'un changement de plan — elle s'applique sur le nouveau tarif.",
-  },
-  {
-    q: "Comment résilier mon abonnement ?",
-    a: "Depuis Réglages → Facturation, sans justification à fournir. L'accès reste actif jusqu'à la fin de la période déjà payée. Vos données sont conservées 30 jours après résiliation avant suppression définitive. Si vous résiliez puis revenez plus tard, votre ancienneté de fidélité n'est pas conservée : le compteur redémarre.",
-  },
-  {
-    q: "Mes données de prospection sont-elles utilisées pour entraîner un modèle IA ?",
-    a: "Non. Vos données ne sont jamais utilisées pour entraîner des modèles, ni par LeadCortex ni par les fournisseurs IA que vous connectez en BYOK dans le cadre de l'usage du Service. Le détail est précisé dans la politique de confidentialité et le DPA.",
-  },
-  {
-    q: "Le Service est-il conforme au RGPD ?",
-    a: "Oui. LeadCortex documente son rôle de sous-traitant via un accord de traitement des données (DPA) fourni à tout client professionnel, et applique les mesures de sécurité détaillées sur la page Sécurité. Le choix de vos fournisseurs IA (modèles inclus ou BYOK) reste sous votre contrôle.",
+    q: "Mes données servent-elles à entraîner une IA ?",
+    a: "Non, jamais. Le détail est dans la politique de confidentialité et le DPA.",
   },
   {
     q: "Quels moyens de paiement acceptez-vous ?",
-    a: "Nous acceptons Visa, Mastercard, Stripe, PayPal, Apple Pay et Google Pay. Tous les paiements sont traités par des prestataires certifiés PCI DSS. Les factures sont disponibles automatiquement dans Réglages → Facturation dès l'émission.",
-  },
-  {
-    q: "J'ai un problème technique urgent, que faire ?",
-    a: "Écrivez à support@leadcortex.io en précisant « urgent » dans l'objet, avec l'identifiant de votre workspace si possible. Les incidents affectant plusieurs comptes sont également suivis sur notre page de statut.",
+    a: "Carte bancaire (Visa, Mastercard), PayPal, Apple Pay et Google Pay.",
   },
 ];
 
@@ -123,11 +99,6 @@ function Page() {
             <br />
             <span className="italic">Pas de bot en boucle.</span>
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-[52ch]">
-            Une question précise sur la facturation, un bug, ou un doute sur le fonctionnement d'une
-            fonctionnalité : commencez par la FAQ ci-dessous, et si elle ne suffit pas, l'équipe est
-            à un email.
-          </p>
         </div>
       </section>
 

@@ -1,3 +1,5 @@
+// backend/academy/internal/api/server_test.go
+
 package api
 
 import (
@@ -20,16 +22,7 @@ import (
 	"github.com/leadcortex/academy/internal/repository"
 )
 
-/* ─── Fixtures ────────────────────────────────────────────────────────── */
 
-// buildTestRegistry construit un registre de test avec :
-//   - 1 programme (p1)
-//   - 1 module (m1)
-//   - 1 leçon (l1) contenant 4 blocs (cover, practice, mission, debrief)
-//   - 2 SrsTemplates (c1, c2) pour tester le SRS en Vague 7
-//
-// Enrichi progressivement au fil des vagues (V5 : practice + mission,
-// V7 : SrsTemplates).
 func buildTestRegistry(t *testing.T) *curriculum.Registry {
 	t.Helper()
 
@@ -95,7 +88,6 @@ func buildTestRegistry(t *testing.T) *curriculum.Registry {
 	return curriculum.NewRegistry([]*domain.Program{program}, nil, nil)
 }
 
-// buildTestServer assemble un Server de test avec toutes les deps.
 func buildTestServer(t *testing.T) *Server {
 	t.Helper()
 
@@ -111,7 +103,6 @@ func buildTestServer(t *testing.T) *Server {
 		t.Fatalf("NewOrchestrator : %v", err)
 	}
 
-	// Avatars service : alimente GET /avatars et ApplyAndUnlock.
 	avatarSvc := avatars.NewService(registry)
 
 	cfg := DefaultServerConfig()
@@ -137,7 +128,6 @@ func buildTestServer(t *testing.T) *Server {
 	return s
 }
 
-/* ─── NewServer ───────────────────────────────────────────────────────── */
 
 func TestNewServer_NilRegistry(t *testing.T) {
 	cfg := DefaultServerConfig()
@@ -202,7 +192,6 @@ func TestNewServer_OK(t *testing.T) {
 	}
 }
 
-/* ─── /healthz ────────────────────────────────────────────────────────── */
 
 func TestHealthz(t *testing.T) {
 	s := buildTestServer(t)
@@ -222,7 +211,6 @@ func TestHealthz(t *testing.T) {
 	}
 }
 
-/* ─── /readyz ─────────────────────────────────────────────────────────── */
 
 func TestReadyz_Ready(t *testing.T) {
 	s := buildTestServer(t)
@@ -253,7 +241,6 @@ func TestReadyz_RepositoryClosed(t *testing.T) {
 	}
 }
 
-/* ─── /version ────────────────────────────────────────────────────────── */
 
 func TestVersion(t *testing.T) {
 	s := buildTestServer(t)
@@ -271,7 +258,6 @@ func TestVersion(t *testing.T) {
 	}
 }
 
-/* ─── 404 JSON ────────────────────────────────────────────────────────── */
 
 func TestNotFoundJSON(t *testing.T) {
 	s := buildTestServer(t)
@@ -295,7 +281,6 @@ func TestNotFoundJSON(t *testing.T) {
 	}
 }
 
-/* ─── Middleware learner sur /api/v1 ──────────────────────────────────── */
 
 func TestAPIv1_RequiresLearner(t *testing.T) {
 	s := buildTestServer(t)
@@ -322,7 +307,6 @@ func TestAPIv1_DevFallbackWorks(t *testing.T) {
 	}
 }
 
-/* ─── Run : démarrage / arrêt ─────────────────────────────────────────── */
 
 func TestServer_RunShutdown(t *testing.T) {
 	s := buildTestServer(t)

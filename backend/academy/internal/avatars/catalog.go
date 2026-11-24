@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/catalog.go
+
 package avatars
 
 import (
@@ -6,8 +8,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// posesStandard — poses disponibles pour la majorité des avatars.
-// L'ordre importe : la première pose par défaut est "neutral".
 var posesStandard = []domain.AvatarPose{
 	{Key: "neutral", Label: "Neutre", IsDefault: true},
 	{Key: "happy", Label: "Content", IsDefault: false},
@@ -16,7 +16,6 @@ var posesStandard = []domain.AvatarPose{
 	{Key: "celebrating", Label: "Célébration", IsDefault: false},
 }
 
-// posesFounding — poses spéciales du Founding Dolphin.
 var posesFounding = []domain.AvatarPose{
 	{Key: "neutral", Label: "Neutre", IsDefault: true},
 	{Key: "happy", Label: "Content", IsDefault: false},
@@ -24,12 +23,7 @@ var posesFounding = []domain.AvatarPose{
 	{Key: "sparkling", Label: "Étincelant", IsDefault: false},
 }
 
-// catalogEntries — les 12 avatars, dans leur ordre canonique.
-//
-// L'ordre est important pour l'affichage : tiers croissants puis
-// progression croissante à l'intérieur d'un tier.
 var catalogEntries = []domain.Avatar{
-	// ─── CLASSIC (6) ───────────────────────────────────────────────────
 	{
 		ID:          "eagle",
 		Name:        "Aigle",
@@ -115,7 +109,6 @@ var catalogEntries = []domain.Avatar{
 		},
 	},
 
-	// ─── COLLECTOR (6) ─────────────────────────────────────────────────
 	{
 		ID:          "owl",
 		Name:        "Chouette",
@@ -202,7 +195,6 @@ var catalogEntries = []domain.Avatar{
 	},
 }
 
-/* ─── Accès au catalogue ──────────────────────────────────────────────── */
 
 var (
 	catalogOnce sync.Once
@@ -210,13 +202,11 @@ var (
 	catalogList []domain.Avatar
 )
 
-// initCatalog initialise les index une seule fois.
 func initCatalog() {
 	catalogOnce.Do(func() {
 		catalogByID = make(map[string]domain.Avatar, len(catalogEntries))
 		catalogList = make([]domain.Avatar, 0, len(catalogEntries))
 		for _, a := range catalogEntries {
-			// Copie défensive des poses.
 			copyPoses := make([]domain.AvatarPose, len(a.Poses))
 			copy(copyPoses, a.Poses)
 			entry := a
@@ -227,10 +217,6 @@ func initCatalog() {
 	})
 }
 
-// All renvoie la liste complète des avatars, dans l'ordre canonique.
-//
-// La slice retournée est une copie : la modifier n'affecte pas le
-// catalogue global.
 func All() []domain.Avatar {
 	initCatalog()
 	out := make([]domain.Avatar, len(catalogList))
@@ -240,7 +226,6 @@ func All() []domain.Avatar {
 	return out
 }
 
-// Find renvoie un avatar par son ID.
 func Find(id string) (domain.Avatar, bool) {
 	initCatalog()
 	a, ok := catalogByID[id]
@@ -250,8 +235,6 @@ func Find(id string) (domain.Avatar, bool) {
 	return cloneAvatar(a), true
 }
 
-// MustFind est une variante de Find qui panique si l'avatar n'existe pas.
-// Réservée aux usages internes où l'ID est garanti.
 func MustFind(id string) domain.Avatar {
 	a, ok := Find(id)
 	if !ok {
@@ -260,7 +243,6 @@ func MustFind(id string) domain.Avatar {
 	return a
 }
 
-// ByTier renvoie tous les avatars d'un tier donné.
 func ByTier(tier domain.AvatarTier) []domain.Avatar {
 	initCatalog()
 	out := make([]domain.Avatar, 0, 6)
@@ -277,7 +259,6 @@ func cloneAvatar(avatar domain.Avatar) domain.Avatar {
 	return avatar
 }
 
-// Count renvoie le nombre total d'avatars du catalogue.
 func Count() int {
 	initCatalog()
 	return len(catalogList)

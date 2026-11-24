@@ -1,11 +1,12 @@
-//frontend\components\settings\panels\SkillsPanel.tsx
+// frontend/components/settings/panels/SkillsPanel.tsx
+
 import { useState } from "react";
 import { toast } from "sonner";
-import { PenLine, Plus, Sparkles, Trash2, Wrench } from "lucide-react";
+import { PenLine, Plus, Sparkles, Trash2, Wrench } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { ConfirmDialog } from "@/components/confirm-dialog";
-import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
+import { cn } from "@/lib/core/utils";
 import { SkillModal, SKILL_CATEGORIES, getCategoryMeta, type Skill } from "../skill-modal";
 import { PanelIntro, PanelGroup, SettingsCard, fakeRequest } from "./primitives";
 
@@ -150,10 +151,6 @@ function SkillCard({
     </article>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  SkillsPanel                                                               */
-/* -------------------------------------------------------------------------- */
 
 export function SkillsPanel() {
   const [skills, setSkills] = useState<Skill[]>(() => DEFAULT_SKILLS);

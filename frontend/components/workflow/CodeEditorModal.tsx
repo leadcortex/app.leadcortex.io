@@ -1,13 +1,14 @@
-//frontend\components\workflow\CodeEditorModal.tsx
+// frontend/components/workflow/CodeEditorModal.tsx
+
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AlertTriangle, CheckCircle2, Code2, Loader2, Save } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Code2, Loader2, Save } from "@/components/icons";
 import {
   CODE_LANGUAGE_LABELS,
   resolveLanguage,
   type CodeLanguageId,
 } from "@/lib/workflow/code-languages";
 import { findIssues, type CodeIssue } from "@/lib/workflow/code-lint";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { NodeSelect } from "./NodeSelect";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
@@ -83,7 +84,6 @@ export function CodeEditorModal({
       >
         <DialogTitle className="sr-only">Éditeur de code — {target.title}</DialogTitle>
 
-        {}
         <header className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border py-2.5 pl-3 pr-14 md:pl-4">
           <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
             <Code2 className="h-4 w-4" />
@@ -131,7 +131,6 @@ export function CodeEditorModal({
           </button>
         </header>
 
-        {}
         <div className="wf-code-modal min-h-0 flex-1 overflow-hidden">
           <Suspense
             fallback={
@@ -151,7 +150,6 @@ export function CodeEditorModal({
           </Suspense>
         </div>
 
-        {}
         <footer
           className={cn(
             "flex shrink-0 items-center gap-2 border-t border-border px-3 py-2 text-[11.5px]",

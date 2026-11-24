@@ -1,7 +1,9 @@
-//frontend\components\mail\provider-logos.tsx
-import type { SVGProps } from "react";
+// frontend/components/mail/provider-logos.tsx
 
-export type MailProvider = "gmail" | "outlook" | "yahoo" | "icloud" | "imap";
+import type { SVGProps } from "react";
+import type { MailProvider } from "@shared/types/email-types";
+
+export type { MailProvider } from "@shared/types/email-types";
 
 export const PROVIDER_LABELS: Record<MailProvider, string> = {
   gmail: "Gmail",

@@ -1,3 +1,5 @@
+// backend/academy/internal/assessment/scorers_test.go
+
 package assessment
 
 import (
@@ -6,7 +8,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Fixtures ────────────────────────────────────────────────────────── */
 
 func mkMCQ(payload domain.MCqPayload) domain.Exercise {
 	return domain.Exercise{
@@ -57,7 +58,6 @@ func mkScenario(payload domain.ScenarioPayload) domain.Exercise {
 	}
 }
 
-/* ─── MCQ ─────────────────────────────────────────────────────────────── */
 
 func TestScoreMCQ_Correct(t *testing.T) {
 	ex := mkMCQ(domain.MCqPayload{Options: []string{"A", "B", "C"}, Correct: 1})
@@ -81,7 +81,6 @@ func TestScoreMCQ_Incorrect(t *testing.T) {
 	}
 }
 
-/* ─── MultiSelect ─────────────────────────────────────────────────────── */
 
 func TestScoreMultiSelect_PerfectMatch(t *testing.T) {
 	ex := mkMulti(domain.MultiSelectPayload{
@@ -99,9 +98,7 @@ func TestScoreMultiSelect_PartialMatch(t *testing.T) {
 		Options: []string{"A", "B", "C", "D"},
 		Correct: []int{0, 1, 2, 3},
 	})
-	// Sélectionne 2 sur 4.
 	res, _ := scoreMultiSelect(ex, MultiSelectAnswer{Selected: []int{0, 1}}, 70)
-	// |A∩B| = 2, |A∪B| = 4 → 50.
 	if res.Score != 50 {
 		t.Errorf("attendu 50, obtenu %d", res.Score)
 	}
@@ -110,7 +107,6 @@ func TestScoreMultiSelect_PartialMatch(t *testing.T) {
 	}
 }
 
-/* ─── FillBlank ───────────────────────────────────────────────────────── */
 
 func TestScoreFillBlank_AllCorrect(t *testing.T) {
 	ex := mkFill(domain.FillBlankPayload{Blanks: []domain.Blank{
@@ -144,7 +140,6 @@ func TestScoreFillBlank_HalfCorrect(t *testing.T) {
 	}
 }
 
-/* ─── OrderSteps ──────────────────────────────────────────────────────── */
 
 func TestScoreOrderSteps_Perfect(t *testing.T) {
 	ex := mkOrder(domain.OrderStepsPayload{Steps: []string{"A", "B", "C", "D"}})
@@ -156,7 +151,6 @@ func TestScoreOrderSteps_Perfect(t *testing.T) {
 
 func TestScoreOrderSteps_OneSwapped(t *testing.T) {
 	ex := mkOrder(domain.OrderStepsPayload{Steps: []string{"A", "B", "C", "D"}})
-	// B et C inversés → 5 paires concordantes sur 6.
 	res, _ := scoreOrderSteps(ex, OrderStepsAnswer{Steps: []string{"A", "C", "B", "D"}}, 70)
 	if res.Score != 83 {
 		t.Errorf("attendu 83 (5/6), obtenu %d", res.Score)
@@ -166,7 +160,6 @@ func TestScoreOrderSteps_OneSwapped(t *testing.T) {
 	}
 }
 
-/* ─── MatchPairs ──────────────────────────────────────────────────────── */
 
 func TestScoreMatchPairs_Perfect(t *testing.T) {
 	ex := mkMatch(domain.MatchPairsPayload{Pairs: []domain.MatchPair{
@@ -182,7 +175,6 @@ func TestScoreMatchPairs_Perfect(t *testing.T) {
 	}
 }
 
-/* ─── FreeText ────────────────────────────────────────────────────────── */
 
 func TestScoreFreeText_AllKeywords(t *testing.T) {
 	ex := mkFree(domain.FreeTextPayload{
@@ -207,7 +199,6 @@ func TestScoreFreeText_TooShort(t *testing.T) {
 	}
 }
 
-/* ─── Scenario ────────────────────────────────────────────────────────── */
 
 func TestScoreScenario_Perfect(t *testing.T) {
 	ex := mkScenario(domain.ScenarioPayload{Steps: []domain.ScenarioStep{

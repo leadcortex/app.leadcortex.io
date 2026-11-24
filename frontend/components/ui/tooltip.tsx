@@ -1,27 +1,41 @@
-//frontend\components\ui\tooltip.tsx
+// frontend/components/ui/tooltip.tsx
+
 "use client";
 
 import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
 const Tooltip = TooltipPrimitive.Root;
 
-const TooltipTrigger = TooltipPrimitive.Trigger;
+const TooltipTrigger = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Trigger>
+>((props, ref) => <TooltipPrimitive.Trigger ref={ref} {...props} data-custom-tooltip-trigger="" />);
+TooltipTrigger.displayName = TooltipPrimitive.Trigger.displayName;
+
+export const TOOLTIP_CONTENT_CLASS_NAME = [
+  "z-50 overflow-hidden rounded-lg border border-border/70 bg-popover px-3 py-1.5 text-xs font-medium text-popover-foreground",
+  "shadow-[0_1px_2px_color-mix(in_oklab,var(--foreground)_6%,transparent),0_8px_24px_-8px_color-mix(in_oklab,var(--foreground)_18%,transparent)]",
+  "dark:shadow-[0_1px_3px_oklch(0_0_0/0.4),0_10px_28px_-10px_color-mix(in_oklab,var(--primary)_22%,transparent)]",
+].join(" ");
 
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 8, children, ...props }, ref) => (
+>(({ className, sideOffset = 4, children, ...props }, ref) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-50 overflow-hidden rounded-lg border border-border bg-popover px-3 py-1.5 text-xs font-medium text-popover-foreground shadow-[var(--shadow-card)] animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-tooltip-content-transform-origin)",
+        TOOLTIP_CONTENT_CLASS_NAME,
+        "animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+        "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "origin-(--radix-tooltip-content-transform-origin)",
         className,
       )}
       {...props}

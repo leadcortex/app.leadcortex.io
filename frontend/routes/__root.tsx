@@ -1,4 +1,5 @@
-//frontend\routes\__root.tsx
+// frontend/routes/__root.tsx
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -10,71 +11,198 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { RotateCcw, Home, AlertCircle, WifiOff, ShieldAlert, Rocket, ArrowLeft } from "@/components/icons";
 
 import appCss from "../styles.css?url";
-import { reportError } from "../lib/error-reporting";
+import { reportError } from "../lib/core/error-reporting";
 import { Toaster } from "@/components/ui/sonner";
-import { AppStoreProvider } from "@/lib/store";
-import { ThemeProvider, THEME_INIT_SCRIPT } from "@/lib/theme";
+import { NativeTitleTooltip } from "@/components/ui/native-title-tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AppStoreProvider } from "@/lib/state/store";
+import { ThemeProvider, THEME_INIT_SCRIPT } from "@/lib/core/theme";
+
+import foundingDolphin from "@academy/assets/collector/Founding-dolphin.svg";
+
+function useSmartHomeRoute() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  
+  if (pathname.startsWith("/app")) {
+    return { path: "/app", label: "Retour au dashboard" };
+  }
+  
+  return { path: "/", label: "Retour à l'accueil" };
+}
 
 function NotFoundComponent() {
+  const home = useSmartHomeRoute();
+  
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Error 404
-        </p>
-        <h1 className="mt-4 font-display text-6xl italic text-foreground">Page introuvable</h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Cette page n'existe pas ou a été déplacée.
-        </p>
-        <div className="mt-8">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:brightness-110"
-          >
-            Retour à l'accueil
-          </Link>
-        </div>
-      </div>
-    </div>
+    <ErrorLayout
+      icon={Rocket}
+      title="Page introuvable"
+      description="La page que vous cherchez a peut-être été déplacée ou n'existe pas. Notre dauphin a cherché partout, sans succès."
+      imageSrc={foundingDolphin}
+      homePath={home.path}
+      homeLabel={home.label}
+    />
   );
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
   const router = useRouter();
+  const home = useSmartHomeRoute();
+
   useEffect(() => {
     reportError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
+  const msg = error?.message?.toLowerCase() || "";
+  
+  let config = {
+    icon: AlertCircle,
+    title: "Oups, Cortex a bugué",
+    description: "Un problème inattendu est survenu. Pas de panique, notre dauphin fondateur est déjà sur le coup.",
+    actionLabel: "Réessayer",
+    onAction: () => {
+      router.invalidate();
+      reset();
+    },
+  };
+
+  if (msg.includes("chunkloaderror") || msg.includes("failed to fetch dynamically imported module") || msg.includes("importing a module script failed")) {
+    config = {
+      icon: Rocket,
+      title: "Une nouvelle version est disponible",
+      description: "L'application a été mise à jour en arrière-plan. Rechargez la page pour profiter de la dernière version.",
+      actionLabel: "Recharger la page",
+      onAction: () => window.location.reload(),
+    };
+  } else if (msg.includes("network") || msg.includes("fetch") || msg.includes("offline")) {
+    config = {
+      icon: WifiOff,
+      title: "Connexion perdue",
+      description: "Vérifiez votre connexion internet. Dès que vous êtes de retour en ligne, tout refonctionnera.",
+      actionLabel: "Réessayer",
+      onAction: () => {
+        router.invalidate();
+        reset();
+      },
+    };
+  } else if (msg.includes("401") || msg.includes("403") || msg.includes("unauthorized")) {
+    config = {
+      icon: ShieldAlert,
+      title: "Accès refusé",
+      description: "Vous n'avez pas les autorisations nécessaires pour accéder à cette page. Veuillez vous reconnecter.",
+      actionLabel: "Aller à la connexion",
+      onAction: () => window.location.assign("/login"),
+    };
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="font-display text-3xl italic text-foreground">
-          Un instant, il y a eu un souci.
-        </h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Rechargez la page ou revenez à l'accueil.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:brightness-110"
-          >
-            Réessayer
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-          >
-            Accueil
-          </a>
+    <ErrorLayout
+      icon={config.icon}
+      title={config.title}
+      description={config.description}
+      imageSrc={foundingDolphin}
+      homePath={home.path}
+      homeLabel={home.label}
+      primaryAction={{
+        label: config.actionLabel,
+        onClick: config.onAction,
+        icon: RotateCcw,
+      }}
+    />
+  );
+}
+
+function ErrorLayout({
+  icon: Icon,
+  title,
+  description,
+  imageSrc,
+  primaryAction,
+  homePath,
+  homeLabel,
+}: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  title: string;
+  description: string;
+  imageSrc: string;
+  primaryAction?: { label: string; onClick: () => void; icon?: React.ComponentType<{ className?: string }> };
+  homePath: string;
+  homeLabel: string;
+}) {
+  return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas p-4">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_oklab,var(--primary)_8%,transparent)_0%,transparent_60%)]" />
+
+      <div className="relative z-10 flex w-full max-w-4xl flex-col items-center gap-10 md:flex-row md:items-center md:justify-center md:gap-16">
+        
+        <div className="flex flex-1 flex-col items-center justify-center text-center md:items-start md:text-left">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary">
+            <Icon className="size-3.5" strokeWidth={2} />
+            <span>Erreur système</span>
+          </div>
+
+          <h1 className="font-display text-3xl italic tracking-tight text-foreground md:text-5xl">
+            {title}
+          </h1>
+          
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base max-w-md">
+            {description}
+          </p>
+
+          <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
+            {primaryAction && (
+              <button
+                onClick={primaryAction.onClick}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-foreground px-6 text-sm font-medium text-background transition-all hover:opacity-90 active:scale-95"
+              >
+                {primaryAction.icon && <primaryAction.icon className="size-4" />}
+                {primaryAction.label}
+              </button>
+            )}
+            <Link
+              to={homePath}
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-background px-6 text-sm font-medium text-foreground transition-all hover:bg-surface active:scale-95"
+            >
+              <Home className="size-4" />
+              {homeLabel}
+            </Link>
+          </div>
+
+          <div className="mt-6 w-full">
+            <button
+              onClick={() => window.history.back()}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="size-3.5" />
+              Revenir à la page précédente
+            </button>
+          </div>
         </div>
+
+        <div className="flex shrink-0 items-center justify-center md:w-80 lg:w-[400px]">
+          <div className="relative size-64 sm:size-72 md:size-80 lg:size-[380px] animate-[float_4s_ease-in-out_infinite]">
+            <img
+              src={imageSrc}
+              alt="Mascotte LeadCortex"
+              className="h-full w-full object-contain drop-shadow-2xl"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
+        </div>
+
       </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(2deg); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -122,7 +250,6 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="fr" suppressHydrationWarning>
       <head>
         <HeadContent />
-        {}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body>
@@ -138,17 +265,19 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AppStoreProvider>
-          <RootLayout />
-          <Toaster />
-        </AppStoreProvider>
+        <TooltipProvider>
+          <AppStoreProvider>
+            <RootLayout />
+            <NativeTitleTooltip />
+            <Toaster />
+          </AppStoreProvider>
+        </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
 }
 
 const APP_ROUTE_PREFIX = "/app";
-
 const SITE_EXEMPT_ROUTES = ["/onboarding"];
 
 function RootLayout() {
@@ -157,30 +286,18 @@ function RootLayout() {
   const isAppRoute = pathname === APP_ROUTE_PREFIX || pathname.startsWith(`${APP_ROUTE_PREFIX}/`);
   const isExempt = SITE_EXEMPT_ROUTES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
-  // ── Routes /app : AppShell gère déjà son propre conteneur ────────────────
   if (isAppRoute) {
     return <Outlet />;
   }
 
-  // ── Routes exemptées : rendu brut ────────────────────────────────────────
   if (isExempt) {
     return <Outlet />;
   }
 
-  // ── Routes « site » : cadre arrondi fixe, scroll interne ────────────────
-  //
-  // Structure :
-  //   ┌─ h-dvh overflow-hidden  (empêche le scroll de la page entière)
-  //   │  ┌─ p-2 md:p-3          (padding périphérique autour du cadre)
-  //   │  │  ┌─ rounded-2xl border
-  //   │  │  │  ┌─ overflow-y-auto (seul élément qui scrolle)
-  //   │  │  │  │  <Outlet />     (nav + contenu + footer, tels quels)
-  //
-  // La nav (SiteNav) et le footer (SiteFooter) restent rendus par les pages
-  // elles-mêmes : ils apparaissent à l'intérieur du cadre, en haut et en bas
-  // du contenu scrollable. `position: sticky` sur la nav la fait coller au
-  // bord supérieur du cadre quand on scrolle — comportement navigateur
-  // standard, rien à changer.
+  if (pathname === "/") {
+    return <Outlet />;
+  }
+
   return (
     <div className="h-dvh w-full overflow-hidden bg-canvas">
       <div className="h-full min-h-0 p-2 md:p-3">

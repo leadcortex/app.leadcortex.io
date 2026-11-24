@@ -1,4 +1,5 @@
-//frontend\components\workflow\WorkflowEditor.tsx
+// frontend/components/workflow/WorkflowEditor.tsx
+
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Workflow,
@@ -8,7 +9,7 @@ import {
   Redo2,
   Undo2,
   Search,
-} from "lucide-react";
+} from "@/components/icons";
 import { Link } from "@tanstack/react-router";
 import { WorkflowProvider, useWorkflow } from "@/lib/workflow/store";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -24,24 +25,11 @@ import { MobileWorkflowDrawer } from "./MobileWorkflowDrawer";
 import { MobileChatDock } from "./MobileChatDock";
 import { Terminal, TERMINAL_COLLAPSED_HEIGHT } from "./Terminal";
 import { totalBlocksCount } from "@/data/workflow-blocks-catalog";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { WorkflowMenus, type WorkflowDialog } from "./WorkflowMenus";
 import { Button } from "@/components/ui/button";
 import { WorkflowEditorSkeleton } from "@/components/skeletons";
 
-/**
- * Empêche la PAGE (html/body) de défiler ou de "rebondir" (élastique) tant
- * que l'éditeur de workflow est monté — voir la règle `.workflow-scroll-lock`
- * dans `styles.css` pour le détail du problème que ceci résout (la console
- * `Terminal` et le dock `MobileChatDock`, tous deux en `position: fixed`, se
- * désynchronisaient de leur emplacement pendant un rebond de scroll rapide
- * sur iOS/Android).
- *
- * Le verrou est posé/retiré sur `<html>` ET `<body>` (les deux doivent être
- * verrouillés pour bloquer le rebond sur tous les moteurs), et retiré au
- * démontage pour ne jamais impacter le reste du site (pages marketing,
- * documentation, etc., qui doivent rester défilables normalement).
- */
 function useLockBodyScroll() {
   useEffect(() => {
     const { documentElement, body } = document;

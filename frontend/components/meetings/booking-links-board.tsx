@@ -1,7 +1,8 @@
-//frontend\components\meetings\booking-links-board.tsx
-import { CalendarDays, Clock, Copy, MapPin, Plus, Trash2 } from "lucide-react";
+// frontend/components/meetings/booking-links-board.tsx
+
+import { CalendarDays, Clock, Copy, MapPin, Plus, Trash2 } from "@/components/icons";
 import { toast } from "sonner";
-import { LOCATION_LABELS, bookingUrl, type BookingLink } from "@/lib/booking-mock";
+import { LOCATION_LABELS, bookingUrl, type BookingLink } from "@/lib/meetings/booking-mock";
 
 export function BookingLinksBoard({
   links,

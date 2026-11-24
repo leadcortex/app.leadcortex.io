@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/xp_test.go
+
 package gamification
 
 import (
@@ -37,7 +39,6 @@ func TestRewardsForLevel_DefensiveCopy(t *testing.T) {
 	if len(a) == 0 || len(b) == 0 {
 		t.Fatal("niveau 5 : slice vide inattendu")
 	}
-	// Modifier `a` ne doit pas affecter `b`.
 	a[0] = Reward{Kind: RewardTitle, Value: "MODIFIED"}
 	if b[0].Value == "MODIFIED" {
 		t.Error("RewardsForLevel ne retourne pas une copie défensive")
@@ -45,7 +46,6 @@ func TestRewardsForLevel_DefensiveCopy(t *testing.T) {
 }
 
 func TestRewardsForLevelRange(t *testing.T) {
-	// 4 → 6 : inclut les récompenses de 5 et 6.
 	r := RewardsForLevelRange(4, 6)
 	has5 := false
 	for _, x := range r {
@@ -68,12 +68,10 @@ func TestRewardsForLevelRange_Noop(t *testing.T) {
 }
 
 func TestRewardsForLevelRange_MultipleHops(t *testing.T) {
-	// 1 → 10 : traverse 2, 3, 5, 7, 10.
 	r := RewardsForLevelRange(1, 10)
 	if len(r) == 0 {
 		t.Fatal("attendu : plusieurs récompenses")
 	}
-	// On doit trouver le badge level-10 et le title "Chasseur".
 	found := map[string]bool{}
 	for _, x := range r {
 		found[x.Value] = true
@@ -103,7 +101,6 @@ func TestXPProgressFor_Beginner(t *testing.T) {
 }
 
 func TestXPProgressFor_MidLevel(t *testing.T) {
-	// 150 XP → niveau 2 (floor=100, next=283).
 	p := XPProgressFor(150)
 	if p.CurrentLevel != 2 {
 		t.Errorf("niveau : attendu 2, obtenu %d", p.CurrentLevel)

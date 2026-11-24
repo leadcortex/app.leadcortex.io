@@ -1,22 +1,11 @@
+// frontend/components/ai-assistant/voice-input-button.tsx
+
 "use client";
 
-/**
- * Bouton d'envoi vocal.
- *
- * **Placeholder assumé** : la capture audio complète (MediaRecorder +
- * transcription serveur) demande un backend dédié qu'on n'a pas encore.
- * Pour l'instant, le bouton affiche une icône micro et signale par un
- * toast que la fonctionnalité arrive — ce qui évite d'ajouter puis de
- * retirer un composant quand le backend sera prêt.
- *
- * Signature prête pour la suite : `onTranscribe(text)` sera appelé avec
- * le texte transcrit dès que l'API sera branchée. Le composant gère
- * déjà l'état `recording` pour que la bascule soit triviale.
- */
 import { useCallback, useState } from "react";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff } from "@/components/icons";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function VoiceInputButton({
@@ -24,7 +13,6 @@ export function VoiceInputButton({
   disabled,
   className,
 }: {
-  /** Sera appelé avec le texte transcrit (backend à venir). */
   onTranscribe?: (text: string) => void;
   disabled?: boolean;
   className?: string;
@@ -32,8 +20,6 @@ export function VoiceInputButton({
   const [recording, setRecording] = useState(false);
 
   const handleClick = useCallback(() => {
-    // Backend non branché : on simule la bascule visuelle puis on
-    // informe l'utilisateur, sans jamais bloquer l'envoi écrit.
     if (recording) {
       setRecording(false);
       toast.info("Capture vocale annulée");

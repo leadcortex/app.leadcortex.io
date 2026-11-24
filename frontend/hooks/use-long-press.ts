@@ -1,7 +1,4 @@
-//frontend\hooks\use-long-press.ts
-// desktop. Remplace `onContextMenu` là où il ne fonctionne pas en tactile.
-
-//   • expose `shouldIgnoreClick()` à appeler en début de onClick pour éviter
+// frontend/hooks/use-long-press.ts
 
 import { useCallback, useRef } from "react";
 
@@ -48,7 +45,6 @@ export function useLongPress({
           try {
             navigator.vibrate(12);
           } catch {
-            /* Intentionally ignored. */
           }
         }
         const pos = startPosRef.current ?? { x: t.clientX, y: t.clientY };
@@ -75,7 +71,6 @@ export function useLongPress({
   const handleContextMenu = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
-      // Si un long-press tactile vient de se déclencher, ne pas doubler.
       if (firedRef.current) return;
       onLongPress({ clientX: e.clientX, clientY: e.clientY });
     },

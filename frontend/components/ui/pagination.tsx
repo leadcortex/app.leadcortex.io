@@ -1,8 +1,9 @@
-//frontend\components\ui\pagination.tsx
-import * as React from "react";
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+// frontend/components/ui/pagination.tsx
 
-import { cn } from "@/lib/utils";
+import * as React from "react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "@/components/icons";
+
+import { cn } from "@/lib/core/utils";
 import { ButtonProps, buttonVariants } from "@/components/ui/button";
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (

@@ -1,4 +1,5 @@
-//frontend\lib\security\rate-limit.ts
+// frontend/lib/security/rate-limit.ts
+
 type Attempt = { at: number; success: boolean };
 
 type Bucket = {

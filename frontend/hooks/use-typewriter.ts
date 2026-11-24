@@ -1,26 +1,13 @@
-//frontend\hooks\use-typewriter.ts
+// frontend/hooks/use-typewriter.ts
+
 import { useEffect, useRef, useState } from "react";
 
 export type TypewriterOptions = {
-  /** `false` = texte affiché d'un coup (aucune animation). */
   enabled?: boolean;
-  /** Nombre de caractères révélés par frame (défaut : 3). */
   charsPerTick?: number;
-  /** Intervalle entre deux révélations en ms (défaut : 16 ≈ 60 fps). */
   tickMs?: number;
 };
 
-/**
- * Effet machine à écrire piloté par `requestAnimationFrame`.
- *
- * Comportement :
- *  - `enabled === false` → le texte complet est rendu immédiatement.
- *  - `enabled === true`  → le texte est révélé progressivement, à raison de
- *    `charsPerTick` caractères toutes les `tickMs` millisecondes.
- *
- * Le hook redémarre proprement quand `target` change (nouveau message) et
- * s'arrête tout seul une fois la cible atteinte.
- */
 export function useTypewriter(
   target: string,
   { enabled = true, charsPerTick = 3, tickMs = 16 }: TypewriterOptions = {},

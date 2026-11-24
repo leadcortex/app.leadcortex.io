@@ -1,4 +1,5 @@
-//frontend\components\ui\dolphin-mascot.tsx
+// frontend/components/ui/dolphin-mascot.tsx
+
 import type { SVGProps } from "react";
 
 export const DOLPHIN_COLORS = {
@@ -41,11 +42,6 @@ type DolphinMascotProps = Omit<SVGProps<SVGSVGElement>, "width" | "height" | "co
   label?: string | null;
 };
 
-/**
- * Humeurs pour lesquelles on affiche les joues rosées par défaut.
- * Sorti en constante pour rendre la condition lisible et éviter
- * tout mélange `?? ||` dans le JSX.
- */
 const BLUSH_MOODS: ReadonlySet<DolphinMood> = new Set<DolphinMood>([
   "happy",
   "success",
@@ -65,8 +61,6 @@ export function DolphinMascot({
   const width = numericSize;
   const height = numericSize ? Math.round(numericSize * 1.4) : undefined;
 
-  // ⚠️  Ne PAS écrire `blush ?? mood === "happy" || …` : JS/TS interdit
-
   const defaultBlush = BLUSH_MOODS.has(mood);
   const showBlush = blush ?? defaultBlush;
 
@@ -82,11 +76,6 @@ export function DolphinMascot({
       className={className}
       {...props}
     >
-      {}
-      {}
-      {/*     Les bases se glissent sous le corps (y≈232) pour éviter une   */}
-      {}
-      {}
       <path
         d="
           M 82 232
@@ -108,11 +97,6 @@ export function DolphinMascot({
         fill={DOLPHIN_COLORS.bodyDeep}
       />
 
-      {}
-      {}
-      {}
-      {}
-      {}
       <path
         d="
           M 82 46
@@ -125,11 +109,6 @@ export function DolphinMascot({
         fill={DOLPHIN_COLORS.bodyDeep}
       />
 
-      {}
-      {}
-      {}
-      {}
-      {}
       <path
         d="
           M 52 168
@@ -153,10 +132,6 @@ export function DolphinMascot({
         fill={DOLPHIN_COLORS.bodyDeep}
       />
 
-      {}
-      {}
-      {}
-      {}
       <path
         d="
           M 100 24
@@ -173,11 +148,6 @@ export function DolphinMascot({
         fill={DOLPHIN_COLORS.body}
       />
 
-      {}
-      {}
-      {}
-      {}
-      {}
       <path
         d="
           M 68 108
@@ -193,7 +163,6 @@ export function DolphinMascot({
         "
         fill={DOLPHIN_COLORS.belly}
       />
-      {}
       <path
         d="
           M 68 108
@@ -207,19 +176,10 @@ export function DolphinMascot({
         opacity="0.6"
       />
 
-      {}
-      {}
-      {}
       <DolphinEyes mood={mood} />
 
-      {}
-      {}
-      {}
       <DolphinMouth mood={mood} />
 
-      {}
-      {}
-      {}
       {showBlush && (
         <>
           <ellipse cx="60" cy="150" rx="8" ry="5" fill={DOLPHIN_COLORS.blush} opacity="0.32" />
@@ -253,7 +213,6 @@ function DolphinEyes({ mood }: { mood: DolphinMood }) {
     />
   );
 
-  // --- Yeux mi-clos (sérénité).
   const halfEye = (cx: number) => (
     <>
       <ellipse cx={cx} cy={EYE_Y} rx="13" ry="15.5" fill={DOLPHIN_COLORS.ink} />
@@ -266,7 +225,6 @@ function DolphinEyes({ mood }: { mood: DolphinMood }) {
     </>
   );
 
-  // --- Yeux fatigués : paupière lourde + petit reflet bas.
   const tiredEye = (cx: number) => (
     <>
       <ellipse cx={cx} cy={EYE_Y + 2} rx="13" ry="13" fill={DOLPHIN_COLORS.ink} />
@@ -281,7 +239,6 @@ function DolphinEyes({ mood }: { mood: DolphinMood }) {
     </>
   );
 
-  // --- Yeux « problème » : plissés + 1 reflet.
   const annoyedEye = (cx: number) => (
     <>
       <ellipse cx={cx} cy={EYE_Y} rx="12" ry="14" fill={DOLPHIN_COLORS.ink} />
@@ -289,7 +246,6 @@ function DolphinEyes({ mood }: { mood: DolphinMood }) {
     </>
   );
 
-  // --- Yeux « succès » : étoiles scintillantes.
   const starryEye = (cx: number) => (
     <>
       <ellipse cx={cx} cy={EYE_Y} rx="13" ry="15.5" fill={DOLPHIN_COLORS.ink} />
@@ -312,7 +268,6 @@ function DolphinEyes({ mood }: { mood: DolphinMood }) {
     </>
   );
 
-  // --- Yeux « surpris » : plus grands, pupille réduite relative.
   const wideEye = (cx: number) => (
     <>
       <ellipse cx={cx} cy={EYE_Y} rx="14" ry="16" fill={DOLPHIN_COLORS.ink} />
@@ -321,7 +276,6 @@ function DolphinEyes({ mood }: { mood: DolphinMood }) {
     </>
   );
 
-  // --- Sourcils (utile pour curious / motivated / problem).
   const browUp = (cx: number) => (
     <path
       d={`M ${cx - 12} ${EYE_Y - 22} Q ${cx} ${EYE_Y - 30} ${cx + 12} ${EYE_Y - 24}`}
@@ -434,12 +388,7 @@ function DolphinEyes({ mood }: { mood: DolphinMood }) {
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Bouche — variantes selon l'humeur                                        */
-/* -------------------------------------------------------------------------- */
-
 function DolphinMouth({ mood }: { mood: DolphinMood }) {
-  // Positions canoniques : sous le ventre, à mi-chemin entre les yeux.
   const CX = 100;
   const CY = 158;
 

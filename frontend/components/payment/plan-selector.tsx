@@ -1,5 +1,6 @@
-//frontend\components\payment\plan-selector.tsx
-import { Zap, Crown, Building2 } from "lucide-react";
+// frontend/components/payment/plan-selector.tsx
+
+import { Zap, Crown, Building2 } from "@/components/icons";
 
 const plans = [
   {

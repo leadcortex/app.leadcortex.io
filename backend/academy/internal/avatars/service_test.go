@@ -1,3 +1,5 @@
+// backend/academy/internal/avatars/service_test.go
+
 package avatars
 
 import (
@@ -7,7 +9,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Service : EvaluateAll ───────────────────────────────────────────── */
 
 func TestService_EvaluateAll_NothingUnlockable(t *testing.T) {
 	s := NewService(nil)
@@ -25,13 +26,13 @@ func TestService_EvaluateAll_NothingUnlockable(t *testing.T) {
 func TestService_EvaluateAll_SomeUnlockable(t *testing.T) {
 	s := NewService(nil)
 	l := newLearner()
-	l.StreakDays = 10 // débloque fox (streak 7)
+	l.StreakDays = 10
 	for i := 0; i < 5; i++ {
 		l.LessonProgress[lessonID(i)] = domain.LessonProgress{
 			LessonID: lessonID(i),
 			Status:   domain.LessonStatusCompleted,
 		}
-	} // débloque aussi panda (5 leçons)
+	}
 
 	unlocked, err := s.EvaluateAll(l, fixedTime())
 	if err != nil {
@@ -56,7 +57,7 @@ func TestService_EvaluateAll_SkipsAlreadyUnlocked(t *testing.T) {
 	s := NewService(nil)
 	l := newLearner()
 	l.StreakDays = 10
-	l.UnlockAvatar("fox") // déjà débloqué
+	l.UnlockAvatar("fox")
 
 	unlocked, err := s.EvaluateAll(l, fixedTime())
 	if err != nil {
@@ -77,7 +78,6 @@ func TestService_EvaluateAll_NilLearner(t *testing.T) {
 	}
 }
 
-/* ─── Service : ApplyAndUnlock ────────────────────────────────────────── */
 
 func TestService_ApplyAndUnlock(t *testing.T) {
 	s := NewService(nil)
@@ -95,14 +95,12 @@ func TestService_ApplyAndUnlock(t *testing.T) {
 		t.Error("fox devrait être dans UnlockedAvatarIDs")
 	}
 
-	// Second appel : idempotent.
 	added2, _ := s.ApplyAndUnlock(l, fixedTime())
 	if len(added2) != 0 {
 		t.Errorf("second appel : attendu 0, obtenu %d", len(added2))
 	}
 }
 
-/* ─── Service : Snapshot ──────────────────────────────────────────────── */
 
 func TestService_Snapshot_EmptyLearner(t *testing.T) {
 	s := NewService(nil)
@@ -135,7 +133,6 @@ func TestService_Snapshot_WithUnlocks(t *testing.T) {
 		t.Errorf("EquippedID : attendu panda, obtenu %s", snap.EquippedID)
 	}
 
-	// Vérifier les flags individuels.
 	var pandaRender *Render
 	for i := range snap.Avatars {
 		if snap.Avatars[i].AvatarID == "panda" {
@@ -154,7 +151,6 @@ func TestService_Snapshot_WithUnlocks(t *testing.T) {
 	}
 }
 
-/* ─── Service : signaux dérivés ───────────────────────────────────────── */
 
 func TestService_BuildContext_Level20(t *testing.T) {
 	s := NewService(nil)
@@ -207,7 +203,6 @@ func TestService_UnlocksLevel20Avatar(t *testing.T) {
 func TestService_UnlocksExercises100Avatar(t *testing.T) {
 	s := NewService(nil)
 	l := newLearner()
-	// Simuler 100 exercices réussis en farcissant les scores.
 	lp := domain.LessonProgress{
 		LessonID: "l1",
 		Status:   domain.LessonStatusInProgress,
@@ -233,7 +228,6 @@ func TestService_UnlocksExercises100Avatar(t *testing.T) {
 	}
 }
 
-/* ─── Pipeline : AssetURL ─────────────────────────────────────────────── */
 
 func TestAssetURL_ValidPose(t *testing.T) {
 	url, err := AssetURL("eagle", "happy")
@@ -265,7 +259,6 @@ func TestAssetURL_UnknownAvatar(t *testing.T) {
 	}
 }
 
-/* ─── Pipeline : styles ───────────────────────────────────────────────── */
 
 func TestStyleForAvatar_Classic(t *testing.T) {
 	style, err := StyleForAvatar("eagle")
@@ -303,7 +296,6 @@ func TestStyleForAvatar_Dolphin(t *testing.T) {
 	}
 }
 
-/* ─── Pipeline : BuildRender ──────────────────────────────────────────── */
 
 func TestBuildRender_Unlocked(t *testing.T) {
 	l := newLearner()
@@ -347,7 +339,6 @@ func TestBuildRender_UnknownAvatar(t *testing.T) {
 	}
 }
 
-/* ─── Pipeline : BuildCatalog ─────────────────────────────────────────── */
 
 func TestBuildCatalog_Returns12(t *testing.T) {
 	l := newLearner()
@@ -357,7 +348,6 @@ func TestBuildCatalog_Returns12(t *testing.T) {
 	}
 }
 
-/* ─── Poses ───────────────────────────────────────────────────────────── */
 
 func TestPosesFor(t *testing.T) {
 	poses, err := PosesFor("eagle")
@@ -392,19 +382,15 @@ func TestHasPose(t *testing.T) {
 }
 
 func TestResolvePose(t *testing.T) {
-	// Pose existante.
 	if got := ResolvePose("eagle", "happy"); got != "happy" {
 		t.Errorf("attendu happy, obtenu %s", got)
 	}
-	// Pose inconnue → défaut.
 	if got := ResolvePose("eagle", "unknown"); got != "neutral" {
 		t.Errorf("attendu neutral, obtenu %s", got)
 	}
-	// Pose vide → défaut.
 	if got := ResolvePose("eagle", ""); got != "neutral" {
 		t.Errorf("attendu neutral, obtenu %s", got)
 	}
-	// Avatar inconnu → "neutral".
 	if got := ResolvePose("unknown", "happy"); got != "neutral" {
 		t.Errorf("attendu neutral, obtenu %s", got)
 	}

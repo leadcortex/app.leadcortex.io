@@ -1,4 +1,5 @@
-//frontend\components\ai-assistant\assistant-bus.ts
+// frontend/components/ai-assistant/assistant-bus.ts
+
 import type { AssistantAttachment } from "./assistant-engine";
 
 export const ASSISTANT_OPEN_EVENT = "lc:assistant-open";

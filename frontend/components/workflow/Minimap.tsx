@@ -1,13 +1,13 @@
-//frontend\components\workflow\Minimap.tsx
+// frontend/components/workflow/Minimap.tsx
+
 import { useWorkflow } from "@/lib/workflow/store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { categoryMap, docBounds, nodeHeight, nodeWidth } from "@/lib/workflow/geometry";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const MW_DESKTOP = 200;
 const MH_DESKTOP = 130;
 
-// Mobile : très fortement réduite pour ne pas encombrer le canevas — à cette
 const MW_MOBILE = 96;
 const MH_MOBILE = 60;
 const MOBILE_DOT_RADIUS = 2.25;
@@ -52,7 +52,6 @@ export function Minimap() {
         isMobile ? "p-1" : "p-1.5",
       )}
     >
-      {}
       {!isMobile && (
         <div className="mb-1 px-0.5 text-[9px] uppercase tracking-wider text-muted-foreground">
           Mini-carte

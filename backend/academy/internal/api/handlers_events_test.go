@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_events_test.go
+
 package api
 
 import (
@@ -9,9 +11,6 @@ import (
 	"testing"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /events
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestPublishEvent_MissingKind(t *testing.T) {
 	s := buildTestServer(t)
@@ -58,7 +57,6 @@ func TestPublishEvent_InvalidAt(t *testing.T) {
 func TestPublishEvent_NoMatchingMission(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Aucune mission n'écoute "unknown.event".
 	body := strings.NewReader(`{"kind":"unknown.event","payload":{}}`)
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/events", body)
 	req.Header.Set("X-Learner-ID", "alice")
@@ -85,7 +83,6 @@ func TestPublishEvent_ValidatesMission(t *testing.T) {
 	s := buildTestServer(t)
 	startLesson(t, s, "alice", "l1")
 
-	// "test.event" déclenche mission-1.
 	body := strings.NewReader(`{"kind":"test.event","payload":{"x":1}}`)
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/events", body)
 	req.Header.Set("X-Learner-ID", "alice")
@@ -110,13 +107,11 @@ func TestPublishEvent_ValidatesMission(t *testing.T) {
 		t.Errorf("XPAwardedTotal : attendu 50, obtenu %d", resp.XPAwardedTotal)
 	}
 
-	// Persistance : XP crédité.
 	stored, _ := s.deps.Repository.GetLearner(context.Background(), "alice")
 	if stored.XP < 50 {
 		t.Errorf("XP persisté : attendu >= 50, obtenu %d", stored.XP)
 	}
 
-	// Statut MissionProgress.
 	mp, ok := stored.MissionProgress["mission-1"]
 	if !ok {
 		t.Fatal("MissionProgress non persisté")
@@ -141,13 +136,11 @@ func TestPublishEvent_Idempotent(t *testing.T) {
 		return resp
 	}
 
-	// Premier : valide.
 	r1 := publish()
 	if len(r1.ValidatedIDs) != 1 {
 		t.Fatalf("premier : attendu 1 validée, obtenu %d", len(r1.ValidatedIDs))
 	}
 
-	// Second : la mission est déjà `completed`, l'orchestrator la saute.
 	r2 := publish()
 	if len(r2.ValidatedIDs) != 0 {
 		t.Errorf("second : attendu 0 validée (déjà completed), obtenu %d (%v)",
@@ -157,7 +150,6 @@ func TestPublishEvent_Idempotent(t *testing.T) {
 
 func TestPublishEvent_SkipsLessonNotStarted(t *testing.T) {
 	s := buildTestServer(t)
-	// Pas de start préalable.
 
 	body := strings.NewReader(`{"kind":"test.event","payload":{}}`)
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/events", body)
@@ -165,7 +157,6 @@ func TestPublishEvent_SkipsLessonNotStarted(t *testing.T) {
 	rec := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec, req)
 
-	// Doit retourner 200 (pas d'erreur), mais ne rien valider.
 	if rec.Code != http.StatusOK {
 		t.Fatalf("attendu 200, obtenu %d (body=%s)", rec.Code, rec.Body.String())
 	}

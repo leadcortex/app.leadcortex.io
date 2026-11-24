@@ -1,5 +1,6 @@
-//frontend\components\workflow\menu-model.ts
-import type { LucideIcon } from "lucide-react";
+// frontend/components/workflow/menu-model.ts
+
+import type { LucideIcon } from "@/components/icons";
 
 export type MenuEntry =
   | {

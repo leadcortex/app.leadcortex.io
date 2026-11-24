@@ -1,5 +1,6 @@
-//frontend\data\workflow-blocks-catalog.tsx
-import type { LucideIcon } from "lucide-react";
+// frontend/data/workflow-blocks-catalog.tsx
+
+import type { LucideIcon } from "@/components/icons";
 import {
   Zap,
   Rss,
@@ -127,7 +128,7 @@ import {
   OctagonX,
   Mic,
   MailX,
-} from "lucide-react";
+} from "@/components/icons";
 import { CODE_LANGUAGE_LABELS } from "@/lib/workflow/code-languages";
 
 export type ConfigFieldType =
@@ -192,13 +193,6 @@ export type BlockDef = {
   dynamicInputs?: boolean;
   noteField?: string;
   inlineLimit?: number;
-  /**
-   * Bloc terminal : n'a jamais de port de sortie, quelle que soit sa
-   * catégorie. Utilisé pour les blocs de fin (« Fin d'automatisation »,
-   * « Fin de branche »…) qui reçoivent bien une entrée mais ne peuvent
-   * rien enchaîner derrière eux — contrairement aux déclencheurs/blocs
-   * d'organisation, ils gardent leurs ports d'entrée normaux.
-   */
   terminal?: boolean;
   configFields: ConfigField[];
 };
@@ -2450,7 +2444,6 @@ export const BLOCKS: BlockDef[] = [
     ],
   },
 
-  // ───────────────────────── GESTION DES ERREURS ─────────────────────────
   {
     id: "error-try-catch",
     category: "error",
@@ -2541,7 +2534,6 @@ export const BLOCKS: BlockDef[] = [
     ],
   },
 
-  // entrée mais n'ont jamais de sortie (`terminal: true`) puisqu'ils
   {
     id: "end-workflow",
     category: "end",

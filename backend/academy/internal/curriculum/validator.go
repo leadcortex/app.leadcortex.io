@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/validator.go
+
 package curriculum
 
 import (
@@ -6,17 +8,9 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// ValidateAll effectue la validation croisée de tous les programmes :
-//   - unicité des IDs à l'échelle globale (lessons, concepts, avatars, badges)
-//   - cohérence des références (prereq → existe, unlocks → existe)
-//   - présence d'au moins un bloc mission par leçon (règle pédagogique)
-//   - concepts référencés par les leçons → déclarés dans le programme
-//
-// Renvoie la liste des problèmes trouvés (vide = tout OK).
 func ValidateAll(programs []*domain.Program, avatars []*domain.Avatar, badges []*domain.Badge) []ValidationIssue {
 	var issues []ValidationIssue
 
-	// Index globaux.
 	allLessonIDs := map[string]struct{}{}
 	allConceptIDs := map[string]struct{}{}
 	allAvatarIDs := map[string]struct{}{}
@@ -52,7 +46,6 @@ func validateProgram(
 	var issues []ValidationIssue
 	path := fmt.Sprintf("programs/%s", p.ID)
 
-	// Concepts déclarés dans le programme.
 	programConcepts := map[string]struct{}{}
 	for _, m := range p.Modules {
 		for _, l := range m.Lessons {
@@ -68,7 +61,6 @@ func validateProgram(
 	for _, m := range p.Modules {
 		mPath := fmt.Sprintf("%s/modules/%s", path, m.ID)
 
-		// Le module doit référencer des concepts connus.
 		for _, cid := range m.Prerequisites.RequiredConceptIDs {
 			if _, ok := programConcepts[cid]; !ok {
 				issues = append(issues, issue(SeverityError, "Module", m.ID, mPath,
@@ -79,14 +71,12 @@ func validateProgram(
 		for _, l := range m.Lessons {
 			lPath := fmt.Sprintf("%s/lessons/%s", mPath, l.ID)
 
-			// Unicité globale des leçons.
 			if _, dup := globalLessons[l.ID]; dup {
 				issues = append(issues, issue(SeverityError, "Lesson", l.ID, lPath,
 					"identifiant de leçon dupliqué", nil))
 			}
 			globalLessons[l.ID] = struct{}{}
 
-			// Concepts référencés par la leçon → déclarés.
 			for _, cid := range l.Concepts {
 				if _, ok := programConcepts[cid]; !ok {
 					issues = append(issues, issue(SeverityError, "Lesson", l.ID, lPath,
@@ -95,7 +85,6 @@ func validateProgram(
 				globalConcepts[cid] = struct{}{}
 			}
 
-			// Templates SRS → concept déclaré.
 			for i, t := range l.SrsTemplates {
 				if _, ok := programConcepts[t.ConceptID]; !ok {
 					issues = append(issues, issue(SeverityError, "Lesson", l.ID, lPath,
@@ -103,7 +92,6 @@ func validateProgram(
 				}
 			}
 
-			// Avatars débloqués → connus.
 			for _, aid := range l.Unlocks.AvatarIDs {
 				if _, ok := globalAvatars[aid]; !ok {
 					issues = append(issues, issue(SeverityError, "Lesson", l.ID, lPath,
@@ -111,7 +99,6 @@ func validateProgram(
 				}
 			}
 
-			// Badges débloqués → connus.
 			for _, bid := range l.Unlocks.BadgeIDs {
 				if _, ok := globalBadges[bid]; !ok {
 					issues = append(issues, issue(SeverityError, "Lesson", l.ID, lPath,
@@ -119,7 +106,6 @@ func validateProgram(
 				}
 			}
 
-			// Règle pédagogique : une leçon doit contenir au moins un bloc mission.
 			hasMission := false
 			hasCover := false
 			hasDebrief := false
@@ -162,7 +148,6 @@ func issue(sev Severity, entity, id, path, msg string, cause error) ValidationIs
 	}
 }
 
-// HasErrors renvoie vrai si au moins une issue est une erreur bloquante.
 func HasErrors(issues []ValidationIssue) bool {
 	for _, i := range issues {
 		if i.Severity == SeverityError {

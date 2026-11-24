@@ -1,7 +1,10 @@
-//frontend\components\ui\sonner.tsx
-import { useEffect, useState } from "react";
-import { Toaster as Sonner } from "sonner";
+// frontend/components/ui/sonner.tsx
+
+import { useEffect, useRef, useState } from "react";
+import { Toaster as Sonner, useSonner } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAppStore } from "@/lib/state/store";
+import type { NotificationItem } from "@/lib/state/store";
 
 export type NotificationPosition =
   "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right";
@@ -30,6 +33,19 @@ const DEFAULT_POSITION: NotificationPosition = "top-left";
 const DEFAULT_MOBILE_POSITION: NotificationMobilePosition = "top";
 const DEFAULT_SIZE = 30;
 
+function toastText(value: unknown): string | undefined {
+  const text = Array.isArray(value)
+    ? value.map(toastText).filter(Boolean).join(" ")
+    : typeof value === "string" || typeof value === "number"
+      ? String(value)
+      : "";
+  const cleaned = text
+    .replace(/\p{Extended_Pictographic}/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return cleaned || undefined;
+}
+
 export function readNotificationPosition(): NotificationPosition {
   if (typeof window === "undefined") return DEFAULT_POSITION;
   try {
@@ -38,7 +54,6 @@ export function readNotificationPosition(): NotificationPosition {
       return raw as NotificationPosition;
     }
   } catch {
-    /* Intentionally ignored. */
   }
   return DEFAULT_POSITION;
 }
@@ -49,12 +64,10 @@ export function writeNotificationPosition(pos: NotificationPosition) {
   try {
     window.localStorage.setItem(NOTIFICATION_POSITION_KEY, pos);
   } catch {
-    /* Intentionally ignored. */
   }
   try {
     window.dispatchEvent(new CustomEvent(NOTIFICATION_POSITION_EVENT, { detail: pos }));
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
@@ -64,7 +77,6 @@ export function readNotificationMobilePosition(): NotificationMobilePosition {
     const raw = window.localStorage.getItem(NOTIFICATION_MOBILE_POSITION_KEY);
     if (raw === "top" || raw === "bottom") return raw;
   } catch {
-    /* Intentionally ignored. */
   }
   return DEFAULT_MOBILE_POSITION;
 }
@@ -75,12 +87,10 @@ export function writeNotificationMobilePosition(pos: NotificationMobilePosition)
   try {
     window.localStorage.setItem(NOTIFICATION_MOBILE_POSITION_KEY, pos);
   } catch {
-    /* Intentionally ignored. */
   }
   try {
     window.dispatchEvent(new CustomEvent(NOTIFICATION_MOBILE_POSITION_EVENT, { detail: pos }));
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
@@ -93,7 +103,6 @@ export function readNotificationSize(): number {
       if (!Number.isNaN(n) && n >= 0 && n <= 100) return n;
     }
   } catch {
-    /* Intentionally ignored. */
   }
   return DEFAULT_SIZE;
 }
@@ -104,12 +113,10 @@ export function writeNotificationSize(size: number) {
   try {
     window.localStorage.setItem(NOTIFICATION_SIZE_KEY, String(clamped));
   } catch {
-    /* Intentionally ignored. */
   }
   try {
     window.dispatchEvent(new CustomEvent(NOTIFICATION_SIZE_EVENT, { detail: clamped }));
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
@@ -121,6 +128,9 @@ type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ position, ...props }: ToasterProps) => {
   const isMobile = useIsMobile();
+  const { addNotification } = useAppStore();
+  const { toasts } = useSonner();
+  const observedToastIds = useRef(new Set<string>());
 
   const [pos, setPos] = useState<NotificationPosition>(() => readNotificationPosition());
   const [mobilePos, setMobilePos] = useState<NotificationMobilePosition>(() =>
@@ -168,6 +178,38 @@ const Toaster = ({ position, ...props }: ToasterProps) => {
 
   const scale = notificationScaleFromSize(size);
 
+  useEffect(() => {
+    const activeToastIds = new Set(
+      toasts.filter((item) => !item.delete).map((item) => String(item.id)),
+    );
+
+    for (const item of toasts) {
+      const id = String(item.id);
+      if (item.delete || item.type === "loading" || observedToastIds.current.has(id)) continue;
+
+      const label = toastText(item.title);
+      if (!label) continue;
+
+      const detail = toastText(item.description);
+      const important = item.type === "warning" || item.type === "error";
+      const kind: NotificationItem["kind"] =
+        item.type === "success" ? "success" : important ? "warning" : "info";
+
+      addNotification({
+        id: `toast-${id}`,
+        label,
+        ...(detail ? { detail } : {}),
+        kind,
+        ...(important ? { important: true } : {}),
+      });
+      observedToastIds.current.add(id);
+    }
+
+    for (const id of observedToastIds.current) {
+      if (!activeToastIds.has(id)) observedToastIds.current.delete(id);
+    }
+  }, [addNotification, toasts]);
+
   return (
     <Sonner
       position={finalPosition}
@@ -175,11 +217,20 @@ const Toaster = ({ position, ...props }: ToasterProps) => {
       style={{ "--notif-scale": String(scale) } as React.CSSProperties}
       toastOptions={{
         classNames: {
-          toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+          toast: [
+            "group toast",
+            "group-[.toaster]:bg-popover group-[.toaster]:text-popover-foreground",
+            "group-[.toaster]:border group-[.toaster]:border-border/80",
+            "group-[.toaster]:rounded-xl",
+            "group-[.toaster]:shadow-[0_1px_2px_color-mix(in_oklab,var(--foreground)_6%,transparent),0_10px_30px_-12px_color-mix(in_oklab,var(--foreground)_18%,transparent)]",
+            "dark:group-[.toaster]:border-border",
+            "dark:group-[.toaster]:shadow-[0_1px_3px_oklch(0_0_0/0.5),0_14px_36px_-12px_color-mix(in_oklab,var(--primary)_24%,transparent)]",
+          ].join(" "),
           description: "group-[.toast]:text-muted-foreground",
-          actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+          actionButton:
+            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground group-[.toast]:rounded-lg",
+          cancelButton:
+            "group-[.toast]:bg-secondary group-[.toast]:text-secondary-foreground group-[.toast]:rounded-lg",
         },
       }}
       {...props}

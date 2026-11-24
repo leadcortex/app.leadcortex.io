@@ -1,9 +1,10 @@
-//frontend\components\settings\panels\NotificationsPanel.tsx
+// frontend/components/settings/panels/NotificationsPanel.tsx
+
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { AlertCircle, Bell, Check, Minus, Plus } from "lucide-react";
+import { AlertCircle, Bell, Check, Minus, Plus } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   readNotificationPosition,
@@ -32,10 +33,10 @@ const DESKTOP_POSITIONS: {
   label: string;
   hint: string;
 }[] = [
-  { value: "top-left", label: "En haut à gauche", hint: "Position par défaut" },
-  { value: "top-right", label: "En haut à droite", hint: "Visible immédiatement" },
-  { value: "bottom-left", label: "En bas à gauche", hint: "Discrète, hors du contenu" },
-  { value: "bottom-right", label: "En bas à droite", hint: "Près du contenu" },
+  { value: "top-left", label: "En haut à gauche", hint: " " },
+  { value: "top-right", label: "En haut à droite", hint: " " },
+  { value: "bottom-left", label: "En bas à gauche", hint: " " },
+  { value: "bottom-right", label: "En bas à droite", hint: " " },
 ];
 
 const MOBILE_POSITIONS: {
@@ -76,7 +77,6 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
       role="img"
       aria-label={`Aperçu : notification ${label}`}
     >
-      {/* Fenêtre */}
       <rect
         x="0.5"
         y="0.5"
@@ -87,7 +87,6 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
         stroke="currentColor"
         strokeOpacity="0.15"
       />
-      {/* Barre de titre : feux + barre d'adresse */}
       <circle cx="16" cy="13" r="3.2" fill="#ff5f57" />
       <circle cx="27" cy="13" r="3.2" fill="#febc2e" />
       <circle cx="38" cy="13" r="3.2" fill="#28c840" />
@@ -111,7 +110,6 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
         app.leadcortex.io
       </text>
 
-      {/* Zone de contenu */}
       <rect
         x={contentX}
         y={contentY}
@@ -124,7 +122,6 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
         strokeOpacity="0.06"
       />
 
-      {/* Faux dashboard : en-tête, 3 tuiles, tableau */}
       <g fill="currentColor" fillOpacity="0.08">
         <rect x={contentX + 14} y={contentY + 12} width="56" height="6" rx="3" fillOpacity="0.16" />
         <rect x={contentX + 14} y={contentY + 23} width="96" height="3.5" rx="1.75" />
@@ -152,10 +149,6 @@ function BrowserNotificationPreview({ position }: { position: NotificationPositi
   );
 }
 
-/* =========================================================================
- *  MobileNotificationPreview — aperçu mobile (téléphone)                     *
- * ====================================================================== */
-
 function MobileNotificationPreview({
   side,
   size,
@@ -163,16 +156,12 @@ function MobileNotificationPreview({
   side: NotificationMobilePosition;
   size: number;
 }) {
-  // Échelle de la carte selon la préférence de taille (0 → 0,78 · 100 → 1,04).
-  // Bornée pour que la carte ne dépasse jamais de l'écran du téléphone
-  // (largeur max = 96 × 1,04 ≈ 100 pour un écran de 108).
   const scale = 0.78 + (size / 100) * 0.26;
   const cardW = NOTIF_BASE_W * scale;
   const cardH = NOTIF_BASE_H * scale;
 
   const cardX = PHONE.sx + (PHONE.sw - cardW) / 2;
   const isTop = side === "top";
-  // En haut : juste sous la Dynamic Island. En bas : au-dessus de la barre de nav.
   const cardY = isTop ? 33 : NAV_Y_BOTTOM - cardH - 11;
 
   return (
@@ -183,10 +172,6 @@ function MobileNotificationPreview({
     </PhoneFrame>
   );
 }
-
-/* =========================================================================
- *  SelectorCard — carte radio générique                                      *
- * ====================================================================== */
 
 function SelectorCard({
   active,
@@ -244,24 +229,15 @@ function SelectorCard({
   );
 }
 
-/* =========================================================================
- *  Helpers                                                                   *
- * ====================================================================== */
-
 function sizeLabel(size: number): string {
   if (size <= 25) return "Petite";
   if (size <= 66) return "Moyenne";
   return "Grande";
 }
 
-/* =========================================================================
- *  NotificationsPanel                                                        *
- * ====================================================================== */
-
 export function NotificationsPanel() {
   const isMobile = useIsMobile();
 
-  /* Alertes (mêmes dans les deux modes). */
   const [notifs, setNotifs] = useState({
     reply: true,
     sequence: true,
@@ -270,21 +246,15 @@ export function NotificationsPanel() {
     deliverability: true,
   });
 
-  /* Position desktop. */
   const [position, setPosition] = useState<NotificationPosition>(() => readNotificationPosition());
 
-  /* Position mobile. */
   const [mobilePosition, setMobilePosition] = useState<NotificationMobilePosition>(() =>
     readNotificationMobilePosition(),
   );
 
-  /* Taille (appliquée globalement). */
   const [size, setSize] = useState<number>(() => readNotificationSize());
 
-  /* Throttle du toast de prévisualisation pour éviter le spam. */
   const lastPreviewAt = useRef<number>(0);
-
-  /* ── Handlers ───────────────────────────────────────────────────────── */
 
   const handleDesktopPositionChange = (next: NotificationPosition) => {
     setPosition(next);
@@ -300,8 +270,6 @@ export function NotificationsPanel() {
     setSize(next);
     writeNotificationSize(next);
 
-    // Toast de prévisualisation (throttlé) — l'id fixe garantit
-    // qu'on remplace toujours le même toast au lieu d'en empiler.
     const now = Date.now();
     if (now - lastPreviewAt.current > 220) {
       lastPreviewAt.current = now;
@@ -313,21 +281,17 @@ export function NotificationsPanel() {
     }
   };
 
-  /* ── Rendu ──────────────────────────────────────────────────────────── */
-
   return (
     <div className="space-y-8">
       <PanelIntro
         icon={Bell}
         title="Notifications"
-        description="Choisissez les alertes à recevoir et l'endroit où elles s'affichent à l'écran."
       />
 
       {isMobile ? (
         <PanelGroup label="Position d'affichage">
           <SettingsCard
             title="Où afficher les notifications ?"
-            description="Les notifications apparaissent centrées, en haut ou en bas de l'écran."
           >
             <div className="grid grid-cols-2 gap-3">
               {MOBILE_POSITIONS.map((p) => (
@@ -360,7 +324,6 @@ export function NotificationsPanel() {
         <PanelGroup label="Position d'affichage">
           <SettingsCard
             title="Où afficher les notifications ?"
-            description="Choisissez le coin de l'écran où apparaîtront les messages temporaires."
           >
             <div className="grid grid-cols-2 gap-3">
               {DESKTOP_POSITIONS.map((p) => (
@@ -441,7 +404,6 @@ export function NotificationsPanel() {
       <PanelGroup label="Alertes produit">
         <SettingsCard
           title="Événements en temps réel"
-          description="Notifications déclenchées par l'activité de vos prospects."
         >
           <div className="divide-y divide-border">
             <Row title="Nouvelle réponse" description="Quand un prospect répond à une séquence.">
@@ -472,7 +434,6 @@ export function NotificationsPanel() {
       <PanelGroup label="Rapports & délivrabilité">
         <SettingsCard
           title="Rapports périodiques"
-          description="Résumés et alertes de santé d'envoi."
         >
           <div className="divide-y divide-border">
             <Row title="Rapport hebdomadaire">

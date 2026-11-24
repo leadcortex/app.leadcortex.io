@@ -1,3 +1,5 @@
+// frontend/components/ai-assistant/message-scroll-rail.tsx
+
 import { useEffect, useState, type RefObject } from "react";
 
 import type { AssistantMessage } from "./assistant-engine";

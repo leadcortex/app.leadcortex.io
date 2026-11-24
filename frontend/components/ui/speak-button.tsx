@@ -1,16 +1,10 @@
+// frontend/components/ui/speak-button.tsx
+
 "use client";
 
-/**
- * Bouton haut-parleur — synthèse vocale.
- *
- * L'API `SpeechSynthesis` n'est pas encore branchée : le bouton reste
- * désactivé, avec tooltip explicite. La signature accepte déjà `text`,
- * donc il suffira de remplacer le corps du `onClick` par l'appel à
- * `window.speechSynthesis.speak(new SpeechSynthesisUtterance(text))`.
- */
-import { Volume2 } from "lucide-react";
+import { Volume2 } from "@/components/icons";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function SpeakButton({

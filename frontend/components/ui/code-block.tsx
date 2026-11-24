@@ -1,17 +1,9 @@
+// frontend/components/ui/code-block.tsx
+
 "use client";
 
-/**
- * Bloc de code en lecture seule, style chat IA.
- *
- * Contraintes :
- *  - hauteur plafonnée (`maxHeight` ajustable, défaut 320 px) ;
- *  - **scroll interne** vertical et horizontal ;
- *  - en-tête collant (langage + nb de lignes + bouton copie) ;
- *  - coloration syntaxique légère (mots-clés, chaînes, commentaires,
- *    nombres) — pas de parseur lourd, aucun bundle supplémentaire.
- */
 import { useMemo } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { CopyButton } from "@/components/ui/copy-button";
 
 const KEYWORDS: Record<string, Set<string>> = {
@@ -73,10 +65,8 @@ function highlight(line: string, language: string): Token[] {
 export type CodeBlockProps = {
   code: string;
   language?: string;
-  /** Hauteur maximale (px). Par défaut 320, plafonné à 60 vh via style. */
   maxHeight?: number;
   className?: string;
-  /** Affiche les numéros de ligne (défaut : oui). */
   lineNumbers?: boolean;
 };
 
@@ -97,7 +87,6 @@ export function CodeBlock({
         className,
       )}
     >
-      {/* En-tête collant */}
       <div className="flex shrink-0 items-center gap-2 border-b border-white/10 bg-white/[0.03] px-2.5 py-1.5">
         <span className="flex items-center gap-1.5 text-[10.5px] font-medium uppercase tracking-wide text-zinc-400">
           <span className="inline-block size-1.5 rounded-full bg-emerald-400/80" />
@@ -118,9 +107,8 @@ export function CodeBlock({
         </div>
       </div>
 
-      {/* Corps scrollable — hauteur plafonnée */}
       <div
-        className="min-h-0 overflow-auto overscroll-contain font-mono text-[11.5px] leading-[1.6]"
+        className="scrollbar-compact min-h-0 overflow-auto overscroll-contain font-mono text-[11.5px] leading-[1.6]"
         style={{ maxHeight: `min(${maxHeight}px, 60vh)` }}
       >
         <table className="w-full border-collapse">

@@ -1,4 +1,5 @@
-//frontend\lib\workflow\types.ts
+// frontend/lib/workflow/types.ts
+
 import type { CategoryKey } from "@/data/workflow-blocks-catalog";
 
 export type Port = { id: string; label: string };

@@ -1,10 +1,6 @@
-//frontend\lib\workflow-engine\errors.ts
-import type { SerializedError } from "./types";
+// frontend/lib/workflow-engine/errors.ts
 
-/**
- * Erreurs machine du moteur : classification `retryable` / fatale,
- * message sûr pour l'utilisateur et détails techniques jamais exposés bruts.
- */
+import type { SerializedError } from "./types";
 
 export type WorkflowErrorCode =
   | "CONFIG_INVALID"
@@ -38,7 +34,6 @@ export class WorkflowBlockError extends Error {
   readonly providerStatus: number | undefined;
   readonly safeMessage: string;
   readonly nextAction: string | undefined;
-  /** Détails techniques : restent côté serveur, jamais renvoyés au client. */
   readonly details: Record<string, unknown>;
 
   constructor(

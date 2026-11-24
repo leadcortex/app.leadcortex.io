@@ -1,6 +1,7 @@
-//frontend\routes\manifest.tsx
+// frontend/routes/manifest.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { SiteNav, SiteFooter } from "@/components/site-nav";
+import { SiteNav, SiteFooter } from "@/components/layout/site-nav";
 
 export const Route = createFileRoute("/manifest")({
   head: () => ({
@@ -65,7 +66,7 @@ function ManifestPage() {
             to="/signup"
             className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl bg-foreground text-background px-4 md:px-5 py-2 md:py-3 text-xs md:text-sm font-medium hover:opacity-90 transition-all"
           >
-            Rejoindre la bêta
+            Créer mon workspace
           </Link>
         </div>
       </article>

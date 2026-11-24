@@ -1,46 +1,5 @@
-//frontend\components\ui\lead-mascot.tsx
-/**
- * Mascotte LeadCortex — vectoriel PROPRE, fidèle à la planche officielle.
- *
- * ─────────────────────────────────────────────────────────────────────────
- *  Historique du dessin
- * ─────────────────────────────────────────────────────────────────────────
- *  La première version reprenait telles quelles les 231 formes du .ai : une
- *  vectorisation automatique pleine de défauts (bords en dents de scie,
- *  polygones parasites, yeux déformés, coutures entre les pièces).
- *
- *  Ce fichier est un RETRAVAIL complet du vectoriel :
- *    • chaque pose est redessinée à partir de la planche PNG de référence ;
- *    • les ~40 teintes de brun du tracé automatique sont ramenées à une
- *      palette plate de 7 couleurs (2 bruns, 2 gris de ventre, noir, 2 rouges
- *      de bouche) — voir MASCOT_COLORS ;
- *    • chaque couleur est UNE forme lissée en courbes de Bézier (au lieu de
- *      dizaines de polygones juxtaposés) : plus aucune couture, bords nets ;
- *    • les yeux, sourcils et bouches sont tracés à partir de la luminosité
- *      réelle de la planche (contours précis, reflets propres) ;
- *    • le décor (« ? », étincelles, « zz », nuage de colère…) reste celui
- *      du .ai d'origine, déjà propre.
- *
- *  Résultat : ~25 Ko de tracés par pose au lieu de plus de 100, et un rendu
- *  net à toutes les tailles.
- *
- * ─────────────────────────────────────────────────────────────────────────
- *  Utilisation
- * ─────────────────────────────────────────────────────────────────────────
- *  • 10 poses = 10 émotions de la planche (mêmes noms que l'ancien
- *    DolphinMood, pour migrer sans casser les usages).
- *  • Toutes les poses partagent le MÊME viewBox : le personnage garde la
- *    même taille et le même ancrage (queue en bas, centré) d'une pose à
- *    l'autre. On peut donc changer de pose sans que rien ne « saute ».
- *  • `decor` affiche les petits éléments de la planche ; désactivé, le
- *    viewBox se resserre sur le corps seul.
- *  • Purement présentationnel : aucune dépendance au store ni au routeur.
- *
- *  ⚠️ Les tracés ci-dessous sont GÉNÉRÉS (coordonnées relatives compactes).
- *     Ne pas les éditer à la main : pour modifier une pose, reprendre la
- *     planche source et régénérer.
- * ─────────────────────────────────────────────────────────────────────────
- */
+// frontend/components/ui/lead-mascot.tsx
+
 import type { SVGProps } from "react";
 
 export type MascotPose =
@@ -89,8 +48,6 @@ export const MASCOT_VIEWBOX = {
 } as const;
 
 export const MASCOT_ASPECT = MASCOT_VIEWBOX.tight.w / MASCOT_VIEWBOX.tight.h;
-
-/*  Tracés (générés — ne pas éditer)                                          */
 
 const POSES: Record<MascotPose, PoseArt> = {
   neutral: {

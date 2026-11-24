@@ -1,9 +1,10 @@
-//frontend\components\workflow\MobileWorkflowDrawer.tsx
+// frontend/components/workflow/MobileWorkflowDrawer.tsx
+
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Blocks, ChevronLeft, Layers, X } from "lucide-react";
+import { Blocks, ChevronLeft, Layers, X } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useWorkflow } from "@/lib/workflow/store";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { BlockLibraryFields, TreeFields } from "./LeftPanel";
 
 type DrawerTab = "tree" | "library";
@@ -47,26 +48,6 @@ type Gesture = {
   axis: "x" | "y" | null;
 };
 
-/**
- * Tiroir mobile « Arborescence + Bibliothèque de blocs ».
- *
- * Même principe que l'assistant IA (`assistant-sidebar`) : un panneau qui
- * glisse DEPUIS LE BORD DROIT, ouvert par un glissement de la droite vers la
- * gauche (depuis le bord de l'écran ou depuis la languette) ou par un appui
- * sur la languette. Il occupe un espace défini — sous l'en-tête, au-dessus de
- * la pile du bas (barre d'outils / console / chatbot) — et ne recouvre donc
- * jamais ces commandes.
- *
- * Contrairement à l'assistant, AUCUN voile ne flou ni ne bloque le canevas :
- * il reste entièrement utilisable autour du tiroir, car on doit pouvoir y
- * déposer des blocs pendant que le tiroir est ouvert. Pendant le glissement
- * d'un bloc, le tiroir s'efface même complètement, pour que tout le canevas
- * soit une cible de dépôt (il réapparaît au relâchement).
- *
- * Fermeture : bouton ✕, glissement vers la droite depuis l'en-tête ou le bord
- * gauche du tiroir, touche Échap, ou automatiquement après un saut vers un
- * élément de l'arborescence.
- */
 export function MobileWorkflowDrawer({
   open,
   onOpenChange,
@@ -143,7 +124,6 @@ export function MobileWorkflowDrawer({
         try {
           window.localStorage.setItem(TAB_STORAGE_KEY, String(tabRatioRef.current));
         } catch {
-          /* Intentionally ignored. */
         }
         return;
       }
@@ -199,7 +179,6 @@ export function MobileWorkflowDrawer({
     },
   };
 
-  // (marge en plus pour ne pas laisser dépasser l'ombre).
   const hidden = width + 24;
   const offset = open ? (swipe ?? 0) : hidden - (swipe ?? 0) * (hidden / width);
   const swiping = swipe !== null;
@@ -213,7 +192,6 @@ export function MobileWorkflowDrawer({
       className="pointer-events-none absolute inset-x-0 top-0 z-20"
       style={{ bottom: bottomInset }}
     >
-      {}
       {!open && (
         <div
           aria-hidden
@@ -223,7 +201,6 @@ export function MobileWorkflowDrawer({
         />
       )}
 
-      {}
       {!open && (
         <button
           type="button"
@@ -239,12 +216,9 @@ export function MobileWorkflowDrawer({
 
       <aside
         aria-label="Arborescence et bibliothèque de blocs"
-        // `inert` : rangé, le tiroir ne doit ni recevoir le focus ni être lu.
         inert={!open}
         className={cn(
           "absolute inset-y-0 right-0 flex flex-col overflow-hidden rounded-l-2xl border-y border-l border-border bg-panel shadow-2xl",
-          // Pendant le glissement d'un bloc : effacé ET transparent aux gestes,
-          // pour que tout le canevas puisse recevoir le dépôt.
           blockDragging ? "pointer-events-none opacity-0" : open && "pointer-events-auto",
         )}
         style={{

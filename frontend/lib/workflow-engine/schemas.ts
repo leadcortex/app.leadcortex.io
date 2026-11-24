@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\schemas.ts
+// frontend/lib/workflow-engine/schemas.ts
+
 import { z } from "zod";
 
 import type { WorkflowDocument } from "./types";
@@ -21,11 +22,10 @@ export const advancedOptionsSchema = z
     onError: z.enum(["fail", "continue", "branch"]).optional(),
     idempotencyKey: z.string().min(1).max(200).optional(),
     continueOnEmpty: z.boolean().optional(),
-    outputMapping: z.record(z.string()).optional(),
+    outputMapping: z.record(z.string(), z.string()).optional(),
   })
   .optional();
 
-/** Référence stable vers une ressource externe (jamais un libellé humain). */
 export const resourceRef = (prefix: string) =>
   z
     .string()
@@ -50,10 +50,6 @@ export const timezoneSchema = z
 export const expressionSchema = z.string().min(1).max(2000);
 export const boundedLimit = z.number().int().min(1).max(1000);
 
-/* ------------------------------------------------------------------ */
-/* Document                                                            */
-/* ------------------------------------------------------------------ */
-
 export const portSchema = z.object({ id: z.string().min(1), label: z.string().optional() });
 
 export const docNodeSchema = z.object({
@@ -62,7 +58,7 @@ export const docNodeSchema = z.object({
   category: z.string().optional(),
   title: z.string().optional(),
   subtitle: z.string().optional(),
-  config: z.record(z.unknown()).optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
   muted: z.boolean().optional(),
   inputs: z.array(portSchema).optional(),
   outputs: z.array(portSchema).optional(),
@@ -85,10 +81,6 @@ export const workflowDocumentSchema = z.object({
 export function parseWorkflowDocument(input: unknown): WorkflowDocument {
   return workflowDocumentSchema.parse(input) as WorkflowDocument;
 }
-
-/* ------------------------------------------------------------------ */
-/* Requêtes HTTP                                                       */
-/* ------------------------------------------------------------------ */
 
 export const runRequestSchema = z.object({
   version: z.number().int().min(1).optional(),

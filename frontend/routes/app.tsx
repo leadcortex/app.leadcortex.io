@@ -1,7 +1,8 @@
-//frontend\routes\app.tsx
+// frontend/routes/app.tsx
+
 import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
-import { AppStoreProvider } from "@/lib/store";
-import { AppShell } from "@/components/app-shell";
+import { requireWorkspaceUser } from "@server/auth/auth.functions";
+import { AppShell } from "@/components/layout/app-shell";
 import { HydrationGate } from "@/components/skeletons/hydration-gate";
 import {
   AnalyticsSkeleton,
@@ -27,21 +28,30 @@ import {
   WorkflowsSkeleton,
 } from "@/components/skeletons";
 
+const AUTH_CACHE_MS = 60_000;
+let authCache: { at: number; value: Awaited<ReturnType<typeof requireWorkspaceUser>> } | null = null;
+
+async function cachedRequireWorkspaceUser() {
+  if (typeof window === "undefined") return requireWorkspaceUser();
+  const now = Date.now();
+  if (authCache && now - authCache.at < AUTH_CACHE_MS) return authCache.value;
+  const value = await requireWorkspaceUser();
+  authCache = { at: now, value };
+  return value;
+}
+
 export const Route = createFileRoute("/app")({
+  beforeLoad: () => cachedRequireWorkspaceUser(),
   head: () => ({
     meta: [{ title: "Workspace — LeadCortex" }, { name: "robots", content: "noindex" }],
   }),
   pendingComponent: AppRouteSkeleton,
+  pendingMinMs: 0,
   component: AppLayout,
 });
 
-/*  ⚠️  Sur /app (racine du workspace), on renvoie WelcomeSkeleton : la route */
-/*     visible doit être le skeleton de la page d'accueil — jamais celui      */
-/*     d'un dashboard classique qui n'existera peut-être jamais.              */
-
 function getAppSkeleton(pathname: string) {
   if (/^\/app\/academy\/lesson\/[^/]+/.test(pathname)) {
-    // Le Lesson Player gère son propre skeleton plein écran.
     return <WelcomeSkeleton />;
   }
 
@@ -177,18 +187,9 @@ function AppRouteSkeleton() {
 
 function AppLayout() {
   return (
-    <AppStoreProvider>
-      {/*
-        AppShell (et donc la sidebar classique) est monté ici, au niveau du
-        layout /app, qui ne se démonte jamais lors de la navigation entre les
-        pages enfants (/app/people, /app/emails, etc.). Seul <Outlet /> change :
-        la sidebar reste stable, et l'utilisateur ne voit qu'un chargement dans
-        l'écran central, jamais sur la barre.
-      */}
-      <AppShell>
-        <HydratedWorkspace />
-      </AppShell>
-    </AppStoreProvider>
+    <AppShell>
+      <HydratedWorkspace />
+    </AppShell>
   );
 }
 

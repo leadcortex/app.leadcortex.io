@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_programs_test.go
+
 package api
 
 import (
@@ -7,9 +9,6 @@ import (
 	"testing"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /programs
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestListPrograms_ReturnsSummary(t *testing.T) {
 	s := buildTestServer(t)
@@ -45,15 +44,11 @@ func TestListPrograms_ReturnsSummary(t *testing.T) {
 	if p.TotalLessons != 1 {
 		t.Errorf("TotalLessons : attendu 1, obtenu %d", p.TotalLessons)
 	}
-	// Le résumé ne doit PAS contenir les modules.
 	if p.Modules != nil {
 		t.Errorf("Modules devrait être nil dans un résumé, obtenu %d", len(p.Modules))
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /programs/{id}
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestGetProgram_ReturnsFull(t *testing.T) {
 	s := buildTestServer(t)

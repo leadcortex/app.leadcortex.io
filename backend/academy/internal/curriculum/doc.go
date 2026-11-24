@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/doc.go
+
 // Package curriculum charge, valide et indexe les programmes pédagogiques
 // décrits en YAML.
 //

@@ -1,18 +1,9 @@
+// frontend/components/ai-assistant/pinned-messages-bar.tsx
+
 "use client";
 
-/**
- * Bandeau des messages épinglés, affiché en haut de la liste de la
- * conversation.
- *
- *  - Masqué tant qu'aucun message n'est épinglé.
- *  - Chaque épingle = puce horizontale scrollable : un clic saute au
- *    message, une petite croix la retire.
- *  - Un bouton « Tout désépingler » apparaît à droite, toujours visible.
- *  - Volontairement compact pour ne pas empiéter sur la conversation :
- *    hauteur d'une seule ligne, sans bordure épaisse.
- */
-import { Pin, PinOff, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Pin, PinOff, X } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import type { AssistantMessage } from "./assistant-engine";
 
 export function PinnedMessagesBar({

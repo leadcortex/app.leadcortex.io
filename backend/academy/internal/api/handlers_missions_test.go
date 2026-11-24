@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_missions_test.go
+
 package api
 
 import (
@@ -10,9 +12,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /missions
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestListMissions_ReturnsAll(t *testing.T) {
 	s := buildTestServer(t)
@@ -39,7 +38,6 @@ func TestListMissions_ReturnsAll(t *testing.T) {
 	if m.ID != "mission-1" {
 		t.Errorf("ID : attendu mission-1, obtenu %q", m.ID)
 	}
-	// Learner frais : leçon non démarrée → mission locked.
 	if m.Status != string(domain.MissionStatusLocked) {
 		t.Errorf("Status : attendu locked, obtenu %q", m.Status)
 	}
@@ -74,14 +72,10 @@ func TestListMissions_AvailableAfterStart(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /missions/{id}/attempt
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestAttemptMission_RequiresStart(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Pas de start → 400.
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/missions/mission-1/attempt", nil)
 	req.Header.Set("X-Learner-ID", "alice")
@@ -145,7 +139,6 @@ func TestAttemptMission_Idempotent(t *testing.T) {
 	s := buildTestServer(t)
 	startLesson(t, s, "alice", "l1")
 
-	// Premier attempt : valide + XP.
 	body1 := strings.NewReader(`{"payload":{}}`)
 	req1 := httptest.NewRequest(http.MethodPost,
 		"/api/v1/missions/mission-1/attempt", body1)
@@ -153,9 +146,6 @@ func TestAttemptMission_Idempotent(t *testing.T) {
 	rec1 := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec1, req1)
 
-	// Second attempt : le moteur saute (déjà completed) → XPAwarded = 0
-	// dans le Learner, mais notre réponse annonce le XP "dû" — c'est un
-	// choix de design (on renvoie l'info brute de la mission).
 	body2 := strings.NewReader(`{"payload":{}}`)
 	req2 := httptest.NewRequest(http.MethodPost,
 		"/api/v1/missions/mission-1/attempt", body2)
@@ -166,14 +156,8 @@ func TestAttemptMission_Idempotent(t *testing.T) {
 	if rec2.Code != http.StatusOK {
 		t.Fatalf("second : %d", rec2.Code)
 	}
-	// La mission reste completed, pas de double-crédit côté Learner.
-	// Vérifions le XP total côté Learner (doit être 50, pas 100).
-	// -> pas d'assertion directe ici, c'est testé côté engine.
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Helpers unit
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestFindMissionByID(t *testing.T) {
 	s := buildTestServer(t)

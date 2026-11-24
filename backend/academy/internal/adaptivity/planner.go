@@ -1,3 +1,5 @@
+// backend/academy/internal/adaptivity/planner.go
+
 package adaptivity
 
 import (
@@ -8,24 +10,18 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// PlanMode désigne le type de session demandée.
 type PlanMode string
 
 const (
-	// PlanMicro — session courte (5 min), 1 objectif.
 	PlanMicro PlanMode = "micro"
 
-	// PlanStandard — session standard (15 min), 2-3 objectifs.
 	PlanStandard PlanMode = "standard"
 
-	// PlanDeep — session longue (30+ min), séquence complète.
 	PlanDeep PlanMode = "deep"
 
-	// PlanReviewOnly — uniquement des révisions SRS.
 	PlanReviewOnly PlanMode = "review_only"
 )
 
-// IsKnown indique si le mode est reconnu.
 func (m PlanMode) IsKnown() bool {
 	switch m {
 	case PlanMicro, PlanStandard, PlanDeep, PlanReviewOnly:
@@ -34,28 +30,20 @@ func (m PlanMode) IsKnown() bool {
 	return false
 }
 
-// PlanStep est une étape du plan de session.
 type PlanStep struct {
-	// Order — position dans la séquence (1-based).
 	Order int `json:"order"`
 
-	// Kind — nature de l'action.
 	Kind RecommendationKind `json:"kind"`
 
-	// LessonID — leçon ciblée (si applicable).
 	LessonID string `json:"lesson_id,omitempty"`
 
-	// ConceptID — concept ciblé (si applicable).
 	ConceptID string `json:"concept_id,omitempty"`
 
-	// DurationMin — durée estimée en minutes.
 	DurationMin int `json:"duration_minutes"`
 
-	// Description — phrase lisible.
 	Description string `json:"description"`
 }
 
-// SessionPlan décrit la séquence ordonnée d'actions pour une session.
 type SessionPlan struct {
 	Mode         PlanMode   `json:"mode"`
 	TotalMinutes int        `json:"total_minutes"`
@@ -63,16 +51,12 @@ type SessionPlan struct {
 	Reason       string     `json:"reason"`
 }
 
-// PlanOptions paramètre la construction du plan.
 type PlanOptions struct {
 	Registry *curriculum.Registry
 	SrsCards []domain.SrsCard
 	Now      time.Time
 }
 
-// PlanSession construit un plan de session pour un mode donné.
-//
-// Erreurs possibles : ErrInvalidMode, ErrNilLearner.
 func PlanSession(
 	learner *domain.Learner,
 	mode PlanMode,
@@ -106,7 +90,6 @@ func PlanSession(
 		plan.Reason = "Session longue pour un progrès significatif."
 	}
 
-	// Recalcule la durée réelle à partir des étapes.
 	real := 0
 	for i := range plan.Steps {
 		plan.Steps[i].Order = i + 1
@@ -117,11 +100,9 @@ func PlanSession(
 	return plan, nil
 }
 
-/* ─── Builders par mode ───────────────────────────────────────────────── */
 
 func buildReviewSteps(l *domain.Learner, opts PlanOptions, dur int) []PlanStep {
 	steps := []PlanStep{}
-	// Compte les concepts fragiles.
 	weak := weakConcepts(l)
 	for _, cid := range weak {
 		if stepsMinutes(steps) >= dur {
@@ -145,7 +126,6 @@ func buildReviewSteps(l *domain.Learner, opts PlanOptions, dur int) []PlanStep {
 }
 
 func buildMicroSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
-	// Priorité : 1 seul objectif, le plus urgent.
 	rec := Recommend(l, RecommendOptions{
 		Registry: opts.Registry,
 		SrsCards: opts.SrsCards,
@@ -165,7 +145,6 @@ func buildMicroSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 func buildStandardSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 	steps := []PlanStep{}
 
-	// 1. Réviser un concept fragile.
 	weak := weakConcepts(l)
 	if len(weak) > 0 {
 		steps = append(steps, PlanStep{
@@ -176,7 +155,6 @@ func buildStandardSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 		})
 	}
 
-	// 2. Reprendre ou démarrer une leçon.
 	rec := Recommend(l, RecommendOptions{
 		Registry: opts.Registry,
 		SrsCards: opts.SrsCards,
@@ -191,7 +169,6 @@ func buildStandardSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 		})
 	}
 
-	// 3. Terminer par une mini-révision.
 	steps = append(steps, PlanStep{
 		Kind:        RecoReviewConcept,
 		DurationMin: 2,
@@ -204,7 +181,6 @@ func buildStandardSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 func buildDeepSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 	steps := []PlanStep{}
 
-	// 1. Toutes les révisions fragiles d'abord.
 	for i, cid := range weakConcepts(l) {
 		if i >= 3 {
 			break
@@ -217,7 +193,6 @@ func buildDeepSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 		})
 	}
 
-	// 2. Une leçon complète.
 	rec := Recommend(l, RecommendOptions{
 		Registry: opts.Registry,
 		SrsCards: opts.SrsCards,
@@ -232,7 +207,6 @@ func buildDeepSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 		})
 	}
 
-	// 3. Conclusion.
 	steps = append(steps, PlanStep{
 		Kind:        RecoReviewConcept,
 		DurationMin: 5,
@@ -242,7 +216,6 @@ func buildDeepSteps(l *domain.Learner, opts PlanOptions) []PlanStep {
 	return steps
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────── */
 
 func durationForMode(m PlanMode) int {
 	switch m {
@@ -258,8 +231,6 @@ func durationForMode(m PlanMode) int {
 	return 10
 }
 
-// weakConcepts renvoie les IDs de concepts fragiles, triés par niveau
-// croissant.
 func weakConcepts(l *domain.Learner) []string {
 	type entry struct {
 		id    string
@@ -275,7 +246,6 @@ func weakConcepts(l *domain.Learner) []string {
 		}
 		entries = append(entries, entry{id: cid, level: m.Level})
 	}
-	// Tri insertion par niveau croissant.
 	for i := 1; i < len(entries); i++ {
 		for j := i; j > 0 && entries[j-1].level > entries[j].level; j-- {
 			entries[j-1], entries[j] = entries[j], entries[j-1]

@@ -1,3 +1,5 @@
+// backend/academy/internal/missions/bus_test.go
+
 package missions
 
 import (
@@ -36,21 +38,17 @@ func TestEventBus_SubscribeFiltersByKind(t *testing.T) {
 
 	ch, _ := bus.Subscribe(EventLeadCreated)
 
-	// Publie un autre kind.
 	_ = bus.Publish(NewEvent(EventCompanyViewed, time.Time{}, nil))
 
 	select {
 	case ev := <-ch:
 		t.Errorf("ne devrait rien recevoir, obtenu %s", ev.Kind())
 	case <-time.After(30 * time.Millisecond):
-		// OK, rien reçu.
 	}
 
-	// Publie le bon kind.
 	_ = bus.Publish(NewEvent(EventLeadCreated, time.Time{}, nil))
 	select {
 	case <-ch:
-		// OK
 	case <-time.After(100 * time.Millisecond):
 		t.Fatal("attendu : réception de lead.created")
 	}
@@ -96,7 +94,6 @@ func TestEventBus_MultipleSubscribers(t *testing.T) {
 	for i, ch := range []<-chan BusinessEvent{ch1, ch2} {
 		select {
 		case <-ch:
-			// OK
 		case <-time.After(100 * time.Millisecond):
 			t.Errorf("abonné %d : timeout", i)
 		}
@@ -111,18 +108,15 @@ func TestEventBus_Unsubscribe(t *testing.T) {
 	if !bus.Unsubscribe(ch) {
 		t.Error("Unsubscribe devrait retourner true")
 	}
-	// Second appel : false.
 	if bus.Unsubscribe(ch) {
 		t.Error("second Unsubscribe devrait retourner false")
 	}
-	// Le canal n'est pas fermé.
 	select {
 	case _, ok := <-ch:
 		if !ok {
 			t.Error("le canal ne devrait pas être fermé")
 		}
 	default:
-		// OK, rien à lire.
 	}
 }
 
@@ -142,7 +136,6 @@ func TestEventBus_Close(t *testing.T) {
 
 	bus.Close()
 
-	// Le canal doit être fermé.
 	select {
 	case _, ok := <-ch:
 		if ok {
@@ -156,7 +149,7 @@ func TestEventBus_Close(t *testing.T) {
 func TestEventBus_CloseIdempotent(t *testing.T) {
 	bus := NewEventBus()
 	bus.Close()
-	bus.Close() // ne doit pas paniquer
+	bus.Close()
 	if !bus.IsClosed() {
 		t.Error("IsClosed devrait être true")
 	}
@@ -217,31 +210,25 @@ func TestEventBus_PublishEmptyKind(t *testing.T) {
 }
 
 func TestEventBus_NonBlockingPublish_BufferFull(t *testing.T) {
-	// Buffer de 1 : un seul événement peut être mis en attente.
 	bus := NewEventBusWithBuffer(1)
 	defer bus.Close()
 
 	ch, _ := bus.Subscribe(EventLeadCreated)
 
-	// Remplit le buffer.
 	_ = bus.Publish(NewEvent(EventLeadCreated, time.Time{}, nil))
 	_ = bus.Publish(NewEvent(EventLeadCreated, time.Time{}, nil))
 	_ = bus.Publish(NewEvent(EventLeadCreated, time.Time{}, nil))
 
-	// Seul le premier doit être disponible.
 	select {
 	case <-ch:
-		// OK
 	case <-time.After(50 * time.Millisecond):
 		t.Fatal("devrait recevoir 1 événement")
 	}
 
-	// Les autres sont perdus.
 	select {
 	case <-ch:
 		t.Error("ne devrait plus rien y avoir dans le buffer")
 	case <-time.After(30 * time.Millisecond):
-		// OK
 	}
 }
 
@@ -283,8 +270,6 @@ func TestEventBus_ConcurrentPublish(t *testing.T) {
 	}
 	wg.Wait()
 
-	// Drain : on doit recevoir publishers * perPublisher événements
-	// (buffer 1000 > 500).
 	received := 0
 	timeout := time.After(500 * time.Millisecond)
 loop:

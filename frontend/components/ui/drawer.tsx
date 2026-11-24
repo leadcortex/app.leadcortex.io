@@ -1,8 +1,9 @@
-//frontend\components\ui\drawer.tsx
+// frontend/components/ui/drawer.tsx
+
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const Drawer = ({
   shouldScaleBackground = true,
@@ -52,7 +53,7 @@ const DrawerContent = React.forwardRef<
 DrawerContent.displayName = "DrawerContent";
 
 const DrawerHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("grid gap-1.5 p-4 text-center sm:text-left", className)} {...props} />
+  <div className={cn("grid gap-3 p-4 text-center sm:text-left", className)} {...props} />
 );
 DrawerHeader.displayName = "DrawerHeader";
 

@@ -1,4 +1,5 @@
-//frontend\components\ai-assistant\assistant-engine-extensions.ts
+// frontend/components/ai-assistant/assistant-engine-extensions.ts
+
 import { AiBrand, ModelConfig, DEFAULT_MODEL_CONFIG, getBrand } from "./model-selector-types";
 import { getPersonalizationHint } from "./assistant-engine";
 
@@ -26,16 +27,11 @@ export function buildFinalSystemPrompt(config?: ModelConfig, basePrompt?: string
   ].join("\n");
 }
 
-/* --------------------------- Capacités modèle ----------------------------- */
-
 export type ModelCapabilities = {
-  /** Étiquette courte ex. "Claude + Gemini". */
   label: string;
-  /** Fournisseurs affichés ex. "Anthropic · Google". */
   providerLabel: string;
   research: { id: AiBrand; name: string; provider: string };
   work: { id: AiBrand; name: string; provider: string };
-  /** Vrai si l'utilisateur utilise ses propres clés. */
   isUserKey: boolean;
 };
 

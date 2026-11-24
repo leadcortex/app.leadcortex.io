@@ -1,6 +1,7 @@
-//frontend\components\enrichment\provider-activate-dialog.tsx
+// frontend/components/enrichment/provider-activate-dialog.tsx
+
 import { useState } from "react";
-import { Check, Zap } from "lucide-react";
+import { Check, Zap } from "@/components/icons";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { EnrichmentProvider } from "@/lib/enrichment-mock";
-import { cn } from "@/lib/utils";
+import type { EnrichmentProvider } from "@/lib/enrichment/mock";
+import { cn } from "@/lib/core/utils";
 import { ProviderBadge } from "./provider-badge";
 
 export function ProviderActivateDialog({

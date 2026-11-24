@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\blocks\_shared.ts
+// frontend/lib/workflow-engine/blocks/_shared.ts
+
 import { z } from "zod";
 
 import { WorkflowBlockError } from "../errors";

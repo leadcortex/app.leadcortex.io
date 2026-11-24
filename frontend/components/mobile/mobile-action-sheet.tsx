@@ -1,7 +1,8 @@
-//frontend\components\mobile\mobile-action-sheet.tsx
+// frontend/components/mobile/mobile-action-sheet.tsx
+
 import { useState, type ReactNode } from "react";
 import { Slot } from "@radix-ui/react-slot";
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "@/components/icons";
 
 import {
   DropdownMenu,
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type MobileActionSheetItem = {
   label: string;
@@ -96,11 +97,9 @@ export function MobileActionSheet({
     );
   }
 
-  /* ------------------------------ Mobile ----------------------------- */
   const handleSelect = (item: MobileActionSheetItem) => {
     if (item.disabled) return;
     setOpen(false);
-    // Laisse la sheet se fermer avant d'exécuter l'action (transition fluide).
     requestAnimationFrame(() => item.onSelect());
   };
 
@@ -153,10 +152,6 @@ export function MobileActionSheet({
     </>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Sous-composants                                                           */
-/* -------------------------------------------------------------------------- */
 
 function DesktopItem({ item }: { item: MobileActionSheetItem }) {
   const Icon = item.icon;

@@ -1,4 +1,5 @@
-//frontend\components\ai-assistant\conversation-store.ts
+// frontend/components/ai-assistant/conversation-store.ts
+
 import type { AssistantMessage } from "./assistant-engine";
 
 export type Conversation = {
@@ -38,21 +39,15 @@ export function loadConversations(): Conversation[] {
   }
 }
 
-/** Écrit la liste complète, en gardant les MAX_CONVERSATIONS plus récentes. */
 function writeAll(list: Conversation[]): void {
   if (typeof window === "undefined") return;
   try {
     const sorted = [...list].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, MAX_CONVERSATIONS);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted));
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
-/**
- * Enregistre (upsert) une conversation. Ne conserve que les messages dont
- * le texte est non vide — sinon on persiste des tours à moitié construits.
- */
 export function saveConversation(conv: Conversation): void {
   const clean: Conversation = {
     ...conv,
@@ -73,7 +68,6 @@ export function clearAllConversations(): void {
   try {
     window.localStorage.removeItem(STORAGE_KEY);
   } catch {
-    /* Intentionally ignored. */
   }
 }
 
@@ -81,10 +75,6 @@ export function createConversationId(): string {
   return `conv_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-/**
- * Génère un titre court à partir du premier message utilisateur. Si aucun
- * prompt n'existe encore, on renvoie un libellé générique horodaté.
- */
 export function deriveTitle(messages: AssistantMessage[]): string {
   const firstUser = messages.find((m) => m.role === "user" && m.text.trim());
   if (!firstUser) {
@@ -98,7 +88,6 @@ export function deriveTitle(messages: AssistantMessage[]): string {
   return `${text.slice(0, TITLE_MAX - 1).trimEnd()}…`;
 }
 
-/** Formatte une date pour l'affichage dans la liste d'historique. */
 export function formatRelativeDate(ts: number): string {
   const diff = Date.now() - ts;
   const min = Math.floor(diff / 60_000);

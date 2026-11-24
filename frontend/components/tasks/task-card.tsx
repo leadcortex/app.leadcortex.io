@@ -1,4 +1,5 @@
-//frontend\components\tasks\task-card.tsx
+// frontend/components/tasks/task-card.tsx
+
 import { Link } from "@tanstack/react-router";
 import {
   CheckCircle2,
@@ -12,10 +13,10 @@ import {
   Tag,
   Trash2,
   User,
-} from "lucide-react";
+} from "@/components/icons";
 
-import { cn } from "@/lib/utils";
-import type { Task } from "@/lib/mock-data";
+import { cn } from "@/lib/core/utils";
+import type { Task } from "@/lib/data/mock-data";
 import {
   PRIORITY_LABELS,
   STATUS_LABELS,
@@ -23,7 +24,8 @@ import {
   dueLabel,
   dueState,
   subtaskProgress,
-} from "@/lib/task-utils";
+} from "@/lib/tasks/utils";
+import { ProgressCapsule } from "@/components/ui/capsule-progress";
 
 const iconMap = { call: Phone, email: Mail, linkedin: Linkedin, "follow-up": Clock } as const;
 
@@ -62,7 +64,7 @@ export function TaskCard({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-xl border border-border bg-background transition-all hover:border-foreground/20 hover:shadow-sm",
+        "group relative overflow-hidden rounded-xl border border-border bg-background card-tactile",
         task.done && "opacity-70",
       )}
     >
@@ -167,18 +169,13 @@ export function TaskCard({
 
           {progress.total > 0 && (
             <div className="mt-3">
-              <div className="flex items-center justify-between text-[10px] md:text-[11px] text-muted-foreground mb-1">
-                <span>
-                  Sous-tâches {progress.done}/{progress.total}
-                </span>
-                <span>{progress.pct}%</span>
-              </div>
-              <div className="h-1 rounded-full bg-secondary overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${progress.pct}%` }}
-                />
-              </div>
+              <ProgressCapsule
+                value={progress.done}
+                max={progress.total}
+                size="sm"
+                label={`Sous-tâches ${progress.done}/${progress.total}`}
+                showValue
+              />
               <div className="mt-2 space-y-1">
                 {(task.subtasks ?? []).slice(0, 3).map((s) => (
                   <button

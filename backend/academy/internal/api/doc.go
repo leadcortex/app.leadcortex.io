@@ -1,3 +1,5 @@
+// backend/academy/internal/api/doc.go
+
 // Package api expose le serveur HTTP de LeadCortex Academy.
 //
 // # Rôle

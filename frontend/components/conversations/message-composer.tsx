@@ -1,7 +1,8 @@
-//frontend\components\conversations\message-composer.tsx
+// frontend/components/conversations/message-composer.tsx
+
 import { useLayoutEffect, useRef, useState } from "react";
-import { FileText, Image as ImageIcon, Link2, Plus, Send, Smile, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { FileText, Image as ImageIcon, Link2, Plus, Send, Smile, X } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import {
   CHANNELS,
   formatSize,
@@ -133,10 +134,6 @@ export function MessageComposer({
   };
 
   return (
-    // Le composer est ancré en bas de son conteneur (flex-col parent). Le
-    // padding inférieur inclut la hauteur réelle de la barre mobile
-    // (`--pen-nav-h`) ET la safe-area iOS : c'est ce qui garantit que le
-    // champ reste visible et tapable même sur un iPhone avec encoche.
     <div
       className="shrink-0 border-t border-border p-2.5 pb-[calc(var(--pen-nav-h,0px)+env(safe-area-inset-bottom,0px)+0.625rem)] md:p-3 md:pb-3"
       style={{ backgroundColor: `color-mix(in oklab, ${theme.accent} 4%, transparent)` }}
@@ -250,7 +247,6 @@ export function MessageComposer({
             onClick={submit}
             aria-label="Envoyer"
             disabled={!value.trim() && attachments.length === 0}
-            // 40 px en mobile (cible tactile), 32 px en desktop.
             className="ml-auto grid size-10 place-items-center rounded-xl text-background transition-opacity hover:opacity-90 active:opacity-80 disabled:opacity-40 md:size-8"
             style={{ backgroundColor: theme.accent }}
           >
@@ -288,8 +284,6 @@ export function MessageComposer({
   );
 }
 
-/* -------------------------------- AddMenu -------------------------------- */
-
 function AddMenu({
   open,
   setOpen,
@@ -310,7 +304,6 @@ function AddMenu({
         aria-label="Ajouter du contenu"
         title="Ajouter du contenu"
         onClick={() => setOpen(!open)}
-        // 40 px en mobile, 32 px en desktop.
         className={cn(
           "grid size-10 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-surface hover:text-foreground active:bg-surface/80 md:size-8",
           open && "bg-surface text-foreground",
@@ -372,7 +365,6 @@ function AddItem({
     <button
       type="button"
       onClick={onClick}
-      // min-h-12 (48 px) en mobile pour une cible tactile confortable.
       className="flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-secondary/60 active:bg-secondary/80"
     >
       <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">

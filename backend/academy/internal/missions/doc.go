@@ -1,3 +1,5 @@
+// backend/academy/internal/missions/doc.go
+
 // Package missions orchestre l'exécution et la validation des missions
 // in-app : l'apprenant doit réellement agir dans l'app LeadCortex.
 //

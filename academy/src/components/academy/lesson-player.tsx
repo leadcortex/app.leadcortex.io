@@ -1,30 +1,42 @@
+// academy/src/components/academy/lesson-player.tsx
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  AlertCircle,
   Check,
   CheckCircle2,
-  ChevronDown,
   ChevronLeft,
   GripVertical,
   Heart,
   Lightbulb,
   X,
-  XCircle,
-} from 'lucide-react';
+} from "../../../../frontend/components/icons";
 import { Button } from '../ui/button';
 import { Avatar } from './illustrations';
 import {
-  checkAnswer,
   type Answer,
   type Exercise,
   type Lesson,
   type Slide,
-} from '../../../../model';
-
-/* ==========================================================================
-   Sanitize — supprime les éléments "robotiques"
-   ========================================================================== */
+} from "../../lib/model";
+import { useLessonProgress } from '../../hooks/use-lesson-progress';
+import { FeedbackOverlay, type FeedbackKind } from './lesson-feedback';
+import { FillBlankInline } from './lesson-fill-blank';
+import {
+  hashStr,
+  randomizeExercise,
+  shuffleExercises,
+  initialOrderFor,
+} from './lesson-randomizer';
+import {
+  pickCorrectMessage,
+  pickIncorrectMessage,
+  pickReviewMessage,
+} from './lesson-messages';
+import { ExerciseRenderer, isCustomExerciseKind } from './exercises/exercise-renderer';
+import { checkExercise, isExerciseReady } from "../../lib/exercise-checker";
+import { DictionaryButton } from './dictionary/dictionary-button';
+import { GemsWallet } from './dictionary/gems-wallet';
 
 function sanitizeText(text: string): string {
   return text
@@ -32,10 +44,6 @@ function sanitizeText(text: string): string {
     .replace(/\s+–\s+/g, '. ')
     .replace(/([.!?])\s*\.\s*/g, '$1 ');
 }
-
-/* ==========================================================================
-   Copy — rendu markdown minimal (gras + paragraphes + listes + tableaux)
-   ========================================================================== */
 
 type Block =
   | { type: 'p'; text: string }
@@ -57,24 +65,19 @@ function parseBlocks(rawText: string): Block[] {
   const lines = text.split('\n');
   const blocks: Block[] = [];
   let buffer: string[] = [];
-
   const flushP = () => {
     const t = buffer.join('\n').trim();
     if (t) blocks.push({ type: 'p', text: t });
     buffer = [];
   };
-
   let i = 0;
   while (i < lines.length) {
     const line = lines[i]!;
-
     if (line.trim() === '') {
       flushP();
       i++;
       continue;
     }
-
-    // Tableau markdown : | ... | puis |---|---|
     const next = lines[i + 1];
     if (line.includes('|') && next && /^\s*\|?[\s:|-]+\|[\s:|-]*$/.test(next)) {
       flushP();
@@ -88,8 +91,6 @@ function parseBlocks(rawText: string): Block[] {
       blocks.push({ type: 'table', headers, rows });
       continue;
     }
-
-    // Liste numérotée
     const numMatch = line.match(/^\s*\d+[.)]\s+(.+)$/);
     if (numMatch) {
       flushP();
@@ -104,8 +105,6 @@ function parseBlocks(rawText: string): Block[] {
       blocks.push({ type: 'ol', items });
       continue;
     }
-
-    // Liste à puces
     const bulletMatch = line.match(/^\s*[-*]\s+(.+)$/);
     if (bulletMatch) {
       flushP();
@@ -120,7 +119,6 @@ function parseBlocks(rawText: string): Block[] {
       blocks.push({ type: 'ul', items });
       continue;
     }
-
     buffer.push(line);
     i++;
   }
@@ -192,21 +190,16 @@ export function Copy({ text }: { text: string }) {
   return <div className="lesson-copy">{blocks.map((b, i) => renderBlock(b, i))}</div>;
 }
 
-/* ==========================================================================
-   Types & helpers
-   ========================================================================== */
-
 type Step =
   | { kind: 'cover' }
   | { kind: 'slide'; slide: Slide }
   | { kind: 'exercise'; exercise: Exercise }
   | { kind: 'mission'; title: string; text: string }
-  | { kind: 'evaluation'; exercises: Exercise[] }
   | { kind: 'end' };
 
-const MAX_EVAL_QUESTIONS = 2;
 const MAX_HEARTS = 3;
 const MAX_FAILS_BEFORE_EXPLAIN = 3;
+const MAX_EVAL_QUESTIONS = 3;
 
 function buildSteps(lesson: Lesson): Step[] {
   const steps: Step[] = [];
@@ -220,176 +213,6 @@ function buildSteps(lesson: Lesson): Step[] {
   }
   return steps;
 }
-
-function hashStr(s: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
-/* Reformulation : on décale les options d'un MCQ pour changer la position
-   de la bonne réponse. Le texte reste identique mais la mécanique change. */
-function reformulateMcq(exercise: Exercise, seed: number): Exercise {
-  if (exercise.kind !== 'mcq' && exercise.kind !== 'multi_select') return exercise;
-  const opts = exercise.payload.options ?? [];
-  if (opts.length === 0) return exercise;
-
-  const idxs = opts.map((_, i) => i);
-  let s = seed;
-  for (let i = idxs.length - 1; i > 0; i--) {
-    s = (s * 9301 + 49297) % 233280;
-    const j = Math.floor((s / 233280) * (i + 1));
-    [idxs[i], idxs[j]] = [idxs[j]!, idxs[i]!];
-  }
-  const newOpts = idxs.map((i) => opts[i]!);
-
-  if (exercise.kind === 'mcq') {
-    const correct = exercise.payload.correct as number;
-    const newCorrect = idxs.indexOf(correct);
-    return {
-      ...exercise,
-      payload: { ...exercise.payload, options: newOpts, correct: newCorrect },
-    };
-  }
-  const correctArr = (exercise.payload.correct as number[]) ?? [];
-  const newCorrect = correctArr.map((c) => idxs.indexOf(c));
-  return {
-    ...exercise,
-    payload: { ...exercise.payload, options: newOpts, correct: newCorrect },
-  };
-}
-
-/* ==========================================================================
-   Indices
-   ========================================================================== */
-
-function getHint(exercise: Exercise): string {
-  const explicit = (exercise as { hint_md?: string }).hint_md;
-  if (explicit) return explicit;
-  switch (exercise.kind) {
-    case 'mcq':
-      return 'Relis la question et élimine les réponses qui te paraissent fausses. Il ne doit en rester qu’une.';
-    case 'multi_select':
-      return 'Plusieurs réponses sont correctes. Cherche celles qui correspondent vraiment à ce que dit la leçon.';
-    case 'fill_blank':
-      return 'Clique sur un mot en bas pour le placer dans l’emplacement en surbrillance. Clique sur un mot déjà placé pour le retirer.';
-    case 'match_pairs':
-      return 'Clique un élément de gauche, puis son associé à droite. Si la paire est correcte, les deux blocs se figent en vert.';
-    case 'order_steps':
-      return 'Attrape une ligne par sa poignée et fais-la glisser à la bonne place. Les autres se décalent automatiquement.';
-    case 'free_text':
-      return 'Réponds avec tes mots. Aide-toi des critères affichés pour vérifier que tu couvres bien chaque point.';
-    default:
-      return 'Prends le temps de relire l’énoncé. La bonne réponse découle directement du contenu vu plus haut.';
-  }
-}
-
-/* ==========================================================================
-   FillBlank — blocs à trous
-   ========================================================================== */
-
-function FillBlankPlayer({
-  exercise,
-  answer,
-  disabled,
-  onAnswer,
-}: {
-  exercise: Exercise;
-  answer: Answer;
-  disabled: boolean;
-  onAnswer: (next: string[]) => void;
-}) {
-  const blanks = exercise.payload.blanks ?? [];
-
-  const values = useMemo(() => {
-    const v = [...(answer as string[])];
-    while (v.length < blanks.length) v.push('');
-    return v.slice(0, blanks.length);
-  }, [answer, blanks.length]);
-
-  const tokens = useMemo(() => {
-    const fromBlanks = blanks.map((b) => b.correct[0] ?? '').filter(Boolean);
-    const extra = ((exercise.payload as { distractors?: string[] }).distractors ?? []).filter(
-      Boolean,
-    );
-    const unique = Array.from(new Set([...fromBlanks, ...extra]));
-    return unique
-      .map((t, i) => ({ t, k: hashStr(exercise.id + ':' + t + ':' + i) }))
-      .sort((a, b) => a.k - b.k)
-      .map((x) => x.t);
-  }, [blanks, exercise]);
-
-  const usedSet = useMemo(() => new Set(values.filter(Boolean)), [values]);
-  const [activeSlot, setActiveSlot] = useState(0);
-
-  const placeToken = (token: string) => {
-    if (disabled || usedSet.has(token)) return;
-    const next = [...values];
-    let idx = next.findIndex((v) => !v);
-    if (idx === -1) idx = activeSlot;
-    next[idx] = token;
-    onAnswer(next);
-    const nextEmpty = next.findIndex((v, i) => i > idx && !v);
-    if (nextEmpty !== -1) setActiveSlot(nextEmpty);
-  };
-
-  const clearSlot = (idx: number) => {
-    if (disabled) return;
-    const next = [...values];
-    next[idx] = '';
-    onAnswer(next);
-    setActiveSlot(idx);
-  };
-
-  return (
-    <div className="fill-blank">
-      <div className="fill-blank-slots" role="group" aria-label="Emplacements">
-        {blanks.map((_, i) => {
-          const v = values[i] ?? '';
-          const isActive = i === activeSlot && !v;
-          return (
-            <button
-              key={i}
-              type="button"
-              className={`block-slot ${v ? 'block-slot--filled' : ''} ${
-                isActive ? 'block-slot--active' : ''
-              }`}
-              onClick={() => (v ? clearSlot(i) : setActiveSlot(i))}
-              disabled={disabled}
-              aria-label={`Emplacement ${i + 1}${v ? `, contient ${v}` : ', vide'}`}
-            >
-              {v || <span className="block-slot__hint">…</span>}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="fill-blank-pool" role="group" aria-label="Mots disponibles">
-        {tokens.map((t) => {
-          const used = usedSet.has(t);
-          return (
-            <button
-              key={t}
-              type="button"
-              className={`block-token ${used ? 'block-token--used' : ''}`}
-              onClick={() => placeToken(t)}
-              disabled={disabled || used}
-            >
-              {t}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/* ==========================================================================
-   MatchPairs — associer par clic, paires résolues restent visibles
-   ========================================================================== */
 
 function MatchPairsPlayer({
   exercise,
@@ -466,7 +289,6 @@ function MatchPairsPlayer({
           );
         })}
       </div>
-
       <div className="match-column match-column--right">
         {shuffledRight.map(({ p, i }) => {
           const isMatched = matchedRightSet.has(i);
@@ -490,10 +312,6 @@ function MatchPairsPlayer({
     </div>
   );
 }
-
-/* ==========================================================================
-   OrderSteps — drag & drop HTML5
-   ========================================================================== */
 
 function OrderStepsPlayer({
   exercise,
@@ -564,10 +382,6 @@ function OrderStepsPlayer({
   );
 }
 
-/* ==========================================================================
-   LessonPlayer
-   ========================================================================== */
-
 export function LessonPlayer({
   lesson,
   avatar,
@@ -585,103 +399,201 @@ export function LessonPlayer({
   const [quizExercises, setQuizExercises] = useState<Exercise[]>([]);
   const [quizBuilt, setQuizBuilt] = useState(false);
   const [answer, setAnswer] = useState<Answer>([]);
-  const [feedback, setFeedback] = useState<'correct' | 'incorrect' | 'review' | null>(null);
+  const [feedback, setFeedback] = useState<FeedbackKind | null>(null);
   const [failCount, setFailCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const [showErrorPanel, setShowErrorPanel] = useState(false);
   const [hearts, setHearts] = useState(MAX_HEARTS);
   const [earned, setEarned] = useState(0);
   const [mistakes, setMistakes] = useState(0);
+  const [streak, setStreak] = useState(0);
   const [wrongIds, setWrongIds] = useState<string[]>([]);
   const [missionDeferred, setMissionDeferred] = useState(false);
   const lastCheckedRef = useRef<string>('');
+
+  const progress = useLessonProgress();
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    try {
+      progress.startLesson(lesson.id);
+    } catch (err) {
+      console.warn('[academy] startLesson échoué (ignoré)', err);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lesson.id]);
 
   const isEvaluation = index >= steps.length;
   const step: Step | undefined = !isEvaluation ? steps[index] : undefined;
 
   const exercise: Exercise | undefined = useMemo(() => {
-    if (step?.kind === 'exercise') return step.exercise;
-    if (isEvaluation) {
-      const raw = quizExercises[evalIndex];
-      if (!raw) return undefined;
-      // Reformulation : on change la position des bonnes réponses
-      return reformulateMcq(raw, hashStr(raw.id + ':' + evalIndex));
-    }
-    return undefined;
-  }, [step, isEvaluation, quizExercises, evalIndex]);
+    let base: Exercise | undefined;
+    if (step?.kind === 'exercise') base = step.exercise;
+    else if (isEvaluation) base = quizExercises[evalIndex];
+    if (!base) return undefined;
+    const seed = hashStr(lesson.id + ':' + base.id + ':' + index + ':' + evalIndex);
+    return randomizeExercise(base, seed);
+  }, [step, isEvaluation, quizExercises, evalIndex, lesson.id, index]);
 
   const cover = lesson.blocks.find((b) => b.type === 'cover');
   const exhausted = failCount >= MAX_FAILS_BEFORE_EXPLAIN;
 
-  /* --- Construit le quiz quand on atteint la fin du contenu --- */
   useEffect(() => {
     if (isEvaluation && !quizBuilt) {
-      const allEx = lesson.blocks.flatMap((b) => b.exercises ?? []);
-      const wrong = allEx.filter((e) => wrongIds.includes(e.id));
-      const others = allEx.filter((e) => !wrongIds.includes(e.id));
-      const picked = [...wrong, ...others].slice(0, Math.min(MAX_EVAL_QUESTIONS, allEx.length));
-      setQuizExercises(picked);
+      const poolSource = lesson.exercises_pool && lesson.exercises_pool.length > 0
+        ? lesson.exercises_pool
+        : lesson.blocks.flatMap((b) => b.exercises ?? []);
+      const wrong = poolSource.filter((e) => wrongIds.includes(e.id));
+      const others = poolSource.filter((e) => !wrongIds.includes(e.id));
+      const pool = [...wrong, ...others].slice(
+        0,
+        Math.min(MAX_EVAL_QUESTIONS, poolSource.length),
+      );
+      const seed = hashStr('quiz:' + lesson.id);
+      setQuizExercises(shuffleExercises(pool, seed));
       setQuizBuilt(true);
     }
   }, [isEvaluation, quizBuilt, wrongIds, lesson]);
 
-  /* --- Escape ferme --- */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' && !feedback) onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [onClose, feedback]);
 
-  /* --- Reset à chaque nouveau step / sous-step --- */
   useEffect(() => {
     setAnswer([]);
     setFeedback(null);
     setFailCount(0);
     setShowHint(false);
-    setShowErrorPanel(false);
     lastCheckedRef.current = '';
     if (exercise?.kind === 'order_steps') {
-      setAnswer((exercise.payload.steps ?? []).map((_, i) => i).reverse());
+      const seed = hashStr(
+        'order:' + lesson.id + ':' + exercise.id + ':' + index + ':' + evalIndex,
+      );
+      setAnswer(initialOrderFor(exercise, seed));
     }
-  }, [index, evalIndex, exercise]);
+  }, [index, evalIndex, exercise, lesson.id]);
 
   useEffect(() => {
-    if (exhausted) setShowErrorPanel(true);
-  }, [exhausted]);
+    if (typeof index !== 'number') return;
+    try {
+      progress.viewBlock(lesson.id, index, 1);
+    } catch (err) {
+      console.warn('[academy] viewBlock échoué (ignoré)', err);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, lesson.id]);
 
   const ready = useMemo(() => {
     if (!exercise) return true;
-    if (exercise.kind === 'fill_blank') {
-      return (exercise.payload.blanks ?? []).every(
-        (_, i) => String(answer[i] ?? '').trim().length > 0,
-      );
-    }
-    if (exercise.kind === 'match_pairs') {
-      return (exercise.payload.pairs ?? []).every((_, i) => answer[i] === String(i));
-    }
-    if (exercise.kind === 'free_text') {
-      const words = String(answer[0] ?? '')
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean).length;
-      return words >= (exercise.payload.min_words ?? 1);
-    }
-    return answer.length > 0;
+    return isExerciseReady(exercise, answer);
   }, [exercise, answer]);
+
+  const feedbackMessage = useMemo(() => {
+    if (!feedback) return null;
+    if (feedback === 'correct') {
+      return pickCorrectMessage({
+        streak,
+        perfect: mistakes === 0,
+        isFinal: index > steps.length,
+        index,
+      });
+    }
+    if (feedback === 'review') return pickReviewMessage();
+    if (!exercise) return null;
+    return pickIncorrectMessage({
+      kind: exercise.kind,
+      failCount,
+      exhausted,
+      isFinal: isEvaluation,
+    });
+  }, [
+    feedback,
+    streak,
+    mistakes,
+    index,
+    steps.length,
+    exercise,
+    failCount,
+    exhausted,
+    isEvaluation,
+  ]);
+
+  const verify = useCallback(() => {
+    if (!exercise || feedback === 'correct' || feedback === 'review') return;
+    const correct = checkExercise(exercise, answer);
+    if (correct === true) {
+      setFeedback('correct');
+      setEarned((n) => n + (exercise.xp ?? 0));
+      setFailCount(0);
+      setStreak((s) => s + 1);
+    } else if (correct === false) {
+      const key = JSON.stringify(answer);
+      if (key !== lastCheckedRef.current) {
+        setFailCount((n) => n + 1);
+        setMistakes((n) => n + 1);
+        setStreak(0);
+        setWrongIds((prev) =>
+          prev.includes(exercise.id) ? prev : [...prev, exercise.id],
+        );
+        if (isEvaluation) setHearts((h) => Math.max(0, h - 1));
+        lastCheckedRef.current = key;
+      }
+      setFeedback('incorrect');
+    } else {
+      setFeedback('review');
+    }
+    try {
+      progress.answerExercise(lesson.id, exercise.id, { kind: exercise.kind });
+    } catch (err) {
+      console.warn('[academy] answerExercise échoué (ignoré)', err);
+    }
+  }, [exercise, feedback, answer, isEvaluation, lesson.id, progress]);
+
+  const advance = useCallback(() => {
+    setFeedback(null);
+    if (step?.kind === 'mission') setMissionDeferred(true);
+    if (isEvaluation && evalIndex + 1 < quizExercises.length) {
+      setEvalIndex((n) => n + 1);
+      return;
+    }
+    if (isEvaluation) {
+      setIndex(steps.length + 1);
+      setEvalIndex(0);
+      return;
+    }
+    setIndex((n) => n + 1);
+    setEvalIndex(0);
+  }, [step, isEvaluation, evalIndex, quizExercises.length, steps.length]);
+
+  const retry = useCallback(() => {
+    setFeedback(null);
+    lastCheckedRef.current = '';
+  }, []);
+
+  const continueFromFeedback = useCallback(() => {
+    if (feedback === 'correct' || feedback === 'review') {
+      if (index > steps.length) {
+        onComplete(lesson, earned);
+        return;
+      }
+      advance();
+    }
+  }, [feedback, index, steps.length, onComplete, lesson, earned, advance]);
 
   const skipCurrent = useCallback(() => {
     setFeedback(null);
     setFailCount(0);
-    setShowErrorPanel(false);
     lastCheckedRef.current = '';
     if (isEvaluation && evalIndex + 1 < quizExercises.length) {
       setEvalIndex((n) => n + 1);
       return;
     }
     if (isEvaluation) {
-      // Fin du quiz → on passe à l'écran de fin
       setIndex(steps.length + 1);
       setEvalIndex(0);
       return;
@@ -689,68 +601,6 @@ export function LessonPlayer({
     setIndex((n) => n + 1);
     setEvalIndex(0);
   }, [isEvaluation, evalIndex, quizExercises.length, steps.length]);
-
-  const goNext = useCallback(() => {
-    if (!step && !isEvaluation) return;
-
-    // Fin de leçon
-    if (index > steps.length) {
-      onComplete(lesson, earned);
-      return;
-    }
-
-    if (exercise && feedback !== 'correct' && feedback !== 'review') {
-      const correct = checkAnswer(exercise, answer);
-      if (correct === true) {
-        setFeedback('correct');
-        setEarned((n) => n + (exercise.xp ?? 0));
-        setFailCount(0);
-      } else if (correct === false) {
-        const key = JSON.stringify(answer);
-        if (key !== lastCheckedRef.current) {
-          setFailCount((n) => n + 1);
-          setMistakes((n) => n + 1);
-          setWrongIds((prev) => (prev.includes(exercise.id) ? prev : [...prev, exercise.id]));
-          if (isEvaluation) setHearts((h) => Math.max(0, h - 1));
-          lastCheckedRef.current = key;
-        }
-        setFeedback('incorrect');
-      } else {
-        setFeedback('review');
-      }
-      return;
-    }
-
-    if (step?.kind === 'mission') setMissionDeferred(true);
-
-    if (isEvaluation && evalIndex + 1 < quizExercises.length) {
-      setEvalIndex((n) => n + 1);
-      return;
-    }
-
-    if (isEvaluation) {
-      // Fin du quiz → écran de fin
-      setIndex(steps.length + 1);
-      setEvalIndex(0);
-      return;
-    }
-
-    setIndex((n) => n + 1);
-    setEvalIndex(0);
-  }, [
-    step,
-    exercise,
-    feedback,
-    answer,
-    isEvaluation,
-    evalIndex,
-    quizExercises.length,
-    steps.length,
-    index,
-    earned,
-    lesson,
-    onComplete,
-  ]);
 
   const goPrev = useCallback(() => {
     if (isEvaluation && evalIndex > 0) {
@@ -770,27 +620,53 @@ export function LessonPlayer({
 
   const canGoPrev = index > 0 || (isEvaluation && evalIndex > 0);
 
-  /* --- Raccourcis clavier --- */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (feedback) return;
       const t = e.target as HTMLElement;
-      if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) return;
-      if (e.key === 'Enter' && exercise && (ready || feedback) && !exhausted) {
+      if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)
+        return;
+      if (e.key === 'Enter' && exercise && ready && !exhausted) {
         e.preventDefault();
-        goNext();
+        verify();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [exercise, ready, feedback, goNext, exhausted]);
+  }, [exercise, ready, exhausted, verify, feedback]);
 
   const isDone = index > steps.length;
 
   const progressPct = isDone
     ? 10
     : isEvaluation
-      ? Math.round(((steps.length + evalIndex) / (steps.length + quizExercises.length || 1)) * 10)
+      ? Math.round(
+          ((steps.length + evalIndex) / (steps.length + quizExercises.length || 1)) *
+            10,
+        )
       : Math.round((index / Math.max(1, steps.length + MAX_EVAL_QUESTIONS)) * 10);
+
+  const primaryAction = (() => {
+    if (isDone) {
+      return {
+        label: 'Revenir au parcours',
+        onClick: () => onComplete(lesson, earned),
+        disabled: false,
+      };
+    }
+    if (exhausted) {
+      return { label: 'Passer', onClick: skipCurrent, disabled: false };
+    }
+    if (exercise) {
+      return { label: 'Vérifier', onClick: verify, disabled: !ready };
+    }
+    if (step?.kind === 'mission') {
+      return { label: 'Garder pour plus tard', onClick: advance, disabled: false };
+    }
+    return { label: 'Continuer', onClick: advance, disabled: false };
+  })();
+
+  const isCustom = exercise ? isCustomExerciseKind(exercise.kind) : false;
 
   const content = (
     <div
@@ -806,6 +682,7 @@ export function LessonPlayer({
         <div className="progress-track">
           <div className={`progress-fill lesson-progress-${progressPct}`} />
         </div>
+        <GemsWallet />
         {isEvaluation && (
           <div className="lesson-hearts" aria-label={`${hearts} vies restantes`}>
             {Array.from({ length: MAX_HEARTS }).map((_, i) => (
@@ -891,36 +768,8 @@ export function LessonPlayer({
             </div>
             <h2>{exercise.prompt}</h2>
 
-            {(exercise.kind === 'mcq' || exercise.kind === 'multi_select') &&
-              exercise.payload.options?.map((option, i) => (
-                <Button
-                  key={option}
-                  variant="academyAnswer"
-                  data-selected={(answer as number[]).includes(i)}
-                  aria-pressed={(answer as number[]).includes(i)}
-                  onClick={() => {
-                    setAnswer((prev) => {
-                      const arr = [...(prev as number[])];
-                      if (exercise.kind === 'mcq') return [i];
-                      return arr.includes(i) ? arr.filter((x) => x !== i) : [...arr, i];
-                    });
-                    if (feedback === 'incorrect') setFeedback(null);
-                  }}
-                  disabled={feedback === 'correct' || exhausted}
-                >
-                  <span className="answer-letter">
-                    {exercise.kind === 'multi_select' && (answer as number[]).includes(i) ? (
-                      <Check />
-                    ) : (
-                      String.fromCharCode(65 + i)
-                    )}
-                  </span>
-                  {option}
-                </Button>
-              ))}
-
-            {exercise.kind === 'fill_blank' && (
-              <FillBlankPlayer
+            {isCustom && (
+              <ExerciseRenderer
                 exercise={exercise}
                 answer={answer}
                 disabled={feedback === 'correct' || exhausted}
@@ -931,92 +780,131 @@ export function LessonPlayer({
               />
             )}
 
-            {exercise.kind === 'match_pairs' && (
-              <MatchPairsPlayer
-                exercise={exercise}
-                answer={answer}
-                disabled={feedback === 'correct' || exhausted}
-                onAnswer={(next) => {
-                  setAnswer(next);
-                  if (feedback === 'incorrect') setFeedback(null);
-                }}
-              />
-            )}
-
-            {exercise.kind === 'order_steps' && (
-              <OrderStepsPlayer
-                exercise={exercise}
-                answer={answer}
-                disabled={feedback === 'correct' || exhausted}
-                onAnswer={(next) => {
-                  setAnswer(next);
-                  if (feedback === 'incorrect') setFeedback(null);
-                }}
-              />
-            )}
-
-            {exercise.kind === 'free_text' && (
+            {!isCustom && (
               <>
-                <textarea
-                  className="academy-input"
-                  rows={6}
-                  aria-label="Votre réponse"
-                  placeholder="Votre réponse"
-                  value={String(answer[0] ?? '')}
-                  disabled={feedback === 'correct' || exhausted}
-                  onChange={(e) => {
-                    setAnswer([e.target.value]);
-                    if (feedback === 'incorrect') setFeedback(null);
-                  }}
-                />
-                <p className="step-count">
-                  {exercise.payload.min_words} à {exercise.payload.max_words} mots
-                </p>
-                {feedback === 'review' && (
-                  <div className="lesson-callout">
-                    <strong>Critères d’auto-évaluation</strong>
-                    <Copy text={exercise.payload.rubric_md ?? ''} />
+                {exercise.kind === 'multi_select' && (
+                  <p className="lesson-multi-hint">
+                    Sélectionne exactement{' '}
+                    <strong>{exercise.payload.correct?.length ?? 1}</strong> réponse
+                    {(exercise.payload.correct?.length ?? 1) > 1 ? 's' : ''}.
+                    {answer.length > 0 && (
+                      <>
+                        {' '}
+                        Tu en as coché{' '}
+                        <strong>{(answer as number[]).length}</strong>.
+                      </>
+                    )}
+                  </p>
+                )}
+
+                {(exercise.kind === 'mcq' || exercise.kind === 'multi_select') &&
+                  exercise.payload.options?.map((option, i) => (
+                    <Button
+                      key={option}
+                      variant="academyAnswer"
+                      data-selected={(answer as number[]).includes(i)}
+                      aria-pressed={(answer as number[]).includes(i)}
+                      onClick={() => {
+                        setAnswer((prev) => {
+                          const arr = [...(prev as number[])];
+                          if (exercise.kind === 'mcq') return [i];
+                          return arr.includes(i)
+                            ? arr.filter((x) => x !== i)
+                            : [...arr, i];
+                        });
+                        if (feedback === 'incorrect') setFeedback(null);
+                      }}
+                      disabled={feedback === 'correct' || exhausted}
+                    >
+                      <span className="answer-letter">
+                        {exercise.kind === 'multi_select' &&
+                        (answer as number[]).includes(i) ? (
+                          <Check />
+                        ) : (
+                          String.fromCharCode(65 + i)
+                        )}
+                      </span>
+                      {option}
+                    </Button>
+                  ))}
+
+                {exercise.kind === 'fill_blank' && (
+                  <FillBlankInline
+                    exercise={exercise}
+                    answer={answer}
+                    disabled={feedback === 'correct' || exhausted}
+                    onAnswer={(next) => {
+                      setAnswer(next);
+                      if (feedback === 'incorrect') setFeedback(null);
+                    }}
+                  />
+                )}
+
+                {exercise.kind === 'match_pairs' && (
+                  <MatchPairsPlayer
+                    exercise={exercise}
+                    answer={answer}
+                    disabled={feedback === 'correct' || exhausted}
+                    onAnswer={(next) => {
+                      setAnswer(next);
+                      if (feedback === 'incorrect') setFeedback(null);
+                    }}
+                  />
+                )}
+
+                {exercise.kind === 'order_steps' && (
+                  <OrderStepsPlayer
+                    exercise={exercise}
+                    answer={answer}
+                    disabled={feedback === 'correct' || exhausted}
+                    onAnswer={(next) => {
+                      setAnswer(next);
+                      if (feedback === 'incorrect') setFeedback(null);
+                    }}
+                  />
+                )}
+
+                {exercise.kind === 'free_text' && (
+                  <>
+                    <textarea
+                      className="academy-input"
+                      rows={6}
+                      aria-label="Votre réponse"
+                      placeholder="Votre réponse"
+                      value={String(answer[0] ?? '')}
+                      disabled={feedback === 'correct' || exhausted}
+                      onChange={(e) => {
+                        setAnswer([e.target.value]);
+                        if (feedback === 'incorrect') setFeedback(null);
+                      }}
+                    />
+                    <p className="step-count">
+                      {exercise.payload.min_words} à {exercise.payload.max_words} mots
+                    </p>
+                  </>
+                )}
+
+                {!isEvaluation && exercise.kind !== 'free_text' && !exhausted && (
+                  <div className="lesson-hint">
+                    <button
+                      type="button"
+                      className="lesson-hint-toggle"
+                      onClick={() => setShowHint((v) => !v)}
+                      aria-expanded={showHint}
+                    >
+                      <Lightbulb className="w-4 h-4" />
+                      {showHint ? 'Masquer l’indice' : 'Voir un indice'}
+                    </button>
+                    {showHint && (
+                      <div className="lesson-hint-body">
+                        {exercise.explanation_md
+                          ? exercise.explanation_md.split('.')[0] + '.'
+                          : 'Prends le temps de relire la consigne.'}
+                      </div>
+                    )}
                   </div>
                 )}
               </>
-            )}
-
-            {!isEvaluation && exercise.kind !== 'free_text' && !exhausted && (
-              <div className="lesson-hint">
-                <button
-                  type="button"
-                  className="lesson-hint-toggle"
-                  onClick={() => setShowHint((v) => !v)}
-                  aria-expanded={showHint}
-                >
-                  <Lightbulb className="w-4 h-4" />
-                  {showHint ? 'Masquer l’indice' : 'Voir un indice'}
-                </button>
-                {showHint && <div className="lesson-hint-body">{getHint(exercise)}</div>}
-              </div>
-            )}
-
-            {exhausted && (
-              <div className="lesson-error-panel">
-                <button
-                  type="button"
-                  className="lesson-error-toggle"
-                  onClick={() => setShowErrorPanel((v) => !v)}
-                  aria-expanded={showErrorPanel}
-                >
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Comprendre l’erreur</span>
-                  <ChevronDown className={`lesson-error-chevron ${showErrorPanel ? 'is-open' : ''}`} />
-                </button>
-                {showErrorPanel && (
-                  <div className="lesson-error-body">
-                    <Copy text={exercise.explanation_md} />
-                    <Button variant="academy" onClick={skipCurrent}>
-                      Question suivante
-                    </Button>
-                  </div>
-                )}
-              </div>
             )}
           </div>
         )}
@@ -1031,8 +919,8 @@ export function LessonPlayer({
             <Copy text={step.text} />
             <div className="lesson-callout">
               <strong>Mission à réaliser dans Lead Cortex</strong>
-              La validation de cette mission nécessite votre application connectée. Elle reste en
-              attente dans cet aperçu.
+              La validation de cette mission nécessite votre application connectée. Elle
+              reste en attente dans cet aperçu.
             </div>
           </>
         )}
@@ -1065,7 +953,7 @@ export function LessonPlayer({
         )}
       </main>
 
-      <footer className="lesson-footer" data-feedback={feedback}>
+      <footer className="lesson-footer">
         <div className="lesson-footer-inner">
           <button
             type="button"
@@ -1077,63 +965,43 @@ export function LessonPlayer({
             <ChevronLeft />
           </button>
 
-          {feedback ? (
-            <div className="feedback-message">
-              {feedback === 'incorrect' ? <XCircle /> : <CheckCircle2 />}
-              <div>
-                <strong>
-                  {feedback === 'correct'
-                    ? 'Exactement.'
-                    : feedback === 'incorrect'
-                      ? exhausted
-                        ? 'On passe à la suite.'
-                        : 'Pas tout à fait. Corrige ta réponse.'
-                      : 'Compare ta réponse aux critères.'}
-                </strong>
-                {feedback !== 'incorrect' && exercise && <Copy text={exercise.explanation_md} />}
-              </div>
-            </div>
-          ) : (
-            <span className="step-count">
-              {isDone
-                ? 'Chaque petit pas compte.'
-                : isEvaluation
-                  ? `Quiz final · ${evalIndex + 1} sur ${quizExercises.length}`
-                  : `Étape ${index + 1} sur ${steps.length}`}
-            </span>
-          )}
+          <span className="step-count">
+            {isDone
+              ? 'Chaque petit pas compte.'
+              : isEvaluation
+                ? `Quiz final · ${evalIndex + 1} sur ${quizExercises.length}`
+                : `Étape ${index + 1} sur ${steps.length}`}
+          </span>
 
           <div className="lesson-footer-actions">
             <Button
               variant="academy"
-              disabled={
-                isDone
-                  ? false
-                  : exhausted
-                    ? false
-                    : feedback === 'correct'
-                      ? false
-                      : exercise
-                        ? !ready
-                        : false
-              }
-              onClick={goNext}
+              disabled={primaryAction.disabled}
+              onClick={primaryAction.onClick}
             >
-              {isDone
-                ? 'Revenir au parcours'
-                : exhausted
-                  ? 'Passer'
-                  : feedback === 'correct'
-                    ? 'Continuer'
-                    : exercise
-                      ? 'Vérifier'
-                      : step?.kind === 'mission'
-                        ? 'Garder pour plus tard'
-                        : 'Continuer'}
+              {primaryAction.label}
             </Button>
           </div>
         </div>
       </footer>
+
+      {feedback && feedbackMessage && exercise && (
+        <FeedbackOverlay
+          feedback={feedback}
+          message={feedbackMessage}
+          exercise={exercise}
+          answer={answer}
+          failCount={failCount}
+          exhausted={exhausted}
+          onContinue={continueFromFeedback}
+          onRetry={retry}
+          onSkip={skipCurrent}
+        />
+      )}
+
+      {lesson.glossary && lesson.glossary.length > 0 && (
+        <DictionaryButton glossary={lesson.glossary} />
+      )}
     </div>
   );
 

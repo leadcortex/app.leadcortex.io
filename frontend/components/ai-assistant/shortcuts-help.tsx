@@ -1,27 +1,14 @@
+// frontend/components/ai-assistant/shortcuts-help.tsx
+
 "use client";
 
-/**
- * Aide « Raccourcis clavier » + hook global associé.
- *
- * Le composant `ShortcutsHelp` est une modale passive : Dialog desktop,
- * MobileSheet mobile, exactement comme les autres panneaux de l'assistant.
- *
- * Le hook `useAssistantShortcuts` se charge des raccourcis globaux qui ne
- * peuvent pas vivre dans les composants enfants :
- *   - Ctrl/⌘ + Shift + F  → bascule le mode focus
- *   - Ctrl/⌘ + /          → ouvre cette aide
- *   - Ctrl/⌘ + Shift + O  → démarre une nouvelle conversation
- *
- * Tous les handlers vérifient qu'aucun champ de saisie n'est focalisé avant
- * d'agir, pour ne jamais voler une frappe légitime.
- */
 import { useCallback, useEffect } from "react";
-import { Check, Command, Keyboard } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check, Command, Keyboard } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { canUseNativeNotifications, ensureNotificationPermission } from "@/lib/assistant-notifications";
+import { canUseNativeNotifications, ensureNotificationPermission } from "@/lib/ai/assistant-notifications";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -171,9 +158,6 @@ export function ShortcutsHelp({
   );
 }
 
-/* ─── Raccourcis globaux ──────────────────────────────────────────────── */
-
-/** Vrai si le focus est dans un champ texte — pour ne pas détourner les touches. */
 function isTypingTarget(): boolean {
   if (typeof document === "undefined") return false;
   const el = document.activeElement as HTMLElement | null;
@@ -200,21 +184,18 @@ export function useAssistantShortcuts({
       const meta = e.ctrlKey || e.metaKey;
       if (!meta) return;
 
-      // Ctrl/⌘ + Shift + F → focus (peut s'appliquer même en saisie)
       if (e.shiftKey && e.key.toLowerCase() === "f") {
         e.preventDefault();
         onToggleFocus();
         return;
       }
 
-      // Ctrl/⌘ + / → aide (peut s'appliquer même en saisie)
       if (e.key === "/" || e.key === ":") {
         e.preventDefault();
         onOpenHelp();
         return;
       }
 
-      // Ctrl/⌘ + Shift + O → nouvelle conversation (hors champ de saisie)
       if (e.shiftKey && e.key.toLowerCase() === "o") {
         if (isTypingTarget()) return;
         e.preventDefault();

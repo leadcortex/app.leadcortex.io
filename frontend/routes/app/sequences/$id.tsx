@@ -1,7 +1,8 @@
-//frontend\routes\app\sequences\$id.tsx
+// frontend/routes/app/sequences/$id.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Badge, Kpi } from "@/components/ui-primitives";
-import { useAppStore } from "@/lib/store";
+import { Badge, Kpi } from "@/components/common/ui-primitives";
+import { useAppStore } from "@/lib/state/store";
 import {
   ArrowLeft,
   Play,
@@ -17,7 +18,7 @@ import {
   AlertCircle,
   BarChart3,
   Send,
-} from "lucide-react";
+} from "@/components/icons";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DetailViewSkeleton } from "@/components/skeletons";
@@ -59,7 +60,6 @@ function SequencesDetailPage() {
 
   return (
     <div className="max-w-6xl">
-      {}
       <Link
         to="/app/sequences"
         className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground hover:text-foreground transition-colors mb-3 md:mb-6"
@@ -67,7 +67,6 @@ function SequencesDetailPage() {
         <ArrowLeft className="size-3.5 md:size-4" /> Retour aux séquences
       </Link>
 
-      {}
       <div className="flex flex-wrap items-start justify-between gap-3 md:gap-4 mb-4 md:mb-8">
         <div>
           <h1 className="font-display text-2xl md:text-4xl italic break-words">{sequence.name}</h1>

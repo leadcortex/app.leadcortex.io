@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/parser.go
+
 package curriculum
 
 import (
@@ -7,10 +9,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// Parse convertit un ProgramYAML en domain.Program validé unitairement.
-//
-// La validation croisée (références inter-entités, cycles) est effectuée
-// ensuite par validator.ValidateAll.
 func Parse(src ProgramYAML) (*domain.Program, error) {
 	program := &domain.Program{
 		ID:               src.ID,
@@ -275,10 +273,6 @@ func parseExercise(src ExerciseYAML, concepts map[string]domain.Concept) (domain
 	return ex, nil
 }
 
-// decodePayload décode le payload dans la cible, en choisissant le
-// décodeur selon la source (JSON d'abord, puis YAML).
-//
-// Le frontend fournit du JSON ; les tests peuvent encore utiliser du YAML.
 func decodePayload(src ExerciseYAML, dst any) error {
 	if len(src.PayloadJSON) > 0 {
 		return json.Unmarshal(src.PayloadJSON, dst)

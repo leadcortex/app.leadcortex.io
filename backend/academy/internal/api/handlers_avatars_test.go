@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_avatars_test.go
+
 package api
 
 import (
@@ -12,9 +14,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /avatars
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestListAvatars_Returns12(t *testing.T) {
 	s := buildTestServer(t)
@@ -45,7 +44,6 @@ func TestListAvatars_Returns12(t *testing.T) {
 func TestListAvatars_UnlocksOnDemand(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Seed un Learner avec 5 leçons terminées → panda débloqué (5 leçons).
 	l := domain.NewLearner("alice", "Alice", "")
 	for i := 0; i < 5; i++ {
 		l.LessonProgress["filler-"+string(rune('0'+i))] = domain.LessonProgress{
@@ -77,14 +75,10 @@ func TestListAvatars_UnlocksOnDemand(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /avatars/equip  (alias de PATCH /me/equip-avatar)
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestEquipAvatarByPath_Success(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Seed un Learner avec eagle débloqué.
 	l := domain.NewLearner("alice", "Alice", "")
 	l.UnlockAvatar("eagle")
 	_ = s.deps.Repository.SaveLearner(context.Background(), l)
@@ -134,10 +128,6 @@ func TestEquipAvatarByPath_Unknown(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Vérifier que les deux endpoints (PATCH /me/equip-avatar et
-   POST /avatars/equip) produisent le même état.
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestEquipAvatar_TwoEndpointsEquivalent(t *testing.T) {
 	s := buildTestServer(t)
@@ -146,7 +136,6 @@ func TestEquipAvatar_TwoEndpointsEquivalent(t *testing.T) {
 	l.UnlockAvatar("eagle")
 	_ = s.deps.Repository.SaveLearner(context.Background(), l)
 
-	// Équipe via /me/equip-avatar.
 	body1 := strings.NewReader(`{"avatar_id":"eagle"}`)
 	req1 := httptest.NewRequest(http.MethodPatch, "/api/v1/me/equip-avatar", body1)
 	req1.Header.Set("X-Learner-ID", "alice")
@@ -156,12 +145,10 @@ func TestEquipAvatar_TwoEndpointsEquivalent(t *testing.T) {
 		t.Fatalf("PATCH /me/equip-avatar : %d", rec1.Code)
 	}
 
-	// Change le Learner : retire eagle.
 	stored, _ := s.deps.Repository.GetLearner(context.Background(), "alice")
 	stored.EquippedAvatarID = ""
 	_ = s.deps.Repository.SaveLearner(context.Background(), stored)
 
-	// Équipe via /avatars/equip.
 	body2 := strings.NewReader(`{"avatar_id":"eagle"}`)
 	req2 := httptest.NewRequest(http.MethodPost, "/api/v1/avatars/equip", body2)
 	req2.Header.Set("X-Learner-ID", "alice")
@@ -171,7 +158,6 @@ func TestEquipAvatar_TwoEndpointsEquivalent(t *testing.T) {
 		t.Fatalf("POST /avatars/equip : %d", rec2.Code)
 	}
 
-	// État identique.
 	final, _ := s.deps.Repository.GetLearner(context.Background(), "alice")
 	if final.EquippedAvatarID != "eagle" {
 		t.Errorf("EquippedAvatarID : attendu eagle, obtenu %q", final.EquippedAvatarID)

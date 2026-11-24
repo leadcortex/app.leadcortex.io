@@ -1,10 +1,9 @@
-//frontend\components\mobile\mobile-empty-state.tsx
-//   • icône 48 px (au lieu de 80 px) → ne domine pas l'écran
+// frontend/components/mobile/mobile-empty-state.tsx
 
-import type { LucideIcon } from "lucide-react";
-import { EmptyState, type EmptyStateProps } from "@/components/empty-state";
+import type { LucideIcon } from "@/components/icons";
+import { EmptyState, type EmptyStateProps } from "@/components/common/empty-state";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type MobileEmptyStateProps = EmptyStateProps;
 

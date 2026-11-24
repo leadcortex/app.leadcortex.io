@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_curriculum.go
+
 package api
 
 import (
@@ -6,20 +8,12 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   DTOs
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// CurriculumSnapshotDTO — vue complète du curriculum en un seul call.
-//
-// Le frontend peut remplacer son import JSON local par un fetch unique
-// vers GET /api/v1/curriculum.
 type CurriculumSnapshotDTO struct {
 	Programs []ProgramSnapshotDTO `json:"programs"`
 	Total    int                  `json:"total"`
 }
 
-// ProgramSnapshotDTO — un programme avec ses modules et leçons.
 type ProgramSnapshotDTO struct {
 	ID               string              `json:"id"`
 	Order            int                 `json:"order"`
@@ -34,7 +28,6 @@ type ProgramSnapshotDTO struct {
 	Modules          []ModuleSnapshotDTO `json:"modules"`
 }
 
-// ModuleSnapshotDTO — un module avec sa leçon détaillée (blocs inclus).
 type ModuleSnapshotDTO struct {
 	ID               string            `json:"id"`
 	ProgramID        string            `json:"program_id"`
@@ -47,19 +40,7 @@ type ModuleSnapshotDTO struct {
 	Lessons          []LessonDetailDTO `json:"lessons"`
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /api/v1/curriculum
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// handleGetCurriculum retourne l'intégralité du curriculum en une fois.
-//
-// Query params :
-//   - include_blocks (bool, defaut "true") — inclure les blocs de chaque
-//     leçon. Mettre "false" pour ne récupérer que les métadonnées (utile
-//     pour afficher un sommaire sans télécharger les contenus).
-//
-// La réponse peut atteindre ~1-2 Mo avec les blocs, mais elle n'est
-// demandée qu'une seule fois au démarrage du frontend.
 func (s *Server) handleGetCurriculum(w http.ResponseWriter, r *http.Request) {
 	includeBlocks := r.URL.Query().Get("include_blocks") != "false"
 
@@ -116,6 +97,4 @@ func (s *Server) handleGetCurriculum(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// compile-time guard pour l'import domain (utilisé indirectement via
-// les structures exposées).
 var _ = domain.LessonStatusLocked

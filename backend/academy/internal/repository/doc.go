@@ -1,3 +1,5 @@
+// backend/academy/internal/repository/doc.go
+
 // Package repository abstrait la persistance de l'academy.
 //
 // # Rôle

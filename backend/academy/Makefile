@@ -53,7 +53,7 @@ LDFLAGS     := -X '$(VERSION_PKG).Version=$(VERSION)' \
 # ─── Cibles ──────────────────────────────────────────────────────────────
 .DEFAULT_GOAL := help
 
-.PHONY: help build build-server build-cli run test test-race cover lint fmt tidy validate clean
+.PHONY: help build build-server build-cli run test test-guard test-race cover lint fmt tidy validate clean
 
 help: ## Affiche cette aide
 	@echo ""
@@ -98,6 +98,10 @@ run: build-server ## Compile et lance le serveur HTTP
 test: ## Lance tous les tests
 	@echo "→ go test ./..."
 	@go test $(GOFLAGS) ./...
+
+test-guard: ## Lance les tests et envoie les résultats à TDD Guard
+	@echo "→ go test -json ./... | tdd-guard-go"
+	@set -o pipefail; go test $(GOFLAGS) -json ./... 2>&1 | tdd-guard-go -project-root 'C:\Users\user\Documents\Projet\app.leadcortex.io'
 
 test-race: ## Lance les tests avec le détecteur de race
 	@echo "→ go test -race ./..."

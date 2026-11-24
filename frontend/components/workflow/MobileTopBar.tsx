@@ -1,7 +1,8 @@
-//frontend\components\workflow\MobileTopBar.tsx
-import { ArrowLeft, Workflow } from "lucide-react";
+// frontend/components/workflow/MobileTopBar.tsx
+
+import { ArrowLeft, Workflow } from "@/components/icons";
 import { Link } from "@tanstack/react-router";
-import { AppTabs } from "@/components/app-tabs";
+import { AppTabs } from "@/components/layout/app-tabs";
 import { WorkflowMenus } from "./WorkflowMenus";
 
 export const MOBILE_TOP_BAR_HEIGHT = 44;

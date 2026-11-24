@@ -33,3 +33,6 @@ dist-ssr
 
 # Environment
 .env
+
+# Notes personnelles (coffre Obsidian)
+safe-opsidian/

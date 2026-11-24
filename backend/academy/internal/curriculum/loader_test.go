@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/loader_test.go
+
 package curriculum
 
 import (
@@ -6,10 +8,6 @@ import (
 	"testing"
 )
 
-// TestLoad_RealContent charge le contenu réel du dépôt (5 programmes JSON).
-//
-// Ce test est skippé si le dossier content/ n'est pas encore peuplé
-// (utile en CI sur un checkout partiel).
 func TestLoad_RealContent(t *testing.T) {
 	contentDir := filepath.Join("..", "..", "content")
 	if _, err := os.Stat(contentDir); err != nil {
@@ -38,7 +36,6 @@ func TestLoad_RealContent(t *testing.T) {
 		t.Errorf("badges : attendu 19, obtenu %d", stats.Badges)
 	}
 
-	// Lookup direct d'un programme connu.
 	p, ok := res.Registry.Program("p1-foundations")
 	if !ok {
 		t.Fatal("programme p1-foundations introuvable")
@@ -47,7 +44,6 @@ func TestLoad_RealContent(t *testing.T) {
 		t.Errorf("titre : attendu %q, obtenu %q", "Fondations", p.Title)
 	}
 
-	// Lookup direct d'une leçon connue (avec blocs).
 	l, ok := res.Registry.Lesson("p1-m1-l1-why-prospection")
 	if !ok {
 		t.Fatal("leçon p1-m1-l1-why-prospection introuvable")
@@ -60,8 +56,6 @@ func TestLoad_RealContent(t *testing.T) {
 	}
 }
 
-// TestLoad_ChapterOnModules vérifie que le champ chapter du JSON est
-// bien propagé jusqu'à domain.Module.
 func TestLoad_ChapterOnModules(t *testing.T) {
 	contentDir := filepath.Join("..", "..", "content")
 	if _, err := os.Stat(contentDir); err != nil {

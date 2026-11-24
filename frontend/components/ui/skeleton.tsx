@@ -1,5 +1,6 @@
-//frontend\components\ui\skeleton.tsx
-import { cn } from "@/lib/utils";
+// frontend/components/ui/skeleton.tsx
+
+import { cn } from "@/lib/core/utils";
 
 type SkeletonVariant = "block" | "text" | "circle" | "button";
 

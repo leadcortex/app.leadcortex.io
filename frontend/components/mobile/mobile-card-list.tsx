@@ -1,10 +1,11 @@
-//frontend\components\mobile\mobile-card-list.tsx
-import { useMemo, useState, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+// frontend/components/mobile/mobile-card-list.tsx
 
-import DataTable, { type Column, type DataTableProps } from "@/components/data-table";
+import { useMemo, useState, type ReactNode } from "react";
+import { ChevronLeft, ChevronRight, Search, X } from "@/components/icons";
+
+import DataTable, { type Column, type DataTableProps } from "@/components/common/data-table";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type MobileCardListProps<T> = DataTableProps<T> & {
   renderCard?: (row: T) => ReactNode;
@@ -123,7 +124,6 @@ function MobileCardListBody<T extends Record<string, any>>({
 
   return (
     <div className={cn("min-w-0 space-y-3 overflow-hidden", className)}>
-      {}
       {showSearch && searchFields && (
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -156,7 +156,6 @@ function MobileCardListBody<T extends Record<string, any>>({
         </div>
       )}
 
-      {}
       {isLoading ? (
         <ul className="space-y-2">
           {Array.from({ length: loadingRows }).map((_, i) => (
@@ -216,7 +215,6 @@ function MobileCardListBody<T extends Record<string, any>>({
         </ul>
       )}
 
-      {}
       {showPagination && filteredData.length > pageSize && (
         <div className="flex items-center justify-between px-1 text-[12px] text-muted-foreground">
           <span>

@@ -1,16 +1,7 @@
+// frontend/components/ai-assistant/share-menu.tsx
+
 "use client";
 
-/**
- * Menu « Partager » — remplace l'ancien `ExportMenu`.
- *
- * Enrichi : exports Markdown/JSON, copies presse-papier, et une section
- * « Autre… » qui déploie des options de partage supplémentaires (lien,
- * PDF, email, Slack…) — en mode « bientôt disponible » pour l'instant.
- *
- * Variant "round" : bouton rond, destiné à être posé dans la rangée
- * dédiée sous le sélecteur de modèle IA (voir `assistant-sidebar.tsx`).
- * Variant "inline" : icône intégrée, réutilisable ailleurs.
- */
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Check,
@@ -23,9 +14,9 @@ import {
   Mail,
   MessageSquare,
   MoreHorizontal,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import type { AssistantMessage } from "./assistant-engine";
 import {
   copyToClipboard,
@@ -34,13 +25,8 @@ import {
   toJson,
   toMarkdown,
   type ExportMeta,
-} from "@/lib/conversation-export";
+} from "@/lib/ai/conversation-export";
 
-/* ─── Icône « Partager » (flèche courbée) ─────────────────────────────
- * SVG inline reprenant exactement le tracé de Lucide `Forward` :
- * queue courbée qui remonte de la gauche, ligne horizontale, tête de
- * flèche à droite.
- * ─────────────────────────────────────────────────────────────────── */
 function ShareArrowIcon({ className }: { className?: string }) {
   return (
     <svg

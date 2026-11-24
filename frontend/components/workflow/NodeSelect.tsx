@@ -1,8 +1,9 @@
-//frontend\components\workflow\NodeSelect.tsx
+// frontend/components/workflow/NodeSelect.tsx
+
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { Check, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check, ChevronDown } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 
 type Props = {
   value: string;
@@ -13,22 +14,9 @@ type Props = {
   size?: "compact" | "default";
   className?: string;
   onPointerDownCapture?: (e: React.PointerEvent) => void;
-  /**
-   * Autorise la valeur sélectionnée à s'afficher sur plusieurs lignes (au
-   * lieu d'être tronquée avec une ellipse) et le champ à grandir
-   * verticalement en conséquence. Utile pour les options prédéfinies plus
-   * longues qu'une seule ligne, pour qu'elles restent lisibles sans jamais
-   * déborder du cadre du bloc.
-   */
   autoGrow?: boolean;
 };
 
-/**
- * Custom themed dropdown that replaces the native <select>/<option> element.
- * Built on Radix UI Select so opening/closing, keyboard nav and — crucially —
- * collision-aware positioning (flipping the menu above the trigger when there
- * isn't enough room below the viewport) come for free via Radix Popper.
- */
 export function NodeSelect({
   value,
   onChange,

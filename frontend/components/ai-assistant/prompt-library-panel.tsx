@@ -1,21 +1,7 @@
+// frontend/components/ai-assistant/prompt-library-panel.tsx
+
 "use client";
 
-/**
- * Panneau Bibliothèque de prompts.
- *
- * Trois zones :
- *  1. Actions rapides — « Enregistrer le brouillon courant », « Vider les
- *     récents ».
- *  2. Mes templates — liste filtrée par tag optionnel ; chaque ligne a un
- *     bouton « utiliser » et un menu discret « modifier / supprimer ».
- *  3. Récents — derniers prompts envoyés, dédupliqués ; un clic les remet
- *     dans le champ.
- *
- * Desktop : Dialog centré. Mobile : MobileSheet tiré du bas.
- *
- * L'édition d'un template s'effectue dans une sous-vue (même panneau) pour
- * éviter deux modales empilées.
- */
 import { useEffect, useMemo, useState } from "react";
 import {
   BookmarkPlus,
@@ -25,8 +11,8 @@ import {
   Search,
   Trash2,
   X,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -41,7 +27,7 @@ import {
   upsertTemplate,
   type PromptTemplate,
   type RecentPrompt,
-} from "@/lib/prompt-library-store";
+} from "@/lib/ai/prompt-library-store";
 
 type View =
   | { kind: "list" }
@@ -69,11 +55,8 @@ export function PromptLibraryPanel({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Texte actuellement dans le composeur — pour « Enregistrer le brouillon ». */
   currentDraft: string;
-  /** Contexte de page courant (utilisé comme tag par défaut). */
   currentCtx: string;
-  /** Applique le texte choisi dans le composeur. */
   onUsePrompt: (text: string) => void;
 }) {
   const isMobile = useIsMobile();
@@ -135,7 +118,6 @@ export function PromptLibraryPanel({
 
   const listBody = (
     <div className="flex min-h-0 flex-col gap-3">
-      {/* Actions rapides */}
       <div className="flex flex-wrap items-center gap-1.5">
         <button
           type="button"
@@ -163,7 +145,6 @@ export function PromptLibraryPanel({
         </button>
       </div>
 
-      {/* Filtres */}
       <div className="flex items-center gap-1.5">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -190,7 +171,6 @@ export function PromptLibraryPanel({
         </button>
       </div>
 
-      {/* Templates */}
       <section className="flex flex-col gap-1">
         <p className="px-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           Mes templates · {filtered.length}
@@ -253,7 +233,6 @@ export function PromptLibraryPanel({
         )}
       </section>
 
-      {/* Récents */}
       {filteredRecents.length > 0 && (
         <section className="flex flex-col gap-1">
           <div className="flex items-center justify-between px-1">
@@ -264,8 +243,7 @@ export function PromptLibraryPanel({
               type="button"
               onClick={() => {
                 setRecents([]);
-                // On vide aussi le stockage
-                import("@/lib/prompt-library-store").then((m) => m.clearRecents());
+                import("@/lib/ai/prompt-library-store").then((m) => m.clearRecents());
               }}
               className="text-[10px] text-muted-foreground hover:text-foreground"
             >

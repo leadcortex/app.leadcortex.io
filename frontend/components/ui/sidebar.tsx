@@ -1,11 +1,12 @@
-//frontend\components\ui\sidebar.tsx
+// frontend/components/ui/sidebar.tsx
+
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import { PanelLeft } from "@/components/icons";
 
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -103,7 +104,6 @@ const SidebarProvider = React.forwardRef<
 
     const state = open ? "expanded" : "collapsed";
 
-    // Largeur effective selon l'état (pour desktop)
     const sidebarWidth = open ? SIDEBAR_WIDTH : SIDEBAR_WIDTH_ICON;
 
     const contextValue = React.useMemo<SidebarContextProps>(

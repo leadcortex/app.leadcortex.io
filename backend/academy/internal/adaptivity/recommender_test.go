@@ -1,3 +1,5 @@
+// backend/academy/internal/adaptivity/recommender_test.go
+
 package adaptivity
 
 import (
@@ -7,7 +9,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Nil learner ─────────────────────────────────────────────────────── */
 
 func TestRecommend_NilLearner(t *testing.T) {
 	rec := Recommend(nil, RecommendOptions{Now: fixedTime()})
@@ -16,7 +17,6 @@ func TestRecommend_NilLearner(t *testing.T) {
 	}
 }
 
-/* ─── ResumeLesson prioritaire ────────────────────────────────────────── */
 
 func TestRecommend_ResumeLesson(t *testing.T) {
 	l := newLearner()
@@ -37,13 +37,12 @@ func TestRecommend_ResumeLesson(t *testing.T) {
 	}
 }
 
-/* ─── ReviewConcept ───────────────────────────────────────────────────── */
 
 func TestRecommend_ReviewConcept_PreferReview(t *testing.T) {
 	l := newLearner()
 	l.ConceptMastery["c1"] = domain.Mastery{
 		ConceptID: "c1",
-		Level:     domain.MasteryFragile, // 30
+		Level:     domain.MasteryFragile,
 		Attempts:  3,
 		Correct:   1,
 	}
@@ -66,7 +65,7 @@ func TestRecommend_ReviewConcept_OverdueSrs(t *testing.T) {
 		ConceptID: "c1", Level: domain.MasteryFragile, Attempts: 3,
 	}
 	card := *domain.NewSrsCard("card-1", "c1", "Q", "A")
-	card.DueAt = fixedTime().Add(-time.Hour) // dû
+	card.DueAt = fixedTime().Add(-time.Hour)
 
 	rec := Recommend(l, RecommendOptions{
 		Now:      fixedTime(),
@@ -77,7 +76,6 @@ func TestRecommend_ReviewConcept_OverdueSrs(t *testing.T) {
 	}
 }
 
-/* ─── StartLesson ─────────────────────────────────────────────────────── */
 
 func TestRecommend_StartLesson(t *testing.T) {
 	reg := buildTestRegistry(t)
@@ -95,7 +93,6 @@ func TestRecommend_StartLesson(t *testing.T) {
 	}
 }
 
-/* ─── Aucune action ───────────────────────────────────────────────────── */
 
 func TestRecommend_NothingToDo(t *testing.T) {
 	l := newLearner()
@@ -105,7 +102,6 @@ func TestRecommend_NothingToDo(t *testing.T) {
 	}
 }
 
-/* ─── Priorités ───────────────────────────────────────────────────────── */
 
 func TestRecommend_ResumeBeatsReview(t *testing.T) {
 	reg := buildTestRegistry(t)
@@ -123,9 +119,6 @@ func TestRecommend_ResumeBeatsReview(t *testing.T) {
 		Registry:     reg,
 		PreferReview: true,
 	})
-	// ResumeLesson (Score 95) > ReviewConcept (Score 70 + gap).
-	// Si gap = 50, ReviewConcept = 120 > 95. Donc ReviewConcept gagne
-	// dans ce cas. On teste en fait que la priorité reflète les scores.
 	if rec.Kind == RecoNone {
 		t.Errorf("attendu une recommandation, obtenu RecoNone")
 	}

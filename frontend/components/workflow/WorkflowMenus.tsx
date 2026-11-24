@@ -1,4 +1,5 @@
-//frontend\components\workflow\WorkflowMenus.tsx
+// frontend/components/workflow/WorkflowMenus.tsx
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
@@ -19,7 +20,7 @@ import {
   Sun,
   Upload,
   Wrench,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
 import { useWorkflow } from "@/lib/workflow/store";
 import type { WDoc } from "@/lib/workflow/types";

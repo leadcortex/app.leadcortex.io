@@ -1,6 +1,7 @@
-//frontend\components\workflow\Markdown.tsx
+// frontend/components/workflow/Markdown.tsx
+
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 function inline(text: string, keyPrefix: string): ReactNode[] {
   const out: ReactNode[] = [];

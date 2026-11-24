@@ -1,11 +1,12 @@
-//frontend\components\tasks\date-time-field.tsx
+// frontend/components/tasks/date-time-field.tsx
+
 import { useState } from "react";
-import { CalendarDays, Clock, X } from "lucide-react";
+import { CalendarDays, Clock, X } from "@/components/icons";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CustomSelect } from "@/components/custom-select";
-import { cn } from "@/lib/utils";
+import { CustomSelect } from "@/components/common/custom-select";
+import { cn } from "@/lib/core/utils";
 import {
   addDays,
   formatLongDate,
@@ -13,7 +14,7 @@ import {
   startOfToday,
   timeOptions,
   toISODate,
-} from "@/lib/task-utils";
+} from "@/lib/tasks/utils";
 
 type Props = {
   date: string | undefined;

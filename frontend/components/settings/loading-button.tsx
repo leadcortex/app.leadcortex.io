@@ -1,7 +1,8 @@
-//frontend\components\settings\loading-button.tsx
-import { Loader2, type LucideIcon } from "lucide-react";
+// frontend/components/settings/loading-button.tsx
+
+import { Loader2, type LucideIcon } from "@/components/icons";
 import { Button, type ButtonProps } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 type LoadingButtonProps = ButtonProps & {
   loading?: boolean;

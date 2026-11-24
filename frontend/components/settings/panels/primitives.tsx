@@ -1,9 +1,11 @@
-//frontend\components\settings\panels\primitives.tsx
-import type { ComponentType, ReactNode } from "react";
-import { AlertCircle, type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+// frontend/components/settings/panels/primitives.tsx
 
-export const SELECT_Z = "z-[70] border-border bg-popover";
+import type { ComponentType, ReactNode } from "react";
+import { AlertCircle, type LucideIcon } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
+
+// z-[100] : au-dessus de la feuille mobile (MobileSheet, z-[80]) et de la modale desktop (z-[60]).
+export const SELECT_Z = "z-[100] border-border bg-popover";
 
 export type Icon = ComponentType<{ className?: string; strokeWidth?: number }>;
 
@@ -127,8 +129,6 @@ export function Row({
     </div>
   );
 }
-
-/*  Field — label + hint + champ + message d'erreur                           */
 
 export function Field({
   label,

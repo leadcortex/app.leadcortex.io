@@ -1,4 +1,5 @@
-//frontend\components\workflow\NodeCard.tsx
+// frontend/components/workflow/NodeCard.tsx
+
 import { memo, useEffect, useRef } from "react";
 import {
   ChevronDown,
@@ -9,7 +10,7 @@ import {
   Loader2,
   Minus,
   Plus,
-} from "lucide-react";
+} from "@/components/icons";
 import {
   bodyHeight,
   blockMap,
@@ -36,7 +37,7 @@ import {
 } from "@/lib/workflow/geometry";
 import { resolveLanguage } from "@/lib/workflow/code-languages";
 import type { WNode } from "@/lib/workflow/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { NodeSelect } from "./NodeSelect";
 import { CodePreview } from "./CodePreview";
 
@@ -70,13 +71,6 @@ function NodeCardBase({
   onConfig,
   onOpenCodeEditor,
 }: Props) {
-  /**
-   * Sur mobile/tactile, le navigateur applique une « capture implicite » du
-   * pointeur sur l'élément où le doigt s'est posé : tous les événements
-   * suivants (y compris `pointerup`) sont alors renvoyés à ce même élément,
-   * jamais au port survolé. On relâche donc la capture immédiatement pour que
-   * le câble puisse s'accrocher au port cible comme sur desktop.
-   */
   const portDown = (portId: string, side: "in" | "out", e: React.PointerEvent) => {
     e.stopPropagation();
     const el = e.currentTarget as HTMLElement;
@@ -127,11 +121,6 @@ function NodeCardBase({
     return () => ro.disconnect();
   }, [fields.length, currentFieldsH, onPatch]);
 
-  /**
-   * Redimensionnement manuel du bloc (largeur, et hauteur quand le bloc
-   * possède une zone de texte/code). Le geste est capturé sur la poignée du
-   * coin bas-droit et n'entre jamais en conflit avec le déplacement du bloc.
-   */
   const startResize = (e: React.PointerEvent) => {
     e.stopPropagation();
     e.preventDefault();

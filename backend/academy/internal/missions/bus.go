@@ -1,3 +1,5 @@
+// backend/academy/internal/missions/bus.go
+
 package missions
 
 import (
@@ -5,36 +7,15 @@ import (
 	"sync"
 )
 
-// EventBus est un pub/sub typé, thread-safe, à canaux buffered.
-//
-// Les abonnés peuvent souscrire à un Kind précis (Subscribe) ou à tous
-// les événements (SubscribeAll). Le bus distribue chaque événement de
-// façon non bloquante : si le canal d'un abonné est plein, l'événement
-// est perdu pour cet abonné (mais reste envoyé aux autres).
-//
-// # Cycle de vie
-//
-//	bus := NewEventBus()
-//	ch := bus.Subscribe(EventLeadCreated)
-//	defer bus.Close() // ferme tous les canaux
-//
-//	for ev := range ch {
-//	    // traiter
-//	}
-//
-// Un bus fermé refuse toute nouvelle publication et toute nouvelle
-// souscription.
 type EventBus struct {
 	mu          sync.RWMutex
-	subscribers map[string][]chan BusinessEvent // par Kind
-	all         []chan BusinessEvent             // abonnés "tous kinds"
+	subscribers map[string][]chan BusinessEvent
+	all         []chan BusinessEvent
 	closed      bool
 
-	// bufferSize — capacité des canaux créés pour les abonnés.
 	bufferSize int
 }
 
-// NewEventBus crée un bus avec la capacité de buffer par défaut (32).
 func NewEventBus() *EventBus {
 	return &EventBus{
 		subscribers: make(map[string][]chan BusinessEvent),
@@ -42,8 +23,6 @@ func NewEventBus() *EventBus {
 	}
 }
 
-// NewEventBusWithBuffer crée un bus avec une capacité explicite.
-// Une valeur <= 0 utilise la valeur par défaut.
 func NewEventBusWithBuffer(size int) *EventBus {
 	if size <= 0 {
 		size = 32
@@ -54,12 +33,7 @@ func NewEventBusWithBuffer(size int) *EventBus {
 	}
 }
 
-/* ─── Souscription ────────────────────────────────────────────────────── */
 
-// Subscribe abonne le caller aux événements du Kind donné.
-//
-// Retourne un canal en lecture seule. Le canal est fermé quand le bus
-// est fermé via Close.
 func (b *EventBus) Subscribe(kind string) (<-chan BusinessEvent, error) {
 	if kind == "" {
 		return nil, fmt.Errorf("%w : kind vide", ErrInvalidEvent)
@@ -74,8 +48,6 @@ func (b *EventBus) Subscribe(kind string) (<-chan BusinessEvent, error) {
 	return ch, nil
 }
 
-// SubscribeAll abonne le caller à tous les événements, quel que soit
-// leur Kind.
 func (b *EventBus) SubscribeAll() (<-chan BusinessEvent, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -87,20 +59,13 @@ func (b *EventBus) SubscribeAll() (<-chan BusinessEvent, error) {
 	return ch, nil
 }
 
-// Unsubscribe retire un canal précédemment abonné.
-//
-// Retourne vrai si le canal a été trouvé et retiré. Le canal n'est PAS
-// fermé par cette méthode : c'est au caller de le gérer ou au bus lors
-// du Close global.
 func (b *EventBus) Unsubscribe(ch <-chan BusinessEvent) bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return b.removeLocked(ch)
 }
 
-// removeLocked retire un canal des abonnés. Doit être appelé sous verrou.
 func (b *EventBus) removeLocked(ch <-chan BusinessEvent) bool {
-	// Parcours des abonnés par Kind.
 	for kind, chans := range b.subscribers {
 		for i, c := range chans {
 			if c == ch {
@@ -112,7 +77,6 @@ func (b *EventBus) removeLocked(ch <-chan BusinessEvent) bool {
 			}
 		}
 	}
-	// Parcours des abonnés "tous".
 	for i, c := range b.all {
 		if c == ch {
 			b.all = append(b.all[:i], b.all[i+1:]...)
@@ -122,14 +86,7 @@ func (b *EventBus) removeLocked(ch <-chan BusinessEvent) bool {
 	return false
 }
 
-/* ─── Publication ─────────────────────────────────────────────────────── */
 
-// Publish diffuse un événement à tous les abonnés intéressés.
-//
-// La diffusion est non bloquante : si le canal d'un abonné est plein,
-// l'événement est silencieusement ignoré pour cet abonné. Publish
-// retourne une erreur seulement si le bus est fermé ou si l'événement
-// est nil.
 func (b *EventBus) Publish(event BusinessEvent) error {
 	if event == nil {
 		return fmt.Errorf("%w : nil", ErrInvalidEvent)
@@ -144,16 +101,13 @@ func (b *EventBus) Publish(event BusinessEvent) error {
 		return ErrBusClosed
 	}
 
-	// Diffusion aux abonnés du Kind.
 	for _, ch := range b.subscribers[event.Kind()] {
 		select {
 		case ch <- event:
 		default:
-			// Canal plein : on perd l'événement pour cet abonné.
 		}
 	}
 
-	// Diffusion aux abonnés "tous kinds".
 	for _, ch := range b.all {
 		select {
 		case ch <- event:
@@ -163,10 +117,7 @@ func (b *EventBus) Publish(event BusinessEvent) error {
 	return nil
 }
 
-/* ─── Fermeture ───────────────────────────────────────────────────────── */
 
-// Close ferme tous les canaux des abonnés et empêche toute nouvelle
-// publication ou souscription. Idempotent.
 func (b *EventBus) Close() {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -186,14 +137,12 @@ func (b *EventBus) Close() {
 	b.all = nil
 }
 
-// IsClosed retourne vrai si le bus a été fermé.
 func (b *EventBus) IsClosed() bool {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 	return b.closed
 }
 
-// SubscriberCount retourne le nombre d'abonnés actifs.
 func (b *EventBus) SubscriberCount() int {
 	b.mu.RLock()
 	defer b.mu.RUnlock()

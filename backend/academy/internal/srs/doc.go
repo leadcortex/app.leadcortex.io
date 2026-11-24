@@ -1,3 +1,5 @@
+// backend/academy/internal/srs/doc.go
+
 // Package srs implémente le moteur de spaced repetition de l'academy.
 //
 // # Rôle

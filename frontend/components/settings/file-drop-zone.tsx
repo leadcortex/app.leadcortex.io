@@ -1,7 +1,8 @@
-//frontend\components\settings\file-drop-zone.tsx
+// frontend/components/settings/file-drop-zone.tsx
+
 import { useCallback, useRef, useState, type DragEvent } from "react";
-import { FileText, UploadCloud, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { FileText, UploadCloud, X } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 
 export type DroppedFile = {
   name: string;
@@ -36,10 +37,6 @@ function getExtension(name: string): string {
   if (dot < 0) return "";
   return name.slice(dot).toLowerCase();
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Composant                                                                 */
-/* -------------------------------------------------------------------------- */
 
 export function FileDropZone({
   accept = [".json", ".md", ".txt"],
@@ -105,8 +102,6 @@ export function FileDropZone({
     setDragging(false);
   };
 
-  /* ----------------------- Fichier sélectionné → chip ---------------------- */
-
   if (value) {
     return (
       <div
@@ -141,8 +136,6 @@ export function FileDropZone({
       </div>
     );
   }
-
-  /* --------------------------- Zone vide → DnD ----------------------------- */
 
   return (
     <div

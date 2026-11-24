@@ -1,22 +1,7 @@
+// frontend/components/ai-assistant/chat-settings-menu.tsx
+
 "use client";
 
-/**
- * Menu « Paramètres du chat » — un bouton engrenage + un dropdown qui
- * regroupe tous les réglages secondaires de l'assistant, auparavant
- * éparpillés dans l'entête :
- *
- *   - Densité (confortable / compact)
- *   - Rechercher dans la conversation (Ctrl+F)
- *   - Bibliothèque de prompts
- *   - Charger la démo
- *   - Aide / raccourcis clavier (Ctrl+/)
- *
- * L'entête du panneau ne garde ainsi que les deux actions primaires :
- * « Nouvelle conversation » et « Historique ».
- *
- * Pattern de dropdown identique aux autres menus du panneau (click
- * outside + Échap), pour rester cohérent.
- */
 import { useEffect, useRef, useState } from "react";
 import {
   BookMarked,
@@ -26,8 +11,8 @@ import {
   Search,
   Settings,
   Wand2,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import {
   persistDensity,
   type ChatDensity,

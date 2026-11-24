@@ -1,14 +1,10 @@
-//academy\src\components\academy\academy-mobile-sheet.tsx
+// academy/src/components/academy/academy-mobile-sheet.tsx
+
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, X } from "lucide-react";
-
-/* ==========================================================================
-   Hook : détection mobile (self-contained, l'Academy n'a pas accès au
-   hook du frontend principal).
-   ========================================================================== */
+import { ArrowLeft, X } from "../../../../frontend/components/icons";
 
 const MOBILE_BREAKPOINT = 768;
 
@@ -29,10 +25,6 @@ export function useIsMobileAcademy(): boolean {
   return isMobile;
 }
 
-/* ==========================================================================
-   Body scroll lock (compteur partagé)
-   ========================================================================== */
-
 let bodyLockCount = 0;
 let savedBodyOverflow = "";
 
@@ -52,11 +44,6 @@ function unlockBodyScroll() {
     document.body.style.overflow = savedBodyOverflow;
   }
 }
-
-/* ==========================================================================
-   Suivi du clavier virtuel iOS via visualViewport
-   → expose --academy-msheet-kb (px) consommée par le CSS du panel
-   ========================================================================== */
 
 function useKeyboardOffset(active: boolean) {
   useEffect(() => {
@@ -86,21 +73,14 @@ function useKeyboardOffset(active: boolean) {
   }, [active]);
 }
 
-/* ==========================================================================
-   Composant
-   ========================================================================== */
-
 export type AcademyMobileSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  /** Si fourni, affiche une flèche retour à gauche (et la croix à droite). */
   onBack?: () => void;
-  /** Bouton optionnel à droite du header (icône seule, size 36). */
   headerAction?: ReactNode;
   children: ReactNode;
   className?: string;
-  /** `true` = hauteur max 80dvh au lieu de 92dvh (sheets courts). */
   compact?: boolean;
 };
 
@@ -116,17 +96,14 @@ export function AcademyMobileSheet({
 }: AcademyMobileSheetProps) {
   const isMobile = useIsMobileAcademy();
 
-  /* Body scroll lock */
   useEffect(() => {
     if (!open) return;
     lockBodyScroll();
     return () => unlockBodyScroll();
   }, [open]);
 
-  /* Clavier virtuel (uniquement sur mobile, sheet ouverte) */
   useKeyboardOffset(open && isMobile);
 
-  /* Esc ferme */
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -141,7 +118,6 @@ export function AcademyMobileSheet({
   const showBackOnLeft = typeof onBack === "function";
 
   return createPortal(
-    /* Re-scope Academy pour hériter des vars CSS (--academy-gold, --r-xl, etc.) */
     <div className="academy-scope">
       <div
         className="academy-mobile-sheet-root"

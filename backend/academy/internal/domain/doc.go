@@ -1,3 +1,5 @@
+// backend/academy/internal/domain/doc.go
+
 // Package domain définit le modèle métier de LeadCortex Academy.
 //
 // Ce package est la fondation pure du domaine : il ne dépend d'aucune

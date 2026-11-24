@@ -1,4 +1,5 @@
-//frontend\routes\security.tsx
+// frontend/routes/security.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Lock,
@@ -9,8 +10,8 @@ import {
   FileCheck,
   Eye,
   AlertTriangle,
-} from "lucide-react";
-import { SiteNav, SiteFooter } from "@/components/site-nav";
+} from "@/components/icons";
+import { SiteNav, SiteFooter } from "@/components/layout/site-nav";
 import { ContentPageSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/security")({
@@ -32,34 +33,18 @@ export const Route = createFileRoute("/security")({
 const pillars = [
   {
     icon: Lock,
-    title: "Chiffrement de bout en bout",
-    desc: "Toutes les données transitent en TLS 1.2+ et sont chiffrées au repos (AES-256), y compris les sauvegardes.",
+    title: "Données chiffrées",
+    desc: "En transit et au repos, sauvegardes comprises.",
   },
   {
     icon: KeyRound,
-    title: "Clés IA isolées",
-    desc: "Une clé BYOK est chiffrée individuellement, jamais journalisée en clair, et révocable en un clic depuis les réglages.",
+    title: "Clés IA protégées",
+    desc: "Chiffrées une par une, révocables en un clic.",
   },
-  {
-    icon: Users,
-    title: "Isolation par workspace",
-    desc: "Les données de chaque workspace sont cloisonnées logiquement. Aucun accès croisé n'est possible entre deux comptes clients, ni entre deux workspaces d'une même équipe.",
-  },
-  {
-    icon: Server,
-    title: "Hébergement UE",
-    desc: "Infrastructure hébergée au sein de l'Union européenne, avec sauvegardes chiffrées et redondance géographique.",
-  },
-  {
-    icon: Eye,
-    title: "Accès au moindre privilège",
-    desc: "Les accès internes aux données de production sont restreints, nominatifs et journalisés. Aucun accès permanent par défaut.",
-  },
-  {
-    icon: FileCheck,
-    title: "Conformité RGPD",
-    desc: "Un accord de traitement des données (DPA) est fourni à tout client professionnel, sans démarche supplémentaire.",
-  },
+  { icon: Users, title: "Workspaces cloisonnés", desc: "Aucun accès croisé entre comptes." },
+  { icon: Server, title: "Hébergé en Europe", desc: "Avec sauvegardes redondantes." },
+  { icon: Eye, title: "Accès internes limités", desc: "Nominatifs et journalisés." },
+  { icon: FileCheck, title: "RGPD", desc: "Un DPA fourni à chaque client professionnel." },
 ];
 
 function Page() {
@@ -75,11 +60,6 @@ function Page() {
             <br />
             <span className="italic">les vôtres.</span>
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-[54ch]">
-            LeadCortex manipule des données commerciales sensibles pour des équipes qui n'ont pas
-            toujours d'équipe sécurité dédiée. C'est précisément pour ça que la nôtre doit être
-            irréprochable.
-          </p>
         </div>
       </section>
 
@@ -92,32 +72,6 @@ function Page() {
               <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-6 py-16 border-t border-border/60">
-        <h2 className="font-display text-3xl md:text-4xl italic tracking-tight mb-6">
-          Le choix des modèles, vu sous l'angle sécurité.
-        </h2>
-        <div className="space-y-5 text-[15px] leading-relaxed text-foreground/90">
-          <p>
-            Le choix du mode « clés personnelles » (BYOK) n'est pas qu'une question de prix : c'est
-            aussi une réduction de surface d'attaque. LeadCortex ne détient jamais de clé IA
-            partagée à haut privilège qui, si elle fuitait, exposerait l'ensemble des clients.
-            Chaque clé est scellée à un seul workspace, chiffrée individuellement, et peut être
-            révoquée instantanément sans impacter aucun autre compte.
-          </p>
-          <p>
-            Vous pouvez attribuer une clé différente à l'IA de recherche et à l'IA de travail, ou
-            utiliser les modèles inclus sans aucune clé. Le contenu envoyé au modèle (par exemple un
-            profil à scorer) est transmis pour la durée de la requête et n'est pas conservé côté
-            LeadCortex au-delà de ce qui est nécessaire à l'exécution de la fonctionnalité demandée.
-          </p>
-          <p>
-            Pour les équipes, chaque membre accède uniquement aux données du workspace auquel il a
-            été invité, avec le rôle qui lui a été attribué (édition ou lecture seule). Les actions
-            sensibles sont journalisées.
-          </p>
         </div>
       </section>
 
@@ -136,9 +90,8 @@ function Page() {
               >
                 security@leadcortex.io
               </a>{" "}
-              avec le détail nécessaire à sa reproduction. Nous accusons réception sous 48h et nous
-              engageons à ne poursuivre aucune action contre un signalement fait de bonne foi, dans
-              le respect d'un délai raisonnable de correction avant toute divulgation publique.
+              avec les étapes pour la reproduire. Aucune poursuite contre un signalement de bonne
+              foi.
             </p>
           </div>
         </div>
@@ -152,10 +105,7 @@ function Page() {
               <h3 className="text-base font-semibold text-foreground">
                 Besoin d'un document pour votre revue fournisseur ?
               </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                L'accord de traitement des données (DPA) couvre l'essentiel des questions d'une
-                revue sécurité standard.
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">Le DPA répond à l'essentiel.</p>
             </div>
           </div>
           <Link

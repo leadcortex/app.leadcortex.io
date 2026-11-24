@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/resolver.go
+
 package curriculum
 
 import (
@@ -6,21 +8,14 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// Resolver répond à des questions sur les dépendances entre leçons et
-// modules (transitivité, cycles).
 type Resolver struct {
 	registry *Registry
 }
 
-// NewResolver — construit un resolver adossé au registre.
 func NewResolver(r *Registry) *Resolver {
 	return &Resolver{registry: r}
 }
 
-// ResolveLessonPrereqs renvoie l'ensemble (transitif) des leçons qui
-// doivent être terminées avant `lessonID`.
-//
-// En cas de cycle, renvoie une erreur explicite.
 func (r *Resolver) ResolveLessonPrereqs(lessonID string) ([]string, error) {
 	visited := map[string]bool{}
 	var order []string
@@ -58,14 +53,12 @@ func (r *Resolver) ResolveLessonPrereqs(lessonID string) ([]string, error) {
 		return nil, err
 	}
 
-	// Le dernier élément de `order` est la leçon elle-même : on l'exclut.
 	if len(order) > 0 {
 		order = order[:len(order)-1]
 	}
 	return order, nil
 }
 
-// CheckNoCycles vérifie l'absence de cycle de prérequis entre leçons.
 func (r *Resolver) CheckNoCycles() []ValidationIssue {
 	var issues []ValidationIssue
 	for _, l := range r.registry.AllLessons() {
@@ -77,8 +70,6 @@ func (r *Resolver) CheckNoCycles() []ValidationIssue {
 	return issues
 }
 
-// ResolveProgramLessons renvoie toutes les leçons d'un programme, dans
-// l'ordre d'apprentissage recommandé (résolution topologique).
 func (r *Resolver) ResolveProgramLessons(programID string) ([]*domain.Lesson, error) {
 	p, ok := r.registry.Program(programID)
 	if !ok {
@@ -88,7 +79,7 @@ func (r *Resolver) ResolveProgramLessons(programID string) ([]*domain.Lesson, er
 	var lessons []*domain.Lesson
 	for _, m := range p.Modules {
 		for _, l := range m.Lessons {
-			lCopy := l // copie pour éviter la capture par référence
+			lCopy := l
 			lessons = append(lessons, &lCopy)
 		}
 	}

@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\types.ts
+// frontend/lib/workflow-engine/types.ts
+
 export type WorkflowPort = { id: string; label?: string };
 
 export type WorkflowDocNode = {
@@ -78,7 +79,6 @@ export type BlockLogger = {
 };
 
 export type SecretsService = {
-  /** Lecture d'un secret par référence — jamais exposé au client ni loggé. */
   read(ref: string): string | undefined;
   has(ref: string): boolean;
 };

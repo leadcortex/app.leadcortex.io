@@ -1,6 +1,7 @@
-//frontend\lib\__tests__\conversation-export.test.ts
+// frontend/lib/__tests__/conversation-export.test.ts
+
 import { describe, expect, it } from "vitest";
-import { filenameFor, toJson, toMarkdown, type ExportMeta } from "@/lib/conversation-export";
+import { filenameFor, toJson, toMarkdown, type ExportMeta } from "@/lib/ai/conversation-export";
 import type { AssistantMessage } from "@/components/ai-assistant/assistant-engine";
 
 const meta: ExportMeta = {

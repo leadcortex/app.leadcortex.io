@@ -1,3 +1,5 @@
+// backend/academy/internal/curriculum/loader.go
+
 package curriculum
 
 import (
@@ -14,24 +16,12 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// LoadResult regroupe tout ce qu'un chargement produit.
 type LoadResult struct {
 	Registry *Registry
 	Issues   []ValidationIssue
 	Resolver *Resolver
 }
 
-// Load charge tous les programmes d'un répertoire (récursivement).
-//
-// Formats acceptés : .json, .yaml, .yml. Le décodeur est choisi selon
-// l'extension du fichier. Les trois dossiers scrutés sont :
-//
-//	<contentDir>/programs/
-//	<contentDir>/avatars/
-//	<contentDir>/badges/
-//
-// Les erreurs bloquantes empêchent le retour d'un Registry non-nil.
-// Les warnings sont renvoyés dans Result.Issues.
 func Load(contentDir string) (*LoadResult, error) {
 	if contentDir == "" {
 		return nil, NewFileError("", 0, ErrMissingContent, "contentDir vide")
@@ -109,15 +99,11 @@ func Load(contentDir string) (*LoadResult, error) {
 	return &LoadResult{Registry: reg, Issues: allIssues, Resolver: resolver}, nil
 }
 
-/* ─── Chargement par type ────────────────────────────────────────────── */
 
-// isJSONFile — vrai si le chemin se termine par .json.
 func isJSONFile(path string) bool {
 	return strings.EqualFold(filepath.Ext(path), ".json")
 }
 
-// loadProgramFile décode un programme depuis un fichier, en choisissant
-// le décodeur selon l'extension.
 func loadProgramFile(path string) (*domain.Program, []ValidationIssue, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -161,7 +147,6 @@ func loadAvatars(paths []string) ([]*domain.Avatar, []ValidationIssue, error) {
 		var list []AvatarYAML
 		if isJSONFile(path) {
 			if err := json.Unmarshal(data, &list); err != nil {
-				// Fallback : un seul avatar par fichier.
 				var single AvatarYAML
 				if err2 := json.Unmarshal(data, &single); err2 != nil {
 					return nil, nil, NewFileError(path, 0, ErrInvalidSchema, err.Error())
@@ -272,17 +257,13 @@ func parseBadge(b BadgeYAML) *domain.Badge {
 	}
 }
 
-/* ─── Utilitaires ────────────────────────────────────────────────────── */
 
-// findContentFiles renvoie tous les fichiers .json/.yaml/.yml d'un
-// répertoire. Si le répertoire n'existe pas, renvoie une liste vide
-// (tolérance).
 func findContentFiles(dir string) ([]string, error) {
 	var out []string
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			if errors.Is(err, fs.ErrNotExist) {
-				return nil // répertoire absent : on tolère
+				return nil
 			}
 			return err
 		}

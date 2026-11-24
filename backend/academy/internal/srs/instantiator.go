@@ -1,3 +1,5 @@
+// backend/academy/internal/srs/instantiator.go
+
 package srs
 
 import (
@@ -7,28 +9,16 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// InstantiateOptions contrôle la création de cartes à partir de templates.
 type InstantiateOptions struct {
-	// LearnerID — l'apprenant à qui appartiennent les cartes.
 	LearnerID string
 
-	// LessonID — la leçon source (pour la traçabilité).
 	LessonID string
 
-	// Now — l'instant de création (injectable pour les tests).
 	Now time.Time
 
-	// IDPrefix — préfixe des IDs générés (défaut : "card").
 	IDPrefix string
 }
 
-// InstantiateFromLesson crée une carte SRS par template déclaré dans une leçon.
-//
-// Si la leçon ne contient aucun template, renvoie ErrEmptyTemplates.
-// L'ordre des cartes suit l'ordre des templates dans la leçon.
-//
-// Les IDs générés sont déterministes : "<prefix>_<lessonID>_<index>".
-// Cela permet d'éviter les doublons si la même leçon est complétée deux fois.
 func InstantiateFromLesson(
 	lesson *domain.Lesson,
 	opts InstantiateOptions,
@@ -55,11 +45,6 @@ func InstantiateFromLesson(
 	return out, nil
 }
 
-// MergeCards fusionne de nouvelles cartes dans une collection existante,
-// en évitant les doublons par ID.
-//
-// Les cartes existantes ne sont pas écrasées : seules les nouvelles sont
-// ajoutées. Renvoie la collection fusionnée et le nombre de cartes ajoutées.
 func MergeCards(existing []domain.SrsCard, incoming []domain.SrsCard) ([]domain.SrsCard, int) {
 	byID := make(map[string]struct{}, len(existing))
 	for _, c := range existing {
@@ -81,7 +66,6 @@ func MergeCards(existing []domain.SrsCard, incoming []domain.SrsCard) ([]domain.
 	return merged, added
 }
 
-// CardsByConcept regroupe des cartes par ConceptID.
 func CardsByConcept(cards []domain.SrsCard) map[string][]domain.SrsCard {
 	out := make(map[string][]domain.SrsCard)
 	for _, c := range cards {

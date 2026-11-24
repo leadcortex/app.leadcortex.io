@@ -1,10 +1,11 @@
-//frontend\components\mobile\mobile-select-sheet.tsx
+// frontend/components/mobile/mobile-select-sheet.tsx
+
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { CustomSelect, type CustomSelectOption } from "@/components/custom-select";
+import { ChevronDown } from "@/components/icons";
+import { CustomSelect, type CustomSelectOption } from "@/components/common/custom-select";
 import { MobileActionSheet } from "@/components/mobile/mobile-action-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 export type MobileSelectOption = string | CustomSelectOption;
 

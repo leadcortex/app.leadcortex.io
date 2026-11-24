@@ -1,11 +1,12 @@
-//frontend\components\settings\panels\SecurityPanel.tsx
+// frontend/components/settings/panels/SecurityPanel.tsx
+
 import { useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "@/components/icons";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { ConfirmDialog } from "@/components/confirm-dialog";
-import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
+import { cn } from "@/lib/core/utils";
 import { PanelIntro, PanelGroup, SettingsCard, Row } from "./primitives";
 
 export function SecurityPanel() {

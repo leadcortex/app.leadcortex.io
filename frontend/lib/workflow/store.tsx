@@ -1,4 +1,5 @@
-//frontend\lib\workflow\store.tsx
+// frontend/lib/workflow/store.tsx
+
 import {
   createContext,
   useCallback,
@@ -91,22 +92,14 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
   const [size, setSize] = useState({ w: 1200, h: 800 });
   const [settings, setSettings] = useState<CanvasSettings>(() => ({
     bounded: true,
-    // être espacés sans jamais se sentir à l'étroit, tout en gardant des
-    // "murs" physiques infranchissables (cf. clampViewport).
     width: 8000,
     height: 5200,
     snap: true,
     gridSize: 50,
     showGrid: true,
-    // Minicarte désactivée par défaut sur mobile pour ne pas encombrer
     showMinimap: typeof window === "undefined" ? true : window.innerWidth >= 768,
   }));
 
-  /**
-   * "Murs" du canevas : la vue ne peut jamais sortir de la surface de travail.
-   * Le zoom minimum est celui qui laisse la surface remplir le viewport, et la
-   * translation est bornée pour qu'aucun bord ne laisse apparaître le vide.
-   */
   const boundsRef = useRef({ size, settings });
   boundsRef.current = { size, settings };
 

@@ -1,4 +1,5 @@
-//frontend\routes\app\sequences\route.tsx
+// frontend/routes/app/sequences/route.tsx
+
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/app/sequences")({

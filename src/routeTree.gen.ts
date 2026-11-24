@@ -1,3 +1,5 @@
+// src/routeTree.gen.ts
+
 /* eslint-disable */
 
 // @ts-nocheck
@@ -20,7 +22,7 @@ import { Route as LoginRouteImport } from './../frontend/routes/login'
 import { Route as DocsRouteImport } from './../frontend/routes/docs'
 import { Route as AppRouteImport } from './../frontend/routes/app'
 import { Route as IndexRouteImport } from './../frontend/routes/index'
-import { Route as AppIndexRouteImport } from './../frontend/routes/app.index'
+import { Route as AppIndexRouteImport } from './../frontend/routes/app/index'
 import { Route as LegalMentionsLegalesRouteImport } from './../frontend/routes/legal.mentions-legales'
 import { Route as LegalDpaRouteImport } from './../frontend/routes/legal.dpa'
 import { Route as LegalCookiesRouteImport } from './../frontend/routes/legal.cookies'
@@ -33,40 +35,52 @@ import { Route as DocsProspectionRouteImport } from './../frontend/routes/docs.p
 import { Route as DocsIntegrationsIaRouteImport } from './../frontend/routes/docs.integrations-ia'
 import { Route as DocsEnrichissementRouteImport } from './../frontend/routes/docs.enrichissement'
 import { Route as DocsDemarrageRapideRouteImport } from './../frontend/routes/docs.demarrage-rapide'
-import { Route as AppVisitorsRouteImport } from './../frontend/routes/app.visitors'
-import { Route as AppTasksRouteImport } from './../frontend/routes/app.tasks'
-import { Route as AppSettingsRouteImport } from './../frontend/routes/app.settings'
-import { Route as AppSavedRouteImport } from './../frontend/routes/app.saved'
-import { Route as AppPeopleRouteImport } from './../frontend/routes/app.people'
-import { Route as AppMeetingsRouteImport } from './../frontend/routes/app.meetings'
-import { Route as AppListsRouteImport } from './../frontend/routes/app.lists'
-import { Route as AppFormsRouteImport } from './../frontend/routes/app.forms'
-import { Route as AppEnrichmentRouteImport } from './../frontend/routes/app.enrichment'
-import { Route as AppEmailsRouteImport } from './../frontend/routes/app.emails'
-import { Route as AppDealsRouteImport } from './../frontend/routes/app.deals'
-import { Route as AppConversationsRouteImport } from './../frontend/routes/app.conversations'
-import { Route as AppCompaniesRouteImport } from './../frontend/routes/app.companies'
-import { Route as AppCallsRouteImport } from './../frontend/routes/app.calls'
-import { Route as AppAnalyticsRouteImport } from './../frontend/routes/app.analytics'
-import { Route as AppAcademyRouteImport } from './../frontend/routes/app.academy'
+import { Route as AuthLogoutRouteImport } from './../frontend/routes/auth.logout'
+import { Route as AuthGoogleRouteImport } from './../frontend/routes/auth.google'
+import { Route as AuthGmailRouteImport } from './../frontend/routes/auth.gmail'
+import { Route as AuthDevLoginRouteImport } from './../frontend/routes/auth.dev-login'
+import { Route as ApiMeRouteImport } from './../frontend/routes/api/me'
 import { Route as AppSequencesRouteRouteImport } from './../frontend/routes/app/sequences/route'
-import { Route as AppWorkflowsIndexRouteImport } from './../frontend/routes/app.workflows.index'
+import { Route as AppPeopleRouteRouteImport } from './../frontend/routes/app/people/route'
+import { Route as AppLeadexIaRouteRouteImport } from './../frontend/routes/app/leadex-ia/route'
+import { Route as AppCompaniesRouteRouteImport } from './../frontend/routes/app/companies/route'
+import { Route as AppAcademyRouteRouteImport } from './../frontend/routes/app/academy/route'
+import { Route as AppWorkflowsIndexRouteImport } from './../frontend/routes/app/workflows/index'
+import { Route as AppVisitorsIndexRouteImport } from './../frontend/routes/app/visitors/index'
+import { Route as AppTasksIndexRouteImport } from './../frontend/routes/app/tasks/index'
+import { Route as AppSettingsIndexRouteImport } from './../frontend/routes/app/settings/index'
 import { Route as AppSequencesIndexRouteImport } from './../frontend/routes/app/sequences/index'
-import { Route as AppAcademyIndexRouteImport } from './../frontend/routes/app.academy.index'
-import { Route as AppWorkflowsNewRouteImport } from './../frontend/routes/app.workflows.new'
-import { Route as AppWorkflowsWorkflowIdRouteImport } from './../frontend/routes/app.workflows.$workflowId'
-import { Route as AppTasksIdRouteImport } from './../frontend/routes/app.tasks.$id'
-import { Route as AppSettingsBillingRouteImport } from './../frontend/routes/app.settings.billing'
+import { Route as AppSavedIndexRouteImport } from './../frontend/routes/app/saved/index'
+import { Route as AppMeetingsIndexRouteImport } from './../frontend/routes/app/meetings/index'
+import { Route as AppListsIndexRouteImport } from './../frontend/routes/app/lists/index'
+import { Route as AppHubIndexRouteImport } from './../frontend/routes/app/hub/index'
+import { Route as AppFormsIndexRouteImport } from './../frontend/routes/app/forms/index'
+import { Route as AppEnrichmentIndexRouteImport } from './../frontend/routes/app/enrichment/index'
+import { Route as AppEmailsIndexRouteImport } from './../frontend/routes/app/emails/index'
+import { Route as AppDealsIndexRouteImport } from './../frontend/routes/app/deals/index'
+import { Route as AppConversationsIndexRouteImport } from './../frontend/routes/app/conversations/index'
+import { Route as AppCallsIndexRouteImport } from './../frontend/routes/app/calls/index'
+import { Route as AppAnalyticsIndexRouteImport } from './../frontend/routes/app/analytics/index'
+import { Route as AppAcademyIndexRouteImport } from './../frontend/routes/app/academy/index'
+import { Route as AuthGoogleCallbackRouteImport } from './../frontend/routes/auth.google.callback'
+import { Route as AuthGmailCallbackRouteImport } from './../frontend/routes/auth.gmail.callback'
+import { Route as AppWorkflowsNewRouteImport } from './../frontend/routes/app/workflows/new'
+import { Route as AppWorkflowsWorkflowIdRouteImport } from './../frontend/routes/app/workflows/$workflowId'
+import { Route as AppTasksIdRouteImport } from './../frontend/routes/app/tasks/$id'
+import { Route as AppSettingsBillingRouteImport } from './../frontend/routes/app/settings/billing'
 import { Route as AppSequencesNewRouteImport } from './../frontend/routes/app/sequences/new'
 import { Route as AppSequencesIdRouteImport } from './../frontend/routes/app/sequences/$id'
-import { Route as AppPeopleNewRouteImport } from './../frontend/routes/app.people.new'
-import { Route as AppPeopleIdRouteImport } from './../frontend/routes/app.people.$id'
-import { Route as AppDealsIdRouteImport } from './../frontend/routes/app.deals.$id'
-import { Route as AppCompaniesNewRouteImport } from './../frontend/routes/app.companies.new'
-import { Route as AppCompaniesIdRouteImport } from './../frontend/routes/app.companies.$id'
-import { Route as AppAcademyRewardsRouteImport } from './../frontend/routes/app.academy.rewards'
-import { Route as AppAcademyReviewRouteImport } from './../frontend/routes/app.academy.review'
-import { Route as AppAcademyProfileRouteImport } from './../frontend/routes/app.academy.profile'
+import { Route as AppPeopleNewRouteImport } from './../frontend/routes/app/people/new'
+import { Route as AppPeopleIdRouteImport } from './../frontend/routes/app/people/$id'
+import { Route as AppDealsIdRouteImport } from './../frontend/routes/app/deals/$id'
+import { Route as AppCompaniesNewRouteImport } from './../frontend/routes/app/companies/new'
+import { Route as AppCompaniesIdRouteImport } from './../frontend/routes/app/companies/$id'
+import { Route as AppAcademyRewardsRouteImport } from './../frontend/routes/app/academy/rewards'
+import { Route as AppAcademyReviewRouteImport } from './../frontend/routes/app/academy/review'
+import { Route as AppAcademyProfileRouteImport } from './../frontend/routes/app/academy/profile'
+import { Route as ApiMailMessagesRouteImport } from './../frontend/routes/api/mail/messages'
+import { Route as ApiMailAccountsRouteImport } from './../frontend/routes/api/mail/accounts'
+import { Route as ApiAuthSplatRouteImport } from './../frontend/routes/api/auth/$'
 
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
@@ -188,89 +202,54 @@ const DocsDemarrageRapideRoute = DocsDemarrageRapideRouteImport.update({
   path: '/demarrage-rapide',
   getParentRoute: () => DocsRoute,
 } as any)
-const AppVisitorsRoute = AppVisitorsRouteImport.update({
-  id: '/visitors',
-  path: '/visitors',
-  getParentRoute: () => AppRoute,
+const AuthLogoutRoute = AuthLogoutRouteImport.update({
+  id: '/auth/logout',
+  path: '/auth/logout',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppTasksRoute = AppTasksRouteImport.update({
-  id: '/tasks',
-  path: '/tasks',
-  getParentRoute: () => AppRoute,
+const AuthGoogleRoute = AuthGoogleRouteImport.update({
+  id: '/auth/google',
+  path: '/auth/google',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppRoute,
+const AuthGmailRoute = AuthGmailRouteImport.update({
+  id: '/auth/gmail',
+  path: '/auth/gmail',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppSavedRoute = AppSavedRouteImport.update({
-  id: '/saved',
-  path: '/saved',
-  getParentRoute: () => AppRoute,
+const AuthDevLoginRoute = AuthDevLoginRouteImport.update({
+  id: '/auth/dev-login',
+  path: '/auth/dev-login',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppPeopleRoute = AppPeopleRouteImport.update({
-  id: '/people',
-  path: '/people',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppMeetingsRoute = AppMeetingsRouteImport.update({
-  id: '/meetings',
-  path: '/meetings',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppListsRoute = AppListsRouteImport.update({
-  id: '/lists',
-  path: '/lists',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFormsRoute = AppFormsRouteImport.update({
-  id: '/forms',
-  path: '/forms',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEnrichmentRoute = AppEnrichmentRouteImport.update({
-  id: '/enrichment',
-  path: '/enrichment',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEmailsRoute = AppEmailsRouteImport.update({
-  id: '/emails',
-  path: '/emails',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDealsRoute = AppDealsRouteImport.update({
-  id: '/deals',
-  path: '/deals',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppConversationsRoute = AppConversationsRouteImport.update({
-  id: '/conversations',
-  path: '/conversations',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCompaniesRoute = AppCompaniesRouteImport.update({
-  id: '/companies',
-  path: '/companies',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCallsRoute = AppCallsRouteImport.update({
-  id: '/calls',
-  path: '/calls',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAcademyRoute = AppAcademyRouteImport.update({
-  id: '/academy',
-  path: '/academy',
-  getParentRoute: () => AppRoute,
+const ApiMeRoute = ApiMeRouteImport.update({
+  id: '/api/me',
+  path: '/api/me',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppSequencesRouteRoute = AppSequencesRouteRouteImport.update({
   id: '/sequences',
   path: '/sequences',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPeopleRouteRoute = AppPeopleRouteRouteImport.update({
+  id: '/people',
+  path: '/people',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLeadexIaRouteRoute = AppLeadexIaRouteRouteImport.update({
+  id: '/leadex-ia',
+  path: '/leadex-ia',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCompaniesRouteRoute = AppCompaniesRouteRouteImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAcademyRouteRoute = AppAcademyRouteRouteImport.update({
+  id: '/academy',
+  path: '/academy',
   getParentRoute: () => AppRoute,
 } as any)
 const AppWorkflowsIndexRoute = AppWorkflowsIndexRouteImport.update({
@@ -278,15 +257,95 @@ const AppWorkflowsIndexRoute = AppWorkflowsIndexRouteImport.update({
   path: '/workflows/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppVisitorsIndexRoute = AppVisitorsIndexRouteImport.update({
+  id: '/visitors/',
+  path: '/visitors/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTasksIndexRoute = AppTasksIndexRouteImport.update({
+  id: '/tasks/',
+  path: '/tasks/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSequencesIndexRoute = AppSequencesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppSequencesRouteRoute,
 } as any)
+const AppSavedIndexRoute = AppSavedIndexRouteImport.update({
+  id: '/saved/',
+  path: '/saved/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMeetingsIndexRoute = AppMeetingsIndexRouteImport.update({
+  id: '/meetings/',
+  path: '/meetings/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppListsIndexRoute = AppListsIndexRouteImport.update({
+  id: '/lists/',
+  path: '/lists/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppHubIndexRoute = AppHubIndexRouteImport.update({
+  id: '/hub/',
+  path: '/hub/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFormsIndexRoute = AppFormsIndexRouteImport.update({
+  id: '/forms/',
+  path: '/forms/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEnrichmentIndexRoute = AppEnrichmentIndexRouteImport.update({
+  id: '/enrichment/',
+  path: '/enrichment/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEmailsIndexRoute = AppEmailsIndexRouteImport.update({
+  id: '/emails/',
+  path: '/emails/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDealsIndexRoute = AppDealsIndexRouteImport.update({
+  id: '/deals/',
+  path: '/deals/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConversationsIndexRoute = AppConversationsIndexRouteImport.update({
+  id: '/conversations/',
+  path: '/conversations/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCallsIndexRoute = AppCallsIndexRouteImport.update({
+  id: '/calls/',
+  path: '/calls/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnalyticsIndexRoute = AppAnalyticsIndexRouteImport.update({
+  id: '/analytics/',
+  path: '/analytics/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAcademyIndexRoute = AppAcademyIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppAcademyRoute,
+  getParentRoute: () => AppAcademyRouteRoute,
+} as any)
+const AuthGoogleCallbackRoute = AuthGoogleCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthGoogleRoute,
+} as any)
+const AuthGmailCallbackRoute = AuthGmailCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthGmailRoute,
 } as any)
 const AppWorkflowsNewRoute = AppWorkflowsNewRouteImport.update({
   id: '/workflows/new',
@@ -299,14 +358,14 @@ const AppWorkflowsWorkflowIdRoute = AppWorkflowsWorkflowIdRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 const AppTasksIdRoute = AppTasksIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AppTasksRoute,
+  id: '/tasks/$id',
+  path: '/tasks/$id',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsBillingRoute = AppSettingsBillingRouteImport.update({
-  id: '/billing',
-  path: '/billing',
-  getParentRoute: () => AppSettingsRoute,
+  id: '/settings/billing',
+  path: '/settings/billing',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppSequencesNewRoute = AppSequencesNewRouteImport.update({
   id: '/new',
@@ -321,42 +380,57 @@ const AppSequencesIdRoute = AppSequencesIdRouteImport.update({
 const AppPeopleNewRoute = AppPeopleNewRouteImport.update({
   id: '/new',
   path: '/new',
-  getParentRoute: () => AppPeopleRoute,
+  getParentRoute: () => AppPeopleRouteRoute,
 } as any)
 const AppPeopleIdRoute = AppPeopleIdRouteImport.update({
   id: '/$id',
   path: '/$id',
-  getParentRoute: () => AppPeopleRoute,
+  getParentRoute: () => AppPeopleRouteRoute,
 } as any)
 const AppDealsIdRoute = AppDealsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AppDealsRoute,
+  id: '/deals/$id',
+  path: '/deals/$id',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppCompaniesNewRoute = AppCompaniesNewRouteImport.update({
   id: '/new',
   path: '/new',
-  getParentRoute: () => AppCompaniesRoute,
+  getParentRoute: () => AppCompaniesRouteRoute,
 } as any)
 const AppCompaniesIdRoute = AppCompaniesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
-  getParentRoute: () => AppCompaniesRoute,
+  getParentRoute: () => AppCompaniesRouteRoute,
 } as any)
 const AppAcademyRewardsRoute = AppAcademyRewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
-  getParentRoute: () => AppAcademyRoute,
+  getParentRoute: () => AppAcademyRouteRoute,
 } as any)
 const AppAcademyReviewRoute = AppAcademyReviewRouteImport.update({
   id: '/review',
   path: '/review',
-  getParentRoute: () => AppAcademyRoute,
+  getParentRoute: () => AppAcademyRouteRoute,
 } as any)
 const AppAcademyProfileRoute = AppAcademyProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => AppAcademyRoute,
+  getParentRoute: () => AppAcademyRouteRoute,
+} as any)
+const ApiMailMessagesRoute = ApiMailMessagesRouteImport.update({
+  id: '/api/mail/messages',
+  path: '/api/mail/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMailAccountsRoute = ApiMailAccountsRouteImport.update({
+  id: '/api/mail/accounts',
+  path: '/api/mail/accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -371,23 +445,16 @@ export interface FileRoutesByFullPath {
   '/security': typeof SecurityRoute
   '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
+  '/app/academy': typeof AppAcademyRouteRouteWithChildren
+  '/app/companies': typeof AppCompaniesRouteRouteWithChildren
+  '/app/leadex-ia': typeof AppLeadexIaRouteRoute
+  '/app/people': typeof AppPeopleRouteRouteWithChildren
   '/app/sequences': typeof AppSequencesRouteRouteWithChildren
-  '/app/academy': typeof AppAcademyRouteWithChildren
-  '/app/analytics': typeof AppAnalyticsRoute
-  '/app/calls': typeof AppCallsRoute
-  '/app/companies': typeof AppCompaniesRouteWithChildren
-  '/app/conversations': typeof AppConversationsRoute
-  '/app/deals': typeof AppDealsRouteWithChildren
-  '/app/emails': typeof AppEmailsRoute
-  '/app/enrichment': typeof AppEnrichmentRoute
-  '/app/forms': typeof AppFormsRoute
-  '/app/lists': typeof AppListsRoute
-  '/app/meetings': typeof AppMeetingsRoute
-  '/app/people': typeof AppPeopleRouteWithChildren
-  '/app/saved': typeof AppSavedRoute
-  '/app/settings': typeof AppSettingsRouteWithChildren
-  '/app/tasks': typeof AppTasksRouteWithChildren
-  '/app/visitors': typeof AppVisitorsRoute
+  '/api/me': typeof ApiMeRoute
+  '/auth/dev-login': typeof AuthDevLoginRoute
+  '/auth/gmail': typeof AuthGmailRouteWithChildren
+  '/auth/google': typeof AuthGoogleRouteWithChildren
+  '/auth/logout': typeof AuthLogoutRoute
   '/docs/demarrage-rapide': typeof DocsDemarrageRapideRoute
   '/docs/enrichissement': typeof DocsEnrichissementRoute
   '/docs/integrations-ia': typeof DocsIntegrationsIaRoute
@@ -401,6 +468,9 @@ export interface FileRoutesByFullPath {
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
   '/app/': typeof AppIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/mail/accounts': typeof ApiMailAccountsRoute
+  '/api/mail/messages': typeof ApiMailMessagesRoute
   '/app/academy/profile': typeof AppAcademyProfileRoute
   '/app/academy/review': typeof AppAcademyReviewRoute
   '/app/academy/rewards': typeof AppAcademyRewardsRoute
@@ -415,8 +485,24 @@ export interface FileRoutesByFullPath {
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/workflows/$workflowId': typeof AppWorkflowsWorkflowIdRoute
   '/app/workflows/new': typeof AppWorkflowsNewRoute
+  '/auth/gmail/callback': typeof AuthGmailCallbackRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/app/academy/': typeof AppAcademyIndexRoute
+  '/app/analytics/': typeof AppAnalyticsIndexRoute
+  '/app/calls/': typeof AppCallsIndexRoute
+  '/app/conversations/': typeof AppConversationsIndexRoute
+  '/app/deals/': typeof AppDealsIndexRoute
+  '/app/emails/': typeof AppEmailsIndexRoute
+  '/app/enrichment/': typeof AppEnrichmentIndexRoute
+  '/app/forms/': typeof AppFormsIndexRoute
+  '/app/hub/': typeof AppHubIndexRoute
+  '/app/lists/': typeof AppListsIndexRoute
+  '/app/meetings/': typeof AppMeetingsIndexRoute
+  '/app/saved/': typeof AppSavedIndexRoute
   '/app/sequences/': typeof AppSequencesIndexRoute
+  '/app/settings/': typeof AppSettingsIndexRoute
+  '/app/tasks/': typeof AppTasksIndexRoute
+  '/app/visitors/': typeof AppVisitorsIndexRoute
   '/app/workflows/': typeof AppWorkflowsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -430,21 +516,14 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
-  '/app/analytics': typeof AppAnalyticsRoute
-  '/app/calls': typeof AppCallsRoute
-  '/app/companies': typeof AppCompaniesRouteWithChildren
-  '/app/conversations': typeof AppConversationsRoute
-  '/app/deals': typeof AppDealsRouteWithChildren
-  '/app/emails': typeof AppEmailsRoute
-  '/app/enrichment': typeof AppEnrichmentRoute
-  '/app/forms': typeof AppFormsRoute
-  '/app/lists': typeof AppListsRoute
-  '/app/meetings': typeof AppMeetingsRoute
-  '/app/people': typeof AppPeopleRouteWithChildren
-  '/app/saved': typeof AppSavedRoute
-  '/app/settings': typeof AppSettingsRouteWithChildren
-  '/app/tasks': typeof AppTasksRouteWithChildren
-  '/app/visitors': typeof AppVisitorsRoute
+  '/app/companies': typeof AppCompaniesRouteRouteWithChildren
+  '/app/leadex-ia': typeof AppLeadexIaRouteRoute
+  '/app/people': typeof AppPeopleRouteRouteWithChildren
+  '/api/me': typeof ApiMeRoute
+  '/auth/dev-login': typeof AuthDevLoginRoute
+  '/auth/gmail': typeof AuthGmailRouteWithChildren
+  '/auth/google': typeof AuthGoogleRouteWithChildren
+  '/auth/logout': typeof AuthLogoutRoute
   '/docs/demarrage-rapide': typeof DocsDemarrageRapideRoute
   '/docs/enrichissement': typeof DocsEnrichissementRoute
   '/docs/integrations-ia': typeof DocsIntegrationsIaRoute
@@ -458,6 +537,9 @@ export interface FileRoutesByTo {
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
   '/app': typeof AppIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/mail/accounts': typeof ApiMailAccountsRoute
+  '/api/mail/messages': typeof ApiMailMessagesRoute
   '/app/academy/profile': typeof AppAcademyProfileRoute
   '/app/academy/review': typeof AppAcademyReviewRoute
   '/app/academy/rewards': typeof AppAcademyRewardsRoute
@@ -472,8 +554,24 @@ export interface FileRoutesByTo {
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/workflows/$workflowId': typeof AppWorkflowsWorkflowIdRoute
   '/app/workflows/new': typeof AppWorkflowsNewRoute
+  '/auth/gmail/callback': typeof AuthGmailCallbackRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/app/academy': typeof AppAcademyIndexRoute
+  '/app/analytics': typeof AppAnalyticsIndexRoute
+  '/app/calls': typeof AppCallsIndexRoute
+  '/app/conversations': typeof AppConversationsIndexRoute
+  '/app/deals': typeof AppDealsIndexRoute
+  '/app/emails': typeof AppEmailsIndexRoute
+  '/app/enrichment': typeof AppEnrichmentIndexRoute
+  '/app/forms': typeof AppFormsIndexRoute
+  '/app/hub': typeof AppHubIndexRoute
+  '/app/lists': typeof AppListsIndexRoute
+  '/app/meetings': typeof AppMeetingsIndexRoute
+  '/app/saved': typeof AppSavedIndexRoute
   '/app/sequences': typeof AppSequencesIndexRoute
+  '/app/settings': typeof AppSettingsIndexRoute
+  '/app/tasks': typeof AppTasksIndexRoute
+  '/app/visitors': typeof AppVisitorsIndexRoute
   '/app/workflows': typeof AppWorkflowsIndexRoute
 }
 export interface FileRoutesById {
@@ -489,23 +587,16 @@ export interface FileRoutesById {
   '/security': typeof SecurityRoute
   '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
+  '/app/academy': typeof AppAcademyRouteRouteWithChildren
+  '/app/companies': typeof AppCompaniesRouteRouteWithChildren
+  '/app/leadex-ia': typeof AppLeadexIaRouteRoute
+  '/app/people': typeof AppPeopleRouteRouteWithChildren
   '/app/sequences': typeof AppSequencesRouteRouteWithChildren
-  '/app/academy': typeof AppAcademyRouteWithChildren
-  '/app/analytics': typeof AppAnalyticsRoute
-  '/app/calls': typeof AppCallsRoute
-  '/app/companies': typeof AppCompaniesRouteWithChildren
-  '/app/conversations': typeof AppConversationsRoute
-  '/app/deals': typeof AppDealsRouteWithChildren
-  '/app/emails': typeof AppEmailsRoute
-  '/app/enrichment': typeof AppEnrichmentRoute
-  '/app/forms': typeof AppFormsRoute
-  '/app/lists': typeof AppListsRoute
-  '/app/meetings': typeof AppMeetingsRoute
-  '/app/people': typeof AppPeopleRouteWithChildren
-  '/app/saved': typeof AppSavedRoute
-  '/app/settings': typeof AppSettingsRouteWithChildren
-  '/app/tasks': typeof AppTasksRouteWithChildren
-  '/app/visitors': typeof AppVisitorsRoute
+  '/api/me': typeof ApiMeRoute
+  '/auth/dev-login': typeof AuthDevLoginRoute
+  '/auth/gmail': typeof AuthGmailRouteWithChildren
+  '/auth/google': typeof AuthGoogleRouteWithChildren
+  '/auth/logout': typeof AuthLogoutRoute
   '/docs/demarrage-rapide': typeof DocsDemarrageRapideRoute
   '/docs/enrichissement': typeof DocsEnrichissementRoute
   '/docs/integrations-ia': typeof DocsIntegrationsIaRoute
@@ -519,6 +610,9 @@ export interface FileRoutesById {
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
   '/app/': typeof AppIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/mail/accounts': typeof ApiMailAccountsRoute
+  '/api/mail/messages': typeof ApiMailMessagesRoute
   '/app/academy/profile': typeof AppAcademyProfileRoute
   '/app/academy/review': typeof AppAcademyReviewRoute
   '/app/academy/rewards': typeof AppAcademyRewardsRoute
@@ -533,8 +627,24 @@ export interface FileRoutesById {
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/workflows/$workflowId': typeof AppWorkflowsWorkflowIdRoute
   '/app/workflows/new': typeof AppWorkflowsNewRoute
+  '/auth/gmail/callback': typeof AuthGmailCallbackRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/app/academy/': typeof AppAcademyIndexRoute
+  '/app/analytics/': typeof AppAnalyticsIndexRoute
+  '/app/calls/': typeof AppCallsIndexRoute
+  '/app/conversations/': typeof AppConversationsIndexRoute
+  '/app/deals/': typeof AppDealsIndexRoute
+  '/app/emails/': typeof AppEmailsIndexRoute
+  '/app/enrichment/': typeof AppEnrichmentIndexRoute
+  '/app/forms/': typeof AppFormsIndexRoute
+  '/app/hub/': typeof AppHubIndexRoute
+  '/app/lists/': typeof AppListsIndexRoute
+  '/app/meetings/': typeof AppMeetingsIndexRoute
+  '/app/saved/': typeof AppSavedIndexRoute
   '/app/sequences/': typeof AppSequencesIndexRoute
+  '/app/settings/': typeof AppSettingsIndexRoute
+  '/app/tasks/': typeof AppTasksIndexRoute
+  '/app/visitors/': typeof AppVisitorsIndexRoute
   '/app/workflows/': typeof AppWorkflowsIndexRoute
 }
 export interface FileRouteTypes {
@@ -551,23 +661,16 @@ export interface FileRouteTypes {
     | '/security'
     | '/signup'
     | '/support'
-    | '/app/sequences'
     | '/app/academy'
-    | '/app/analytics'
-    | '/app/calls'
     | '/app/companies'
-    | '/app/conversations'
-    | '/app/deals'
-    | '/app/emails'
-    | '/app/enrichment'
-    | '/app/forms'
-    | '/app/lists'
-    | '/app/meetings'
+    | '/app/leadex-ia'
     | '/app/people'
-    | '/app/saved'
-    | '/app/settings'
-    | '/app/tasks'
-    | '/app/visitors'
+    | '/app/sequences'
+    | '/api/me'
+    | '/auth/dev-login'
+    | '/auth/gmail'
+    | '/auth/google'
+    | '/auth/logout'
     | '/docs/demarrage-rapide'
     | '/docs/enrichissement'
     | '/docs/integrations-ia'
@@ -581,6 +684,9 @@ export interface FileRouteTypes {
     | '/legal/dpa'
     | '/legal/mentions-legales'
     | '/app/'
+    | '/api/auth/$'
+    | '/api/mail/accounts'
+    | '/api/mail/messages'
     | '/app/academy/profile'
     | '/app/academy/review'
     | '/app/academy/rewards'
@@ -595,8 +701,24 @@ export interface FileRouteTypes {
     | '/app/tasks/$id'
     | '/app/workflows/$workflowId'
     | '/app/workflows/new'
+    | '/auth/gmail/callback'
+    | '/auth/google/callback'
     | '/app/academy/'
+    | '/app/analytics/'
+    | '/app/calls/'
+    | '/app/conversations/'
+    | '/app/deals/'
+    | '/app/emails/'
+    | '/app/enrichment/'
+    | '/app/forms/'
+    | '/app/hub/'
+    | '/app/lists/'
+    | '/app/meetings/'
+    | '/app/saved/'
     | '/app/sequences/'
+    | '/app/settings/'
+    | '/app/tasks/'
+    | '/app/visitors/'
     | '/app/workflows/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -610,21 +732,14 @@ export interface FileRouteTypes {
     | '/security'
     | '/signup'
     | '/support'
-    | '/app/analytics'
-    | '/app/calls'
     | '/app/companies'
-    | '/app/conversations'
-    | '/app/deals'
-    | '/app/emails'
-    | '/app/enrichment'
-    | '/app/forms'
-    | '/app/lists'
-    | '/app/meetings'
+    | '/app/leadex-ia'
     | '/app/people'
-    | '/app/saved'
-    | '/app/settings'
-    | '/app/tasks'
-    | '/app/visitors'
+    | '/api/me'
+    | '/auth/dev-login'
+    | '/auth/gmail'
+    | '/auth/google'
+    | '/auth/logout'
     | '/docs/demarrage-rapide'
     | '/docs/enrichissement'
     | '/docs/integrations-ia'
@@ -638,6 +753,9 @@ export interface FileRouteTypes {
     | '/legal/dpa'
     | '/legal/mentions-legales'
     | '/app'
+    | '/api/auth/$'
+    | '/api/mail/accounts'
+    | '/api/mail/messages'
     | '/app/academy/profile'
     | '/app/academy/review'
     | '/app/academy/rewards'
@@ -652,8 +770,24 @@ export interface FileRouteTypes {
     | '/app/tasks/$id'
     | '/app/workflows/$workflowId'
     | '/app/workflows/new'
+    | '/auth/gmail/callback'
+    | '/auth/google/callback'
     | '/app/academy'
+    | '/app/analytics'
+    | '/app/calls'
+    | '/app/conversations'
+    | '/app/deals'
+    | '/app/emails'
+    | '/app/enrichment'
+    | '/app/forms'
+    | '/app/hub'
+    | '/app/lists'
+    | '/app/meetings'
+    | '/app/saved'
     | '/app/sequences'
+    | '/app/settings'
+    | '/app/tasks'
+    | '/app/visitors'
     | '/app/workflows'
   id:
     | '__root__'
@@ -668,23 +802,16 @@ export interface FileRouteTypes {
     | '/security'
     | '/signup'
     | '/support'
-    | '/app/sequences'
     | '/app/academy'
-    | '/app/analytics'
-    | '/app/calls'
     | '/app/companies'
-    | '/app/conversations'
-    | '/app/deals'
-    | '/app/emails'
-    | '/app/enrichment'
-    | '/app/forms'
-    | '/app/lists'
-    | '/app/meetings'
+    | '/app/leadex-ia'
     | '/app/people'
-    | '/app/saved'
-    | '/app/settings'
-    | '/app/tasks'
-    | '/app/visitors'
+    | '/app/sequences'
+    | '/api/me'
+    | '/auth/dev-login'
+    | '/auth/gmail'
+    | '/auth/google'
+    | '/auth/logout'
     | '/docs/demarrage-rapide'
     | '/docs/enrichissement'
     | '/docs/integrations-ia'
@@ -698,6 +825,9 @@ export interface FileRouteTypes {
     | '/legal/dpa'
     | '/legal/mentions-legales'
     | '/app/'
+    | '/api/auth/$'
+    | '/api/mail/accounts'
+    | '/api/mail/messages'
     | '/app/academy/profile'
     | '/app/academy/review'
     | '/app/academy/rewards'
@@ -712,8 +842,24 @@ export interface FileRouteTypes {
     | '/app/tasks/$id'
     | '/app/workflows/$workflowId'
     | '/app/workflows/new'
+    | '/auth/gmail/callback'
+    | '/auth/google/callback'
     | '/app/academy/'
+    | '/app/analytics/'
+    | '/app/calls/'
+    | '/app/conversations/'
+    | '/app/deals/'
+    | '/app/emails/'
+    | '/app/enrichment/'
+    | '/app/forms/'
+    | '/app/hub/'
+    | '/app/lists/'
+    | '/app/meetings/'
+    | '/app/saved/'
     | '/app/sequences/'
+    | '/app/settings/'
+    | '/app/tasks/'
+    | '/app/visitors/'
     | '/app/workflows/'
   fileRoutesById: FileRoutesById
 }
@@ -729,12 +875,20 @@ export interface RootRouteChildren {
   SecurityRoute: typeof SecurityRoute
   SignupRoute: typeof SignupRoute
   SupportRoute: typeof SupportRoute
+  ApiMeRoute: typeof ApiMeRoute
+  AuthDevLoginRoute: typeof AuthDevLoginRoute
+  AuthGmailRoute: typeof AuthGmailRouteWithChildren
+  AuthGoogleRoute: typeof AuthGoogleRouteWithChildren
+  AuthLogoutRoute: typeof AuthLogoutRoute
   LegalCguRoute: typeof LegalCguRoute
   LegalCgvRoute: typeof LegalCgvRoute
   LegalConfidentialiteRoute: typeof LegalConfidentialiteRoute
   LegalCookiesRoute: typeof LegalCookiesRoute
   LegalDpaRoute: typeof LegalDpaRoute
   LegalMentionsLegalesRoute: typeof LegalMentionsLegalesRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiMailAccountsRoute: typeof ApiMailAccountsRoute
+  ApiMailMessagesRoute: typeof ApiMailMessagesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -907,123 +1061,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsDemarrageRapideRouteImport
       parentRoute: typeof DocsRoute
     }
-    '/app/visitors': {
-      id: '/app/visitors'
-      path: '/visitors'
-      fullPath: '/app/visitors'
-      preLoaderRoute: typeof AppVisitorsRouteImport
-      parentRoute: typeof AppRoute
+    '/auth/logout': {
+      id: '/auth/logout'
+      path: '/auth/logout'
+      fullPath: '/auth/logout'
+      preLoaderRoute: typeof AuthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/tasks': {
-      id: '/app/tasks'
-      path: '/tasks'
-      fullPath: '/app/tasks'
-      preLoaderRoute: typeof AppTasksRouteImport
-      parentRoute: typeof AppRoute
+    '/auth/google': {
+      id: '/auth/google'
+      path: '/auth/google'
+      fullPath: '/auth/google'
+      preLoaderRoute: typeof AuthGoogleRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/settings': {
-      id: '/app/settings'
-      path: '/settings'
-      fullPath: '/app/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRoute
+    '/auth/gmail': {
+      id: '/auth/gmail'
+      path: '/auth/gmail'
+      fullPath: '/auth/gmail'
+      preLoaderRoute: typeof AuthGmailRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/saved': {
-      id: '/app/saved'
-      path: '/saved'
-      fullPath: '/app/saved'
-      preLoaderRoute: typeof AppSavedRouteImport
-      parentRoute: typeof AppRoute
+    '/auth/dev-login': {
+      id: '/auth/dev-login'
+      path: '/auth/dev-login'
+      fullPath: '/auth/dev-login'
+      preLoaderRoute: typeof AuthDevLoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/app/people': {
-      id: '/app/people'
-      path: '/people'
-      fullPath: '/app/people'
-      preLoaderRoute: typeof AppPeopleRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/meetings': {
-      id: '/app/meetings'
-      path: '/meetings'
-      fullPath: '/app/meetings'
-      preLoaderRoute: typeof AppMeetingsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/lists': {
-      id: '/app/lists'
-      path: '/lists'
-      fullPath: '/app/lists'
-      preLoaderRoute: typeof AppListsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/forms': {
-      id: '/app/forms'
-      path: '/forms'
-      fullPath: '/app/forms'
-      preLoaderRoute: typeof AppFormsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/enrichment': {
-      id: '/app/enrichment'
-      path: '/enrichment'
-      fullPath: '/app/enrichment'
-      preLoaderRoute: typeof AppEnrichmentRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/emails': {
-      id: '/app/emails'
-      path: '/emails'
-      fullPath: '/app/emails'
-      preLoaderRoute: typeof AppEmailsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/deals': {
-      id: '/app/deals'
-      path: '/deals'
-      fullPath: '/app/deals'
-      preLoaderRoute: typeof AppDealsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/conversations': {
-      id: '/app/conversations'
-      path: '/conversations'
-      fullPath: '/app/conversations'
-      preLoaderRoute: typeof AppConversationsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/companies': {
-      id: '/app/companies'
-      path: '/companies'
-      fullPath: '/app/companies'
-      preLoaderRoute: typeof AppCompaniesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/calls': {
-      id: '/app/calls'
-      path: '/calls'
-      fullPath: '/app/calls'
-      preLoaderRoute: typeof AppCallsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/analytics': {
-      id: '/app/analytics'
-      path: '/analytics'
-      fullPath: '/app/analytics'
-      preLoaderRoute: typeof AppAnalyticsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/academy': {
-      id: '/app/academy'
-      path: '/academy'
-      fullPath: '/app/academy'
-      preLoaderRoute: typeof AppAcademyRouteImport
-      parentRoute: typeof AppRoute
+    '/api/me': {
+      id: '/api/me'
+      path: '/api/me'
+      fullPath: '/api/me'
+      preLoaderRoute: typeof ApiMeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/app/sequences': {
       id: '/app/sequences'
       path: '/sequences'
       fullPath: '/app/sequences'
       preLoaderRoute: typeof AppSequencesRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/people': {
+      id: '/app/people'
+      path: '/people'
+      fullPath: '/app/people'
+      preLoaderRoute: typeof AppPeopleRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/leadex-ia': {
+      id: '/app/leadex-ia'
+      path: '/leadex-ia'
+      fullPath: '/app/leadex-ia'
+      preLoaderRoute: typeof AppLeadexIaRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/companies': {
+      id: '/app/companies'
+      path: '/companies'
+      fullPath: '/app/companies'
+      preLoaderRoute: typeof AppCompaniesRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/academy': {
+      id: '/app/academy'
+      path: '/academy'
+      fullPath: '/app/academy'
+      preLoaderRoute: typeof AppAcademyRouteRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/workflows/': {
@@ -1033,6 +1138,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkflowsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/visitors/': {
+      id: '/app/visitors/'
+      path: '/visitors'
+      fullPath: '/app/visitors/'
+      preLoaderRoute: typeof AppVisitorsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/tasks/': {
+      id: '/app/tasks/'
+      path: '/tasks'
+      fullPath: '/app/tasks/'
+      preLoaderRoute: typeof AppTasksIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings/': {
+      id: '/app/settings/'
+      path: '/settings'
+      fullPath: '/app/settings/'
+      preLoaderRoute: typeof AppSettingsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/sequences/': {
       id: '/app/sequences/'
       path: '/'
@@ -1040,12 +1166,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSequencesIndexRouteImport
       parentRoute: typeof AppSequencesRouteRoute
     }
+    '/app/saved/': {
+      id: '/app/saved/'
+      path: '/saved'
+      fullPath: '/app/saved/'
+      preLoaderRoute: typeof AppSavedIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/meetings/': {
+      id: '/app/meetings/'
+      path: '/meetings'
+      fullPath: '/app/meetings/'
+      preLoaderRoute: typeof AppMeetingsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/lists/': {
+      id: '/app/lists/'
+      path: '/lists'
+      fullPath: '/app/lists/'
+      preLoaderRoute: typeof AppListsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/hub/': {
+      id: '/app/hub/'
+      path: '/hub'
+      fullPath: '/app/hub/'
+      preLoaderRoute: typeof AppHubIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/forms/': {
+      id: '/app/forms/'
+      path: '/forms'
+      fullPath: '/app/forms/'
+      preLoaderRoute: typeof AppFormsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/enrichment/': {
+      id: '/app/enrichment/'
+      path: '/enrichment'
+      fullPath: '/app/enrichment/'
+      preLoaderRoute: typeof AppEnrichmentIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/emails/': {
+      id: '/app/emails/'
+      path: '/emails'
+      fullPath: '/app/emails/'
+      preLoaderRoute: typeof AppEmailsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/deals/': {
+      id: '/app/deals/'
+      path: '/deals'
+      fullPath: '/app/deals/'
+      preLoaderRoute: typeof AppDealsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/conversations/': {
+      id: '/app/conversations/'
+      path: '/conversations'
+      fullPath: '/app/conversations/'
+      preLoaderRoute: typeof AppConversationsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/calls/': {
+      id: '/app/calls/'
+      path: '/calls'
+      fullPath: '/app/calls/'
+      preLoaderRoute: typeof AppCallsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/analytics/': {
+      id: '/app/analytics/'
+      path: '/analytics'
+      fullPath: '/app/analytics/'
+      preLoaderRoute: typeof AppAnalyticsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/academy/': {
       id: '/app/academy/'
       path: '/'
       fullPath: '/app/academy/'
       preLoaderRoute: typeof AppAcademyIndexRouteImport
-      parentRoute: typeof AppAcademyRoute
+      parentRoute: typeof AppAcademyRouteRoute
+    }
+    '/auth/google/callback': {
+      id: '/auth/google/callback'
+      path: '/callback'
+      fullPath: '/auth/google/callback'
+      preLoaderRoute: typeof AuthGoogleCallbackRouteImport
+      parentRoute: typeof AuthGoogleRoute
+    }
+    '/auth/gmail/callback': {
+      id: '/auth/gmail/callback'
+      path: '/callback'
+      fullPath: '/auth/gmail/callback'
+      preLoaderRoute: typeof AuthGmailCallbackRouteImport
+      parentRoute: typeof AuthGmailRoute
     }
     '/app/workflows/new': {
       id: '/app/workflows/new'
@@ -1063,17 +1280,17 @@ declare module '@tanstack/react-router' {
     }
     '/app/tasks/$id': {
       id: '/app/tasks/$id'
-      path: '/$id'
+      path: '/tasks/$id'
       fullPath: '/app/tasks/$id'
       preLoaderRoute: typeof AppTasksIdRouteImport
-      parentRoute: typeof AppTasksRoute
+      parentRoute: typeof AppRoute
     }
     '/app/settings/billing': {
       id: '/app/settings/billing'
-      path: '/billing'
+      path: '/settings/billing'
       fullPath: '/app/settings/billing'
       preLoaderRoute: typeof AppSettingsBillingRouteImport
-      parentRoute: typeof AppSettingsRoute
+      parentRoute: typeof AppRoute
     }
     '/app/sequences/new': {
       id: '/app/sequences/new'
@@ -1094,59 +1311,125 @@ declare module '@tanstack/react-router' {
       path: '/new'
       fullPath: '/app/people/new'
       preLoaderRoute: typeof AppPeopleNewRouteImport
-      parentRoute: typeof AppPeopleRoute
+      parentRoute: typeof AppPeopleRouteRoute
     }
     '/app/people/$id': {
       id: '/app/people/$id'
       path: '/$id'
       fullPath: '/app/people/$id'
       preLoaderRoute: typeof AppPeopleIdRouteImport
-      parentRoute: typeof AppPeopleRoute
+      parentRoute: typeof AppPeopleRouteRoute
     }
     '/app/deals/$id': {
       id: '/app/deals/$id'
-      path: '/$id'
+      path: '/deals/$id'
       fullPath: '/app/deals/$id'
       preLoaderRoute: typeof AppDealsIdRouteImport
-      parentRoute: typeof AppDealsRoute
+      parentRoute: typeof AppRoute
     }
     '/app/companies/new': {
       id: '/app/companies/new'
       path: '/new'
       fullPath: '/app/companies/new'
       preLoaderRoute: typeof AppCompaniesNewRouteImport
-      parentRoute: typeof AppCompaniesRoute
+      parentRoute: typeof AppCompaniesRouteRoute
     }
     '/app/companies/$id': {
       id: '/app/companies/$id'
       path: '/$id'
       fullPath: '/app/companies/$id'
       preLoaderRoute: typeof AppCompaniesIdRouteImport
-      parentRoute: typeof AppCompaniesRoute
+      parentRoute: typeof AppCompaniesRouteRoute
     }
     '/app/academy/rewards': {
       id: '/app/academy/rewards'
       path: '/rewards'
       fullPath: '/app/academy/rewards'
       preLoaderRoute: typeof AppAcademyRewardsRouteImport
-      parentRoute: typeof AppAcademyRoute
+      parentRoute: typeof AppAcademyRouteRoute
     }
     '/app/academy/review': {
       id: '/app/academy/review'
       path: '/review'
       fullPath: '/app/academy/review'
       preLoaderRoute: typeof AppAcademyReviewRouteImport
-      parentRoute: typeof AppAcademyRoute
+      parentRoute: typeof AppAcademyRouteRoute
     }
     '/app/academy/profile': {
       id: '/app/academy/profile'
       path: '/profile'
       fullPath: '/app/academy/profile'
       preLoaderRoute: typeof AppAcademyProfileRouteImport
-      parentRoute: typeof AppAcademyRoute
+      parentRoute: typeof AppAcademyRouteRoute
+    }
+    '/api/mail/messages': {
+      id: '/api/mail/messages'
+      path: '/api/mail/messages'
+      fullPath: '/api/mail/messages'
+      preLoaderRoute: typeof ApiMailMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/mail/accounts': {
+      id: '/api/mail/accounts'
+      path: '/api/mail/accounts'
+      fullPath: '/api/mail/accounts'
+      preLoaderRoute: typeof ApiMailAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
+
+interface AppAcademyRouteRouteChildren {
+  AppAcademyProfileRoute: typeof AppAcademyProfileRoute
+  AppAcademyReviewRoute: typeof AppAcademyReviewRoute
+  AppAcademyRewardsRoute: typeof AppAcademyRewardsRoute
+  AppAcademyIndexRoute: typeof AppAcademyIndexRoute
+}
+
+const AppAcademyRouteRouteChildren: AppAcademyRouteRouteChildren = {
+  AppAcademyProfileRoute: AppAcademyProfileRoute,
+  AppAcademyReviewRoute: AppAcademyReviewRoute,
+  AppAcademyRewardsRoute: AppAcademyRewardsRoute,
+  AppAcademyIndexRoute: AppAcademyIndexRoute,
+}
+
+const AppAcademyRouteRouteWithChildren = AppAcademyRouteRoute._addFileChildren(
+  AppAcademyRouteRouteChildren,
+)
+
+interface AppCompaniesRouteRouteChildren {
+  AppCompaniesIdRoute: typeof AppCompaniesIdRoute
+  AppCompaniesNewRoute: typeof AppCompaniesNewRoute
+}
+
+const AppCompaniesRouteRouteChildren: AppCompaniesRouteRouteChildren = {
+  AppCompaniesIdRoute: AppCompaniesIdRoute,
+  AppCompaniesNewRoute: AppCompaniesNewRoute,
+}
+
+const AppCompaniesRouteRouteWithChildren =
+  AppCompaniesRouteRoute._addFileChildren(AppCompaniesRouteRouteChildren)
+
+interface AppPeopleRouteRouteChildren {
+  AppPeopleIdRoute: typeof AppPeopleIdRoute
+  AppPeopleNewRoute: typeof AppPeopleNewRoute
+}
+
+const AppPeopleRouteRouteChildren: AppPeopleRouteRouteChildren = {
+  AppPeopleIdRoute: AppPeopleIdRoute,
+  AppPeopleNewRoute: AppPeopleNewRoute,
+}
+
+const AppPeopleRouteRouteWithChildren = AppPeopleRouteRoute._addFileChildren(
+  AppPeopleRouteRouteChildren,
+)
 
 interface AppSequencesRouteRouteChildren {
   AppSequencesIdRoute: typeof AppSequencesIdRoute
@@ -1163,133 +1446,61 @@ const AppSequencesRouteRouteChildren: AppSequencesRouteRouteChildren = {
 const AppSequencesRouteRouteWithChildren =
   AppSequencesRouteRoute._addFileChildren(AppSequencesRouteRouteChildren)
 
-interface AppAcademyRouteChildren {
-  AppAcademyProfileRoute: typeof AppAcademyProfileRoute
-  AppAcademyReviewRoute: typeof AppAcademyReviewRoute
-  AppAcademyRewardsRoute: typeof AppAcademyRewardsRoute
-  AppAcademyIndexRoute: typeof AppAcademyIndexRoute
-}
-
-const AppAcademyRouteChildren: AppAcademyRouteChildren = {
-  AppAcademyProfileRoute: AppAcademyProfileRoute,
-  AppAcademyReviewRoute: AppAcademyReviewRoute,
-  AppAcademyRewardsRoute: AppAcademyRewardsRoute,
-  AppAcademyIndexRoute: AppAcademyIndexRoute,
-}
-
-const AppAcademyRouteWithChildren = AppAcademyRoute._addFileChildren(
-  AppAcademyRouteChildren,
-)
-
-interface AppCompaniesRouteChildren {
-  AppCompaniesIdRoute: typeof AppCompaniesIdRoute
-  AppCompaniesNewRoute: typeof AppCompaniesNewRoute
-}
-
-const AppCompaniesRouteChildren: AppCompaniesRouteChildren = {
-  AppCompaniesIdRoute: AppCompaniesIdRoute,
-  AppCompaniesNewRoute: AppCompaniesNewRoute,
-}
-
-const AppCompaniesRouteWithChildren = AppCompaniesRoute._addFileChildren(
-  AppCompaniesRouteChildren,
-)
-
-interface AppDealsRouteChildren {
-  AppDealsIdRoute: typeof AppDealsIdRoute
-}
-
-const AppDealsRouteChildren: AppDealsRouteChildren = {
-  AppDealsIdRoute: AppDealsIdRoute,
-}
-
-const AppDealsRouteWithChildren = AppDealsRoute._addFileChildren(
-  AppDealsRouteChildren,
-)
-
-interface AppPeopleRouteChildren {
-  AppPeopleIdRoute: typeof AppPeopleIdRoute
-  AppPeopleNewRoute: typeof AppPeopleNewRoute
-}
-
-const AppPeopleRouteChildren: AppPeopleRouteChildren = {
-  AppPeopleIdRoute: AppPeopleIdRoute,
-  AppPeopleNewRoute: AppPeopleNewRoute,
-}
-
-const AppPeopleRouteWithChildren = AppPeopleRoute._addFileChildren(
-  AppPeopleRouteChildren,
-)
-
-interface AppSettingsRouteChildren {
-  AppSettingsBillingRoute: typeof AppSettingsBillingRoute
-}
-
-const AppSettingsRouteChildren: AppSettingsRouteChildren = {
-  AppSettingsBillingRoute: AppSettingsBillingRoute,
-}
-
-const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
-  AppSettingsRouteChildren,
-)
-
-interface AppTasksRouteChildren {
-  AppTasksIdRoute: typeof AppTasksIdRoute
-}
-
-const AppTasksRouteChildren: AppTasksRouteChildren = {
-  AppTasksIdRoute: AppTasksIdRoute,
-}
-
-const AppTasksRouteWithChildren = AppTasksRoute._addFileChildren(
-  AppTasksRouteChildren,
-)
-
 interface AppRouteChildren {
+  AppAcademyRouteRoute: typeof AppAcademyRouteRouteWithChildren
+  AppCompaniesRouteRoute: typeof AppCompaniesRouteRouteWithChildren
+  AppLeadexIaRouteRoute: typeof AppLeadexIaRouteRoute
+  AppPeopleRouteRoute: typeof AppPeopleRouteRouteWithChildren
   AppSequencesRouteRoute: typeof AppSequencesRouteRouteWithChildren
-  AppAcademyRoute: typeof AppAcademyRouteWithChildren
-  AppAnalyticsRoute: typeof AppAnalyticsRoute
-  AppCallsRoute: typeof AppCallsRoute
-  AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
-  AppConversationsRoute: typeof AppConversationsRoute
-  AppDealsRoute: typeof AppDealsRouteWithChildren
-  AppEmailsRoute: typeof AppEmailsRoute
-  AppEnrichmentRoute: typeof AppEnrichmentRoute
-  AppFormsRoute: typeof AppFormsRoute
-  AppListsRoute: typeof AppListsRoute
-  AppMeetingsRoute: typeof AppMeetingsRoute
-  AppPeopleRoute: typeof AppPeopleRouteWithChildren
-  AppSavedRoute: typeof AppSavedRoute
-  AppSettingsRoute: typeof AppSettingsRouteWithChildren
-  AppTasksRoute: typeof AppTasksRouteWithChildren
-  AppVisitorsRoute: typeof AppVisitorsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppDealsIdRoute: typeof AppDealsIdRoute
+  AppSettingsBillingRoute: typeof AppSettingsBillingRoute
+  AppTasksIdRoute: typeof AppTasksIdRoute
   AppWorkflowsWorkflowIdRoute: typeof AppWorkflowsWorkflowIdRoute
   AppWorkflowsNewRoute: typeof AppWorkflowsNewRoute
+  AppAnalyticsIndexRoute: typeof AppAnalyticsIndexRoute
+  AppCallsIndexRoute: typeof AppCallsIndexRoute
+  AppConversationsIndexRoute: typeof AppConversationsIndexRoute
+  AppDealsIndexRoute: typeof AppDealsIndexRoute
+  AppEmailsIndexRoute: typeof AppEmailsIndexRoute
+  AppEnrichmentIndexRoute: typeof AppEnrichmentIndexRoute
+  AppFormsIndexRoute: typeof AppFormsIndexRoute
+  AppHubIndexRoute: typeof AppHubIndexRoute
+  AppListsIndexRoute: typeof AppListsIndexRoute
+  AppMeetingsIndexRoute: typeof AppMeetingsIndexRoute
+  AppSavedIndexRoute: typeof AppSavedIndexRoute
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
+  AppTasksIndexRoute: typeof AppTasksIndexRoute
+  AppVisitorsIndexRoute: typeof AppVisitorsIndexRoute
   AppWorkflowsIndexRoute: typeof AppWorkflowsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAcademyRouteRoute: AppAcademyRouteRouteWithChildren,
+  AppCompaniesRouteRoute: AppCompaniesRouteRouteWithChildren,
+  AppLeadexIaRouteRoute: AppLeadexIaRouteRoute,
+  AppPeopleRouteRoute: AppPeopleRouteRouteWithChildren,
   AppSequencesRouteRoute: AppSequencesRouteRouteWithChildren,
-  AppAcademyRoute: AppAcademyRouteWithChildren,
-  AppAnalyticsRoute: AppAnalyticsRoute,
-  AppCallsRoute: AppCallsRoute,
-  AppCompaniesRoute: AppCompaniesRouteWithChildren,
-  AppConversationsRoute: AppConversationsRoute,
-  AppDealsRoute: AppDealsRouteWithChildren,
-  AppEmailsRoute: AppEmailsRoute,
-  AppEnrichmentRoute: AppEnrichmentRoute,
-  AppFormsRoute: AppFormsRoute,
-  AppListsRoute: AppListsRoute,
-  AppMeetingsRoute: AppMeetingsRoute,
-  AppPeopleRoute: AppPeopleRouteWithChildren,
-  AppSavedRoute: AppSavedRoute,
-  AppSettingsRoute: AppSettingsRouteWithChildren,
-  AppTasksRoute: AppTasksRouteWithChildren,
-  AppVisitorsRoute: AppVisitorsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppDealsIdRoute: AppDealsIdRoute,
+  AppSettingsBillingRoute: AppSettingsBillingRoute,
+  AppTasksIdRoute: AppTasksIdRoute,
   AppWorkflowsWorkflowIdRoute: AppWorkflowsWorkflowIdRoute,
   AppWorkflowsNewRoute: AppWorkflowsNewRoute,
+  AppAnalyticsIndexRoute: AppAnalyticsIndexRoute,
+  AppCallsIndexRoute: AppCallsIndexRoute,
+  AppConversationsIndexRoute: AppConversationsIndexRoute,
+  AppDealsIndexRoute: AppDealsIndexRoute,
+  AppEmailsIndexRoute: AppEmailsIndexRoute,
+  AppEnrichmentIndexRoute: AppEnrichmentIndexRoute,
+  AppFormsIndexRoute: AppFormsIndexRoute,
+  AppHubIndexRoute: AppHubIndexRoute,
+  AppListsIndexRoute: AppListsIndexRoute,
+  AppMeetingsIndexRoute: AppMeetingsIndexRoute,
+  AppSavedIndexRoute: AppSavedIndexRoute,
+  AppSettingsIndexRoute: AppSettingsIndexRoute,
+  AppTasksIndexRoute: AppTasksIndexRoute,
+  AppVisitorsIndexRoute: AppVisitorsIndexRoute,
   AppWorkflowsIndexRoute: AppWorkflowsIndexRoute,
 }
 
@@ -1315,6 +1526,30 @@ const DocsRouteChildren: DocsRouteChildren = {
 
 const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
 
+interface AuthGmailRouteChildren {
+  AuthGmailCallbackRoute: typeof AuthGmailCallbackRoute
+}
+
+const AuthGmailRouteChildren: AuthGmailRouteChildren = {
+  AuthGmailCallbackRoute: AuthGmailCallbackRoute,
+}
+
+const AuthGmailRouteWithChildren = AuthGmailRoute._addFileChildren(
+  AuthGmailRouteChildren,
+)
+
+interface AuthGoogleRouteChildren {
+  AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute
+}
+
+const AuthGoogleRouteChildren: AuthGoogleRouteChildren = {
+  AuthGoogleCallbackRoute: AuthGoogleCallbackRoute,
+}
+
+const AuthGoogleRouteWithChildren = AuthGoogleRoute._addFileChildren(
+  AuthGoogleRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
@@ -1327,12 +1562,20 @@ const rootRouteChildren: RootRouteChildren = {
   SecurityRoute: SecurityRoute,
   SignupRoute: SignupRoute,
   SupportRoute: SupportRoute,
+  ApiMeRoute: ApiMeRoute,
+  AuthDevLoginRoute: AuthDevLoginRoute,
+  AuthGmailRoute: AuthGmailRouteWithChildren,
+  AuthGoogleRoute: AuthGoogleRouteWithChildren,
+  AuthLogoutRoute: AuthLogoutRoute,
   LegalCguRoute: LegalCguRoute,
   LegalCgvRoute: LegalCgvRoute,
   LegalConfidentialiteRoute: LegalConfidentialiteRoute,
   LegalCookiesRoute: LegalCookiesRoute,
   LegalDpaRoute: LegalDpaRoute,
   LegalMentionsLegalesRoute: LegalMentionsLegalesRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiMailAccountsRoute: ApiMailAccountsRoute,
+  ApiMailMessagesRoute: ApiMailMessagesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

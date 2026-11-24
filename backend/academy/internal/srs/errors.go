@@ -1,3 +1,5 @@
+// backend/academy/internal/srs/errors.go
+
 package srs
 
 import (
@@ -5,26 +7,18 @@ import (
 	"fmt"
 )
 
-// Erreurs sentinel du moteur SRS.
 var (
-	// ErrCardNotDue — la carte n'est pas encore prête à être révisée.
 	ErrCardNotDue = errors.New("srs: carte non due")
 
-	// ErrInvalidQuality — la qualité de réponse est hors limites (0-5).
 	ErrInvalidQuality = errors.New("srs: qualité de réponse invalide")
 
-	// ErrInvalidCard — la carte est malformée ou contient des valeurs
-	// incohérentes (ease factor hors bornes, intervalle négatif…).
 	ErrInvalidCard = errors.New("srs: carte invalide")
 
-	// ErrCardNotFound — la carte référencée n'existe pas.
 	ErrCardNotFound = errors.New("srs: carte introuvable")
 
-	// ErrEmptyTemplates — la leçon ne contient aucun template SRS.
 	ErrEmptyTemplates = errors.New("srs: aucun template SRS à instancier")
 )
 
-// ReviewError attache un contexte à une erreur de révision.
 type ReviewError struct {
 	CardID  string
 	Quality int
@@ -42,7 +36,6 @@ func (e *ReviewError) Error() string {
 
 func (e *ReviewError) Unwrap() error { return e.Cause }
 
-// NewReviewError — helper de construction.
 func NewReviewError(cardID string, quality int, reason string, cause error) *ReviewError {
 	return &ReviewError{CardID: cardID, Quality: quality, Reason: reason, Cause: cause}
 }

@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/quests.go
+
 package gamification
 
 import (
@@ -6,25 +8,17 @@ import (
 	"time"
 )
 
-// QuestKind énumère les familles de quêtes quotidiennes.
 type QuestKind string
 
 const (
-	// QuestXP — gagner N XP aujourd'hui.
 	QuestXP QuestKind = "xp"
-	// QuestLessons — terminer N leçons.
 	QuestLessons QuestKind = "lessons"
-	// QuestExercises — répondre correctement à N exercices.
 	QuestExercises QuestKind = "exercises"
-	// QuestSrs — réviser N cartes SRS.
 	QuestSrs QuestKind = "srs"
-	// QuestMissions — réussir N missions in-app.
 	QuestMissions QuestKind = "missions"
-	// QuestStreak — maintenir le streak (toujours complétable).
 	QuestStreak QuestKind = "streak"
 )
 
-// QuestStatus décrit l'état d'une quête.
 type QuestStatus string
 
 const (
@@ -33,23 +27,15 @@ const (
 	QuestStatusClaimed  QuestStatus = "claimed"
 )
 
-// QuestTemplate décrit le modèle d'une quête, avant instanciation
-// quotidienne.
 type QuestTemplate struct {
 	Kind        QuestKind `json:"kind"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
-	// TargetMin, TargetMax — bornes du tirage aléatoire déterministe.
 	TargetMin int `json:"target_min"`
 	TargetMax int `json:"target_max"`
-	// Reward — XP accordée à la complétion.
 	Reward int `json:"reward"`
 }
 
-// QuestCatalog — les modèles de quêtes disponibles.
-//
-// À chaque jour, on tire 3 quêtes différentes parmi ce catalogue,
-// de façon déterministe (voir GenerateDailyQuests).
 var QuestCatalog = []QuestTemplate{
 	{
 		Kind:        QuestXP,
@@ -101,10 +87,9 @@ var QuestCatalog = []QuestTemplate{
 	},
 }
 
-// Quest est une quête quotidienne instanciée pour un jour donné.
 type Quest struct {
 	ID          string      `json:"id"`
-	Date        string      `json:"date"` // YYYY-MM-DD
+	Date        string      `json:"date"`
 	Kind        QuestKind   `json:"kind"`
 	Title       string      `json:"title"`
 	Description string      `json:"description"`
@@ -114,7 +99,6 @@ type Quest struct {
 	Status      QuestStatus `json:"status"`
 }
 
-// ProgressRatio — ratio 0-1 pour l'affichage.
 func (q Quest) ProgressRatio() float64 {
 	if q.Target <= 0 {
 		return 0
@@ -129,34 +113,23 @@ func (q Quest) ProgressRatio() float64 {
 	return r
 }
 
-// IsComplete — la quête a atteint son objectif mais n'est pas réclamée.
 func (q Quest) IsComplete() bool {
 	return q.Status == QuestStatusComplete
 }
 
-// CanClaim — la quête peut être réclamée.
 func (q Quest) CanClaim() bool {
 	return q.Status == QuestStatusComplete
 }
 
-// DailyQuestCount — nombre de quêtes générées par jour.
 const DailyQuestCount = 3
 
-// GenerateDailyQuests génère DailyQuestCount quêtes pour la journée
-// contenant `now`.
-//
-// La génération est déterministe : deux appels avec la même date (jour
-// civil, UTC) produisent les mêmes quêtes. Cela évite d'avoir à
-// persister le tirage tant que l'appelant reste cohérent sur la journée.
 func GenerateDailyQuests(now time.Time) []Quest {
 	dateKey := now.UTC().Format("2006-01-02")
 
-	// Graine dérivée de la date.
 	h := fnv.New64a()
 	_, _ = h.Write([]byte(dateKey))
 	seed := h.Sum64()
 
-	// Tirage sans remise de DailyQuestCount templates.
 	picked := pickTemplates(seed, DailyQuestCount)
 
 	out := make([]Quest, 0, len(picked))
@@ -177,17 +150,12 @@ func GenerateDailyQuests(now time.Time) []Quest {
 	return out
 }
 
-// ─── Progression ────────────────────────────────────────────────────────
 
-// QuestUpdate décrit un incrément de progression sur une famille donnée.
 type QuestUpdate struct {
 	Kind   QuestKind `json:"kind"`
 	Amount int       `json:"amount"`
 }
 
-// ApplyQuestUpdate applique un incrément à toutes les quêtes actives du
-// type correspondant. Renvoie les quêtes mises à jour (copie) et la liste
-// des IDs qui viennent de passer à `complete`.
 func ApplyQuestUpdate(quests []Quest, u QuestUpdate) ([]Quest, []string) {
 	if u.Amount <= 0 {
 		return quests, nil
@@ -211,10 +179,6 @@ func ApplyQuestUpdate(quests []Quest, u QuestUpdate) ([]Quest, []string) {
 	return out, newlyCompleted
 }
 
-// ClaimQuest marque une quête comme réclamée et renvoie l'XP gagnée.
-//
-// Erreurs possibles : ErrQuestNotFound, ErrQuestAlreadyClaimed,
-// ErrQuestNotComplete.
 func ClaimQuest(quests []Quest, questID string) ([]Quest, int, error) {
 	out := make([]Quest, len(quests))
 	copy(out, quests)
@@ -235,7 +199,6 @@ func ClaimQuest(quests []Quest, questID string) ([]Quest, int, error) {
 	return quests, 0, ErrQuestNotFound
 }
 
-// CompletedCount — nombre de quêtes complétées (réclamées ou non).
 func CompletedCount(quests []Quest) int {
 	n := 0
 	for _, q := range quests {
@@ -246,7 +209,6 @@ func CompletedCount(quests []Quest) int {
 	return n
 }
 
-// TotalRewardPending — XP encore à réclamer.
 func TotalRewardPending(quests []Quest) int {
 	n := 0
 	for _, q := range quests {
@@ -257,7 +219,6 @@ func TotalRewardPending(quests []Quest) int {
 	return n
 }
 
-// QuestStatusForLearner construit un résumé des quêtes pour l'UI.
 type QuestStatusForLearner struct {
 	Date      string  `json:"date"`
 	Quests    []Quest `json:"quests"`
@@ -266,7 +227,6 @@ type QuestStatusForLearner struct {
 	RewardDue int     `json:"reward_due"`
 }
 
-// SummarizeQuests — résumé prêt pour l'UI.
 func SummarizeQuests(quests []Quest, now time.Time) QuestStatusForLearner {
 	return QuestStatusForLearner{
 		Date:      now.UTC().Format("2006-01-02"),
@@ -277,15 +237,11 @@ func SummarizeQuests(quests []Quest, now time.Time) QuestStatusForLearner {
 	}
 }
 
-/* ─── Helpers déterministes ───────────────────────────────────────────── */
 
-// pickTemplates sélectionne `n` templates distincts parmi QuestCatalog,
-// de façon déterministe à partir de `seed`.
 func pickTemplates(seed uint64, n int) []QuestTemplate {
 	if n > len(QuestCatalog) {
 		n = len(QuestCatalog)
 	}
-	// Fisher-Yates déterministe sur une copie d'index.
 	idx := make([]int, len(QuestCatalog))
 	for i := range idx {
 		idx[i] = i
@@ -303,7 +259,6 @@ func pickTemplates(seed uint64, n int) []QuestTemplate {
 	return out
 }
 
-// drawTarget — tirage borné déterministe entre min et max (inclus).
 func drawTarget(seed uint64, salt uint64, minV, maxV int) int {
 	if maxV <= minV {
 		return minV
@@ -313,7 +268,6 @@ func drawTarget(seed uint64, salt uint64, minV, maxV int) int {
 	return minV + int(rng%span)
 }
 
-// xorshift — générateur pseudo-aléatoire minimaliste et déterministe.
 func xorshift(x uint64) uint64 {
 	if x == 0 {
 		x = 0x9E3779B97F4A7C15

@@ -1,25 +1,16 @@
-//frontend\components\workflow\RightPanel.tsx
+// frontend/components/workflow/RightPanel.tsx
+
 import { useEffect, useRef, type FocusEvent } from "react";
-import { Sliders } from "lucide-react";
+import { Sliders } from "@/components/icons";
 import { useWorkflow } from "@/lib/workflow/store";
 import { blockMap, categoryMap } from "@/lib/workflow/geometry";
 import { useVirtualKeyboard } from "@/hooks/use-virtual-keyboard";
-import { scrollFieldAboveKeyboard } from "@/lib/scroll-field-into-view";
+import { scrollFieldAboveKeyboard } from "@/lib/core/scroll-into-view";
 import { NodeSelect } from "./NodeSelect";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
-/**
- * Remonte le champ focalisé au-dessus du clavier virtuel. Déclenché
- * uniquement sur `onFocus` (donc uniquement quand l'utilisateur touche
- * explicitement le champ) — jamais au dépliement du panneau.
- *
- * Ne fait défiler QUE le conteneur interne `.props-scroll`, jamais la page :
- * c'est ce qui empêche le champ de "remonter trop haut" sur Safari iOS (voir
- * `scrollFieldAboveKeyboard`).
- */
 function scrollFieldIntoView(e: FocusEvent<HTMLElement>) {
   const el = e.currentTarget;
-  // recalculer la position : sur iOS, le viewport n'a pas encore sa taille
   window.setTimeout(() => scrollFieldAboveKeyboard(el, ".props-scroll"), 80);
 }
 
@@ -54,7 +45,6 @@ function Inspector() {
       </div>
       {block?.configFields.map((f) => {
         const v = node.config[f.key];
-        // paraissent jamais soudés l'un à l'autre, quelle que soit la
         if (f.type === "toggle") {
           return (
             <div key={f.key} className="space-y-1">
@@ -131,8 +121,6 @@ export function RightPanel({
 }: {
   showContent?: boolean;
   onRequestExpand?: () => void;
-  /** Quand `true`, la barre « Propriétés » n'est pas rendue (c'est le
-   *  conteneur parent — `WorkflowRightDock` — qui porte l'onglet). */
   hideHeader?: boolean;
 } = {}) {
   const { inset: keyboardInset } = useVirtualKeyboard();

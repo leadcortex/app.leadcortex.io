@@ -1,4 +1,5 @@
-//frontend\hooks\use-filters.ts
+// frontend/hooks/use-filters.ts
+
 import { useState, useCallback, useMemo, useEffect } from "react";
 
 export type FilterValue = string | number | boolean | null;

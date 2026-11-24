@@ -1,4 +1,5 @@
-//frontend\components\skeletons\index.ts
+// frontend/components/skeletons/index.ts
+
 export * from "./layout-skeletons";
 export * from "./workspace-skeletons";
 export * from "./auth-skeletons";

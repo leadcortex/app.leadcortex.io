@@ -1,3 +1,5 @@
+// backend/academy/internal/gamification/conditions.go
+
 package gamification
 
 import (
@@ -9,24 +11,14 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// Context regroupe toutes les informations nécessaires pour évaluer une
-// condition de badge ou de quête.
-//
-// Le champ `Values` permet d'injecter des valeurs propres à un événement
-// en cours (type d'exercice, score, concept touché, etc.).
 type Context struct {
-	// Learner — l'apprenant sur lequel porte l'évaluation.
 	Learner *domain.Learner
 
-	// Values — valeurs additionnelles accessibles par chemin (path pointé).
-	// Ex. `Values["event.type"] = "mission.succeeded"`.
 	Values map[string]any
 
-	// Now — instant de l'évaluation (injectable pour les tests).
 	Now time.Time
 }
 
-// NewContext crée un contexte minimal pour un Learner.
 func NewContext(learner *domain.Learner, now time.Time) Context {
 	return Context{
 		Learner: learner,
@@ -35,7 +27,6 @@ func NewContext(learner *domain.Learner, now time.Time) Context {
 	}
 }
 
-// WithValue ajoute une valeur au contexte (fluent).
 func (c Context) WithValue(path string, v any) Context {
 	if c.Values == nil {
 		c.Values = map[string]any{}
@@ -44,14 +35,6 @@ func (c Context) WithValue(path string, v any) Context {
 	return c
 }
 
-// Evaluate évalue un ConditionGroup en tenant compte de ses trois
-// sous-listes (All / Any / Not).
-//
-// Un groupe vide renvoie `true` (aucune contrainte).
-//
-//	All : toutes les conditions doivent être vraies (ET)
-//	Any : au moins une doit être vraie (OU)
-//	Not : aucune ne doit être vraie (NI…NI)
 func Evaluate(group domain.ConditionGroup, ctx Context) (bool, error) {
 	if ctx.Learner == nil {
 		return false, fmt.Errorf("%w : Learner nil", ErrInvalidContext)
@@ -97,13 +80,10 @@ func Evaluate(group domain.ConditionGroup, ctx Context) (bool, error) {
 	return true, nil
 }
 
-// EvaluateOne évalue une condition isolée (utile pour les tests et les
-// cas d'usage simples).
 func EvaluateOne(c domain.Condition, ctx Context) (bool, error) {
 	return evaluateOne(c, ctx)
 }
 
-// evaluateOne — implémentation interne.
 func evaluateOne(c domain.Condition, ctx Context) (bool, error) {
 	if !c.Op.IsKnown() {
 		return false, fmt.Errorf("%w : %q", ErrUnknownOperator, c.Op)
@@ -117,24 +97,14 @@ func evaluateOne(c domain.Condition, ctx Context) (bool, error) {
 	return compare(c.Op, got, c.Value)
 }
 
-/* ─── Résolution de chemins ───────────────────────────────────────────── */
 
-// resolvePath résout un chemin pointé vers une valeur.
-//
-// Priorité :
-//  1. Chemins calculés sur le Learner (préfixe `learner.`)
-//  2. Valeurs du contexte (`ctx.Values`)
-//
-// Retourne (valeur, true) si la résolution a réussi.
 func resolvePath(path string, ctx Context) (any, bool) {
-	// 1. Chemins calculés sur le Learner.
 	if strings.HasPrefix(path, "learner.") {
 		if v, ok := resolveLearnerPath(path, ctx.Learner); ok {
 			return v, true
 		}
 	}
 
-	// 2. Valeurs injectées.
 	if ctx.Values != nil {
 		if v, ok := ctx.Values[path]; ok {
 			return v, true
@@ -144,8 +114,6 @@ func resolvePath(path string, ctx Context) (any, bool) {
 	return nil, false
 }
 
-// resolveLearnerPath expose les champs du Learner et quelques dérivés
-// (comptages) sous forme de chemin pointé.
 func resolveLearnerPath(path string, l *domain.Learner) (any, bool) {
 	if l == nil {
 		return nil, false
@@ -221,13 +189,8 @@ func countCompletedMissions(l *domain.Learner) int {
 	return n
 }
 
-/* ─── Comparaison ─────────────────────────────────────────────────────── */
 
-// compare applique un opérateur entre une valeur observée et une valeur
-// attendue. Les types supportés : int, int64, float64, string, bool,
-// slices et maps (pour length / is_empty).
 func compare(op domain.Operator, got, want any) (bool, error) {
-	// Opérateurs unaires.
 	switch op {
 	case domain.OpIsEmpty:
 		return isEmpty(got), nil
@@ -235,7 +198,6 @@ func compare(op domain.Operator, got, want any) (bool, error) {
 		return !isEmpty(got), nil
 	}
 
-	// Opérateurs de longueur.
 	if op == domain.OpLengthGTE || op == domain.OpLengthLTE {
 		w, err := toInt(want)
 		if err != nil {
@@ -248,7 +210,6 @@ func compare(op domain.Operator, got, want any) (bool, error) {
 		return length <= w, nil
 	}
 
-	// Opérateurs de chaîne.
 	if s, isStr := got.(string); isStr {
 		switch op {
 		case domain.OpContains, domain.OpNotContains:
@@ -278,7 +239,6 @@ func compare(op domain.Operator, got, want any) (bool, error) {
 			if err != nil {
 				return false, fmt.Errorf("%w : %v", ErrTypeMismatch, err)
 			}
-			// Bornage de sécurité : on refuse les regex trop longues.
 			if len(w) > 512 {
 				return false, fmt.Errorf("%w : regex trop longue", ErrTypeMismatch)
 			}
@@ -290,7 +250,6 @@ func compare(op domain.Operator, got, want any) (bool, error) {
 		}
 	}
 
-	// Comparaisons numériques.
 	gotF, gotIsNum := toFloat(got)
 	wantF, wantIsNum := toFloat(want)
 	if gotIsNum && wantIsNum {
@@ -310,7 +269,6 @@ func compare(op domain.Operator, got, want any) (bool, error) {
 		}
 	}
 
-	// Comparaisons booléennes.
 	if gb, ok := got.(bool); ok {
 		if wb, ok := want.(bool); ok {
 			switch op {
@@ -322,7 +280,6 @@ func compare(op domain.Operator, got, want any) (bool, error) {
 		}
 	}
 
-	// Comparaisons de chaînes (égalité).
 	if gs, ok := got.(string); ok {
 		if ws, err := toString(want); err == nil {
 			switch op {
@@ -338,7 +295,6 @@ func compare(op domain.Operator, got, want any) (bool, error) {
 		ErrTypeMismatch, op, got, want)
 }
 
-/* ─── Helpers de conversion ───────────────────────────────────────────── */
 
 func toFloat(v any) (float64, bool) {
 	switch x := v.(type) {

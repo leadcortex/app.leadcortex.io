@@ -1,3 +1,5 @@
+// backend/academy/internal/progress/engine.go
+
 package progress
 
 import (
@@ -8,20 +10,14 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-// Clock permet d'injecter une horloge testable.
 type Clock interface {
 	Now() time.Time
 }
 
-// realClock — implémentation par défaut.
 type realClock struct{}
 
 func (realClock) Now() time.Time { return time.Now().UTC() }
 
-// Engine orchestre les transitions de progression.
-//
-// Il est safe en lecture concurrente. Les écritures sur le Learner doivent
-// être sérialisées par l'appelant (repository ou service layer).
 type Engine struct {
 	registry *curriculum.Registry
 	resolver *curriculum.Resolver
@@ -29,8 +25,6 @@ type Engine struct {
 	clock    Clock
 }
 
-// NewEngine construit un moteur adossé à un registre de curriculum.
-// Si clock est nil, `realClock` est utilisé.
 func NewEngine(registry *curriculum.Registry, resolver *curriculum.Resolver, clock Clock) *Engine {
 	if clock == nil {
 		clock = realClock{}
@@ -43,42 +37,21 @@ func NewEngine(registry *curriculum.Registry, resolver *curriculum.Resolver, clo
 	}
 }
 
-/* ─── Évaluation d'accès ──────────────────────────────────────────────── */
 
-// CanStart indique si une leçon peut être démarrée.
-//
-// Renvoie (true, UnlockResult{Unlocked:true}) si accessible ;
-// (false, UnlockResult{...}) sinon.
 func (e *Engine) CanStart(learner *domain.Learner, lessonID string) (bool, UnlockResult) {
 	result := e.gate.EvaluateLesson(learner, lessonID)
 	return result.Unlocked, result
 }
 
-/* ─── Application d'événements ────────────────────────────────────────── */
 
-// ApplyResult décrit ce qui s'est produit après application d'un événement.
 type ApplyResult struct {
-	// Emitted — événements dérivés émis par le moteur
-	// (ex. LessonCompleted après un dernier bloc terminé).
 	Emitted []Event
 
-	// Transitioned — vrai si le statut de la leçon a changé.
 	Transitioned bool
 
-	// NewStatus — nouveau statut (si Transitioned).
 	NewStatus domain.LessonStatus
 }
 
-// Apply applique un événement au Learner.
-//
-// Le Learner est muté en place. Les événements dérivés sont retournés
-// via ApplyResult.Emitted pour être propagés à un EventBus ou une UI.
-//
-// Erreurs possibles :
-//   - ErrLessonNotInRegistry
-//   - ErrLessonNotStarted (si l'événement nécessite une leçon démarrée)
-//   - ErrBlockOutOfOrder
-//   - ErrInvalidEvent
 func (e *Engine) Apply(learner *domain.Learner, ev Event) (ApplyResult, error) {
 	switch v := ev.(type) {
 	case LessonStarted:
@@ -97,7 +70,6 @@ func (e *Engine) Apply(learner *domain.Learner, ev Event) (ApplyResult, error) {
 	}
 }
 
-/* ─── Handlers d'événements ───────────────────────────────────────────── */
 
 func (e *Engine) applyLessonStarted(learner *domain.Learner, ev LessonStarted) (ApplyResult, error) {
 	lesson, ok := e.registry.Lesson(ev.LessonID)
@@ -105,7 +77,6 @@ func (e *Engine) applyLessonStarted(learner *domain.Learner, ev LessonStarted) (
 		return ApplyResult{}, fmt.Errorf("%w : %s", ErrLessonNotInRegistry, ev.LessonID)
 	}
 
-	// Vérifier l'accès.
 	unlock := e.gate.EvaluateLesson(learner, ev.LessonID)
 	if !unlock.Unlocked {
 		return ApplyResult{}, &UnlockError{
@@ -128,7 +99,6 @@ func (e *Engine) applyLessonStarted(learner *domain.Learner, ev LessonStarted) (
 		progress.Status = domain.LessonStatusAvailable
 	}
 
-	// Déjà démarrée : idempotent (on ne relance pas la transition).
 	if progress.Status != domain.LessonStatusAvailable &&
 		progress.Status != domain.LessonStatusInProgress {
 		return ApplyResult{}, &TransitionError{
@@ -153,7 +123,6 @@ func (e *Engine) applyLessonStarted(learner *domain.Learner, ev LessonStarted) (
 	progress.LastActivityAt = now
 	learner.LessonProgress[lesson.ID] = progress
 
-	// Mise à jour du streak (compte la leçon démarrée comme activité).
 	streakChanged := learner.RecordActivity(now)
 
 	result := ApplyResult{
@@ -193,7 +162,6 @@ func (e *Engine) applyLessonBlockViewed(learner *domain.Learner, ev LessonBlockV
 			ErrBlockOutOfOrder, ev.BlockIndex, len(lesson.Blocks)-1)
 	}
 
-	// Mettre à jour l'état du bloc.
 	state := progress.BlockStates[ev.BlockIndex]
 	state.Viewed = true
 	if ev.SlidesConsumed > 0 {
@@ -204,7 +172,6 @@ func (e *Engine) applyLessonBlockViewed(learner *domain.Learner, ev LessonBlockV
 	progress.LastActivityAt = ev.At
 	learner.LessonProgress[lesson.ID] = progress
 
-	// Vérifier si la leçon est complète.
 	return e.tryCompleteLesson(learner, lesson, progress, ev.At)
 }
 
@@ -228,7 +195,6 @@ func (e *Engine) applyExerciseAnswered(learner *domain.Learner, ev ExerciseAnswe
 			ErrInvalidEvent, ev.BlockIndex)
 	}
 
-	// Retrouver l'exercice par ID.
 	var exercise *domain.Exercise
 	for i := range block.Exercises {
 		if block.Exercises[i].ID == ev.ExerciseID {
@@ -241,7 +207,6 @@ func (e *Engine) applyExerciseAnswered(learner *domain.Learner, ev ExerciseAnswe
 			ErrInvalidEvent, ev.ExerciseID)
 	}
 
-	// Enregistrer le score.
 	if progress.Scores == nil {
 		progress.Scores = map[string]int{}
 	}
@@ -253,7 +218,6 @@ func (e *Engine) applyExerciseAnswered(learner *domain.Learner, ev ExerciseAnswe
 		progress.Scores[ev.ExerciseID] = ev.Score
 	}
 
-	// Compter l'exercice comme répondu (une seule fois).
 	state := progress.BlockStates[ev.BlockIndex]
 	answeredCount := 0
 	for _, ex := range block.Exercises {
@@ -265,7 +229,6 @@ func (e *Engine) applyExerciseAnswered(learner *domain.Learner, ev ExerciseAnswe
 	state.LastUpdatedAt = ev.At
 	progress.BlockStates[ev.BlockIndex] = state
 
-	// Mettre à jour la maîtrise des concepts liés.
 	result := ApplyResult{}
 	now := ev.At
 	for _, cid := range exercise.Concepts {
@@ -275,7 +238,6 @@ func (e *Engine) applyExerciseAnswered(learner *domain.Learner, ev ExerciseAnswe
 		}
 	}
 
-	// XP.
 	xpAwarded := 0
 	if ev.XPAwarded > 0 {
 		xpAwarded = ev.XPAwarded
@@ -293,7 +255,6 @@ func (e *Engine) applyExerciseAnswered(learner *domain.Learner, ev ExerciseAnswe
 	learner.LessonProgress[lesson.ID] = progress
 	learner.RecordActivity(now)
 
-	// Vérifier si la leçon devient complète.
 	complete, err := e.tryCompleteLesson(learner, lesson, progress, now)
 	if err != nil {
 		return result, err
@@ -329,7 +290,6 @@ func (e *Engine) applyMissionSucceeded(learner *domain.Learner, ev MissionSuccee
 			ErrInvalidEvent, block.Mission.ID, ev.MissionID)
 	}
 
-	// Marquer la mission comme réussie.
 	state := progress.BlockStates[ev.BlockIndex]
 	already := state.MissionSucceeded
 	state.MissionSucceeded = true
@@ -352,7 +312,6 @@ func (e *Engine) applyMissionSucceeded(learner *domain.Learner, ev MissionSuccee
 	result := ApplyResult{}
 	now := ev.At
 
-	// XP attribuée une seule fois.
 	if !already {
 		xp := ev.XPAwarded
 		if xp == 0 {
@@ -369,7 +328,6 @@ func (e *Engine) applyMissionSucceeded(learner *domain.Learner, ev MissionSuccee
 			})
 		}
 
-		// Déblocages d'avatars / badges.
 		for _, aid := range block.Mission.OnSuccess.UnlocksAvatarIDs {
 			if learner.UnlockAvatar(aid) {
 				result.Emitted = append(result.Emitted, AvatarUnlocked{
@@ -415,18 +373,13 @@ func (e *Engine) applyMissionFailed(learner *domain.Learner, ev MissionFailed) (
 	if !exists {
 		return ApplyResult{}, fmt.Errorf("%w : %s", ErrLessonNotStarted, lesson.ID)
 	}
-	// Un échec de mission consomme une vie (mécanique Duolingo).
 	learner.ConsumeHeart()
 	progress.LastActivityAt = ev.At
 	learner.LessonProgress[lesson.ID] = progress
-	// Pas de transition : la mission reste à retenter.
 	return ApplyResult{}, nil
 }
 
-/* ─── Complétion et maîtrise ──────────────────────────────────────────── */
 
-// tryCompleteLesson vérifie si tous les blocs sont terminés et effectue
-// la transition vers completed (et éventuellement vers mastered).
 func (e *Engine) tryCompleteLesson(
 	learner *domain.Learner,
 	lesson *domain.Lesson,
@@ -437,10 +390,8 @@ func (e *Engine) tryCompleteLesson(
 		return ApplyResult{}, nil
 	}
 
-	// Transition vers completed.
 	if progress.Status == domain.LessonStatusCompleted ||
 		progress.Status == domain.LessonStatusMastered {
-		// Déjà complétée : on retente la transition mastered sans re-créditer l'XP.
 		return e.tryMasterLesson(learner, lesson, progress, now)
 	}
 
@@ -458,7 +409,6 @@ func (e *Engine) tryCompleteLesson(
 		NewStatus:    domain.LessonStatusCompleted,
 	}
 
-	// XP bonus de complétion.
 	if lesson.Rewards.XP > 0 {
 		learner.AddXP(lesson.Rewards.XP)
 		progress.XPEarned += lesson.Rewards.XP
@@ -471,14 +421,12 @@ func (e *Engine) tryCompleteLesson(
 		})
 	}
 
-	// Vies rendues.
 	for i := 0; i < lesson.Rewards.HeartsRefund; i++ {
 		if learner.Hearts < domain.MaxHearts {
 			learner.Hearts++
 		}
 	}
 
-	// Déblocages liés à la leçon (avatars, badges).
 	for _, aid := range lesson.Unlocks.AvatarIDs {
 		if learner.UnlockAvatar(aid) {
 			result.Emitted = append(result.Emitted, AvatarUnlocked{
@@ -501,10 +449,8 @@ func (e *Engine) tryCompleteLesson(
 		XPEarned:  progress.XPEarned,
 	})
 
-	// Mettre à jour la progression du programme.
 	e.updateProgramProgress(learner, lesson, now)
 
-	// Tentative de passage en mastered.
 	masterResult, err := e.tryMasterLesson(learner, lesson, progress, now)
 	if err != nil {
 		return result, err
@@ -516,7 +462,6 @@ func (e *Engine) tryCompleteLesson(
 	return result, nil
 }
 
-// tryMasterLesson tente la transition completed → mastered.
 func (e *Engine) tryMasterLesson(
 	learner *domain.Learner,
 	lesson *domain.Lesson,
@@ -547,15 +492,7 @@ func (e *Engine) tryMasterLesson(
 	}, nil
 }
 
-/* ─── Maîtrise des concepts ───────────────────────────────────────────── */
 
-// updateConceptMastery met à jour le niveau de maîtrise d'un concept.
-//
-// Règle simple (améliorée en Partie 5 par le scorer d'exercices) :
-//   - Succès : +15 points (borné à 100)
-//   - Échec   : -5 points (borné à 0)
-//
-// Renvoie un événement ConceptUpdated si le niveau change.
 func (e *Engine) updateConceptMastery(
 	learner *domain.Learner,
 	conceptID string,
@@ -601,9 +538,7 @@ func clampLevel(v int) domain.MasteryLevel {
 	return domain.MasteryLevel(v)
 }
 
-/* ─── Progression du programme ────────────────────────────────────────── */
 
-// updateProgramProgress recalcule l'état du programme parent d'une leçon.
 func (e *Engine) updateProgramProgress(
 	learner *domain.Learner,
 	lesson *domain.Lesson,
@@ -627,7 +562,6 @@ func (e *Engine) updateProgramProgress(
 		}
 	}
 
-	// Ajouter la leçon si pas déjà fait.
 	already := false
 	for _, id := range progress.CompletedLessonIDs {
 		if id == lesson.ID {
@@ -639,7 +573,6 @@ func (e *Engine) updateProgramProgress(
 		progress.CompletedLessonIDs = append(progress.CompletedLessonIDs, lesson.ID)
 	}
 
-	// Vérifier la complétion totale.
 	totalLessons := program.TotalLessons()
 	if len(progress.CompletedLessonIDs) >= totalLessons && progress.CompletedAt.IsZero() {
 		progress.CompletedAt = now
@@ -648,19 +581,13 @@ func (e *Engine) updateProgramProgress(
 	learner.ProgramProgress[program.ID] = progress
 }
 
-/* ─── Recommandation ──────────────────────────────────────────────────── */
 
-// Recommendation décrit l'action suivante suggérée à un apprenant.
 type Recommendation struct {
-	// Kind — type de la recommandation.
 	Kind RecommendationKind
-	// LessonID — leçon concernée (si Kind = RecommendationLesson).
 	LessonID string
-	// Reason — texte lisible par l'humain.
 	Reason string
 }
 
-// RecommendationKind énumère les types de recommandations.
 type RecommendationKind string
 
 const (
@@ -670,15 +597,7 @@ const (
 	RecoNone       RecommendationKind = "none"
 )
 
-// Recommend renvoie la prochaine action conseillée à l'apprenant.
-//
-// Ordre de priorité :
-//  1. Leçon en cours non terminée (reprendre)
-//  2. Leçon suivante débloquée du parcours
-//  3. Révisions SRS en attente (Partie 6)
-//  4. Aucune action
 func (e *Engine) Recommend(learner *domain.Learner) Recommendation {
-	// 1. Leçon en cours ?
 	for _, lesson := range e.registry.AllLessons() {
 		progress, ok := learner.LessonProgress[lesson.ID]
 		if ok && progress.Status == domain.LessonStatusInProgress {
@@ -690,7 +609,6 @@ func (e *Engine) Recommend(learner *domain.Learner) Recommendation {
 		}
 	}
 
-	// 2. Première leçon disponible.
 	for _, lesson := range e.registry.AllLessons() {
 		progress, ok := learner.LessonProgress[lesson.ID]
 		if ok {
@@ -704,7 +622,6 @@ func (e *Engine) Recommend(learner *domain.Learner) Recommendation {
 			}
 			continue
 		}
-		// Pas de progression enregistrée : évaluer le déblocage.
 		if unlock := e.gate.EvaluateLesson(learner, lesson.ID); unlock.Unlocked {
 			return Recommendation{
 				Kind:     RecoLesson,

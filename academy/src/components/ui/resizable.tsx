@@ -1,7 +1,9 @@
-import { GripVertical } from "lucide-react";
+// academy/src/components/ui/resizable.tsx
+
+import { GripVertical } from "../../../../frontend/components/icons";
 import { Group, Panel, Separator } from "react-resizable-panels";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const ResizablePanelGroup = ({ className, ...props }: React.ComponentProps<typeof Group>) => (
   <Group

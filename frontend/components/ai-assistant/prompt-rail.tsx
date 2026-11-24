@@ -1,23 +1,9 @@
+// frontend/components/ai-assistant/prompt-rail.tsx
+
 "use client";
 
-/**
- * Rail de navigation par **prompts utilisateur** (inspiré de DeepSeek).
- *
- * - Un tick par prompt utilisateur uniquement (les réponses de l'IA sont
- *   ignorées : la conversation elle-même est déjà visible à l'écran).
- * - Les ticks sont **resserrés** (3 px + 4 px de gap) : quel que soit le
- *   nombre de prompts, le rail reste compact au lieu de s'étaler sur
- *   toute la hauteur de la conversation.
- * - Au survol du rail, un panneau déroulant s'ouvre et liste tous les
- *   prompts de la conversation (aperçu court), avec le prompt en cours
- *   de lecture mis en évidence (scroll-spy).
- * - Clic sur un tick ou sur une ligne du panneau → saut fluide vers le
- *   message correspondant.
- *
- * Masqué tant qu'il n'y a pas au moins 2 prompts utilisateur.
- */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import type { AssistantMessage } from "./assistant-engine";
 
 type PromptTick = { id: string; preview: string };
@@ -47,7 +33,6 @@ export function PromptRail({
     [messages],
   );
 
-  /* Visibilité : 2+ prompts et zone scrollable. */
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -65,7 +50,6 @@ export function PromptRail({
     };
   }, [scrollRef, prompts.length]);
 
-  /* Scroll-spy : identifie le prompt le plus proche du centre du viewport. */
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -131,7 +115,6 @@ export function PromptRail({
       onMouseEnter={openSoon}
       onMouseLeave={closeSoon}
     >
-      {/* Rail compact de ticks (un par prompt utilisateur) */}
       <div className="pointer-events-auto flex max-h-[60vh] flex-col items-end gap-1 overflow-y-auto scrollbar-none py-1">
         {prompts.map((p) => {
           const isActive = activeId === p.id;
@@ -152,7 +135,6 @@ export function PromptRail({
         })}
       </div>
 
-      {/* Panneau déroulant au survol */}
       {hovered && (
         <div
           className="pointer-events-auto absolute right-full top-1/2 mr-2 w-[280px] max-w-[80vw] -translate-y-1/2 rounded-xl border border-border bg-popover p-1.5 shadow-xl animate-in fade-in-0 slide-in-from-right-2 duration-150"

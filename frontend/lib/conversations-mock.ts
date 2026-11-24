@@ -1,6 +1,7 @@
-//frontend\lib\conversations-mock.ts
-import { Linkedin, Mail, MessageCircle, MessageSquare, Instagram } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+// frontend/lib/conversations-mock.ts
+
+import { Linkedin, Mail, MessageCircle, MessageSquare, Instagram } from "@/components/icons";
+import type { LucideIcon } from "@/components/icons";
 
 export type ChannelId = "linkedin" | "whatsapp" | "email" | "sms" | "instagram";
 
@@ -359,7 +360,6 @@ export function formatSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
 }
 
-/** Réponse simulée du prospect, adaptée au canal. */
 export function simulatedReply(channel: ChannelId): string {
   const replies: Record<ChannelId, string[]> = {
     linkedin: [

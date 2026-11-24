@@ -1,24 +1,12 @@
+// frontend/components/ui/copy-button.tsx
+
 "use client";
 
-/**
- * Bouton de copie universel.
- *
- * Icône : deux rectangles qui se chevauchent, style Feather / DeepSeek —
- * le rectangle arrière est partiellement masqué par le rectangle avant,
- * les deux ayant la même épaisseur de trait (pas d'opacité réduite).
- *
- * États : idle → copying → copied (retour à idle après 1.2 s).
- * Le libellé du tooltip est configurable (`label`/`copiedLabel`).
- */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-/* ─── Icône copie (deux rectangles imbriqués) ─────────────────────────
- * SVG identique à l'icône « copy » de Feather Icons / DeepSeek :
- * rectangle avant plein, rectangle arrière partiellement caché.
- * ─────────────────────────────────────────────────────────────────── */
 export function CopyIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -65,7 +53,6 @@ async function writeClipboard(text: string): Promise<boolean> {
       return true;
     }
   } catch {
-    /* fallback ci-dessous */
   }
   try {
     const ta = document.createElement("textarea");

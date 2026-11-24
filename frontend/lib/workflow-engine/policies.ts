@@ -1,4 +1,5 @@
-//frontend\lib\workflow-engine\policies.ts
+// frontend/lib/workflow-engine/policies.ts
+
 import { WorkflowBlockError } from "./errors";
 import type { OnErrorStrategy, ResolvedNodePolicy, RetryPolicy } from "./types";
 
@@ -141,10 +142,6 @@ export function assertSafeOutboundUrl(rawUrl: string, policy: UrlPolicy = {}): U
   }
   return url;
 }
-
-/* ------------------------------------------------------------------ */
-/* Rate limit (fenêtre glissante, en mémoire, par fournisseur)         */
-/* ------------------------------------------------------------------ */
 
 const buckets = new Map<string, number[]>();
 

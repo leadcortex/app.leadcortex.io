@@ -1,8 +1,9 @@
-//frontend\components\conversations\conversation-list.tsx
+// frontend/components/conversations/conversation-list.tsx
+
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, Pencil, Trash2, Star, Mail, MailOpen, Copy } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Star, Mail, MailOpen, Copy } from "@/components/icons";
 import { CHANNELS, type ProspectThread } from "@/lib/conversations-mock";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { LetterAvatar } from "@/components/ui/letter-avatar";
 
 type Props = {
@@ -61,8 +62,6 @@ export function ConversationList({
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
-      {/* En-tête : titre + bouton + recherche. Reste compact sur mobile
-          (padding 12 px) pour ne pas voler de la hauteur utile. */}
       <div className="shrink-0 border-b border-border bg-background p-3 md:p-4">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
           <h1 className="truncate font-display text-lg italic md:text-2xl">Conversations</h1>
@@ -83,8 +82,6 @@ export function ConversationList({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Rechercher un prospect…"
-            // Pas de text-[12px] ici : on laisse styles.css remonter la
-            // taille à 16px en mobile pour empêcher le zoom automatique iOS.
             className="h-9 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-[12px] outline-none transition-colors focus:border-primary/50"
           />
         </div>
@@ -107,13 +104,17 @@ export function ConversationList({
               onClick={() => onSelect(t)}
               onContextMenu={(e) => openMenu(e, t)}
               className={cn(
-                "flex w-full min-w-0 items-start gap-2.5 rounded-xl border bg-background p-3 text-left shadow-sm transition-colors",
-                // Sur mobile, on privilégie un léger fond au tap plutôt que
-                // le `hover` (qui n'existe pas).
+                "relative flex w-full min-w-0 items-start gap-2.5 rounded-xl border bg-background p-3 text-left shadow-sm transition-[background-color,border-color,box-shadow]",
                 "hover:bg-surface/60 active:bg-surface/70",
                 active ? "border-primary/30 bg-surface/70" : "border-border/70",
               )}
-              style={active ? { boxShadow: `inset 3px 0 0 0 ${theme.accent}` } : undefined}
+              style={
+                active
+                  ? {
+                      boxShadow: `inset 3px 0 0 0 ${theme.accent}, 0 0 0 1px color-mix(in oklab, ${theme.accent} 20%, transparent)`,
+                    }
+                  : undefined
+              }
             >
               <LetterAvatar name={t.contact} size={40} shape="circle" />
               <span className="min-w-0 flex-1">
@@ -189,8 +190,6 @@ export function ConversationList({
   );
 }
 
-/* ------------------------------ Context menu ----------------------------- */
-
 function ContextMenu({
   x,
   y,
@@ -215,8 +214,6 @@ function ContextMenu({
   const isFav = Boolean(thread.favorite);
   const isUnread = Boolean(thread.unread);
 
-  // Sur mobile, le menu est ancré plus haut (56 px) pour ne pas être sous
-  // le doigt, et sa largeur maximale est plafonnée pour éviter un débordement.
   const W = Math.min(240, window.innerWidth - 24);
   const H = 260;
   const left = Math.min(x, window.innerWidth - W - 12);
@@ -272,7 +269,6 @@ function MenuItem({
       role="menuitem"
       onClick={onClick}
       className={cn(
-        // Cible tactile : min-h-10 en mobile (40 px), h-8 en desktop.
         "flex min-h-10 w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[12.5px] transition-colors md:min-h-8",
         danger
           ? "text-destructive hover:bg-destructive/10 active:bg-destructive/15"

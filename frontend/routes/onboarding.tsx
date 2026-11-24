@@ -1,4 +1,5 @@
-//frontend\routes\onboarding.tsx
+// frontend/routes/onboarding.tsx
+
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useRef, useEffect, useId } from "react";
 import {
@@ -50,8 +51,8 @@ import {
   Shield,
   Laugh,
   Target,
-} from "lucide-react";
-import { BrandLogo } from "@/components/brand-logo";
+} from "@/components/icons";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { OnboardingSkeleton } from "@/components/skeletons";
 
 type IconProps = { className?: string };
@@ -207,10 +208,6 @@ const DeepSeekIcon = ({ className = "size-5" }: IconProps) => (
   </svg>
 );
 
-/* -------------------------------------------------------------------------- */
-/*  Logos réseaux sociaux                                                     */
-/* -------------------------------------------------------------------------- */
-
 const LinkedInBrand = ({ className = "size-4" }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -274,10 +271,6 @@ const InstagramBrand = ({ className = "size-4" }: IconProps) => {
     </svg>
   );
 };
-
-/* -------------------------------------------------------------------------- */
-/*  Icônes par option                                                         */
-/* -------------------------------------------------------------------------- */
 
 const optionIcons: Record<string, React.ReactNode> = {
   "Founder solo": <User className="size-4" strokeWidth={1.75} />,
@@ -352,21 +345,12 @@ function OptionIcon({ label, active }: { label: string; active?: boolean }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Guides fournisseurs — alignés sur AI_BRANDS (model-selector-types.ts)     */
-/*                                                                            */
-/*  ⚠️ NE PAS AJOUTER de fournisseur qui n'existe pas dans `AI_BRANDS`.        */
-/*  Aujourd'hui : Claude, Gemini, ChatGPT, Perplexity, DeepSeek, Mistral,    */
-/*  Groq. Cohere a été retiré — il n'est plus proposé dans l'app.            */
-/* -------------------------------------------------------------------------- */
-
 interface ProviderGuide {
   name: string;
   icon: React.ReactNode;
   steps: string[];
   link: string;
   linkLabel: string;
-  /** Vrai si la marque est disponible SANS clé API (modèles inclus). */
   included?: boolean;
 }
 
@@ -468,10 +452,6 @@ const providerGuides: ProviderGuide[] = [
   },
 ];
 
-/* -------------------------------------------------------------------------- */
-/*  Étapes                                                                    */
-/* -------------------------------------------------------------------------- */
-
 const steps = [
   {
     key: "role",
@@ -521,10 +501,6 @@ const steps = [
   { key: "ready", title: "Prêt à décoller.", subtitle: "L'agent a tout ce qu'il lui faut." },
 ];
 
-/* -------------------------------------------------------------------------- */
-/*  Options de questions                                                      */
-/* -------------------------------------------------------------------------- */
-
 const roleOptions = ["Founder solo", "Petite équipe (2-5)", "Agence", "Autre"];
 const channelOptions = ["Instagram", "LinkedIn", "WhatsApp", "Email", "Multi-canal", "Autre"];
 const sectorOptions = ["Tech / IT", "Finance", "Santé", "Industrie", "Commerce", "Autre"];
@@ -555,10 +531,6 @@ const otherToneOptions = [
   "Pédagogique",
   "Minimaliste",
 ];
-
-/* -------------------------------------------------------------------------- */
-/*  Textarea auto-extensible                                                  */
-/* -------------------------------------------------------------------------- */
 
 function AutoResizeTextarea({
   value,
@@ -593,10 +565,6 @@ function AutoResizeTextarea({
     />
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Coquille modale                                                           */
-/* -------------------------------------------------------------------------- */
 
 function ModalShell({
   children,
@@ -645,10 +613,6 @@ function ModalShell({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Guide fournisseur                                                         */
-/* -------------------------------------------------------------------------- */
-
 function GuideModal({ guide, onClose }: { guide: ProviderGuide; onClose: () => void }) {
   return (
     <ModalShell onClose={onClose} maxWidth="max-w-lg" labelledBy="guide-title">
@@ -696,10 +660,6 @@ function GuideModal({ guide, onClose }: { guide: ProviderGuide; onClose: () => v
     </ModalShell>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Modales de sortie                                                         */
-/* -------------------------------------------------------------------------- */
 
 function SkipConfirmModal({
   onCancel,
@@ -853,10 +813,6 @@ function SkipByokModal({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Placeholders de clés API                                                  */
-/* -------------------------------------------------------------------------- */
-
 const providerPlaceholders: Record<string, string> = {
   Anthropic: "sk-ant-...",
   OpenAI: "sk-...",
@@ -866,10 +822,6 @@ const providerPlaceholders: Record<string, string> = {
   Perplexity: "pplx-...",
   DeepSeek: "sk-...",
 };
-
-/* -------------------------------------------------------------------------- */
-/*  Carte fournisseur                                                         */
-/* -------------------------------------------------------------------------- */
 
 function ProviderCard({
   provider,
@@ -918,10 +870,6 @@ function ProviderCard({
     </div>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Grille d'options                                                          */
-/* -------------------------------------------------------------------------- */
 
 interface ChoiceQuestion {
   options: string[];
@@ -1124,10 +1072,6 @@ function OtherOption({
     </div>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Page                                                                      */
-/* -------------------------------------------------------------------------- */
 
 function OnboardingPage() {
   const navigate = useNavigate();
@@ -1339,7 +1283,7 @@ function OnboardingPage() {
           <>
             <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 md:opacity-30 pointer-events-none"
-              style={{ backgroundImage: "url('/images/catalogue-reseaux.webp')" }}
+              style={{ backgroundImage: "url('/images/app/networks.webp')" }}
               aria-hidden="true"
             />
             <div

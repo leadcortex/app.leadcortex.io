@@ -1,20 +1,6 @@
-"use client";
+// frontend/hooks/use-assistant-stream.ts
 
-/**
- * Hook qui pilote un transport `AssistantTransport` et expose un état
- * prêt à consommer par l'UI :
- *
- *  - `phase`     : "idle" | "thinking" | "streaming" | "done" | "error"
- *  - `text`      : texte cumulé reçu jusqu'ici
- *  - `usage`     : consommation (renseignée après un `done`)
- *  - `error`     : message d'erreur lisible
- *  - `start`     : lance un envoi (annule l'éventuel envoi en cours)
- *  - `abort`     : annule le flux en cours
- *  - `reset`     : remet à zéro
- *
- * Le hook est volontairement bas-niveau : la sidebar le branchera sur son
- * état de messages, mais il peut être utilisé isolément (ex. pour un test).
- */
+"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -24,8 +10,12 @@ import {
   type SendRequest,
   type StreamChunk,
   type Usage,
-} from "@/lib/assistant-transport";
-import type { AssistantAttachment, AssistantMessage } from "@/components/ai-assistant/assistant-engine";
+} from "@/lib/ai/assistant-transport";
+import type {
+  AssistantAttachment,
+  AssistantFileContent,
+  AssistantMessage,
+} from "@/components/ai-assistant/assistant-engine";
 
 export type StreamPhase = "idle" | "thinking" | "streaming" | "done" | "error";
 
@@ -40,6 +30,8 @@ export type StartOptions = {
   prompt: string;
   context: string;
   attachments?: AssistantAttachment[];
+  fileContents?: AssistantFileContent[];
+  knowledgeContext?: string;
   history?: AssistantMessage[];
   onDone?: (fullText: string, usage: Usage | null) => void;
   onError?: (message: string) => void;
@@ -52,7 +44,6 @@ const initialState: AssistantStreamState = {
   error: null,
 };
 
-/** Transport par défaut : mock. À remplacer côté appelant si un vrai endpoint existe. */
 const defaultTransport: AssistantTransport = new MockTransport();
 
 export function useAssistantStream(transport: AssistantTransport = defaultTransport) {
@@ -85,6 +76,8 @@ export function useAssistantStream(transport: AssistantTransport = defaultTransp
         prompt: options.prompt,
         context: options.context,
         attachments: options.attachments ?? [],
+        fileContents: options.fileContents ?? [],
+        knowledgeContext: options.knowledgeContext ?? "",
         history: options.history ?? [],
         signal: controller.signal,
       };
@@ -100,7 +93,7 @@ export function useAssistantStream(transport: AssistantTransport = defaultTransp
             if (chunk.type === "error") {
               if (!chunk.retryable) {
                 finish("error", chunk.message);
-                return true; // pas de retry, mais on sort proprement
+                return true;
               }
               return false;
             }
@@ -159,7 +152,6 @@ export function useAssistantStream(transport: AssistantTransport = defaultTransp
         return;
       }
 
-      // Le flux s'est terminé (done ou abort). On remonte le texte final.
       if (!controller.signal.aborted) {
         options.onDone?.(bufferRef.current, null);
       }

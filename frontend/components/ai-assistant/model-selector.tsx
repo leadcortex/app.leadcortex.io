@@ -1,7 +1,10 @@
-//frontend\components\ai-assistant\model-selector.tsx
+// frontend/components/ai-assistant/model-selector.tsx
+
 import React, { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, Cpu, Key, Settings as SettingsIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { Check, ChevronDown, Cpu, Key, Settings as SettingsIcon } from "@/components/icons";
+import { cn } from "@/lib/core/utils";
+import { useApiKeys } from "@/hooks/use-api-keys";
 import {
   AI_BRANDS,
   AiBrand,
@@ -14,7 +17,7 @@ import {
   getBrand,
   isModelConfig,
 } from "./model-selector-types";
-import { getProviderLogo } from "./provider-logos";
+import { BrandLogo } from "./provider-logos";
 
 const CONFIG_CHANGED_EVENT = "lc:model-config-changed";
 
@@ -59,14 +62,6 @@ interface ModelSelectorProps {
   selectedConfig: ModelConfig;
   onConfigChange: (config: ModelConfig) => void;
   className?: string;
-}
-
-function BrandLogo({ brand, size = 16 }: { brand: AiBrandInfo; size?: number }) {
-  const Logo = getProviderLogo(brand.providerLabel);
-  if (!Logo) {
-    return <Cpu className="text-muted-foreground" style={{ width: size, height: size }} />;
-  }
-  return <Logo size={size} />;
 }
 
 function RolePicker({
@@ -192,8 +187,33 @@ export function ModelSelector({
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  const { usableProviders, hasUsableKey } = useApiKeys();
+
   const research = getBrand(selectedConfig.team.research);
   const work = getBrand(selectedConfig.team.work);
+
+  const poolFor = (role: "research" | "work", m: SelectionType) =>
+    brandsForRole(role, m).filter((b) => m === "app" || usableProviders.has(b.providerKey));
+
+  useEffect(() => {
+    if (selectedConfig.type !== "user-key" || hasUsableKey) return;
+    const researchPool = poolFor("research", "app");
+    const workPool = poolFor("work", "app");
+    if (researchPool.length === 0 || workPool.length === 0) return;
+    onConfigChange({
+      ...selectedConfig,
+      type: "app",
+      team: {
+        research: researchPool.some((b) => b.id === selectedConfig.team.research)
+          ? selectedConfig.team.research
+          : researchPool[0]!.id,
+        work: workPool.some((b) => b.id === selectedConfig.team.work)
+          ? selectedConfig.team.work
+          : workPool[0]!.id,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedConfig.type, hasUsableKey]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -212,8 +232,16 @@ export function ModelSelector({
   }, [isOpen]);
 
   const setMode = (mode: SelectionType) => {
-    const researchOptions = brandsForRole("research", mode);
-    const workOptions = brandsForRole("work", mode);
+    if (mode === "user-key" && !hasUsableKey) {
+      toast.info("Ajoutez d'abord une clé API dans Réglages → Capacités → Mes clés API.");
+      return;
+    }
+    const researchOptions = poolFor("research", mode);
+    const workOptions = poolFor("work", mode);
+    if (researchOptions.length === 0 || workOptions.length === 0) {
+      toast.error("Aucun modèle compatible avec vos clés API actives.");
+      return;
+    }
     const nextResearch = researchOptions.some((b) => b.id === selectedConfig.team.research)
       ? selectedConfig.team.research
       : researchOptions[0]!.id;
@@ -239,8 +267,8 @@ export function ModelSelector({
     });
 
   const mode = selectedConfig.type;
-  const researchOptions = brandsForRole("research", mode);
-  const workOptions = brandsForRole("work", mode);
+  const researchOptions = poolFor("research", mode);
+  const workOptions = poolFor("work", mode);
 
   return (
     <div ref={ref} className={`relative ${className}`}>
@@ -311,7 +339,7 @@ export function ModelSelector({
               <p className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-2 text-[10.5px] leading-snug text-amber-600 dark:text-amber-400">
                 <SettingsIcon className="mt-px h-3 w-3 shrink-0" />
                 <span>
-                  Gérez vos clés dans <b>Réglages → Clés API & équipes d’IA</b>.
+                  Gérez vos clés dans <b>Réglages → Capacités → Mes clés API</b>.
                 </span>
               </p>
             )}

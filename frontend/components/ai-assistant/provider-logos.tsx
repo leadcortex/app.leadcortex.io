@@ -1,12 +1,21 @@
-//frontend\components\ai-assistant\provider-logos.tsx
+// frontend/components/ai-assistant/provider-logos.tsx
+
 import React from "react";
-import { Wind as WindIcon, Zap as ZapIcon } from "lucide-react";
-import { PROVIDER_ICONS } from "@/components/provider-icons";
+import { Cpu } from "@/components/icons";
+import {
+  CLAUDE_SPARK_PATH,
+  CLAUDE_SPARK_VIEWBOX,
+  GOOGLE_G_PATH,
+  PROVIDER_ICONS,
+} from "@/components/marketing/provider-icons";
+import type { AiBrand, AiBrandInfo, ApiProvider } from "./model-selector-types";
 
 type LogoProps = {
   className?: string;
   size?: number;
 };
+
+type LogoComponent = React.ComponentType<LogoProps>;
 
 function PerplexityProviderIcon({ className, size = 16 }: LogoProps) {
   const Raw = (
@@ -32,11 +41,13 @@ function PerplexityProviderIcon({ className, size = 16 }: LogoProps) {
   );
 }
 
-export const PROVIDER_LOGOS: Record<string, React.ComponentType<LogoProps>> = {
-  OpenAI: OpenAILogo,
+export const PROVIDER_LOGOS: Record<string, LogoComponent> = {
+  Claude: ClaudeLogo,
   Anthropic: AnthropicLogo,
-  Google: GeminiLogo,
+  ChatGPT: OpenAILogo,
+  OpenAI: OpenAILogo,
   Gemini: GeminiLogo,
+  Google: GoogleLogo,
   DeepSeek: DeepSeekLogo,
   Perplexity: PerplexityProviderIcon,
   Mistral: MistralLogo,
@@ -46,6 +57,61 @@ export const PROVIDER_LOGOS: Record<string, React.ComponentType<LogoProps>> = {
 export function getProviderLogo(provider?: string) {
   if (!provider) return null;
   return PROVIDER_LOGOS[provider] ?? null;
+}
+
+const BRAND_LOGOS: Record<AiBrand, LogoComponent> = {
+  claude: ClaudeLogo,
+  gemini: GeminiLogo,
+  chatgpt: OpenAILogo,
+  perplexity: PerplexityProviderIcon,
+  deepseek: DeepSeekLogo,
+  mistral: MistralLogo,
+  groq: GroqLogo,
+};
+
+const API_PROVIDER_LOGOS: Record<ApiProvider, LogoComponent> = {
+  anthropic: AnthropicLogo,
+  openai: OpenAILogo,
+  google: GoogleLogo,
+  perplexity: PerplexityProviderIcon,
+  deepseek: DeepSeekLogo,
+  mistral: MistralLogo,
+  groq: GroqLogo,
+};
+
+export function getBrandLogo(brand: AiBrand): LogoComponent {
+  return BRAND_LOGOS[brand] ?? (Cpu as unknown as LogoComponent);
+}
+
+export function getApiProviderLogo(provider: ApiProvider): LogoComponent {
+  return API_PROVIDER_LOGOS[provider] ?? (Cpu as unknown as LogoComponent);
+}
+
+export function BrandLogo({
+  brand,
+  size = 16,
+  className,
+}: {
+  brand: Pick<AiBrandInfo, "id"> | AiBrand;
+  size?: number;
+  className?: string;
+}) {
+  const id = typeof brand === "string" ? brand : brand.id;
+  const Logo = getBrandLogo(id);
+  return <Logo size={size} className={className} />;
+}
+
+export function ProviderLogo({
+  provider,
+  size = 16,
+  className,
+}: {
+  provider: ApiProvider;
+  size?: number;
+  className?: string;
+}) {
+  const Logo = getApiProviderLogo(provider);
+  return <Logo size={size} className={className} />;
 }
 
 export function OpenAILogo({ className, size = 16 }: LogoProps) {
@@ -60,6 +126,22 @@ export function OpenAILogo({ className, size = 16 }: LogoProps) {
       aria-hidden="true"
     >
       <path d="M22.282 9.821a5.985 5.985 0 00-.516-4.91 6.046 6.046 0 00-6.51-2.9A6.065 6.065 0 004.981 4.18a5.985 5.985 0 00-3.998 2.9 6.046 6.046 0 00.743 7.097 5.98 5.98 0 00.51 4.911 6.051 6.051 0 006.515 2.9A5.985 5.985 0 0013.26 24a6.056 6.056 0 005.772-4.206 5.99 5.99 0 003.997-2.9 6.056 6.056 0 00-.747-7.073zM13.26 22.43a4.476 4.476 0 01-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 00.392-.681v-6.737l2.02 1.168a.071.071 0 01.038.052v5.583a4.504 4.504 0 01-4.494 4.494zM3.6 18.304a4.47 4.47 0 01-.535-3.014l.142.085 4.783 2.759a.771.771 0 00.78 0l5.843-3.369v2.332a.08.08 0 01-.033.062L9.74 19.95a4.5 4.5 0 01-6.14-1.646zM2.34 7.896a4.485 4.485 0 012.366-1.973V11.6a.766.766 0 00.388.676l5.815 3.355-2.02 1.168a.076.076 0 01-.071 0l-4.83-2.786A4.504 4.504 0 012.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 01.071 0l4.83 2.791a4.494 4.494 0 01-.676 8.105v-5.678a.79.79 0 00-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 00-.785 0L9.409 9.23V6.897a.066.066 0 01.028-.061l4.83-2.787a4.5 4.5 0 016.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 01-.038-.057V6.075a4.5 4.5 0 017.375-3.453l-.142.08L8.704 5.46a.795.795 0 00-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5Z" />
+    </svg>
+  );
+}
+
+export function ClaudeLogo({ className, size = 16 }: LogoProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox={CLAUDE_SPARK_VIEWBOX}
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d={CLAUDE_SPARK_PATH} />
     </svg>
   );
 }
@@ -97,6 +179,25 @@ export function GeminiLogo({ className, size = 16 }: LogoProps) {
   );
 }
 
+export function GoogleLogo({ className, size = 16 }: LogoProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={3.2}
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d={GOOGLE_G_PATH} />
+    </svg>
+  );
+}
+
 export function DeepSeekLogo({ className, size = 16 }: LogoProps) {
   return (
     <svg
@@ -115,22 +216,36 @@ export function DeepSeekLogo({ className, size = 16 }: LogoProps) {
 
 export function MistralLogo({ className, size = 16 }: LogoProps) {
   return (
-    <WindIcon
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
       className={className}
-      strokeWidth={1.8}
-      style={{ width: size, height: size }}
       aria-hidden="true"
-    />
+    >
+      <path d="M3.428 3.4h3.429v3.428H3.428zm13.714 0h3.43v3.428h-3.43z" />
+      <path d="M3.428 6.828h6.857v3.429H3.429zm10.286 0h6.857v3.429h-6.857z" />
+      <path d="M3.428 10.258h17.144v3.428H3.428z" />
+      <path d="M3.428 13.686h3.429v3.428H3.428zm6.858 0h3.429v3.428h-3.429zm6.856 0h3.43v3.428h-3.43z" />
+      <path d="M0 17.114h10.286v3.429H0zm13.714 0H24v3.429H13.714z" />
+    </svg>
   );
 }
 
 export function GroqLogo({ className, size = 16 }: LogoProps) {
   return (
-    <ZapIcon
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
       className={className}
-      strokeWidth={1.8}
-      style={{ width: size, height: size }}
       aria-hidden="true"
-    />
+    >
+      <path d="M12.036 2c-3.853-.035-7 3-7.036 6.781-.035 3.782 3.055 6.872 6.908 6.907h2.42v-2.566h-2.292c-2.407.028-4.38-1.866-4.408-4.23-.029-2.362 1.901-4.298 4.308-4.326h.1c2.407 0 4.358 1.915 4.365 4.278v6.305c0 2.342-1.944 4.25-4.323 4.279a4.375 4.375 0 01-3.033-1.252l-1.851 1.818A7 7 0 0012.029 22h.092c3.803-.056 6.858-3.083 6.879-6.816v-6.5C18.907 4.963 15.817 2 12.036 2z" />
+    </svg>
   );
 }

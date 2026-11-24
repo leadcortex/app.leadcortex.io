@@ -1,8 +1,10 @@
+// academy/src/components/ui/input-otp.tsx
+
 import * as React from "react";
 import { OTPInput, OTPInputContext } from "input-otp";
-import { Minus } from "lucide-react";
+import { Minus } from "../../../../frontend/components/icons";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 
 const InputOTP = React.forwardRef<
   React.ElementRef<typeof OTPInput>,

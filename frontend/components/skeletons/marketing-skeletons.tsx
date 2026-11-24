@@ -1,4 +1,5 @@
-//frontend\components\skeletons\marketing-skeletons.tsx
+// frontend/components/skeletons/marketing-skeletons.tsx
+
 import { Skeleton, SkeletonRegion } from "@/components/ui/skeleton";
 
 function SiteNavSkeleton() {
@@ -26,7 +27,6 @@ export function LandingSkeleton() {
       <div className="min-h-screen bg-background">
         <SiteNavSkeleton />
 
-        {}
         <section className="mx-auto max-w-7xl px-4 md:px-6 pt-12 md:pt-20 pb-10 md:pb-16">
           <div className="max-w-3xl space-y-4 md:space-y-6">
             <Skeleton className="h-5 w-64 rounded-full" />
@@ -48,7 +48,6 @@ export function LandingSkeleton() {
           </div>
         </section>
 
-        {}
         <section className="border-y border-border/60 bg-surface/30">
           <div className="mx-auto max-w-7xl px-4 md:px-6 py-6 md:py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <Skeleton variant="text" className="h-2 w-48" />
@@ -60,7 +59,6 @@ export function LandingSkeleton() {
           </div>
         </section>
 
-        {}
         <section className="mx-auto max-w-7xl px-4 md:px-6 py-12 md:py-24">
           <div className="max-w-2xl mb-8 md:mb-12 space-y-3">
             <Skeleton variant="text" className="h-2 w-28" />
@@ -70,7 +68,6 @@ export function LandingSkeleton() {
           <Skeleton className="h-[320px] md:h-[560px] w-full rounded-2xl md:rounded-3xl" />
         </section>
 
-        {}
         <section className="mx-auto max-w-7xl px-4 md:px-6 pb-12 md:pb-24 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="rounded-2xl border border-border bg-card p-5 space-y-3">

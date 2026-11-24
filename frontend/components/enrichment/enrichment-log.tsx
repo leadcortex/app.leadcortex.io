@@ -1,8 +1,9 @@
-//frontend\components\enrichment\enrichment-log.tsx
-import { CheckCircle2, CircleSlash, XCircle } from "lucide-react";
-import { Badge } from "@/components/ui-primitives";
-import type { EnrichmentJob } from "@/lib/enrichment-mock";
-import { cn } from "@/lib/utils";
+// frontend/components/enrichment/enrichment-log.tsx
+
+import { CheckCircle2, CircleSlash, XCircle } from "@/components/icons";
+import { Badge } from "@/components/common/ui-primitives";
+import type { EnrichmentJob } from "@/lib/enrichment/mock";
+import { cn } from "@/lib/core/utils";
 import { ProviderBadge } from "./provider-badge";
 
 const STATUS = {

@@ -1,8 +1,9 @@
-//frontend\components\settings\panels\ThinkingPanel.tsx
+// frontend/components/settings/panels/ThinkingPanel.tsx
+
 import { useState } from "react";
-import { Lightbulb } from "lucide-react";
+import { Lightbulb } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { PanelIntro, PanelGroup, SettingsCard, RowsCard, Row } from "./primitives";
 
 export function ThinkingPanel() {

@@ -1,30 +1,10 @@
-//frontend\components\onboarding\empty-dashboard.tsx
-/**
- * Page d'accueil affichée tant que le store ne contient AUCUNE donnée
- * métier. Remplace l'ancien dashboard vide (6 zéros, 4 graphiques plats).
- *
- * ─────────────────────────────────────────────────────────────────────────
- *  Structure (fidèle à la maquette « Tableau de bord chaleureux »)
- * ─────────────────────────────────────────────────────────────────────────
- *  • Salutation : « BIENVENUE » / « Bonjour, {prénom}. » / sous-titre
- *  • WelcomeHero    — « Votre pipeline en 4 mouvements »
- *  • Grille 2×2     — 4 StepCard (étape 1 en bouton plein)
- *  • Bandeau        — « Déjà des données ? » : import CSV, démo, outils
- *
- *  Les textes viennent de `ONBOARDING_STEPS` (src/lib/onboarding.ts).
- *
- *  ⚠️ Anti-débordement
- *  La racine est un `@container` : toutes les grilles de la page réagissent
- *  à la largeur RÉELLE disponible (entre sidebar et panneau Cortex), pas à
- *  celle de la fenêtre. C'est ce qui évite les textes qui dépassent de leur
- *  conteneur quand le panneau latéral est ouvert.
- * ─────────────────────────────────────────────────────────────────────────
- */
+// frontend/components/onboarding/empty-dashboard.tsx
+
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Compass, FileText, Play, Sparkles } from "lucide-react";
+import { Compass, FileText, Play, Sparkles } from "@/components/icons";
 
-import { useAppStore } from "@/lib/store";
+import { useAppStore } from "@/lib/state/store";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { ONBOARDING_STEPS } from "@/lib/onboarding";
 import { WelcomeHero } from "./welcome-hero";
@@ -37,7 +17,7 @@ import {
   workflows as demoWorkflows,
   deals as demoDeals,
   tasks as demoTasks,
-} from "@/lib/mock-data";
+} from "@/lib/data/mock-data";
 
 function BandAction({
   icon: Icon,
@@ -104,7 +84,6 @@ export function EmptyDashboard() {
   return (
     <div className="@container mx-auto w-full min-w-0 max-w-[1180px]">
       <div className="space-y-6 pb-10 @2xl:space-y-8">
-        {}
         <header className="min-w-0">
           <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
             Bienvenue
@@ -117,22 +96,18 @@ export function EmptyDashboard() {
           </p>
         </header>
 
-        {}
         <WelcomeHero />
 
-        {}
         <section aria-label="Étapes du démarrage" className="grid gap-4 @3xl:grid-cols-2">
           {ONBOARDING_STEPS.map((step, i) => (
             <StepCard key={step.id} step={step} index={i + 1} featured={i === 0} />
           ))}
         </section>
 
-        {}
         <section
           aria-label="Accès rapides"
           className="flex flex-col gap-4 rounded-2xl border border-primary/10 bg-primary/[0.05] px-5 py-4 @5xl:flex-row @5xl:items-center @5xl:justify-between @5xl:gap-6"
         >
-          {}
           <div className="flex min-w-0 flex-col gap-1.5 @3xl:flex-row @3xl:items-center @3xl:gap-4">
             <div className="flex shrink-0 items-center gap-3">
               <Sparkles className="size-5 shrink-0 text-[#CC9B5C]" strokeWidth={1.7} />
@@ -145,7 +120,6 @@ export function EmptyDashboard() {
             </p>
           </div>
 
-          {}
           <div className="flex flex-wrap items-center gap-x-1 gap-y-1 @5xl:shrink-0 @5xl:flex-nowrap">
             <BandAction icon={FileText} label="Importer un CSV" onClick={goImportCsv} />
             <span aria-hidden="true" className="hidden h-5 w-px bg-border @2xl:block" />

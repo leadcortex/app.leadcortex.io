@@ -1,9 +1,10 @@
-//frontend\components\enrichment\provider-card.tsx
-import { ExternalLink, Pause, Play, Settings2, Trash2, Zap } from "lucide-react";
-import { Badge } from "@/components/ui-primitives";
-import { cn } from "@/lib/utils";
-import type { EnrichmentProvider } from "@/lib/enrichment-mock";
-import { FIELD_LABELS, type EnrichableField } from "@/lib/enrichment-metrics";
+// frontend/components/enrichment/provider-card.tsx
+
+import { ExternalLink, Pause, Play, Settings2, Trash2, Zap } from "@/components/icons";
+import { Badge } from "@/components/common/ui-primitives";
+import { cn } from "@/lib/core/utils";
+import type { EnrichmentProvider } from "@/lib/enrichment/mock";
+import { FIELD_LABELS, type EnrichableField } from "@/lib/enrichment/metrics";
 import { ProviderBadge } from "./provider-badge";
 
 const FIELDS: EnrichableField[] = ["email", "phone", "linkedin", "company"];
@@ -34,7 +35,6 @@ export function ProviderCard({
 
   return (
     <article className="rounded-2xl border border-border bg-background p-4 md:p-5 transition-all hover:border-border/80">
-      {}
       <div className="flex items-start gap-3">
         <ProviderBadge slug={provider.slug} size={40} />
 
@@ -49,7 +49,6 @@ export function ProviderCard({
         </div>
       </div>
 
-      {}
       <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
         {FIELDS.map((f) => {
           const supported = provider.supports.includes(f);

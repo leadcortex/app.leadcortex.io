@@ -1,4 +1,5 @@
-//frontend\components\ai-assistant\assistant-sidebar.tsx
+// frontend/components/ai-assistant/assistant-sidebar.tsx
+
 import {
   useCallback,
   useEffect,
@@ -21,16 +22,18 @@ import {
   Plus,
   Send,
   X,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
 
-import { cn } from "@/lib/utils";
-import { BrandLogoMark } from "@/components/brand-logo-mark";
+import { cn } from "@/lib/core/utils";
+import { BrandLogoMark } from "@/components/brand/brand-logo-mark";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useSidebarSide, oppositeSide } from "@/lib/layout-prefs";
+import { useSidebarSide, oppositeSide } from "@/lib/core/layout-prefs";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useFileDrop } from "@/hooks/use-file-drop";
 import { useAssistantStream } from "@/hooks/use-assistant-stream";
+import { useDraft } from "@/hooks/use-draft";
+import { isPreviewFrame } from "@/lib/core/persist";
 
 import {
   getGreeting,
@@ -45,6 +48,7 @@ import {
 import { ModelSelector, useModelSelector } from "./model-selector";
 import { getModelCapabilities } from "./assistant-engine-extensions";
 import { ASSISTANT_OPEN_EVENT, type AssistantOpenDetail } from "./assistant-bus";
+import { useAssistantDocked } from "./assistant-dock";
 
 import { MessageContent } from "./message-content";
 import { MessageActions } from "./message-actions";
@@ -54,8 +58,13 @@ import { MessageSearch } from "./message-search";
 import { EditPromptSheet } from "./edit-prompt-sheet";
 import { HistoryPanel } from "./history-panel";
 import { AttachmentPillRow } from "./attachment-pill";
+import {
+  getAttachmentReadability,
+  isTextAttachment,
+  MAX_ASSISTANT_FILES,
+} from "./file-type-icons";
 import { persistDensity, readDensity, type ChatDensity } from "./density-toggle";
-import { demoConversation } from "./message-demo";
+import { demoConversation, demoQueuedAttachments } from "./message-demo";
 import { PromptLibraryPanel } from "./prompt-library-panel";
 import { ShareMenu } from "./share-menu";
 import { ChatSettingsMenu } from "./chat-settings-menu";
@@ -68,14 +77,14 @@ import { AssistantErrorBoundary } from "./assistant-error-boundary";
 import {
   createConversationId,
   deriveTitle,
+  loadConversations,
   saveConversation,
   type Conversation,
 } from "./conversation-store";
-import { pushRecent } from "@/lib/prompt-library-store";
-import { clearPins, loadPins, togglePin } from "@/lib/pinned-messages-store";
-import { loadOnboarding, saveOnboarding } from "@/lib/assistant-onboarding";
-
-/* ─── Constantes ─────────────────────────────────────────────────────── */
+import { pushRecent } from "@/lib/ai/prompt-library-store";
+import { clearPins, loadPins, togglePin } from "@/lib/ai/pinned-messages-store";
+import { loadOnboarding, saveOnboarding } from "@/lib/ai/assistant-onboarding";
+import { loadAssistantKnowledgeContext } from "@/lib/ai/knowledge-library";
 
 const SNAP_WIDTH = 300;
 const DEFAULT_WIDTH = 380;
@@ -83,7 +92,10 @@ const MAX_WIDTH = 620;
 const STORAGE_KEY = "lc.assistant.width";
 
 const LABEL_STORAGE_KEY = "lc.assistant.labelY";
+const OPEN_STORAGE_KEY = "lc.assistant.open";
+const ACTIVE_CONV_KEY = "lc.assistant.activeConversation.v1";
 const MOBILE_LABEL_GAP = 8;
+const FILE_LIMIT_NOTICE_MS = 3500;
 
 const TEXTAREA_MIN_PX = 52;
 const TEXTAREA_MAX_PX = 168;
@@ -95,9 +107,15 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   ASSISTANT SIDEBAR (panneau + label + logique de drag/redimensionnement)
-   ═══════════════════════════════════════════════════════════════════════ */
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  let binary = "";
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+  return btoa(binary);
+}
 
 export function AssistantSidebar() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
@@ -105,10 +123,26 @@ export function AssistantSidebar() {
   const sidebarSide = useSidebarSide();
   const assistantSide = oppositeSide(sidebarSide);
   const isLeft = assistantSide === "left";
+  const docked = useAssistantDocked();
 
   const [width, setWidth] = useState(DEFAULT_WIDTH);
   const [dragging, setDragging] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpenState] = useState(false);
+  const setOpen = useCallback((value: boolean) => {
+    setOpenState(value);
+    try {
+      window.localStorage.setItem(OPEN_STORAGE_KEY, value ? "1" : "0");
+    } catch {
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isPreviewFrame() || window.innerWidth < 768) return;
+    try {
+      if (window.localStorage.getItem(OPEN_STORAGE_KEY) === "1") setOpenState(true);
+    } catch {
+    }
+  }, []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileDrag, setMobileDrag] = useState<number | null>(null);
 
@@ -357,7 +391,7 @@ export function AssistantSidebar() {
   return (
     <TooltipProvider delayDuration={200}>
       <div className="hidden md:block">
-        {!open ? (
+        {!open && docked ? null : !open ? (
           <button
             ref={desktopLabelRef}
             onPointerDown={startLabelDrag}
@@ -366,7 +400,7 @@ export function AssistantSidebar() {
             }}
             aria-label="Ouvrir l'assistant IA"
             className={cn(
-              "fixed z-40 flex -translate-y-1/2 cursor-ns-resize touch-none select-none flex-col items-center gap-2 border-border bg-surface/90 px-2 py-2.5 shadow-lg backdrop-blur transition-colors hover:bg-secondary/40",
+              "fixed z-[48] flex -translate-y-1/2 cursor-ns-resize touch-none select-none flex-col items-center gap-2 border-border bg-surface/90 px-2 py-2.5 shadow-lg backdrop-blur transition-colors hover:bg-secondary/40",
               sideClasses.desktopLabelPos,
               labelDragging && "bg-secondary/60",
             )}
@@ -386,7 +420,7 @@ export function AssistantSidebar() {
             )}
           </button>
         ) : (
-          <div className={cn("fixed inset-y-0 z-40 flex", isLeft ? "left-0" : "right-0")}>
+          <div className={cn("fixed inset-y-0 z-[48] flex", isLeft ? "left-0" : "right-0")}>
             <div
               role="separator"
               aria-orientation="vertical"
@@ -467,7 +501,7 @@ export function AssistantSidebar() {
         </div>
       </div>
 
-      {!mobileOpen && (
+      {!mobileOpen && !docked && (
         <button
           ref={mobileLabelRef}
           onPointerDown={startLabelDrag}
@@ -492,10 +526,6 @@ export function AssistantSidebar() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   ASSISTANT PANEL
-   ═══════════════════════════════════════════════════════════════════════ */
-
 function AssistantPanel({
   ctx,
   onClose,
@@ -511,10 +541,12 @@ function AssistantPanel({
   pendingAttachments?: AssistantAttachment[] | null;
   onPendingConsumed?: () => void;
 }) {
-  /* ─── État principal ───────────────────────────────────────────────── */
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useDraft("assistant.input");
   const [attachments, setAttachments] = useState<AssistantAttachment[]>([]);
+  const [unreadableAttachments, setUnreadableAttachments] = useState<Record<string, string>>({});
+  const [fileLimitNotice, setFileLimitNotice] = useState("");
+  const [preparingSend, setPreparingSend] = useState(false);
   const [feedbackMap, setFeedbackMap] = useState<Record<string, FeedbackValue>>({});
   const [editingPrompt, setEditingPrompt] = useState<{
     messageId: string;
@@ -530,24 +562,25 @@ function AssistantPanel({
   const [pinnedIds, setPinnedIds] = useState<string[]>([]);
   const [onboarding, setOnboarding] = useState(() => loadOnboarding());
 
-  /* ─── Refs ─────────────────────────────────────────────────────────── */
   const listRef = useRef<HTMLDivElement>(null);
   const imageInput = useRef<HTMLInputElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const attachedFiles = useRef(new Map<string, File>());
+  const sentFileContents = useRef(
+    new Map<string, { content: string; encoding?: "base64"; mimeType?: string }>(),
+  );
+  const fileLimitTimer = useRef<number | null>(null);
+  const lastKnowledgeContext = useRef("");
 
-  /* ─── Stores annexes ───────────────────────────────────────────────── */
   const { selectedConfig, updateSelection } = useModelSelector();
   const capabilities = useMemo(() => getModelCapabilities(selectedConfig), [selectedConfig]);
   const { firstName } = useCurrentUser();
   const greeting = useMemo(() => getGreeting(firstName), [firstName]);
 
-  /* ─── Streaming ────────────────────────────────────────────────────── */
   const stream = useAssistantStream();
   const isStreaming = stream.phase === "thinking" || stream.phase === "streaming";
   const streamError = stream.phase === "error" ? stream.error : null;
-
-  /* ─── Effets ───────────────────────────────────────────────────────── */
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -590,9 +623,27 @@ function AssistantPanel({
         updatedAt: Date.now(),
       };
       saveConversation(conv);
+      try {
+        window.localStorage.setItem(ACTIVE_CONV_KEY, conversationId);
+      } catch {
+      }
     }, 400);
     return () => window.clearTimeout(timer);
   }, [messages, conversationId, conversationCreatedAt]);
+
+  useEffect(() => {
+    if (isPreviewFrame()) return;
+    try {
+      const id = window.localStorage.getItem(ACTIVE_CONV_KEY);
+      if (!id) return;
+      const conv = loadConversations().find((c) => c.id === id);
+      if (!conv) return;
+      setMessages(conv.messages);
+      setConversationId(conv.id);
+      setConversationCreatedAt(conv.createdAt);
+    } catch {
+    }
+  }, []);
 
   useEffect(() => {
     setPinnedIds(loadPins(conversationId));
@@ -616,7 +667,6 @@ function AssistantPanel({
       try {
         el.setSelectionRange(len, len);
       } catch {
-        /* no-op */
       }
       el.scrollTop = el.scrollHeight;
     });
@@ -640,14 +690,14 @@ function AssistantPanel({
     });
   }, [messages]);
 
-  /* ─── Fichiers ─────────────────────────────────────────────────────── */
-
   const filesToAttachments = useCallback(
     (files: File[]): AssistantAttachment[] =>
       files.map((f) => {
         const isImage = f.type.startsWith("image/");
+        const id = nextId();
+        attachedFiles.current.set(id, f);
         return {
-          id: nextId(),
+          id,
           name: f.name,
           size: f.size,
           kind: isImage ? "image" : "document",
@@ -657,14 +707,44 @@ function AssistantPanel({
     [],
   );
 
-  const addFiles = (files: FileList | null) => {
+  const addFiles = (files: FileList | File[] | null) => {
     if (!files) return;
-    setAttachments((a) => [...a, ...filesToAttachments(Array.from(files))]);
+    const incoming = Array.from(files);
+    const available = Math.max(0, MAX_ASSISTANT_FILES - attachments.length);
+    const accepted = incoming.slice(0, available);
+    if (incoming.length > accepted.length) {
+      setFileLimitNotice(`Seuls les ${MAX_ASSISTANT_FILES} fichiers sont pris en charge.`);
+      if (fileLimitTimer.current !== null) window.clearTimeout(fileLimitTimer.current);
+      fileLimitTimer.current = window.setTimeout(
+        () => setFileLimitNotice(""),
+        FILE_LIMIT_NOTICE_MS,
+      );
+    }
+    if (accepted.length) {
+      setAttachments((current) => [...current, ...filesToAttachments(accepted)]);
+    }
   };
 
   const { isDragging, bind: dropBind } = useFileDrop({
-    onDrop: (files) => setAttachments((a) => [...a, ...filesToAttachments(files)]),
+    onDrop: addFiles,
   });
+
+  const attachmentErrors = useMemo(
+    () =>
+      Object.fromEntries(
+        attachments.flatMap((attachment) => {
+          if (attachment.kind === "context") return [];
+          const status = getAttachmentReadability(
+            attachment.name,
+            attachment.size,
+            attachedFiles.current.has(attachment.id),
+          );
+          const error = unreadableAttachments[attachment.id] ?? status.reason;
+          return error ? [[attachment.id, error]] : [];
+        }),
+      ),
+    [attachments, unreadableAttachments],
+  );
 
   const addContext = () => {
     setAttachments((a) => {
@@ -673,14 +753,32 @@ function AssistantPanel({
     });
   };
 
-  /* ─── Envoi / streaming ────────────────────────────────────────────── */
-
   const launchStream = useCallback(
-    (prompt: string, atts: AssistantAttachment[]) => {
+    (
+      prompt: string,
+      atts: AssistantAttachment[],
+      fileContents?: {
+        id: string;
+        name: string;
+        content: string;
+        encoding?: "base64";
+        mimeType?: string;
+      }[],
+      knowledgeContext?: string,
+    ) => {
       stream.start({
         prompt,
         context: ctx,
         attachments: atts,
+        fileContents:
+          fileContents ??
+          atts.flatMap((attachment) => {
+            const content = sentFileContents.current.get(attachment.id);
+            return content === undefined
+              ? []
+              : [{ id: attachment.id, name: attachment.name, ...content }];
+          }),
+        knowledgeContext: knowledgeContext ?? lastKnowledgeContext.current,
         history: messages.slice(-6),
         onDone: (fullText) => {
           setMessages((m) => [
@@ -701,33 +799,115 @@ function AssistantPanel({
     [ctx, messages, stream],
   );
 
-  const send = (text?: string) => {
+  const send = async (text?: string) => {
     const value = (text ?? input).trim();
+    if (preparingSend || isStreaming) return;
     if (!value && attachments.length === 0) return;
-    const sent = attachments;
-    setMessages((m) => [
-      ...m,
-      {
-        id: nextId(),
-        role: "user",
-        text: value,
-        createdAt: Date.now(),
-        attachments: sent,
-      },
-    ]);
-    setInput("");
-    setAttachments([]);
-    pushRecent(value, ctx);
-    if (!onboarding.welcomeSeen) {
-      setOnboarding(saveOnboarding({ welcomeSeen: true }));
-    }
-    launchStream(value, sent);
-  };
+    setPreparingSend(true);
 
-  /* ─── Actions annexes ──────────────────────────────────────────────── */
+    try {
+      const sent: AssistantAttachment[] = [];
+      const remaining: AssistantAttachment[] = [];
+      const fileContents: {
+        id: string;
+        name: string;
+        content: string;
+        encoding?: "base64";
+        mimeType?: string;
+      }[] = [];
+      const unreadable: Record<string, string> = {};
+
+      for (const attachment of attachments) {
+        if (attachment.kind === "context") {
+          sent.push(attachment);
+          continue;
+        }
+
+        const file = attachedFiles.current.get(attachment.id);
+        const status = getAttachmentReadability(attachment.name, attachment.size, !!file);
+        if (!status.readable || !file) {
+          remaining.push(attachment);
+          continue;
+        }
+
+        let content: string;
+        let encoding: "base64" | undefined;
+        if (isTextAttachment(attachment.name)) {
+          content = await file.text();
+          if (content.includes("\u0000")) {
+            remaining.push(attachment);
+            unreadable[attachment.id] = "fichier invalide";
+            continue;
+          }
+        } else {
+          content = arrayBufferToBase64(await file.arrayBuffer());
+          encoding = "base64";
+        }
+
+        sent.push(attachment);
+        fileContents.push({
+          id: attachment.id,
+          name: attachment.name,
+          content,
+          ...(encoding ? { encoding } : {}),
+          ...(file.type ? { mimeType: file.type } : {}),
+        });
+      }
+
+      if (!value && sent.length === 0) {
+        toast.info(
+          "Aucun fichier lisible n'a été envoyé. Consultez la raison affichée au-dessus des fichiers.",
+        );
+        setUnreadableAttachments((current) => ({ ...current, ...unreadable }));
+        return;
+      }
+
+      const knowledgeContext = await loadAssistantKnowledgeContext();
+      lastKnowledgeContext.current = knowledgeContext;
+      fileContents.forEach((file) => {
+        sentFileContents.current.set(file.id, {
+          content: file.content,
+          ...(file.encoding ? { encoding: file.encoding } : {}),
+          ...(file.mimeType ? { mimeType: file.mimeType } : {}),
+        });
+      });
+      setMessages((current) => [
+        ...current,
+        {
+          id: nextId(),
+          role: "user",
+          text: value,
+          createdAt: Date.now(),
+          attachments: sent,
+        },
+      ]);
+      setInput("");
+      const sentIds = new Set(sent.map((attachment) => attachment.id));
+      setAttachments((current) => current.filter((attachment) => !sentIds.has(attachment.id)));
+      setUnreadableAttachments(unreadable);
+      for (const attachment of sent) attachedFiles.current.delete(attachment.id);
+      pushRecent(value, ctx);
+      if (!onboarding.welcomeSeen) {
+        setOnboarding(saveOnboarding({ welcomeSeen: true }));
+      }
+      launchStream(value, sent, fileContents, knowledgeContext);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Impossible de préparer les fichiers pour l'envoi.",
+      );
+    } finally {
+      setPreparingSend(false);
+    }
+  };
 
   const startNewConversation = () => {
     stream.abort();
+    try {
+      window.localStorage.removeItem(ACTIVE_CONV_KEY);
+    } catch {
+    }
     setMessages([]);
     setFeedbackMap({});
     setConversationId(createConversationId());
@@ -744,7 +924,15 @@ function AssistantPanel({
 
   const loadDemo = () => {
     stream.abort();
+    attachments.forEach((attachment) => {
+      if (attachment.url?.startsWith("blob:")) URL.revokeObjectURL(attachment.url);
+    });
     setMessages(demoConversation());
+    setAttachments(demoQueuedAttachments());
+    attachedFiles.current.clear();
+    sentFileContents.current.clear();
+    lastKnowledgeContext.current = "";
+    setUnreadableAttachments({});
     setFeedbackMap({});
     setConversationId(createConversationId());
     setConversationCreatedAt(Date.now());
@@ -845,7 +1033,6 @@ function AssistantPanel({
 
   return (
     <div className="flex h-full min-w-[280px] flex-col">
-      {/* ─── Header ─────────────────────────────────────────────────── */}
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-1.5 border-b border-border px-2.5 py-2.5">
         <div className="flex min-w-0 items-center gap-2">
           <button
@@ -898,7 +1085,6 @@ function AssistantPanel({
         </div>
       </header>
 
-      {/* ─── Sélecteur de modèle + bouton Partager (même rangée) ─── */}
       <div className="flex items-center gap-2 border-b border-border px-2.5 py-2">
         <div className="min-w-0 flex-1">
           <ModelSelector selectedConfig={selectedConfig} onConfigChange={updateSelection} />
@@ -911,7 +1097,6 @@ function AssistantPanel({
         />
       </div>
 
-      {/* ─── Bandeau d'épingles ─────────────────────────────────────── */}
       <PinnedMessagesBar
         messages={messages}
         pinnedIds={pinnedIds}
@@ -923,7 +1108,6 @@ function AssistantPanel({
         }}
       />
 
-      {/* ─── Liste des messages ─────────────────────────────────────── */}
       <div className="relative min-h-0 flex-1" {...dropBind}>
         <MessageSearch
           open={searchOpen}
@@ -997,7 +1181,6 @@ function AssistantPanel({
                 </div>
               </div>
 
-              {/* Actions agent — toujours visibles */}
               {m.role === "agent" && m.text && !isStreaming && (
                 <MessageActions
                   message={m}
@@ -1010,7 +1193,6 @@ function AssistantPanel({
                 />
               )}
 
-              {/* Actions utilisateur — toujours visibles */}
               {m.role === "user" && m.text && (
                 <div className="mr-0 flex w-full items-center justify-end">
                   <PromptActions
@@ -1063,7 +1245,6 @@ function AssistantPanel({
           )}
         </div>
 
-        {/* Rail de prompts utilisateur (DeepSeek-like) */}
         <PromptRail messages={messages} scrollRef={listRef} onJump={jumpToMessage} />
 
         {isDragging && (
@@ -1082,7 +1263,6 @@ function AssistantPanel({
         )}
       </div>
 
-      {/* ─── Composeur ─────────────────────────────────────────────── */}
       <div
         className="border-t border-border p-2.5"
         style={
@@ -1097,11 +1277,50 @@ function AssistantPanel({
         <div className="rounded-2xl border border-border bg-background/70 transition-colors focus-within:border-primary/50">
           {attachments.length > 0 && (
             <div className="rounded-t-2xl border-b border-border/60 bg-secondary/25 px-1.5 py-1.5">
+              {queuedFileWarnings.length > 0 && (
+                <div
+                  role="status"
+                  className="mb-1.5 rounded-lg border border-warning/20 bg-warning/5 px-2 py-1.5 text-[10px] leading-relaxed text-muted-foreground"
+                >
+                  <p>
+                    Ces fichiers restent ici et ne seront pas envoyés : seul le texte brut est
+                    analysé (8 fichiers et 40 000 caractères maximum).
+                  </p>
+                  <ul className="mt-0.5 list-inside list-disc">
+                    {queuedFileWarnings.slice(0, 3).map((warning) => (
+                      <li key={warning} className="truncate">
+                        {warning}
+                      </li>
+                    ))}
+                    {queuedFileWarnings.length > 3 && (
+                      <li>et {queuedFileWarnings.length - 3} autre(s) fichier(s) en attente</li>
+                    )}
+                  </ul>
+                </div>
+              )}
               <AttachmentPillRow
                 attachments={attachments}
                 variant="input"
                 align="start"
-                onRemove={(id) => setAttachments((p) => p.filter((x) => x.id !== id))}
+                onRemove={
+                  preparingSend
+                    ? undefined
+                    : (id) => {
+                        const attachment = attachments.find((item) => item.id === id);
+                        if (attachment?.url?.startsWith("blob:")) {
+                          URL.revokeObjectURL(attachment.url);
+                        }
+                        attachedFiles.current.delete(id);
+                        setUnreadableAttachments((current) => {
+                          const next = { ...current };
+                          delete next[id];
+                          return next;
+                        });
+                        setAttachments((current) =>
+                          current.filter((item) => item.id !== id),
+                        );
+                    }
+                }
               />
             </div>
           )}
@@ -1109,11 +1328,12 @@ function AssistantPanel({
           <textarea
             ref={textareaRef}
             value={input}
+            disabled={preparingSend}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                send();
+                void send();
               }
             }}
             placeholder={`Demandez quelque chose à propos de ${ctx}...`}
@@ -1138,15 +1358,19 @@ function AssistantPanel({
               </button>
             )}
             <button
-              onClick={() => send()}
+              onClick={() => void send()}
               aria-label="Envoyer"
               className={cn(
                 "grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40",
                 !isStreaming && "ml-auto",
               )}
-              disabled={(!input.trim() && attachments.length === 0) || isStreaming}
+              disabled={(!input.trim() && attachments.length === 0) || isStreaming || preparingSend}
             >
-              <Send className="size-4" strokeWidth={1.6} />
+              {preparingSend ? (
+                <Loader2 className="size-4 animate-spin" strokeWidth={1.6} />
+              ) : (
+                <Send className="size-4" strokeWidth={1.6} />
+              )}
             </button>
           </div>
         </div>
@@ -1173,7 +1397,6 @@ function AssistantPanel({
         />
       </div>
 
-      {/* ─── Modales / panneaux ─────────────────────────────────────── */}
       <EditPromptSheet
         open={!!editingPrompt}
         initialText={editingPrompt?.text ?? ""}
@@ -1204,10 +1427,6 @@ function AssistantPanel({
     </div>
   );
 }
-
-/* ═══════════════════════════════════════════════════════════════════════
-   SOUS-COMPOSANTS LOCAUX
-   ═══════════════════════════════════════════════════════════════════════ */
 
 function IconBtn({
   label,

@@ -1,17 +1,17 @@
-//frontend\components\settings\panels\DisplayPanel.tsx
-// ⚠️ Conditionnement mobile/desktop :
+// frontend/components/settings/panels/DisplayPanel.tsx
 
+import { useState } from "react";
 import {
   AlertCircle,
-  Check,
+  ChevronLeft,
   GraduationCap,
-  LayoutTemplate,
+  LayoutPanelLeft,
   Monitor,
   Smartphone,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/core/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   useSidebarSide,
@@ -22,35 +22,48 @@ import {
   writeHideAcademyFromMobile,
   type SidebarSide,
   type MobileNavSide,
-} from "@/lib/layout-prefs";
+} from "@/lib/core/layout-prefs";
+import {
+  readPeoplePreferences,
+  summarizePeople,
+  readCompaniesPrefs,
+  summarizeCompanies,
+  readDashboardPrefs,
+  summarizeDashboard,
+} from "@/lib/section-display/preferences";
+import {
+  SECTION_DISPLAY_REGISTRY,
+  getSectionDisplayMeta,
+  type SectionDisplayKey,
+} from "@/lib/section-display/registry";
+import { SectionCard } from "../primitives/section-card";
+import { SectionConfigDispatcher } from "./section-configs";
 import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
-import { PhoneFrame, PhoneSkeleton, PhoneNavBar, NAV_Y_BOTTOM, NAV_Y_TOP } from "./phone-preview";
+import {
+  PhoneFrame,
+  PhoneSkeleton,
+  PhoneNavBar,
+  NAV_Y_BOTTOM,
+  NAV_Y_TOP,
+} from "./phone-preview";
 
-const SIDEBAR_SIDES: {
-  value: SidebarSide;
-  label: string;
-  hint: string;
-}[] = [
+const SIDEBAR_SIDES: { value: SidebarSide; label: string; hint: string }[] = [
   {
     value: "left",
     label: "Barre à gauche",
-    hint: "Valeur par défaut · lecture de gauche à droite",
+    hint: " ",
   },
-  { value: "right", label: "Barre à droite", hint: "Assistant IA et Cortex à gauche" },
+  {
+    value: "right",
+    label: "Barre à droite",
+    hint: " ",
+  },
 ];
 
-const MOBILE_NAV_SIDES: {
-  value: MobileNavSide;
-  label: string;
-  hint: string;
-}[] = [
+const MOBILE_NAV_SIDES: { value: MobileNavSide; label: string; hint: string }[] = [
   { value: "bottom", label: "Barre en bas", hint: "Valeur par défaut · accessible au pouce" },
   { value: "top", label: "Barre en haut", hint: "Sous la barre d'état du téléphone" },
 ];
-
-/* -------------------------------------------------------------------------- */
-/*  AcademyMobilePreview — aperçu téléphone avec la bulle Academy (on/off)    */
-/* -------------------------------------------------------------------------- */
 
 function AcademyMobilePreview({ hidden }: { hidden: boolean }) {
   return (
@@ -67,28 +80,29 @@ function AcademyMobilePreview({ hidden }: { hidden: boolean }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  DesktopSidebarPreview — inchangé (rappel)                                 */
-/* -------------------------------------------------------------------------- */
+function MobileNavPreview({ side }: { side: MobileNavSide }) {
+  const label = MOBILE_NAV_SIDES.find((s) => s.value === side)?.label.toLowerCase() ?? "";
+  return (
+    <PhoneFrame label={`Aperçu mobile : ${label}`}>
+      <PhoneSkeleton />
+      <PhoneNavBar y={side === "top" ? NAV_Y_TOP : NAV_Y_BOTTOM} />
+    </PhoneFrame>
+  );
+}
 
 function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
   const W = 240;
   const H = 168;
-
   const contentX = 8;
   const contentY = 46;
   const contentW = W - contentX * 2;
   const contentH = H - contentY - 8;
-
   const sidebarW = 52;
   const gap = 4;
-
   const isLeft = side === "left";
-
   const sbX = isLeft ? contentX : contentX + contentW - sidebarW;
   const mainX = isLeft ? contentX + sidebarW + gap : contentX;
   const mainW = contentW - sidebarW - gap;
-
   const label = SIDEBAR_SIDES.find((s) => s.value === side)?.label.toLowerCase() ?? "";
 
   return (
@@ -111,16 +125,7 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
       <circle cx="16" cy="12" r="3.2" fill="#ff5f57" />
       <circle cx="27" cy="12" r="3.2" fill="#febc2e" />
       <circle cx="38" cy="12" r="3.2" fill="#28c840" />
-
-      <rect
-        x="58"
-        y="5.5"
-        width={W - 72}
-        height="13"
-        rx="6.5"
-        fill="currentColor"
-        fillOpacity="0.07"
-      />
+      <rect x="58" y="5.5" width={W - 72} height="13" rx="6.5" fill="currentColor" fillOpacity="0.07" />
       <text
         x="68"
         y="14.5"
@@ -131,7 +136,6 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
       >
         app.leadcortex.io
       </text>
-
       <rect
         x={contentX}
         y={contentY}
@@ -143,7 +147,6 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
         stroke="currentColor"
         strokeOpacity="0.06"
       />
-
       <rect
         x={sbX}
         y={contentY + 4}
@@ -155,7 +158,6 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
         stroke="currentColor"
         strokeOpacity="0.08"
       />
-
       <rect
         x={sbX + 6}
         y={contentY + 10}
@@ -165,17 +167,13 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
         fill="currentColor"
         fillOpacity="0.24"
       />
-
       <g fill="currentColor" fillOpacity="0.22">
         <rect x={sbX + 6} y={contentY + 26} width={sidebarW - 12} height="5" rx="2.5" />
         <rect x={sbX + 6} y={contentY + 36} width={sidebarW - 12} height="5" rx="2.5" />
         <rect x={sbX + 6} y={contentY + 46} width={sidebarW - 12} height="5" rx="2.5" />
         <rect x={sbX + 6} y={contentY + 56} width={sidebarW - 12} height="5" rx="2.5" />
         <rect x={sbX + 6} y={contentY + 66} width={sidebarW - 12} height="5" rx="2.5" />
-        <rect x={sbX + 6} y={contentY + 82} width={sidebarW - 12} height="5" rx="2.5" />
-        <rect x={sbX + 6} y={contentY + 92} width={sidebarW - 12} height="5" rx="2.5" />
       </g>
-
       <rect
         x={isLeft ? sbX : sbX + sidebarW - 2}
         y={contentY + 36}
@@ -184,7 +182,6 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
         rx="1"
         fill="var(--primary)"
       />
-
       <g fill="currentColor" fillOpacity="0.08">
         <rect x={mainX + 8} y={contentY + 12} width="44" height="6" rx="3" />
         <rect x={mainX + 8} y={contentY + 24} width={mainW - 16} height="4" rx="2" />
@@ -193,52 +190,21 @@ function DesktopSidebarPreview({ side }: { side: SidebarSide }) {
         <rect x={mainX + 8} y={contentY + 68} width={mainW - 16} height="14" rx="4" />
         <rect x={mainX + 8} y={contentY + 88} width={mainW - 16} height="14" rx="4" />
       </g>
-
-      <rect
-        x={mainX + 4}
-        y={contentY + 4}
-        width={mainW - 8}
-        height="4"
-        rx="2"
-        fill="currentColor"
-        fillOpacity="0.12"
-      />
     </svg>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  MobileNavPreview — aperçu SVG d'un téléphone avec la barre en haut/bas    */
-/* -------------------------------------------------------------------------- */
-
-function MobileNavPreview({ side }: { side: MobileNavSide }) {
-  const label = MOBILE_NAV_SIDES.find((s) => s.value === side)?.label.toLowerCase() ?? "";
-
-  return (
-    <PhoneFrame label={`Aperçu mobile : ${label}`}>
-      <PhoneSkeleton />
-      <PhoneNavBar y={side === "top" ? NAV_Y_TOP : NAV_Y_BOTTOM} />
-    </PhoneFrame>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  SelectorCard — carte sélectionnable générique (partagée desktop/mobile)    */
-/* -------------------------------------------------------------------------- */
 
 function SelectorCard({
   active,
   onClick,
   label,
   hint,
-  ariaLabel,
   children,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   hint: string;
-  ariaLabel: string;
   children: React.ReactNode;
 }) {
   return (
@@ -246,7 +212,7 @@ function SelectorCard({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      aria-label={ariaLabel}
+      aria-label={`${label} — ${hint}`}
       className={cn(
         "group relative flex flex-col gap-2 rounded-xl border p-3 text-left transition-all",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -275,18 +241,23 @@ function SelectorCard({
           )}
           aria-hidden
         >
-          {active && <Check className="size-2.5" strokeWidth={3} />}
+          {active && (
+            <svg viewBox="0 0 12 12" className="size-2.5" fill="none" stroke="currentColor">
+              <path
+                d="M2 6l3 3 5-6"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
         </span>
       </div>
     </button>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  DisplayPanel                                                              */
-/* -------------------------------------------------------------------------- */
-
-export function DisplayPanel() {
+function GlobalDisplayBlock() {
   const isMobile = useIsMobile();
   const sidebarSide = useSidebarSide();
   const mobileNavSide = useMobileNavSide();
@@ -315,25 +286,17 @@ export function DisplayPanel() {
   const handleHideAcademyChange = (next: boolean) => {
     writeHideAcademyFromMobile(next);
     toast.success(
-      next
-        ? "Academy masquée dans la barre mobile"
-        : "Academy réaffichée dans la barre mobile",
+      next ? "Academy masquée dans la barre mobile" : "Academy réaffichée dans la barre mobile",
     );
   };
 
   return (
-    <div className="space-y-8">
-      <PanelIntro
-        icon={isMobile ? Smartphone : Monitor}
-        title="Affichage"
-        description="Organisez la disposition de l'interface selon vos habitudes."
-      />
-
+    <>
       {isMobile && (
         <PanelGroup label="Mobile" description="Réglages de disposition pour les petits écrans.">
           <SettingsCard
             title="Position de la barre de navigation"
-            description="Sur mobile, la barre de navigation est normalement en bas, à portée de pouce. Vous pouvez la déplacer en haut si vous préférez."
+            description="Sur mobile, la barre de navigation est normalement en bas, à portée de pouce."
             icon={Smartphone}
           >
             <div className="grid grid-cols-2 gap-3">
@@ -344,7 +307,6 @@ export function DisplayPanel() {
                   onClick={() => handleMobileNavSideChange(s.value)}
                   label={s.label}
                   hint={s.hint}
-                  ariaLabel={`${s.label} — ${s.hint}`}
                 >
                   <div className="mx-auto w-full max-w-[112px]">
                     <MobileNavPreview side={s.value} />
@@ -352,116 +314,168 @@ export function DisplayPanel() {
                 </SelectorCard>
               ))}
             </div>
-
-            <div className="mt-4 flex items-start gap-2 rounded-lg bg-surface/40 p-3 text-[11px] text-muted-foreground">
-              <AlertCircle className="mt-px size-3.5 shrink-0 text-primary" />
-              <span>
-                {mobileNavSide === "bottom"
-                  ? "La barre est ancrée en bas de l'écran, au-dessus de la zone sûre iOS."
-                  : "La barre est ancrée en haut de l'écran, sous la barre d'état du téléphone."}{" "}
-                Le réglage est conservé sur cet appareil.
-              </span>
-            </div>
           </SettingsCard>
 
-          {/* ─── Nouveau : Masquer Academy dans la barre mobile ─── */}
           <SettingsCard
             title="Academy dans la barre"
-            description="La bulle Academy à gauche de la barre de navigation peut être masquée pour libérer de l'espace."
+            description="La bulle Academy à gauche de la barre de navigation peut être masquée."
             icon={GraduationCap}
           >
             <div className="grid gap-4 sm:grid-cols-[minmax(0,128px)_1fr] sm:items-center">
               <div className="mx-auto w-full max-w-[128px]">
                 <AcademyMobilePreview hidden={hideAcademy} />
               </div>
-
               <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-surface/30 p-4">
                 <div className="min-w-0">
                   <p className="text-sm font-medium">Masquer la bulle Academy</p>
                   <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
                     {hideAcademy
-                      ? "La bulle Academy n'apparaît plus. La barre principale occupe toute la largeur."
+                      ? "La barre principale occupe toute la largeur."
                       : "La bulle Academy apparaît à gauche de la barre principale."}
                   </p>
                 </div>
                 <Switch
                   checked={hideAcademy}
                   onCheckedChange={handleHideAcademyChange}
-                  aria-label="Masquer la bulle Academy dans la barre mobile"
+                  aria-label="Masquer la bulle Academy"
                 />
               </div>
-            </div>
-
-            <div className="mt-4 flex items-start gap-2 rounded-lg bg-surface/40 p-3 text-[11px] text-muted-foreground">
-              <AlertCircle className="mt-px size-3.5 shrink-0 text-primary" />
-              <span>
-                La page{" "}
-                <b className="text-foreground">Académie</b> reste accessible depuis la barre
-                latérale (desktop) ou via l'adresse <code>/app/academy</code>. Le réglage est
-                conservé sur cet appareil.
-              </span>
             </div>
           </SettingsCard>
         </PanelGroup>
       )}
 
       {!isMobile && (
-        <>
-          <PanelGroup
-            label="Ordinateur"
-            description="Réglages de disposition pour les écrans larges (≥ 768 px)."
+        <PanelGroup
+          label="Ordinateur"
+        >
+          <SettingsCard
+            title="Position de la barre principale"
+            icon={Monitor}
           >
-            <SettingsCard
-              title="Position de la barre principale"
-              description="Choisissez le côté où s'affiche la barre latérale de navigation. L'assistant IA et le panneau Suggestion Cortex basculent automatiquement du côté opposé."
-              icon={Monitor}
-            >
-              <div className="grid grid-cols-2 gap-3">
-                {SIDEBAR_SIDES.map((s) => (
-                  <SelectorCard
-                    key={s.value}
-                    active={sidebarSide === s.value}
-                    onClick={() => handleSidebarSideChange(s.value)}
-                    label={s.label}
-                    hint={s.hint}
-                    ariaLabel={`${s.label} — ${s.hint}`}
-                  >
-                    <DesktopSidebarPreview side={s.value} />
-                  </SelectorCard>
-                ))}
-              </div>
-
-              <div className="mt-4 flex items-start gap-2 rounded-lg bg-surface/40 p-3 text-[11px] text-muted-foreground">
-                <AlertCircle className="mt-px size-3.5 shrink-0 text-primary" />
-                <span>
-                  {sidebarSide === "left"
-                    ? "L'assistant IA s'affiche à droite. Cliquez sur la languette latérale pour l'ouvrir."
-                    : "L'assistant IA s'affiche à gauche. Cliquez sur la languette latérale pour l'ouvrir."}{" "}
-                  Le réglage est conservé sur cet appareil.
-                </span>
-              </div>
-            </SettingsCard>
-          </PanelGroup>
-
-          <PanelGroup label="Panneaux latéraux">
-            <SettingsCard
-              title="Suggestion Cortex"
-              description="Sur le Dashboard, un panneau de suggestions accompagne la page."
-              icon={LayoutTemplate}
-            >
-              <div className="flex items-start gap-2 rounded-lg bg-surface/40 p-3 text-[11px] text-muted-foreground">
-                <AlertCircle className="mt-px size-3.5 shrink-0 text-primary" />
-                <span>
-                  Le panneau <b className="text-foreground">Suggestion Cortex</b> suit
-                  automatiquement le côté de l'assistant IA (
-                  {sidebarSide === "left" ? "droite" : "gauche"}). Aucun réglage supplémentaire
-                  n'est nécessaire.
-                </span>
-              </div>
-            </SettingsCard>
-          </PanelGroup>
-        </>
+            <div className="grid grid-cols-2 gap-3">
+              {SIDEBAR_SIDES.map((s) => (
+                <SelectorCard
+                  key={s.value}
+                  active={sidebarSide === s.value}
+                  onClick={() => handleSidebarSideChange(s.value)}
+                  label={s.label}
+                  hint={s.hint}
+                >
+                  <DesktopSidebarPreview side={s.value} />
+                </SelectorCard>
+              ))}
+            </div>
+            <div className="mt-4 flex items-start gap-2 rounded-lg bg-surface/40 p-3 text-[11px] text-muted-foreground">
+              <AlertCircle className="mt-px size-3.5 shrink-0 text-primary" />
+              <span>
+                {sidebarSide === "left"
+                  ? "L'assistant IA s'affiche à droite."
+                  : "L'assistant IA s'affiche à gauche."}{" "}
+                Le réglage est conservé sur cet appareil.
+              </span>
+            </div>
+          </SettingsCard>
+        </PanelGroup>
       )}
+    </>
+  );
+}
+
+function summariesFor(key: SectionDisplayKey): string {
+  switch (key) {
+    case "people":
+      return summarizePeople(readPeoplePreferences());
+    case "companies":
+      return summarizeCompanies(readCompaniesPrefs());
+    case "dashboard":
+      return summarizeDashboard(readDashboardPrefs());
+    default:
+      return "";
+  }
+}
+
+function SectionsDisplayBlock({ onOpen }: { onOpen: (key: SectionDisplayKey) => void }) {
+  return (
+    <PanelGroup
+      label="Par section"
+    >
+      <div className="space-y-4">
+        {SECTION_DISPLAY_REGISTRY.map((meta) => {
+          const Icon = meta.icon;
+          return (
+            <SectionCard
+              key={meta.key}
+              title={meta.label.toUpperCase()}
+              description={meta.description}
+              summary={summariesFor(meta.key)}
+              icon={Icon}
+              onDrilldown={() => onOpen(meta.key)}
+            />
+          );
+        })}
+      </div>
+    </PanelGroup>
+  );
+}
+
+function DrilldownView({
+  section,
+  onBack,
+}: {
+  section: SectionDisplayKey;
+  onBack: () => void;
+}) {
+  const meta = getSectionDisplayMeta(section);
+  const Icon = meta.icon;
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-start gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Retour aux sections"
+          className="grid size-8 shrink-0 place-items-center rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-surface"
+        >
+          <ChevronLeft className="size-4" strokeWidth={2} />
+        </button>
+        <div className="flex items-start gap-2.5 min-w-0 flex-1">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+            <Icon className="size-4.5" strokeWidth={1.8} />
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold leading-tight">{meta.label}</h2>
+            <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
+              {meta.description}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <SectionConfigDispatcher section={section} />
+    </div>
+  );
+}
+
+export function DisplayPanel() {
+  const isMobile = useIsMobile();
+  const [activeSection, setActiveSection] = useState<SectionDisplayKey | null>(null);
+
+  if (activeSection) {
+    return <DrilldownView section={activeSection} onBack={() => setActiveSection(null)} />;
+  }
+
+  return (
+    <div className="space-y-8">
+      <PanelIntro
+        icon={isMobile ? Smartphone : LayoutPanelLeft}
+        title="Affichage"
+      />
+
+      <GlobalDisplayBlock />
+
+      <SectionsDisplayBlock onOpen={(key) => setActiveSection(key)} />
     </div>
   );
 }

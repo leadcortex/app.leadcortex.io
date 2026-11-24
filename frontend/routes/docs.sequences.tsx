@@ -1,6 +1,7 @@
-//frontend\routes\docs.sequences.tsx
+// frontend/routes/docs.sequences.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { DocsLayout, DocCallout } from "@/components/docs-layout";
+import { DocsLayout, DocCallout } from "@/components/layout/docs-layout";
 
 export const Route = createFileRoute("/docs/sequences")({
   head: () => ({

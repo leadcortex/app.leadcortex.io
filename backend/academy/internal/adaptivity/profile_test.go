@@ -1,3 +1,5 @@
+// backend/academy/internal/adaptivity/profile_test.go
+
 package adaptivity
 
 import (
@@ -6,7 +8,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ─── Nil learner ─────────────────────────────────────────────────────── */
 
 func TestBuildProfile_NilLearner(t *testing.T) {
 	p := BuildProfile(nil, DefaultSignalOptions(fixedTime()))
@@ -15,7 +16,6 @@ func TestBuildProfile_NilLearner(t *testing.T) {
 	}
 }
 
-/* ─── Champs de base ──────────────────────────────────────────────────── */
 
 func TestBuildProfile_BasicFields(t *testing.T) {
 	l := newLearner()
@@ -55,26 +55,21 @@ func TestBuildProfile_ActiveTodayFalse(t *testing.T) {
 	}
 }
 
-/* ─── Strengths / Weaknesses ──────────────────────────────────────────── */
 
 func TestBuildProfile_SplitsStrengthsAndWeaknesses(t *testing.T) {
 	l := newLearner()
-	// Maîtrisé
 	l.ConceptMastery["c-strong"] = domain.Mastery{
 		ConceptID: "c-strong", Level: domain.MasteryMastered,
 		Attempts: 5, Correct: 5,
 	}
-	// OK (fragile)
 	l.ConceptMastery["c-ok"] = domain.Mastery{
 		ConceptID: "c-ok", Level: domain.MasteryOK,
 		Attempts: 3, Correct: 2,
 	}
-	// Fragile
 	l.ConceptMastery["c-weak"] = domain.Mastery{
 		ConceptID: "c-weak", Level: domain.MasteryFragile,
 		Attempts: 2, Correct: 0,
 	}
-	// Non touché → ignoré
 	l.ConceptMastery["c-untouched"] = domain.Mastery{
 		ConceptID: "c-untouched", Level: 0, Attempts: 0,
 	}
@@ -90,7 +85,6 @@ func TestBuildProfile_SplitsStrengthsAndWeaknesses(t *testing.T) {
 	if len(p.Weaknesses) != 2 {
 		t.Errorf("Weaknesses : attendu 2, obtenu %d", len(p.Weaknesses))
 	}
-	// Weaknesses triées par niveau croissant : c-weak (30) avant c-ok (60).
 	if p.Weaknesses[0].ConceptID != "c-weak" {
 		t.Errorf("Weaknesses[0] : attendu c-weak (niveau bas), obtenu %s",
 			p.Weaknesses[0].ConceptID)
@@ -112,7 +106,6 @@ func TestBuildProfile_StrengthsSortedDesc(t *testing.T) {
 	}
 }
 
-/* ─── Signaux intégrés ────────────────────────────────────────────────── */
 
 func TestBuildProfile_IncludesSignals(t *testing.T) {
 	l := newLearner()
@@ -126,7 +119,6 @@ func TestBuildProfile_IncludesSignals(t *testing.T) {
 	}
 }
 
-/* ─── Difficulty cible ────────────────────────────────────────────────── */
 
 func TestBuildProfile_TargetDifficultySet(t *testing.T) {
 	l := newLearner()
@@ -136,7 +128,6 @@ func TestBuildProfile_TargetDifficultySet(t *testing.T) {
 	}
 }
 
-/* ─── EstimatedFocusMinutes ───────────────────────────────────────────── */
 
 func TestBuildProfile_EstimatedFocusMinutesInRange(t *testing.T) {
 	l := newLearner()
@@ -162,7 +153,6 @@ func TestBuildProfile_LowHeartsShortensSession(t *testing.T) {
 	}
 }
 
-/* ─── ProgressRatio ───────────────────────────────────────────────────── */
 
 func TestBuildProfile_ProgressRatio(t *testing.T) {
 	reg := buildTestRegistry(t)
@@ -175,7 +165,6 @@ func TestBuildProfile_ProgressRatio(t *testing.T) {
 		Now:      fixedTime(),
 		Registry: reg,
 	})
-	// 1 leçon terminée sur 2 = 0.5
 	if p.ProgressRatio < 0.49 || p.ProgressRatio > 0.51 {
 		t.Errorf("ProgressRatio : attendu ~0.5, obtenu %f", p.ProgressRatio)
 	}
@@ -189,7 +178,6 @@ func TestBuildProfile_ProgressRatioNoRegistry(t *testing.T) {
 	}
 }
 
-/* ─── ConceptStrength helpers ─────────────────────────────────────────── */
 
 func TestConceptStrength_IsMastered(t *testing.T) {
 	s := ConceptStrength{Level: domain.MasteryMastered}

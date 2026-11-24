@@ -1,4 +1,5 @@
-//frontend\lib\workflow\code-languages.ts
+// frontend/lib/workflow/code-languages.ts
+
 import type { Extension } from "@codemirror/state";
 
 export type CodeLanguageId =
@@ -70,11 +71,6 @@ export function resolveLanguage(value: unknown): CodeLanguageDef {
   );
 }
 
-/**
- * Charge dynamiquement l'extension CodeMirror du langage. L'import est
- * paresseux : les grammaires ne sont jamais embarquées dans le rendu serveur
- * ni dans le bundle initial du canevas.
- */
 export async function loadLanguageExtension(id: CodeLanguageId): Promise<Extension> {
   switch (id) {
     case "typescript": {

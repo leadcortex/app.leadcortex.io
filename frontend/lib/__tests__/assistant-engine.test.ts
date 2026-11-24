@@ -1,4 +1,5 @@
-//frontend\lib\__tests__\assistant-engine.test.ts
+// frontend/lib/__tests__/assistant-engine.test.ts
+
 import { describe, expect, it } from "vitest";
 import {
   hashMessage,

@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_quests_test.go
+
 package api
 
 import (
@@ -11,9 +13,6 @@ import (
 	"github.com/leadcortex/academy/internal/gamification"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /quests
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestGetQuests_GeneratesOnFirstCall(t *testing.T) {
 	s := buildTestServer(t)
@@ -72,11 +71,7 @@ func TestGetQuests_Deterministic(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   POST /quests/{id}/claim
-   ═══════════════════════════════════════════════════════════════════════ */
 
-// seedCompletedQuest fabrique une quête "complete" dans le repository.
 func seedCompletedQuest(
 	t *testing.T,
 	s *Server,
@@ -130,7 +125,6 @@ func TestClaimQuest_Success(t *testing.T) {
 		t.Errorf("XPAwarded : attendu 25, obtenu %d", resp.XPAwarded)
 	}
 
-	// XP crédité au Learner.
 	stored, _ := s.deps.Repository.GetLearner(context.Background(), "alice")
 	if stored.XP != 25 {
 		t.Errorf("XP Learner : attendu 25, obtenu %d", stored.XP)
@@ -155,7 +149,6 @@ func TestClaimQuest_NotFound(t *testing.T) {
 func TestClaimQuest_NotComplete(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Génère une quête active (via GET).
 	req1 := httptest.NewRequest(http.MethodGet, "/api/v1/quests", nil)
 	req1.Header.Set("X-Learner-ID", "alice")
 	rec1 := httptest.NewRecorder()
@@ -174,15 +167,11 @@ func TestClaimQuest_NotComplete(t *testing.T) {
 	rec := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec, req)
 
-	// La quête est encore active → ErrQuestNotComplete → 400.
 	if rec.Code != http.StatusBadRequest {
 		t.Errorf("attendu 400, obtenu %d (body=%s)", rec.Code, rec.Body.String())
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Progression automatique après actions
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestQuests_ProgressAfterExercise(t *testing.T) {
 	s := buildTestServer(t)
@@ -201,7 +190,6 @@ func TestQuests_ProgressAfterExercise(t *testing.T) {
 	}
 	startLesson(t, s, "alice", "l1")
 
-	// Répond correctement à ex1 (MCQ → 10 XP).
 	body := strings.NewReader(`{"kind":"mcq","selected":1}`)
 	req := httptest.NewRequest(http.MethodPost,
 		"/api/v1/lessons/l1/exercises/ex1/answer", body)
@@ -213,7 +201,6 @@ func TestQuests_ProgressAfterExercise(t *testing.T) {
 		t.Fatalf("answer : %d", rec.Code)
 	}
 
-	// Récupère les quêtes.
 	reqQ := httptest.NewRequest(http.MethodGet, "/api/v1/quests", nil)
 	reqQ.Header.Set("X-Learner-ID", "alice")
 	recQ := httptest.NewRecorder()
@@ -222,7 +209,6 @@ func TestQuests_ProgressAfterExercise(t *testing.T) {
 	var summary gamification.QuestStatusForLearner
 	_ = json.NewDecoder(recQ.Body).Decode(&summary)
 
-	// Au moins une quête doit avoir progressé.
 	hasProgress := false
 	for _, q := range summary.Quests {
 		if q.Progress > 0 {

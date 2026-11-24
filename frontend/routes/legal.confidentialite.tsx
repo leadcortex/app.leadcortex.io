@@ -1,6 +1,7 @@
-//frontend\routes\legal.confidentialite.tsx
+// frontend/routes/legal.confidentialite.tsx
+
 import { createFileRoute } from "@tanstack/react-router";
-import { LegalLayout } from "@/components/legal-layout";
+import { LegalLayout } from "@/components/layout/legal-layout";
 
 export const Route = createFileRoute("/legal/confidentialite")({
   head: () => ({

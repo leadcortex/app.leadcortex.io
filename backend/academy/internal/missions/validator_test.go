@@ -1,3 +1,5 @@
+// backend/academy/internal/missions/validator_test.go
+
 package missions
 
 import (
@@ -16,7 +18,6 @@ func newLearner() *domain.Learner {
 	return domain.NewLearner("u-test", "Test", "t@example.com")
 }
 
-/* ─── triggerMatches ──────────────────────────────────────────────────── */
 
 func TestTriggerMatches(t *testing.T) {
 	cases := []struct {
@@ -26,7 +27,7 @@ func TestTriggerMatches(t *testing.T) {
 	}{
 		{"lead.created", "lead.created", true},
 		{"lead.created", "lead.updated", false},
-		{"", "lead.created", false}, // trigger vide : pas de matching par événement
+		{"", "lead.created", false},
 		{"a", "a", true},
 	}
 	for _, c := range cases {
@@ -38,7 +39,6 @@ func TestTriggerMatches(t *testing.T) {
 	}
 }
 
-/* ─── flattenPayload ──────────────────────────────────────────────────── */
 
 func TestFlattenPayload_Empty(t *testing.T) {
 	out := flattenPayload(nil)
@@ -98,7 +98,6 @@ func TestFlattenPayload_Slice(t *testing.T) {
 	}
 }
 
-/* ─── ValidateMission ─────────────────────────────────────────────────── */
 
 func testMission() *domain.Mission {
 	return &domain.Mission{
@@ -159,7 +158,7 @@ func TestValidateMission_ConditionNotMet(t *testing.T) {
 	l := newLearner()
 	m := testMission()
 	ev := NewEvent("lead.created", fixedTime(), map[string]any{
-		"lead": map[string]any{"score": 3}, // < 7
+		"lead": map[string]any{"score": 3},
 	})
 
 	ok, err := ValidateMission(m, l, ev)
@@ -174,7 +173,7 @@ func TestValidateMission_ConditionNotMet(t *testing.T) {
 func TestValidateMission_EmptyTrigger(t *testing.T) {
 	l := newLearner()
 	m := testMission()
-	m.Validation.Trigger = "" // vide
+	m.Validation.Trigger = ""
 	ev := NewEvent("lead.created", fixedTime(), map[string]any{
 		"lead": map[string]any{"score": 8},
 	})
@@ -191,7 +190,7 @@ func TestValidateMission_EmptyTrigger(t *testing.T) {
 func TestValidateMission_EmptyConditions(t *testing.T) {
 	l := newLearner()
 	m := testMission()
-	m.Validation.Conditions = domain.ConditionGroup{} // aucune contrainte
+	m.Validation.Conditions = domain.ConditionGroup{}
 
 	ev := NewEvent("lead.created", fixedTime(), nil)
 
@@ -234,7 +233,6 @@ func TestValidateMission_NilEvent(t *testing.T) {
 	}
 }
 
-/* ─── Évaluation avec condition sur learner.* ─────────────────────────── */
 
 func TestValidateMission_LearnerCondition(t *testing.T) {
 	l := newLearner()
@@ -257,7 +255,6 @@ func TestValidateMission_LearnerCondition(t *testing.T) {
 	}
 }
 
-/* ─── Context injecté ─────────────────────────────────────────────────── */
 
 func TestBuildValidationContext_InjectsEventMeta(t *testing.T) {
 	l := newLearner()

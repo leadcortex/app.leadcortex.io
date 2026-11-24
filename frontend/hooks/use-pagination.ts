@@ -1,4 +1,5 @@
-//frontend\hooks\use-pagination.ts
+// frontend/hooks/use-pagination.ts
+
 import { useState, useMemo, useCallback } from "react";
 
 export interface UsePaginationOptions {

@@ -1,3 +1,5 @@
+// backend/academy/internal/api/handlers_profile_test.go
+
 package api
 
 import (
@@ -11,9 +13,6 @@ import (
 	"github.com/leadcortex/academy/internal/domain"
 )
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /me
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestGetMe_CreatesLearnerOnFirstAccess(t *testing.T) {
 	s := buildTestServer(t)
@@ -47,7 +46,6 @@ func TestGetMe_CreatesLearnerOnFirstAccess(t *testing.T) {
 		t.Errorf("MaxHearts : attendu %d, obtenu %d", domain.MaxHearts, dto.MaxHearts)
 	}
 
-	// Vérifier la persistance.
 	stored, err := s.deps.Repository.GetLearner(context.Background(), "alice")
 	if err != nil {
 		t.Fatalf("GetLearner après création : %v", err)
@@ -60,7 +58,6 @@ func TestGetMe_CreatesLearnerOnFirstAccess(t *testing.T) {
 func TestGetMe_ReturnsExistingLearner(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Seed un Learner avec un état non trivial.
 	l := domain.NewLearner("bob", "Bob", "bob@example.com")
 	l.XP = 500
 	l.Level = 3
@@ -95,19 +92,16 @@ func TestGetMe_ReturnsExistingLearner(t *testing.T) {
 func TestGetMe_SecondCallIsIdempotent(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Premier appel : crée.
 	req1 := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
 	req1.Header.Set("X-Learner-ID", "carol")
 	rec1 := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec1, req1)
 
-	// Modifie le Learner en base.
 	l, _ := s.deps.Repository.GetLearner(context.Background(), "carol")
 	l.XP = 999
 	l.Level = 4
 	_ = s.deps.Repository.SaveLearner(context.Background(), l)
 
-	// Second appel : doit renvoyer le Learner modifié, PAS un nouveau.
 	req2 := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
 	req2.Header.Set("X-Learner-ID", "carol")
 	rec2 := httptest.NewRecorder()
@@ -123,7 +117,6 @@ func TestGetMe_SecondCallIsIdempotent(t *testing.T) {
 func TestGetMe_DevFallbackUsesDefault(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Pas de header X-Learner-ID, AllowDevFallback = true.
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
 	rec := httptest.NewRecorder()
 	s.Router().ServeHTTP(rec, req)
@@ -152,9 +145,6 @@ func TestGetMe_RequiresLearnerWhenNoFallback(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   GET /me/snapshot
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestGetSnapshot_ReturnsValidSnapshot(t *testing.T) {
 	s := buildTestServer(t)
@@ -219,14 +209,10 @@ func TestGetSnapshot_IncludesPrograms(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   PATCH /me/equip-avatar
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestEquipAvatar_Success(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Seed un Learner avec eagle débloqué.
 	l := domain.NewLearner("alice", "Alice", "")
 	l.UnlockAvatar("eagle")
 	_ = s.deps.Repository.SaveLearner(context.Background(), l)
@@ -248,7 +234,6 @@ func TestEquipAvatar_Success(t *testing.T) {
 		t.Errorf("EquippedAvatarID : attendu eagle, obtenu %q", dto.EquippedAvatarID)
 	}
 
-	// Vérifier la persistance.
 	stored, _ := s.deps.Repository.GetLearner(context.Background(), "alice")
 	if stored.EquippedAvatarID != "eagle" {
 		t.Errorf("EquippedAvatarID persisté : attendu eagle, obtenu %q", stored.EquippedAvatarID)
@@ -258,7 +243,6 @@ func TestEquipAvatar_Success(t *testing.T) {
 func TestEquipAvatar_LockedAvatar(t *testing.T) {
 	s := buildTestServer(t)
 
-	// Learner fraîchement créé → eagle NON débloqué.
 	body := strings.NewReader(`{"avatar_id":"eagle"}`)
 	req := httptest.NewRequest(http.MethodPatch, "/api/v1/me/equip-avatar", body)
 	req.Header.Set("X-Learner-ID", "alice")
@@ -329,7 +313,6 @@ func TestEquipAvatar_InvalidJSON(t *testing.T) {
 func TestEquipAvatar_MethodNotAllowed(t *testing.T) {
 	s := buildTestServer(t)
 
-	// GET au lieu de PATCH → 400 (méthode non autorisée, géré par le router).
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/me/equip-avatar", nil)
 	req.Header.Set("X-Learner-ID", "alice")
 	rec := httptest.NewRecorder()
@@ -340,9 +323,6 @@ func TestEquipAvatar_MethodNotAllowed(t *testing.T) {
 	}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   Helpers internes (unit tests)
-   ═══════════════════════════════════════════════════════════════════════ */
 
 func TestDefaultDisplayName(t *testing.T) {
 	cases := []struct {

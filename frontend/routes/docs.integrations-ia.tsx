@@ -1,6 +1,7 @@
-//frontend\routes\docs.integrations-ia.tsx
+// frontend/routes/docs.integrations-ia.tsx
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { DocsLayout, DocCallout } from "@/components/docs-layout";
+import { DocsLayout, DocCallout } from "@/components/layout/docs-layout";
 
 export const Route = createFileRoute("/docs/integrations-ia")({
   head: () => ({

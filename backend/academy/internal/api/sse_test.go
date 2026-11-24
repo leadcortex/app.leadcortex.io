@@ -1,3 +1,5 @@
+// backend/academy/internal/api/sse_test.go
+
 package api
 
 import (
@@ -14,7 +16,6 @@ import (
 	"github.com/leadcortex/academy/internal/missions"
 )
 
-/* ─── Hub : souscription / désinscription ─────────────────────────────── */
 
 func TestHub_SubscribeUnsubscribe(t *testing.T) {
 	bus := missions.NewEventBus()
@@ -34,7 +35,6 @@ func TestHub_SubscribeUnsubscribe(t *testing.T) {
 		t.Errorf("après unsub : attendu 0, obtenu %d", hub.ClientCount())
 	}
 
-	// Second unsub : doit être silencieux.
 	unsub()
 }
 
@@ -70,7 +70,6 @@ func TestHub_Close(t *testing.T) {
 	c, _ := hub.Subscribe("u1")
 	hub.Close()
 
-	// Le canal doit être fermé.
 	select {
 	case _, ok := <-c.ch:
 		if ok {
@@ -80,10 +79,8 @@ func TestHub_Close(t *testing.T) {
 		t.Fatal("le canal devrait être fermé immédiatement")
 	}
 
-	// Close idempotent.
 	hub.Close()
 
-	// Nouvelle souscription après close : client avec canal fermé.
 	c2, unsub2 := hub.Subscribe("u2")
 	defer unsub2()
 	select {
@@ -92,7 +89,6 @@ func TestHub_Close(t *testing.T) {
 			t.Error("canal du nouveau client devrait être fermé")
 		}
 	default:
-		// Aucune valeur, c'est OK — le canal est juste fermé.
 	}
 }
 
@@ -114,7 +110,6 @@ func TestHub_RunReceivesFromBus(t *testing.T) {
 		<-done
 	}()
 
-	// Laisse le hub s'abonner au bus.
 	time.Sleep(30 * time.Millisecond)
 
 	ev := missions.NewEvent("lead.created", time.Now(), nil)
@@ -173,27 +168,22 @@ func TestHub_RunNilBus(t *testing.T) {
 	}
 }
 
-/* ─── Handler SSE : intégration bout-en-bout ──────────────────────────── */
 
 func TestSSE_Integration(t *testing.T) {
 	bus := missions.NewEventBus()
 	defer bus.Close()
 
-	// Server de test (buildTestServer est dans server_test.go).
 	s := buildTestServer(t)
 	s.deps.Bus = bus
 	s.hub = NewHub(bus, zerolog.Nop())
 
-	// Lance le hub.
 	hubCtx, hubCancel := context.WithCancel(context.Background())
 	defer hubCancel()
 	go func() { _ = s.hub.Run(hubCtx) }()
 
-	// Lance un httptest.Server sur le router.
 	ts := httptest.NewServer(s.Router())
 	defer ts.Close()
 
-	// Prépare la requête SSE.
 	reqCtx, reqCancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer reqCancel()
 
@@ -215,17 +205,14 @@ func TestSSE_Integration(t *testing.T) {
 		t.Errorf("Content-Type : attendu text/event-stream, obtenu %q", ct)
 	}
 
-	// Laisse la souscription s'installer.
 	time.Sleep(50 * time.Millisecond)
 
-	// Publie un événement.
 	ev := missions.NewEvent("lead.created", time.Now(),
 		map[string]any{"lead": map[string]any{"score": 8}})
 	if err := bus.Publish(ev); err != nil {
 		t.Fatalf("Publish : %v", err)
 	}
 
-	// Lit la réponse jusqu'à voir la trame.
 	reader := bufio.NewReader(resp.Body)
 	deadline := time.Now().Add(2 * time.Second)
 	var gotEvent string
