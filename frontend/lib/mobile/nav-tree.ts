@@ -153,7 +153,9 @@ export const MOBILE_NAV_SECTIONS: MobileNavSection[] = [
 
 export function isSectionActive(section: MobileNavSection, pathname: string): boolean {
   if (section.key === "home") return pathname === "/app" || pathname === "/app/";
-  return section.matches.some((m) => pathname === m || pathname.startsWith(`${m}/`));
+  // Fix du test « Accueil retiré sans tout activer » : "/app" ne correspond qu'à lui-même.
+  if (pathname === "/app" || pathname === "/app/") return section.matches.includes("/app");
+  return section.matches.some((m) => m !== "/app" && (pathname === m || pathname.startsWith(`${m}/`)));
 }
 
 export function isLinkActive(link: MobileNavLink, pathname: string): boolean {
