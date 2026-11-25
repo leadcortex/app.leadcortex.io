@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   AlertCircle,
   ChevronLeft,
-  GraduationCap,
   LayoutPanelLeft,
   Monitor,
   Smartphone,
@@ -18,8 +17,7 @@ import {
   writeSidebarSide,
   useMobileNavSide,
   writeMobileNavSide,
-  useHideAcademyFromMobile,
-  writeHideAcademyFromMobile,
+  useMobileNavLayout,
   type SidebarSide,
   type MobileNavSide,
 } from "@/lib/core/layout-prefs";
@@ -39,6 +37,8 @@ import {
 import { SectionCard } from "../primitives/section-card";
 import { SectionConfigDispatcher } from "./section-configs";
 import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
+import { MobileNavDrilldown } from "./mobile-nav-editor";
+import { NAV_CATALOG } from "@/lib/mobile/nav-layout";
 import {
   PhoneFrame,
   PhoneSkeleton,
@@ -64,21 +64,6 @@ const MOBILE_NAV_SIDES: { value: MobileNavSide; label: string; hint: string }[] 
   { value: "bottom", label: "Barre en bas", hint: "Valeur par défaut · accessible au pouce" },
   { value: "top", label: "Barre en haut", hint: "Sous la barre d'état du téléphone" },
 ];
-
-function AcademyMobilePreview({ hidden }: { hidden: boolean }) {
-  return (
-    <PhoneFrame
-      label={
-        hidden
-          ? "Aperçu : bulle Academy masquée dans la barre mobile"
-          : "Aperçu : bulle Academy visible dans la barre mobile"
-      }
-    >
-      <PhoneSkeleton />
-      <PhoneNavBar y={NAV_Y_BOTTOM} academy={hidden ? "hidden" : "visible"} />
-    </PhoneFrame>
-  );
-}
 
 function MobileNavPreview({ side }: { side: MobileNavSide }) {
   const label = MOBILE_NAV_SIDES.find((s) => s.value === side)?.label.toLowerCase() ?? "";
@@ -257,11 +242,11 @@ function SelectorCard({
   );
 }
 
-function GlobalDisplayBlock() {
+function GlobalDisplayBlock({ onOpenMobileNav }: { onOpenMobileNav: () => void }) {
   const isMobile = useIsMobile();
   const sidebarSide = useSidebarSide();
   const mobileNavSide = useMobileNavSide();
-  const hideAcademy = useHideAcademyFromMobile();
+  const mobileNavLayout = useMobileNavLayout();
 
   const handleSidebarSideChange = (next: SidebarSide) => {
     if (next === sidebarSide) return;
@@ -280,13 +265,6 @@ function GlobalDisplayBlock() {
       next === "bottom"
         ? "Barre mobile repositionnée en bas"
         : "Barre mobile repositionnée en haut",
-    );
-  };
-
-  const handleHideAcademyChange = (next: boolean) => {
-    writeHideAcademyFromMobile(next);
-    toast.success(
-      next ? "Academy masquée dans la barre mobile" : "Academy réaffichée dans la barre mobile",
     );
   };
 
@@ -316,32 +294,15 @@ function GlobalDisplayBlock() {
             </div>
           </SettingsCard>
 
-          <SettingsCard
-            title="Academy dans la barre"
-            description="La bulle Academy à gauche de la barre de navigation peut être masquée."
-            icon={GraduationCap}
-          >
-            <div className="grid gap-4 sm:grid-cols-[minmax(0,128px)_1fr] sm:items-center">
-              <div className="mx-auto w-full max-w-[128px]">
-                <AcademyMobilePreview hidden={hideAcademy} />
-              </div>
-              <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-surface/30 p-4">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium">Masquer la bulle Academy</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
-                    {hideAcademy
-                      ? "La barre principale occupe toute la largeur."
-                      : "La bulle Academy apparaît à gauche de la barre principale."}
-                  </p>
-                </div>
-                <Switch
-                  checked={hideAcademy}
-                  onCheckedChange={handleHideAcademyChange}
-                  aria-label="Masquer la bulle Academy"
-                />
-              </div>
-            </div>
-          </SettingsCard>
+          <SectionCard
+            title="BARRE DE NAVIGATION"
+            description="Choisissez 4 à 5 sections et leur ordre."
+            summary={mobileNavLayout.keys
+              .map((k) => NAV_CATALOG.find((p) => p.key === k)?.label ?? k)
+              .join(" · ")}
+            icon={Smartphone}
+            onDrilldown={onOpenMobileNav}
+          />
         </PanelGroup>
       )}
 
@@ -458,9 +419,14 @@ function DrilldownView({
   );
 }
 
-export function DisplayPanel() {
+export function DisplayPanel({ initialView }: { initialView?: "mobile-nav" } = {}) {
   const isMobile = useIsMobile();
   const [activeSection, setActiveSection] = useState<SectionDisplayKey | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(initialView === "mobile-nav");
+
+  if (mobileNavOpen && isMobile) {
+    return <MobileNavDrilldown onBack={() => setMobileNavOpen(false)} />;
+  }
 
   if (activeSection) {
     return <DrilldownView section={activeSection} onBack={() => setActiveSection(null)} />;
@@ -473,7 +439,7 @@ export function DisplayPanel() {
         title="Affichage"
       />
 
-      <GlobalDisplayBlock />
+      <GlobalDisplayBlock onOpenMobileNav={() => setMobileNavOpen(true)} />
 
       <SectionsDisplayBlock onOpen={(key) => setActiveSection(key)} />
     </div>
