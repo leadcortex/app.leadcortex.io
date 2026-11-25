@@ -1,16 +1,15 @@
 // frontend/components/layout/mobile-bottom-nav.tsx
 
 import { useEffect, useMemo, useRef } from "react";
-import { MOBILE_NAV_SECTIONS } from "@/lib/mobile/nav-tree";
+import { buildBar } from "@/lib/mobile/nav-layout";
 import {
   MobileNavMenuProvider,
   MobileNavSectionButton,
 } from "@/components/layout/mobile-nav-menu";
-import { useMobileNavSide, useHideAcademyFromMobile } from "@/lib/core/layout-prefs";
+import { MobileNavBarView, NAV_ICON_STYLE } from "@/components/layout/mobile-nav-bar-view";
+import { useMobileNavSide, useMobileNavLayout } from "@/lib/core/layout-prefs";
 import { useAppStore } from "@/lib/state/store";
 import { cn } from "@/lib/core/utils";
-
-const ACADEMY_KEY = "academy";
 
 const BADGE_SOURCES: Record<string, "emails" | "tasks" | "meetings"> = {
   "/app/emails": "emails",
@@ -21,16 +20,12 @@ const BADGE_SOURCES: Record<string, "emails" | "tasks" | "meetings"> = {
 export function MobileBottomNav() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const side = useMobileNavSide();
-  const hideAcademy = useHideAcademyFromMobile();
+  const layout = useMobileNavLayout();
   const isTop = side === "top";
 
   const { emails, tasks, meetings = [] } = useAppStore();
 
-  const { academySection, mainSections } = useMemo(() => {
-    const academy = MOBILE_NAV_SECTIONS.find((s) => s.key === ACADEMY_KEY) ?? null;
-    const others = MOBILE_NAV_SECTIONS.filter((s) => s.key !== ACADEMY_KEY);
-    return { academySection: academy, mainSections: others };
-  }, []);
+  const { bubble, main } = useMemo(() => buildBar(layout), [layout]);
 
   const sectionBadges = useMemo(() => {
     const unreadEmails = emails.filter((e) => e.unread).length;
@@ -44,7 +39,7 @@ export function MobileBottomNav() {
     };
 
     const map: Record<string, number> = {};
-    for (const section of MOBILE_NAV_SECTIONS) {
+    for (const section of bubble ? [bubble, ...main] : main) {
       let total = 0;
       for (const m of section.matches) {
         const key = BADGE_SOURCES[m];
@@ -53,7 +48,7 @@ export function MobileBottomNav() {
       if (total > 0) map[section.key] = total;
     }
     return map;
-  }, [emails, tasks, meetings]);
+  }, [emails, tasks, meetings, bubble, main]);
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -73,7 +68,7 @@ export function MobileBottomNav() {
       window.removeEventListener("resize", apply);
       document.documentElement.style.removeProperty("--pen-nav-h");
     };
-  }, [side, hideAcademy]);
+  }, [side, layout]);
 
   return (
     <MobileNavMenuProvider>
@@ -89,61 +84,32 @@ export function MobileBottomNav() {
             : { paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }
         }
       >
-        <div className="pointer-events-auto flex items-center gap-2">
-          {academySection && !hideAcademy && (
-            <nav
-              aria-label={academySection.label}
-              className={cn(
-                "grid size-14 shrink-0 place-items-center overflow-hidden rounded-full",
-                "border border-white/15 dark:border-white/10",
-                "shadow-[0_2px_10px_rgba(0,0,0,0.10)]",
-                "bg-white/15 dark:bg-white/[0.06]",
-                "backdrop-blur-2xl",
-              )}
-            >
+        <MobileNavBarView
+          bubbleLabel={bubble?.label}
+          bubble={
+            bubble && (
               <MobileNavSectionButton
-                section={academySection}
+                section={bubble}
                 className="size-full rounded-full"
-                iconStyle={{
-                  width: "clamp(20px, 5.5vw, 26px)",
-                  height: "clamp(20px, 5.5vw, 26px)",
-                }}
+                iconStyle={NAV_ICON_STYLE}
                 activeClassName="text-primary"
                 idleClassName="text-muted-foreground"
-                badge={sectionBadges[academySection.key]}
+                badge={sectionBadges[bubble.key]}
               />
-            </nav>
-          )}
-
-          <nav
-            aria-label="Navigation principale"
-            className={cn(
-              "grid h-14 flex-1 items-stretch overflow-hidden rounded-2xl",
-              "border border-white/15 dark:border-white/10",
-              "shadow-[0_2px_10px_rgba(0,0,0,0.10)]",
-              "bg-white/[0.12] dark:bg-white/[0.05]",
-              "backdrop-blur-2xl",
-            )}
-            style={{
-              gridTemplateColumns: `repeat(${mainSections.length}, minmax(0, 1fr))`,
-            }}
-          >
-            {mainSections.map((section) => (
-              <MobileNavSectionButton
-                key={section.key}
-                section={section}
-                className="h-full w-full rounded-none"
-                iconStyle={{
-                  width: "clamp(20px, 5.5vw, 26px)",
-                  height: "clamp(20px, 5.5vw, 26px)",
-                }}
-                activeClassName="text-primary"
-                idleClassName="text-muted-foreground"
-                badge={sectionBadges[section.key]}
-              />
-            ))}
-          </nav>
-        </div>
+            )
+          }
+          items={main.map((section) => (
+            <MobileNavSectionButton
+              key={section.key}
+              section={section}
+              className="h-full w-full rounded-none"
+              iconStyle={NAV_ICON_STYLE}
+              activeClassName="text-primary"
+              idleClassName="text-muted-foreground"
+              badge={sectionBadges[section.key]}
+            />
+          ))}
+        />
       </div>
     </MobileNavMenuProvider>
   );

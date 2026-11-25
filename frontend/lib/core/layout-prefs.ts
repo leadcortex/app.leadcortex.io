@@ -1,6 +1,11 @@
 // frontend/lib/core/layout-prefs.ts
 
 import { useEffect, useState } from "react";
+import {
+  DEFAULT_NAV_LAYOUT,
+  normalizeLayout,
+  type MobileNavLayout,
+} from "@/lib/mobile/nav-layout";
 
 export type SidebarSide = "left" | "right";
 
@@ -156,4 +161,53 @@ export function useHideAcademyFromMobile(): boolean {
   }, []);
 
   return hidden;
+}
+
+export const MOBILE_NAV_LAYOUT_KEY = "lc.layout.mobileNav";
+export const MOBILE_NAV_LAYOUT_EVENT = "lc:layout-mobile-nav";
+
+/** Sections de la barre mobile. Sans réglage enregistré, reprend l'ancien « masquer Academy ». */
+export function readMobileNavLayout(): MobileNavLayout {
+  if (typeof window === "undefined") return DEFAULT_NAV_LAYOUT;
+  try {
+    const stored = window.localStorage.getItem(MOBILE_NAV_LAYOUT_KEY);
+    if (stored) return normalizeLayout(JSON.parse(stored));
+    if (window.localStorage.getItem(HIDE_ACADEMY_MOBILE_KEY) === "1") {
+      return { ...DEFAULT_NAV_LAYOUT, keys: DEFAULT_NAV_LAYOUT.keys.filter((k) => k !== "academy") };
+    }
+  } catch {
+  }
+  return DEFAULT_NAV_LAYOUT;
+}
+
+export function writeMobileNavLayout(layout: MobileNavLayout) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(MOBILE_NAV_LAYOUT_KEY, JSON.stringify(layout));
+  } catch {
+  }
+  try {
+    window.dispatchEvent(new CustomEvent(MOBILE_NAV_LAYOUT_EVENT));
+  } catch {
+  }
+}
+
+/** Réglage courant de la barre mobile, mis à jour en direct (même onglet et autres onglets). */
+export function useMobileNavLayout(): MobileNavLayout {
+  const [layout, setLayout] = useState<MobileNavLayout>(() => readMobileNavLayout());
+
+  useEffect(() => {
+    const refresh = () => setLayout(readMobileNavLayout());
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === MOBILE_NAV_LAYOUT_KEY || e.key === null) refresh();
+    };
+    window.addEventListener(MOBILE_NAV_LAYOUT_EVENT, refresh);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener(MOBILE_NAV_LAYOUT_EVENT, refresh);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, []);
+
+  return layout;
 }
