@@ -266,11 +266,11 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
         >
           <div className="space-y-4">
             <div>
-              <label className="mb-1.5 flex items-center justify-between text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <label className="mb-1.5 flex items-center justify-between text-xs font-medium text-muted-foreground">
                 <span>
                   Nom de la compétence <span className="text-destructive">*</span>
                 </span>
-                <span className="font-mono text-[10px] text-muted-foreground/70">
+                <span className="font-mono text-xs text-muted-foreground/70">
                   {name.length}/60
                 </span>
               </label>
@@ -281,7 +281,7 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
                 onBlur={() => setTouched(true)}
                 placeholder="Ex. : Rédaction d'emails de prospection"
                 className={cn(
-                  "h-10 w-full rounded-lg border bg-background px-3 text-sm outline-none transition-all",
+                  "h-10 w-full rounded-lg border bg-background px-3 text-sm outline-none transition-colors",
                   "focus:border-primary focus:ring-2 focus:ring-primary/20",
                   nameError ? "border-destructive" : "border-input",
                 )}
@@ -295,7 +295,7 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
             </div>
 
             <div>
-              <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-2 text-xs font-medium text-muted-foreground">
                 Catégorie
               </p>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
@@ -308,11 +308,11 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
                       type="button"
                       onClick={() => setCategory(cat.value)}
                       className={cn(
-                        "flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all",
+                        "flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-colors",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                         active
-                          ? "border-primary bg-primary/5 shadow-sm"
-                          : "border-border hover:border-primary/30 hover:bg-surface/50",
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:bg-surface/50",
                       )}
                     >
                       <span
@@ -341,9 +341,9 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
             </div>
 
             <div>
-              <label className="mb-1.5 flex items-center justify-between text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <label className="mb-1.5 flex items-center justify-between text-xs font-medium text-muted-foreground">
                 <span>Description courte</span>
-                <span className="font-mono text-[10px] text-muted-foreground/70">
+                <span className="font-mono text-xs text-muted-foreground/70">
                   {description.length}/200
                 </span>
               </label>
@@ -353,7 +353,7 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
                 onChange={(e) => setDescription(e.target.value.slice(0, 200))}
                 placeholder="Ex. : Ton direct, accroche personnalisée, un seul CTA."
                 className={cn(
-                  "h-10 w-full rounded-lg border bg-background px-3 text-sm outline-none transition-all",
+                  "h-10 w-full rounded-lg border bg-background px-3 text-sm outline-none transition-colors",
                   "focus:border-primary focus:ring-2 focus:ring-primary/20",
                   descriptionError ? "border-destructive" : "border-input",
                 )}
@@ -366,7 +366,7 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
             </div>
 
             <div>
-              <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-2 text-xs font-medium text-muted-foreground">
                 Fichier de compétence (optionnel)
               </p>
               <FileDropZone
@@ -391,11 +391,11 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
 
             <div>
               <div className="mb-1.5 flex items-center justify-between gap-2">
-                <label className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                   <Sparkles className="size-3 text-primary" />
                   Prompt / instructions personnalisées
                 </label>
-                <span className="font-mono text-[10px] text-muted-foreground/70">
+                <span className="font-mono text-xs text-muted-foreground/70">
                   {prompt.length} caractère{prompt.length > 1 ? "s" : ""}
                 </span>
               </div>
@@ -411,7 +411,7 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
                     onClick={() => setTemplateOpen((v) => !v)}
                     aria-haspopup="listbox"
                     aria-expanded={templateOpen}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-[11px] transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-[11px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Sparkles className="size-3 text-primary" />
                     <span className="hidden sm:inline">Utiliser un template</span>
@@ -426,7 +426,7 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
                       role="listbox"
                       className="absolute right-0 top-[calc(100%+4px)] z-[80] w-64 overflow-hidden rounded-xl border border-border bg-popover shadow-xl animate-in fade-in zoom-in-95"
                     >
-                      <p className="border-b border-border/60 px-3 py-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                      <p className="border-b border-border/60 px-3 py-2 text-xs font-medium text-muted-foreground">
                         Templates
                       </p>
                       {SKILL_PROMPT_TEMPLATES.map((tpl) => (
@@ -449,7 +449,7 @@ export function SkillModal({ open, onOpenChange, skill, onSave, onDelete }: Skil
                           <span className="min-w-0 flex-1">
                             <span className="block truncate font-medium">{tpl.label}</span>
                             {tpl.value && (
-                              <span className="mt-0.5 block truncate text-[10px] text-muted-foreground">
+                              <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                                 {tpl.value.split("\n")[0]}
                               </span>
                             )}

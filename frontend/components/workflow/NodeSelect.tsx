@@ -42,7 +42,7 @@ export function NodeSelect({
           autoGrow ? "items-start py-1" : "items-center",
           size === "compact"
             ? cn("px-1.5 text-[11px]", autoGrow ? "min-h-6" : "h-6")
-            : cn("px-1.5 text-[11.5px]", autoGrow ? "min-h-7" : "h-7"),
+            : cn("rounded-lg px-3 text-[13px]", autoGrow ? "min-h-9" : "h-9"),
           className,
         )}
       >
@@ -53,7 +53,7 @@ export function NodeSelect({
           <ChevronDown
             className={cn(
               "shrink-0 opacity-60",
-              size === "compact" ? "size-3" : "size-3.5",
+              size === "compact" ? "size-3" : "size-4",
               autoGrow && "mt-0.5",
             )}
           />
@@ -82,7 +82,7 @@ export function NodeSelect({
                 onPointerDown={(e) => e.stopPropagation()}
                 className={cn(
                   "relative flex cursor-pointer select-none items-center rounded-lg py-1.5 pl-2.5 pr-7 outline-none transition-colors",
-                  size === "compact" ? "text-[11px]" : "text-[11.5px]",
+                  size === "compact" ? "text-[11px]" : "text-[13px]",
                   "data-[highlighted]:bg-primary/10 data-[state=checked]:font-medium data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
                 )}
               >

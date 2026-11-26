@@ -6,7 +6,7 @@ import { getPersonalizationHint } from "./assistant-engine";
 export function buildFinalSystemPrompt(config?: ModelConfig, basePrompt?: string): string {
   const defaultBase =
     basePrompt ||
-    "Vous êtes LeadCortex Copilot, un assistant IA intelligent spécialisé dans le B2B, la gestion de prospects et l'optimisation des ventes.";
+    "Vous êtes LeadCortex Copilot, un assistant spécialisé dans la prospection B2B et la vente.";
 
   if (!config) return defaultBase;
 
@@ -20,8 +20,8 @@ export function buildFinalSystemPrompt(config?: ModelConfig, basePrompt?: string
     defaultBase,
     "",
     `[Équipe IA active (${mode})]`,
-    `- IA de recherche : ${research.name} (${research.providerLabel}) — collecte, vérifie et synthétise les informations.`,
-    `- IA de travail   : ${work.name} (${work.providerLabel}) — analyse, rédige et structure les livrables.`,
+    `- IA de recherche : ${research.name} (${research.providerLabel}) : collecte, vérifie et synthétise les informations.`,
+    `- IA de travail   : ${work.name} (${work.providerLabel}) : analyse, rédige et structure les livrables.`,
     "Exploitez leurs forces respectives : la recherche nourrit le travail, le travail produit la réponse finale.",
     ...(hint ? ["", "[Préférences utilisateur]", hint] : []),
   ].join("\n");

@@ -1,0 +1,2859 @@
+diff --git a/frontend/components/common/data-table.tsx b/frontend/components/common/data-table.tsx
+index a94c006..7b9f298 100644
+--- a/frontend/components/common/data-table.tsx
++++ b/frontend/components/common/data-table.tsx
+@@ -624,13 +624,13 @@ function DataTable<T extends object>({
+     return (
+       <div
+         className={cn(
+-          "isolate rounded-xl border border-border overflow-hidden bg-background shadow-sm flex flex-col h-full",
++          "isolate rounded-xl border border-border overflow-hidden bg-background flex flex-col h-full",
+           className,
+         )}
+       >
+         <div className="overflow-x-auto flex-1">
+           <table className="w-full text-left text-sm">
+-            <thead className="bg-background text-muted-foreground text-[10px] uppercase tracking-[0.12em] sticky top-0 z-50">
++            <thead className="bg-background text-muted-foreground text-xs sticky top-0 z-50">
+               <tr>
+                 {selectable && (
+                   <th className="px-4 py-3 border-b border-border w-8 sticky left-0 bg-background z-50 shadow-[1px_0_0_var(--border)]" />
+@@ -639,7 +639,7 @@ function DataTable<T extends object>({
+                   <th
+                     key={String(col.key)}
+                     className={cn(
+-                      "px-4 py-3 border-b border-border font-semibold bg-background shadow-[1px_0_0_var(--border)]",
++                      "px-4 py-3 border-b border-border font-medium bg-background shadow-[1px_0_0_var(--border)]",
+                       col.className,
+                     )}
+                     style={{ width: col.width }}
+@@ -682,7 +682,7 @@ function DataTable<T extends object>({
+     return (
+       <div
+         className={cn(
+-          "rounded-xl border border-dashed border-border p-8 text-center text-xs text-muted-foreground bg-surface/20 flex items-center justify-center h-full",
++          "rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground flex items-center justify-center h-full",
+           className,
+         )}
+         style={fixedHeight ? { height: fixedHeight } : undefined}
+@@ -743,11 +743,10 @@ function DataTable<T extends object>({
+               >
+                 <label
+                   className={cn(
+-                    "relative ml-1 flex size-5 cursor-pointer items-center justify-center rounded-md transition-all",
+-                    "border border-border active:translate-y-[1px] active:shadow-none",
++                    "relative ml-1 flex size-[18px] cursor-pointer items-center justify-center rounded-md border transition-colors",
+                     allSelected
+-                      ? "border-primary bg-primary text-primary-foreground shadow-[0_2px_0_color-mix(in_oklab,var(--primary)_60%,black)]"
+-                      : "bg-surface text-muted-foreground shadow-[0_2px_0_var(--border)] hover:bg-surface/80",
++                      ? "border-primary bg-primary text-primary-foreground"
++                      : "border-border bg-background text-muted-foreground hover:border-foreground/40",
+                   )}
+                 >
+                   <input
+@@ -756,7 +755,7 @@ function DataTable<T extends object>({
+                     onChange={toggleAll}
+                     className="sr-only"
+                   />
+-                  {allSelected && <Check className="size-3.5" strokeWidth={3} />}
++                  {allSelected && <Check className="size-3" strokeWidth={3} />}
+                 </label>
+               </th>
+             )}
+@@ -777,8 +776,7 @@ function DataTable<T extends object>({
+                   key={String(col.key)}
+                   className={cn(
+                     headPad,
+-                    "group/header relative border-b border-border font-semibold whitespace-nowrap bg-background transition-colors",
+-                    effectiveCompact && "text-[10px] uppercase tracking-wider",
++                    "group/header relative border-b border-border text-xs font-medium text-muted-foreground whitespace-nowrap bg-background transition-colors",
+                     !isLastDataCol && "shadow-[1px_0_0_var(--border)]",
+                     col.sticky &&
+                       "sticky z-[155] shadow-[1px_0_0_var(--border),2px_0_4px_-2px_rgba(0,0,0,0.1)]",
+@@ -801,10 +799,10 @@ function DataTable<T extends object>({
+                   )}
+ 
+                   {showDropLeft && (
+-                    <div className="absolute inset-y-0 -left-[1.5px] w-[3px] bg-primary shadow-[0_0_15px_2px_var(--primary)] z-50" />
++                    <div className="absolute inset-y-0 -left-[1.5px] w-[3px] bg-primary z-50" />
+                   )}
+                   {showDropRight && (
+-                    <div className="absolute inset-y-0 -right-[1.5px] w-[3px] bg-primary shadow-[0_0_15px_2px_var(--primary)] z-50" />
++                    <div className="absolute inset-y-0 -right-[1.5px] w-[3px] bg-primary z-50" />
+                   )}
+ 
+                   <div className="flex items-center gap-2 min-w-0 pr-2">
+@@ -830,7 +828,7 @@ function DataTable<T extends object>({
+                     onClick={(e) => e.stopPropagation()}
+                     onDragStart={(e) => e.preventDefault()}
+                   >
+-                    <div className="absolute inset-y-0 left-1/2 w-[1.5px] -translate-x-1/2 bg-border group-hover/resizer:bg-primary group-hover/resizer:shadow-[0_0_8px_var(--primary)] transition-all" />
++                    <div className="absolute inset-y-0 left-1/2 w-[1.5px] -translate-x-1/2 bg-border group-hover/resizer:bg-primary transition-colors" />
+                   </div>
+                 </th>
+               );
+@@ -871,9 +869,8 @@ function DataTable<T extends object>({
+                   data-dragging={isDragging ? "true" : undefined}
+                   data-drag-over={isDragOverRow ? "true" : undefined}
+                   className={cn(
+-                    "border-b border-border last:border-0 transition-colors duration-200 group relative",
+-                    rowIndex % 2 === 1 && !isSelected && "bg-surface/25",
+-                    onRowClick && "cursor-pointer hover:bg-primary/[0.05]",
++                    "border-b border-border last:border-0 transition-colors duration-150 group relative",
++                    onRowClick && "cursor-pointer hover:bg-foreground/[0.03]",
+                     isSelected && "bg-primary/[0.07]",
+                     isDragOverRow &&
+                       "bg-primary/[0.04] [&>td]:bg-[linear-gradient(var(--primary),var(--primary))] [&>td]:bg-[length:100%_2px] [&>td]:bg-top [&>td]:bg-no-repeat",
+@@ -922,11 +919,10 @@ function DataTable<T extends object>({
+                       <label
+                         data-range-select
+                         className={cn(
+-                          "relative ml-1 flex size-5 cursor-pointer items-center justify-center transition-all select-none",
+-                          "border border-border active:translate-y-[1px] active:shadow-none",
++                          "relative ml-1 flex size-[18px] cursor-pointer items-center justify-center rounded-md border transition-colors select-none",
+                           isSelected
+-                            ? "border-primary bg-primary text-primary-foreground shadow-[0_2px_0_color-mix(in_oklab,var(--primary)_60%,black)]"
+-                            : "bg-surface text-muted-foreground shadow-[0_2px_0_var(--border)] hover:bg-surface/80",
++                            ? "border-primary bg-primary text-primary-foreground"
++                            : "border-border bg-background text-muted-foreground hover:border-foreground/40",
+                         )}
+                       >
+                         <input
+@@ -936,7 +932,7 @@ function DataTable<T extends object>({
+                           className="sr-only"
+                           draggable={false}
+                         />
+-                        {isSelected && <Check className="size-3.5" strokeWidth={3} />}
++                        {isSelected && <Check className="size-3" strokeWidth={3} />}
+                       </label>
+                     </td>
+                   )}
+@@ -981,10 +977,10 @@ function DataTable<T extends object>({
+                         )}
+ 
+                         {showDropLeft && (
+-                          <div className="absolute inset-y-0 -left-[1.5px] w-[3px] bg-primary shadow-[0_0_15px_2px_var(--primary)] z-50" />
++                          <div className="absolute inset-y-0 -left-[1.5px] w-[3px] bg-primary z-50" />
+                         )}
+                         {showDropRight && (
+-                          <div className="absolute inset-y-0 -right-[1.5px] w-[3px] bg-primary shadow-[0_0_15px_2px_var(--primary)] z-50" />
++                          <div className="absolute inset-y-0 -right-[1.5px] w-[3px] bg-primary z-50" />
+                         )}
+ 
+                         {!selectable && idx === 0 && rowHandle(id, isDragging)}
+@@ -1005,12 +1001,7 @@ function DataTable<T extends object>({
+   const tableWrapper = bare ? (
+     tableInner
+   ) : (
+-    <div
+-      className={cn(
+-        "table-tactile flex min-h-0 flex-1 flex-col overflow-hidden",
+-        comfortable && !compact && "shadow-md",
+-      )}
+-    >
++    <div className={cn("table-tactile flex min-h-0 flex-1 flex-col overflow-hidden")}>
+       {tableInner}
+     </div>
+   );
+@@ -1027,7 +1018,7 @@ function DataTable<T extends object>({
+             value={search}
+             onChange={(e) => setSearch(e.target.value)}
+             placeholder={searchPlaceholder}
+-            className="w-full pl-3 pr-8 py-1.5 text-xs rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
++            className="h-9 w-full pl-3 pr-8 text-sm rounded-lg border border-input bg-background focus:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 transition-[border-color,box-shadow]"
+           />
+           {search && (
+             <button
+@@ -1055,7 +1046,7 @@ function DataTable<T extends object>({
+             <button
+               onClick={() => goToPage(currentPage - 1)}
+               disabled={currentPage === 1}
+-              className="grid size-7 place-items-center rounded-md hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
++              className="grid size-8 place-items-center rounded-md hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+             >
+               <ChevronLeft className="size-4" />
+             </button>
+@@ -1078,9 +1069,9 @@ function DataTable<T extends object>({
+                   key={p}
+                   onClick={() => goToPage(p)}
+                   className={cn(
+-                    "grid size-7 place-items-center rounded-md text-[11px] font-medium transition-colors",
++                    "grid size-8 place-items-center rounded-md text-xs font-medium tabular-nums transition-colors",
+                     currentPage === p
+-                      ? "bg-primary text-primary-foreground shadow-[0_1px_0_color-mix(in_oklab,var(--primary)_60%,black)]"
++                      ? "bg-secondary text-foreground"
+                       : "hover:bg-surface text-muted-foreground",
+                   )}
+                 >
+@@ -1092,7 +1083,7 @@ function DataTable<T extends object>({
+             <button
+               onClick={() => goToPage(currentPage + 1)}
+               disabled={currentPage === totalPages}
+-              className="grid size-7 place-items-center rounded-md hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
++              className="grid size-8 place-items-center rounded-md hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+             >
+               <ChevronRight className="size-4" />
+             </button>
+diff --git a/frontend/components/dashboard/dashboard-charts.tsx b/frontend/components/dashboard/dashboard-charts.tsx
+index 815f2b7..4f2002c 100644
+--- a/frontend/components/dashboard/dashboard-charts.tsx
++++ b/frontend/components/dashboard/dashboard-charts.tsx
+@@ -16,11 +16,9 @@ import {
+   XAxis,
+   YAxis,
+ } from "recharts";
+-import { ChevronDown } from "@/components/icons";
+ import {
+   AXIS_STYLE,
+   CHART_COLORS,
+-  ChartCard,
+   ChartLegend,
+   ChartTooltip,
+   ClientChart,
+@@ -31,40 +29,13 @@ import {
+ import { volumeSeries, type STAGE_LABELS } from "@/lib/analytics/dashboard-metrics";
+ import {
+   formatCompactEuroFr,
+-  halfDelta,
+   type FunnelStep,
+   type ScoreBucket,
+ } from "@/lib/analytics/dashboard-insights";
+-import { cn } from "@/lib/core/utils";
++import { DashSection } from "./dashboard-section";
+ 
+ export type Range = "7j" | "30j" | "90j";
+ 
+-function Stat({ label, value, delta }: { label: string; value: string; delta?: number }) {
+-  return (
+-    <div className="min-w-0">
+-      <p className="text-[11px] font-semibold uppercase leading-snug tracking-[0.12em] text-muted-foreground">
+-        {label}
+-      </p>
+-      <p className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+-        <span className="whitespace-nowrap font-display text-2xl leading-none tabular-nums md:text-[28px]">
+-          {value}
+-        </span>
+-        {delta !== undefined && delta !== 0 && (
+-          <span
+-            className={cn(
+-              "whitespace-nowrap font-mono text-[11px] font-semibold tabular-nums",
+-              delta > 0 ? "text-success" : "text-destructive",
+-            )}
+-          >
+-            {delta > 0 ? "+" : ""}
+-            {delta}&nbsp;%
+-          </span>
+-        )}
+-      </p>
+-    </div>
+-  );
+-}
+-
+ export function TrendChart({
+   range,
+   onRangeChange,
+@@ -76,8 +47,7 @@ export function TrendChart({
+   const data = useMemo(() => volumeSeries(range), [range]);
+ 
+   const totals = useMemo(() => {
+-    const sum = (k: "leads" | "enriched" | "replies" | "meetings") =>
+-      data.reduce((n, d) => n + d[k], 0);
++    const sum = (k: "leads" | "replies" | "meetings") => data.reduce((n, d) => n + d[k], 0);
+     const leads = sum("leads");
+     const replies = sum("replies");
+     return {
+@@ -85,16 +55,14 @@ export function TrendChart({
+       replies,
+       meetings: sum("meetings"),
+       replyRate: leads > 0 ? Math.round((replies / leads) * 100) : 0,
+-      leadsDelta: halfDelta(data.map((d) => d.leads)),
+-      repliesDelta: halfDelta(data.map((d) => d.replies)),
+     };
+   }, [data]);
+ 
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Volume de prospection"
+-      subtitle="Prospects détectés, enrichis et réponses obtenues"
++      subtitle={`${totals.leads.toLocaleString("fr-FR")} prospects · ${totals.replies.toLocaleString("fr-FR")} réponses (${totals.replyRate} %) · ${totals.meetings.toLocaleString("fr-FR")} rendez-vous`}
+       actions={<RangeToggle value={range} onChange={(v) => onRangeChange(v as Range)} />}
+       footer={
+         <ChartLegend
+@@ -106,34 +74,19 @@ export function TrendChart({
+         />
+       }
+     >
+-      <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+-        <Stat
+-          label="Prospects"
+-          value={totals.leads.toLocaleString("fr-FR")}
+-          delta={totals.leadsDelta}
+-        />
+-        <Stat
+-          label="Réponses"
+-          value={totals.replies.toLocaleString("fr-FR")}
+-          delta={totals.repliesDelta}
+-        />
+-        <Stat label="Taux de réponse" value={`${totals.replyRate}\u00a0%`} />
+-        <Stat label="Rendez-vous" value={totals.meetings.toLocaleString("fr-FR")} />
+-      </div>
+-
+       <ScrollFrame
+         minWidth={Math.max(560, data.length * 72)}
+         label="Volume de prospection, défilement horizontal"
+       >
+-        <ClientChart height={260}>
++        <ClientChart height={220}>
+           <ComposedChart data={data} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+             <defs>
+               <linearGradient id={`trend-leads-${uid}`} x1="0" y1="0" x2="0" y2="1">
+-                <stop offset="0%" stopColor={CHART_COLORS[0]} stopOpacity={0.34} />
++                <stop offset="0%" stopColor={CHART_COLORS[0]} stopOpacity={0.16} />
+                 <stop offset="100%" stopColor={CHART_COLORS[0]} stopOpacity={0.02} />
+               </linearGradient>
+               <linearGradient id={`trend-enriched-${uid}`} x1="0" y1="0" x2="0" y2="1">
+-                <stop offset="0%" stopColor={CHART_COLORS[2]} stopOpacity={0.2} />
++                <stop offset="0%" stopColor={CHART_COLORS[2]} stopOpacity={0.08} />
+                 <stop offset="100%" stopColor={CHART_COLORS[2]} stopOpacity={0} />
+               </linearGradient>
+             </defs>
+@@ -172,7 +125,7 @@ export function TrendChart({
+           </ComposedChart>
+         </ClientChart>
+       </ScrollFrame>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+@@ -181,18 +134,10 @@ export function FunnelChart({ steps }: { steps: FunnelStep[] }) {
+   const overall = steps[0]?.count ? Math.round((last.count / steps[0].count) * 100) : 0;
+ 
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Entonnoir de conversion"
+-      subtitle="Du premier contact à la signature"
+-      footer={
+-        <p className="text-xs text-muted-foreground">
+-          Conversion globale :{" "}
+-          <span className="font-mono font-semibold tabular-nums text-foreground">
+-            {overall}&nbsp;%
+-          </span>
+-        </p>
+-      }
++      subtitle={`Du premier contact à la signature · ${overall} % au total`}
+     >
+       <ScrollFrame
+         fit="content"
+@@ -205,28 +150,27 @@ export function FunnelChart({ steps }: { steps: FunnelStep[] }) {
+               {s.conversion !== null && (
+                 <div className="grid grid-cols-[116px_1fr_auto] items-center gap-3 py-1">
+                   <span />
+-                  <span className="flex items-center gap-1 whitespace-nowrap pl-1 text-[11px] text-muted-foreground">
+-                    <ChevronDown className="size-3 shrink-0" />
+-                    <span className="font-mono tabular-nums">{s.conversion}&nbsp;%</span> passent à
+-                    l'étape suivante
++                  <span className="whitespace-nowrap text-xs tabular-nums text-muted-foreground">
++                    {s.conversion}&nbsp;% passent à l'étape suivante
+                   </span>
+                   <span className="w-12" />
+                 </div>
+               )}
+               <div className="grid grid-cols-[116px_1fr_auto] items-center gap-3">
+-                <span className="whitespace-nowrap text-xs text-muted-foreground md:text-[13px]">
++                <span className="whitespace-nowrap text-[13px] text-muted-foreground">
+                   {s.label}
+                 </span>
+-                <div className="h-8 overflow-hidden rounded-lg bg-secondary/60">
++                <div className="h-6 overflow-hidden rounded-md bg-secondary/60">
+                   <div
+-                    className="h-full rounded-lg transition-[width] duration-700"
++                    className="h-full rounded-md"
+                     style={{
+                       width: `${Math.max(s.share, s.count > 0 ? 4 : 0)}%`,
+-                      background: `linear-gradient(90deg, color-mix(in oklab, ${CHART_COLORS[i % CHART_COLORS.length]} 70%, transparent), ${CHART_COLORS[i % CHART_COLORS.length]})`,
++                      backgroundColor: CHART_COLORS[0],
++                      opacity: 1 - i * 0.12,
+                     }}
+                   />
+                 </div>
+-                <span className="w-12 whitespace-nowrap text-right font-mono text-xs font-semibold tabular-nums md:text-[13px]">
++                <span className="w-12 whitespace-nowrap text-right text-[13px] font-medium tabular-nums">
+                   {s.count.toLocaleString("fr-FR")}
+                 </span>
+               </div>
+@@ -234,7 +178,7 @@ export function FunnelChart({ steps }: { steps: FunnelStep[] }) {
+           ))}
+         </ol>
+       </ScrollFrame>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+@@ -251,7 +195,7 @@ export function PipelineDonut({ stages }: { stages: PipelineStage[] }) {
+   const all = stages.reduce((n, s) => n + s.amount, 0) || 1;
+ 
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Pipeline par étape"
+       subtitle={`${open.reduce((n, s) => n + s.count, 0)} opportunités ouvertes`}
+@@ -261,7 +205,7 @@ export function PipelineDonut({ stages }: { stages: PipelineStage[] }) {
+           minWidth={280}
+           label="Légende du pipeline, défilement horizontal"
+         >
+-          <ul className="space-y-2.5">
++          <ul className="space-y-2">
+             {stages.map((s, i) => (
+               <li
+                 key={s.stage}
+@@ -279,7 +223,7 @@ export function PipelineDonut({ stages }: { stages: PipelineStage[] }) {
+                 <span className="whitespace-nowrap text-xs text-muted-foreground">
+                   {s.label} · {s.count}
+                 </span>
+-                <span className="whitespace-nowrap pl-4 text-right font-mono text-xs tabular-nums">
++                <span className="whitespace-nowrap pl-4 text-right text-xs tabular-nums">
+                   {formatCompactEuroFr(s.amount)}
+                 </span>
+                 <span />
+@@ -304,7 +248,7 @@ export function PipelineDonut({ stages }: { stages: PipelineStage[] }) {
+     >
+       <ScrollFrame minWidth={260} label="Répartition du pipeline, défilement horizontal">
+         <div className="relative">
+-          <ClientChart height={240}>
++          <ClientChart height={200}>
+             <PieChart>
+               <Tooltip
+                 content={
+@@ -335,17 +279,15 @@ export function PipelineDonut({ stages }: { stages: PipelineStage[] }) {
+           </ClientChart>
+           <div className="pointer-events-none absolute inset-0 grid place-items-center">
+             <div className="text-center">
+-              <p className="font-display text-3xl leading-none tabular-nums">
++              <p className="text-xl font-semibold tabular-nums">
+                 {formatCompactEuroFr(openTotal)}
+               </p>
+-              <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+-                en cours
+-              </p>
++              <p className="text-xs text-muted-foreground">en cours</p>
+             </div>
+           </div>
+         </div>
+       </ScrollFrame>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+@@ -358,14 +300,13 @@ export function ScoreHistogram({
+ }) {
+   const hot = buckets.filter((b) => b.hot).reduce((n, b) => n + b.value, 0);
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Qualité des prospects"
+-      subtitle="Répartition par score"
+       footer={
+         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-muted-foreground">
+           <span>
+-            <span className="font-mono font-semibold tabular-nums text-foreground">{hot}</span> avec
++            <span className="font-medium tabular-nums text-foreground">{hot}</span> avec
+             un score de 8 ou plus
+           </span>
+           {unscored > 0 && <span>{unscored} sans score</span>}
+@@ -395,7 +336,7 @@ export function ScoreHistogram({
+           </BarChart>
+         </ClientChart>
+       </ScrollFrame>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+@@ -409,15 +350,10 @@ export function WorkflowRunsChart({
+   total: number;
+ }) {
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Exécutions des automatisations"
+-      subtitle={`${total.toLocaleString("fr-FR")} exécutions sur 7 jours`}
+-      actions={
+-        <span className="whitespace-nowrap rounded-full bg-success/12 px-2.5 py-1 font-mono text-[11px] font-semibold tabular-nums text-success md:text-xs">
+-          {successRate}&nbsp;% de réussite
+-        </span>
+-      }
++      subtitle={`${total.toLocaleString("fr-FR")} exécutions sur 7 jours · ${successRate} % de réussite`}
+       footer={
+         <ChartLegend
+           items={[
+@@ -452,17 +388,16 @@ export function WorkflowRunsChart({
+           </BarChart>
+         </ClientChart>
+       </ScrollFrame>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+ export function ChannelChart({ channels }: { channels: { channel: string; value: number }[] }) {
+   const height = Math.max(180, channels.length * 44);
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Canaux d'activité"
+-      subtitle="Volume d'interactions par canal"
+     >
+       <ScrollFrame minWidth={340} label="Canaux d'activité, défilement horizontal">
+         <ClientChart height={height}>
+@@ -490,6 +425,6 @@ export function ChannelChart({ channels }: { channels: { channel: string; value:
+           </BarChart>
+         </ClientChart>
+       </ScrollFrame>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+diff --git a/frontend/components/dashboard/dashboard-kpis.tsx b/frontend/components/dashboard/dashboard-kpis.tsx
+deleted file mode 100644
+index 10d891e..0000000
+--- a/frontend/components/dashboard/dashboard-kpis.tsx
++++ /dev/null
+@@ -1,127 +0,0 @@
+-// frontend/components/dashboard/dashboard-kpis.tsx
+-
+-import { useId, type CSSProperties } from "react";
+-import { Link } from "@tanstack/react-router";
+-import { Area, AreaChart } from "recharts";
+-import { ArrowUpRight, TrendingDown, TrendingUp } from "@/components/icons";
+-import { ClientChart } from "@/components/charts/charts";
+-import { SmartCounter } from "@/components/ui/animated-counter";
+-import { cn } from "@/lib/core/utils";
+-import type { DashboardKpi, Tone } from "@/lib/analytics/dashboard-insights";
+-
+-const TONE_VAR: Record<Tone, string> = {
+-  primary: "var(--primary)",
+-  success: "var(--success)",
+-  warning: "var(--warning, var(--chart-2))",
+-  destructive: "var(--destructive)",
+-};
+-
+-function Sparkline({ values }: { values: number[] }) {
+-  const id = useId().replace(/:/g, "");
+-  const data = values.map((v, i) => ({ i, v }));
+-  return (
+-    <ClientChart height={40}>
+-      <AreaChart data={data} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+-        <defs>
+-          <linearGradient id={`spark-${id}`} x1="0" y1="0" x2="0" y2="1">
+-            <stop offset="0%" stopColor="var(--kpi-tone)" stopOpacity={0.35} />
+-            <stop offset="100%" stopColor="var(--kpi-tone)" stopOpacity={0} />
+-          </linearGradient>
+-        </defs>
+-        <Area
+-          type="monotone"
+-          dataKey="v"
+-          stroke="var(--kpi-tone)"
+-          strokeWidth={2}
+-          fill={`url(#spark-${id})`}
+-          dot={false}
+-          isAnimationActive={false}
+-        />
+-      </AreaChart>
+-    </ClientChart>
+-  );
+-}
+-
+-function DeltaChip({ delta }: { delta: number }) {
+-  if (delta === 0) return null;
+-  const up = delta > 0;
+-  const Icon = up ? TrendingUp : TrendingDown;
+-  return (
+-    <span
+-      className={cn(
+-        "inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-full px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums",
+-        up ? "bg-success/12 text-success" : "bg-destructive/12 text-destructive",
+-      )}
+-      title="Variation entre la première et la seconde moitié de la période"
+-    >
+-      <Icon className="size-2.5" />
+-      {up ? "+" : ""}
+-      {delta}&nbsp;%
+-    </span>
+-  );
+-}
+-
+-function KpiCard({ kpi, delay }: { kpi: DashboardKpi; delay: number }) {
+-  return (
+-    <Link
+-      to={kpi.href}
+-      style={{ "--kpi-tone": TONE_VAR[kpi.tone] } as CSSProperties}
+-      className={cn(
+-        "group relative flex min-w-0 flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-card p-4",
+-        "transition-all duration-200 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--kpi-tone)_45%,var(--border))] hover:shadow-float",
+-      )}
+-    >
+-      <span
+-        aria-hidden
+-        className="pointer-events-none absolute -right-8 -top-10 size-24 rounded-full opacity-[0.10] blur-2xl transition-opacity group-hover:opacity-20"
+-        style={{ backgroundColor: "var(--kpi-tone)" }}
+-      />
+-
+-      <div className="relative flex items-start justify-between gap-2">
+-        <p className="text-[11px] font-semibold uppercase leading-snug tracking-[0.12em] text-muted-foreground">
+-          {kpi.label}
+-        </p>
+-        <ArrowUpRight className="size-3.5 shrink-0 text-muted-foreground/40 transition-all group-hover:-translate-y-px group-hover:translate-x-px group-hover:text-[var(--kpi-tone)]" />
+-      </div>
+-
+-      <div className="relative flex items-end justify-between gap-2">
+-        <p className="whitespace-nowrap font-display text-[30px] leading-none tracking-tight tabular-nums">
+-          <SmartCounter text={kpi.value} delay={delay} />
+-        </p>
+-        {kpi.trend && <DeltaChip delta={kpi.trend.delta} />}
+-      </div>
+-
+-      <div className="relative min-h-10">
+-        {kpi.trend ? (
+-          <Sparkline values={kpi.trend.values} />
+-        ) : (
+-          <div className="flex h-10 items-end">
+-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+-              <div
+-                className="h-full rounded-full transition-[width] duration-700"
+-                style={{
+-                  width: `${Math.min(100, Math.max(kpi.ratio ? 4 : 0, kpi.ratio ?? 0))}%`,
+-                  backgroundColor: "var(--kpi-tone)",
+-                }}
+-              />
+-            </div>
+-          </div>
+-        )}
+-      </div>
+-
+-      <p className="relative text-xs leading-snug text-muted-foreground">{kpi.hint}</p>
+-    </Link>
+-  );
+-}
+-
+-export function KpiStrip({ items }: { items: DashboardKpi[] }) {
+-  return (
+-    <div className="@container">
+-      <div className="grid grid-cols-2 gap-3 @3xl:grid-cols-3 @3xl:gap-4 @7xl:grid-cols-6">
+-        {items.map((kpi, i) => (
+-          <KpiCard key={kpi.id} kpi={kpi} delay={i * 60} />
+-        ))}
+-      </div>
+-    </div>
+-  );
+-}
+diff --git a/frontend/components/dashboard/dashboard-widgets.tsx b/frontend/components/dashboard/dashboard-widgets.tsx
+index 5297f06..bed92ec 100644
+--- a/frontend/components/dashboard/dashboard-widgets.tsx
++++ b/frontend/components/dashboard/dashboard-widgets.tsx
+@@ -2,23 +2,15 @@
+ 
+ import type { ReactNode } from "react";
+ import { Link } from "@tanstack/react-router";
+-import {
+-  ArrowRight,
+-  ArrowUpRight,
+-  Calendar,
+-  CheckCircle2,
+-  Circle,
+-  Radio,
+-  Sparkles,
+-} from "@/components/icons";
+-import { Badge } from "@/components/common/ui-primitives";
+-import { ChartCard, ScrollFrame } from "@/components/charts/charts";
++import { ArrowRight, CheckCircle2, Circle } from "@/components/icons";
++import { ScrollFrame } from "@/components/charts/charts";
+ import { LetterAvatar } from "@/components/ui/letter-avatar";
+ import { cn } from "@/lib/core/utils";
+ import { formatEuro } from "@/lib/analytics/dashboard-metrics";
+ import type { Insight, Tone } from "@/lib/analytics/dashboard-insights";
+ import type { SignalGroup } from "@/lib/analytics/dashboard-metrics-people";
+ import type { Deal, Lead, Meeting, Task } from "@/lib/data/mock-data";
++import { DashSection } from "./dashboard-section";
+ 
+ const TONE_DOT: Record<Tone, string> = {
+   primary: "bg-primary",
+@@ -31,9 +23,9 @@ function SeeAll({ to, children = "Voir tout" }: { to: Insight["href"]; children?
+   return (
+     <Link
+       to={to}
+-      className="inline-flex items-center gap-1 whitespace-nowrap text-xs text-muted-foreground transition-colors hover:text-foreground"
++      className="whitespace-nowrap text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+     >
+-      {children} <ArrowUpRight className="size-3" />
++      {children}
+     </Link>
+   );
+ }
+@@ -43,109 +35,82 @@ function MoreLink({ to, hidden, noun }: { to: Insight["href"]; hidden: number; n
+   return (
+     <Link
+       to={to}
+-      className="mt-2 inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
++      className="mt-2 inline-flex items-center gap-1 text-[13px] font-medium text-primary transition-colors hover:text-primary/80"
+     >
+-      Voir {hidden} {noun}
+-      {hidden > 1 ? "s" : ""} de plus <ArrowRight className="size-3" />
++      {hidden} {noun}
++      {hidden > 1 ? "s" : ""} de plus <ArrowRight className="size-3.5" />
+     </Link>
+   );
+ }
+ 
+-function Empty({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+-  return (
+-    <div className="grid place-items-center gap-2 rounded-xl border border-dashed border-border bg-surface/20 px-4 py-8 text-center">
+-      <span className="text-muted-foreground/40">{icon}</span>
+-      <p className="text-xs text-muted-foreground">{children}</p>
+-    </div>
+-  );
++function Empty({ children }: { children: ReactNode }) {
++  return <p className="py-4 text-[13px] text-muted-foreground">{children}</p>;
+ }
+ 
+-const rowClass =
+-  "group flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-2 transition-colors hover:border-border hover:bg-surface/50";
++const listClass = "divide-y divide-border/60";
+ 
+-const PRIORITY_LABEL: Record<Task["priority"], string> = {
+-  high: "Haute",
+-  med: "Moyenne",
+-  low: "Basse",
+-};
++const rowLinkClass =
++  "-mx-2 flex min-h-12 items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-foreground/[0.03]";
++
++const rowClass = "flex min-h-12 items-center gap-3 py-2";
+ 
+ export function InsightsWidget({ insights }: { insights: Insight[] }) {
+   return (
+-    <ChartCard
+-      className="h-full"
+-      title="À traiter maintenant"
+-      subtitle="Recommandations calculées sur vos données"
+-    >
+-      <ul className="space-y-1.5">
++    <DashSection className="h-full" title="À traiter maintenant">
++      <ul className={listClass}>
+         {insights.map((i) => (
+           <li key={i.id}>
+-            <Link to={i.href} className={cn(rowClass, "items-start")}>
+-              <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", TONE_DOT[i.tone])} />
++            <Link to={i.href} className={cn(rowLinkClass, "items-start py-3")}>
++              <span className={cn("mt-2 size-1.5 shrink-0 rounded-full", TONE_DOT[i.tone])} />
+               <div className="min-w-0 flex-1">
+-                <p className="text-sm font-medium leading-snug">{i.title}</p>
+-                <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{i.detail}</p>
++                <p className="text-sm font-medium">{i.title}</p>
++                <p className="mt-1 text-[13px] text-muted-foreground">{i.detail}</p>
+               </div>
+-              <span className="inline-flex shrink-0 items-center gap-1 self-center whitespace-nowrap text-xs text-primary">
+-                <span className="hidden opacity-0 transition-opacity group-hover:opacity-100 sm:inline [@media(hover:none)]:opacity-100">
+-                  {i.cta}
+-                </span>
+-                <ArrowRight className="size-3.5" />
++              <span className="hidden shrink-0 self-center whitespace-nowrap text-[13px] font-medium text-primary sm:inline">
++                {i.cta}
+               </span>
++              <ArrowRight className="size-4 shrink-0 self-center text-muted-foreground sm:hidden" />
+             </Link>
+           </li>
+         ))}
+       </ul>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+ export function PrioritiesWidget({ leads }: { leads: Lead[] }) {
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Prospects prioritaires"
+-      subtitle="Score élevé ou signal d'intention détecté"
+       actions={<SeeAll to="/app/people" />}
+     >
+       {leads.length === 0 ? (
+-        <Empty icon={<Sparkles className="size-6" />}>
+-          Aucun prospect prioritaire pour l'instant.
+-        </Empty>
++        <Empty>Aucun prospect prioritaire pour l'instant.</Empty>
+       ) : (
+         <ScrollFrame
+           fit="content"
+-          minWidth={400}
++          minWidth={360}
+           label="Prospects prioritaires, défilement horizontal"
+         >
+-          <ul className="space-y-1">
++          <ul className={listClass}>
+             {leads.map((lead) => (
+               <li key={lead.id}>
+-                <Link to="/app/people/$id" params={{ id: lead.id }} className={rowClass}>
+-                  <LetterAvatar name={lead.name} size={36} shape="circle" />
++                <Link to="/app/people/$id" params={{ id: lead.id }} className={rowLinkClass}>
++                  <LetterAvatar name={lead.name} size={32} shape="circle" />
+                   <div className="min-w-0 flex-1">
+-                    <p className="whitespace-nowrap text-sm font-medium transition-colors group-hover:text-primary">
+-                      {lead.name}
+-                    </p>
++                    <p className="whitespace-nowrap text-sm font-medium">{lead.name}</p>
+                     <p className="whitespace-nowrap text-xs text-muted-foreground">
+-                      {lead.title} · {lead.company}
++                      {lead.signal ?? `${lead.title} · ${lead.company}`}
+                     </p>
+-                    {lead.signal && (
+-                      <p className="mt-0.5 flex items-center gap-1 whitespace-nowrap text-[11px] text-primary">
+-                        <Radio className="size-3 shrink-0" />
+-                        <span>{lead.signal}</span>
+-                      </p>
+-                    )}
+                   </div>
+                   {typeof lead.score === "number" && (
+                     <span
+                       className={cn(
+-                        "shrink-0 rounded-md px-2 py-1 font-mono text-xs font-semibold tabular-nums",
+-                        lead.score >= 9
+-                          ? "bg-primary/15 text-primary"
+-                          : lead.score >= 8
+-                            ? "bg-[var(--warning,var(--chart-2))]/15 text-[var(--warning,var(--chart-2))]"
+-                            : "bg-secondary text-muted-foreground",
++                        "shrink-0 text-[13px] font-medium tabular-nums",
++                        lead.score >= 8 ? "text-foreground" : "text-muted-foreground",
+                       )}
++                      title="Score"
+                     >
+                       {lead.score.toFixed(1)}
+                     </span>
+@@ -156,54 +121,41 @@ export function PrioritiesWidget({ leads }: { leads: Lead[] }) {
+           </ul>
+         </ScrollFrame>
+       )}
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+ export function SignalsWidget({ groups }: { groups: SignalGroup[] }) {
+-  const max = groups[0]?.count || 1;
+   return (
+-    <ChartCard
+-      className="h-full"
+-      title="Signaux chauds"
+-      subtitle="Événements détectés chez vos prospects"
+-    >
+-      <ul className="space-y-4">
++    <DashSection className="h-full" title="Signaux chauds">
++      <ul className={listClass}>
+         {groups.map((g) => (
+-          <li key={g.signal}>
+-            <div className="flex items-start justify-between gap-3">
+-              <p className="min-w-0 text-sm font-medium leading-snug">{g.signal}</p>
+-              <span className="shrink-0 font-mono text-xs font-semibold tabular-nums text-primary">
++          <li key={g.signal} className="py-3">
++            <div className="flex items-baseline justify-between gap-3">
++              <p className="min-w-0 text-sm font-medium">{g.signal}</p>
++              <span className="shrink-0 text-[13px] tabular-nums text-muted-foreground">
+                 {g.count}
+               </span>
+             </div>
+-            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-secondary">
+-              <div
+-                className="h-full rounded-full bg-primary"
+-                style={{ width: `${Math.round((g.count / max) * 100)}%` }}
+-              />
+-            </div>
+-            <div className="mt-2 flex flex-wrap gap-1.5">
+-              {g.leads.slice(0, 3).map((l) => (
+-                <Link
+-                  key={l.id}
+-                  to="/app/people/$id"
+-                  params={{ id: l.id }}
+-                  className="max-w-full rounded-full bg-surface/70 px-2.5 py-1 text-[11px] leading-tight text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+-                >
+-                  {l.name}
+-                </Link>
+-              ))}
+-              {g.leads.length > 3 && (
+-                <span className="rounded-full bg-surface/70 px-2.5 py-1 text-[11px] leading-tight text-muted-foreground">
+-                  +{g.leads.length - 3}
++            <p className="mt-1 text-[13px] text-muted-foreground">
++              {g.leads.slice(0, 3).map((l, idx) => (
++                <span key={l.id}>
++                  {idx > 0 && ", "}
++                  <Link
++                    to="/app/people/$id"
++                    params={{ id: l.id }}
++                    className="transition-colors hover:text-foreground"
++                  >
++                    {l.name}
++                  </Link>
+                 </span>
+-              )}
+-            </div>
++              ))}
++              {g.leads.length > 3 && ` et ${g.leads.length - 3} autres`}
++            </p>
+           </li>
+         ))}
+       </ul>
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+@@ -218,29 +170,26 @@ export function TasksWidget({
+ }) {
+   const open = tasks.filter((t) => !t.done).length;
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Tâches"
+       subtitle={`${open} à faire sur ${tasks.length}`}
+       actions={<SeeAll to="/app/tasks" />}
+     >
+-      <ScrollFrame fit="content" minWidth={380} label="Tâches, défilement horizontal">
+-        <ul className="space-y-0.5">
++      <ScrollFrame fit="content" minWidth={340} label="Tâches, défilement horizontal">
++        <ul className={listClass}>
+           {tasks.slice(0, TASKS_SHOWN).map((t) => (
+-            <li
+-              key={t.id}
+-              className="flex items-center gap-3 rounded-xl px-2.5 py-2 hover:bg-surface/50"
+-            >
++            <li key={t.id} className={rowClass}>
+               <button
+                 type="button"
+                 onClick={() => onToggle(t.id)}
+-                className="shrink-0"
++                className="-m-1 grid size-6 shrink-0 place-items-center rounded-md"
+                 aria-label={t.done ? "Marquer à faire" : "Marquer terminée"}
+               >
+                 {t.done ? (
+                   <CheckCircle2 className="size-4 text-primary" />
+                 ) : (
+-                  <Circle className="size-4 text-muted-foreground transition-colors hover:text-primary" />
++                  <Circle className="size-4 text-muted-foreground transition-colors hover:text-foreground" />
+                 )}
+               </button>
+               <div className="min-w-0 flex-1">
+@@ -256,25 +205,17 @@ export function TasksWidget({
+                   {t.contact} · {t.due}
+                 </p>
+               </div>
+-              <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[11px] text-muted-foreground">
+-                <span
+-                  className={cn(
+-                    "size-2 rounded-full",
+-                    t.priority === "high"
+-                      ? "bg-destructive"
+-                      : t.priority === "med"
+-                        ? "bg-[var(--warning,var(--chart-2))]"
+-                        : "bg-muted-foreground/40",
+-                  )}
+-                />
+-                {PRIORITY_LABEL[t.priority]}
+-              </span>
++              {t.priority === "high" && !t.done && (
++                <span className="shrink-0 whitespace-nowrap text-xs font-medium text-destructive">
++                  Prioritaire
++                </span>
++              )}
+             </li>
+           ))}
+         </ul>
+       </ScrollFrame>
+       <MoreLink to="/app/tasks" hidden={tasks.length - TASKS_SHOWN} noun="tâche" />
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+@@ -282,41 +223,33 @@ const MEETINGS_SHOWN = 4;
+ 
+ export function MeetingsWidget({ meetings }: { meetings: Meeting[] }) {
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Prochains rendez-vous"
+       actions={<SeeAll to="/app/meetings" />}
+     >
+       {meetings.length === 0 ? (
+-        <Empty icon={<Calendar className="size-6" />}>Aucun rendez-vous planifié.</Empty>
++        <Empty>Aucun rendez-vous planifié.</Empty>
+       ) : (
+         <>
+           <ScrollFrame
+             fit="content"
+-            minWidth={400}
++            minWidth={360}
+             label="Prochains rendez-vous, défilement horizontal"
+           >
+-            <ul className="space-y-1">
++            <ul className={listClass}>
+               {meetings.slice(0, MEETINGS_SHOWN).map((m) => (
+-                <li
+-                  key={m.id}
+-                  className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-surface/50"
+-                >
+-                  <div className="grid min-w-14 shrink-0 place-items-center rounded-lg border border-border bg-surface/50 px-2 py-1.5">
+-                    <span className="whitespace-nowrap text-[10px] font-semibold uppercase tracking-wider text-primary">
+-                      {m.date}
+-                    </span>
+-                    <span className="font-mono text-xs font-semibold tabular-nums">{m.time}</span>
++                <li key={m.id} className={rowClass}>
++                  <div className="w-20 shrink-0">
++                    <p className="whitespace-nowrap text-xs text-muted-foreground">{m.date}</p>
++                    <p className="text-sm font-medium tabular-nums">{m.time}</p>
+                   </div>
+                   <div className="min-w-0 flex-1">
+                     <p className="whitespace-nowrap text-sm font-medium">{m.title}</p>
+                     <p className="whitespace-nowrap text-xs text-muted-foreground">
+-                      {m.with} · {m.company}
++                      {m.with} · {m.company} · {m.duration}
+                     </p>
+                   </div>
+-                  <Badge tone="muted" className="shrink-0 whitespace-nowrap">
+-                    {m.duration}
+-                  </Badge>
+                 </li>
+               ))}
+             </ul>
+@@ -328,20 +261,12 @@ export function MeetingsWidget({ meetings }: { meetings: Meeting[] }) {
+           />
+         </>
+       )}
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+ 
+ const DEALS_SHOWN = 5;
+ 
+-const STAGE_TONE: Record<Deal["stage"], "muted" | "primary" | "success" | "destructive"> = {
+-  qualified: "muted",
+-  proposal: "muted",
+-  negotiation: "primary",
+-  won: "success",
+-  lost: "destructive",
+-};
+-
+ const STAGE_TEXT: Record<Deal["stage"], string> = {
+   qualified: "Qualifié",
+   proposal: "Proposition",
+@@ -352,53 +277,40 @@ const STAGE_TEXT: Record<Deal["stage"], string> = {
+ 
+ export function DealsWidget({ deals }: { deals: Deal[] }) {
+   return (
+-    <ChartCard
++    <DashSection
+       className="h-full"
+       title="Opportunités récentes"
+-      subtitle="Montant et probabilité de signature"
+       actions={<SeeAll to="/app/deals">Ouvrir le pipeline</SeeAll>}
+     >
+       <ScrollFrame
+         fit="content"
+-        minWidth={640}
++        minWidth={420}
+         label="Opportunités récentes, défilement horizontal"
+       >
+-        <ul className="space-y-1">
++        <ul className={listClass}>
+           {deals.slice(0, DEALS_SHOWN).map((d) => (
+             <li key={d.id}>
+-              <Link to="/app/deals" className={rowClass}>
++              <Link to="/app/deals" className={rowLinkClass}>
+                 <div className="min-w-0 flex-1">
+                   <p className="whitespace-nowrap text-sm font-medium">{d.name}</p>
+                   <p className="whitespace-nowrap text-xs text-muted-foreground">
+-                    {d.company} · {d.close}
++                    {d.company} · {STAGE_TEXT[d.stage]} · {d.close}
+                   </p>
+                 </div>
+-                <div className="flex w-32 shrink-0 items-center gap-2">
+-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary">
+-                    <div
+-                      className={cn(
+-                        "h-full rounded-full",
+-                        d.probability >= 70 ? "bg-success" : "bg-primary",
+-                      )}
+-                      style={{ width: `${d.probability}%` }}
+-                    />
+-                  </div>
+-                  <span className="w-10 whitespace-nowrap text-right font-mono text-[11px] tabular-nums text-muted-foreground">
++                <div className="shrink-0 text-right">
++                  <p className="whitespace-nowrap text-sm font-medium tabular-nums">
++                    {formatEuro(d.amount)}
++                  </p>
++                  <p className="whitespace-nowrap text-xs tabular-nums text-muted-foreground">
+                     {d.probability}&nbsp;%
+-                  </span>
++                  </p>
+                 </div>
+-                <Badge tone={STAGE_TONE[d.stage]} className="shrink-0 whitespace-nowrap">
+-                  {STAGE_TEXT[d.stage]}
+-                </Badge>
+-                <span className="min-w-24 shrink-0 whitespace-nowrap text-right font-mono text-sm font-medium tabular-nums">
+-                  {formatEuro(d.amount)}
+-                </span>
+               </Link>
+             </li>
+           ))}
+         </ul>
+       </ScrollFrame>
+       <MoreLink to="/app/deals" hidden={deals.length - DEALS_SHOWN} noun="opportunité" />
+-    </ChartCard>
++    </DashSection>
+   );
+ }
+diff --git a/frontend/components/landing/lead-cortex-tablet.tsx b/frontend/components/landing/lead-cortex-tablet.tsx
+index ce9b21d..9e606a1 100644
+--- a/frontend/components/landing/lead-cortex-tablet.tsx
++++ b/frontend/components/landing/lead-cortex-tablet.tsx
+@@ -1,242 +1,66 @@
+ // frontend/components/landing/lead-cortex-tablet.tsx
+ 
+-import { useRef } from "react";
+-import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
+ import { ArrowRight } from "./landing-icons";
++import { SiteLink, routes } from "./landing-link";
+ 
+ const CAPABILITIES = [
+   {
+-    id: "01",
+-    title: "Assistants IA",
+-    desc: "Claude, ChatGPT et Gemini inclus.",
++    title: "Modèles IA inclus",
++    desc: "Claude, ChatGPT et Gemini, sans abonnement à part.",
+     img: "/images/site/capabilities/ai-models.png",
+   },
+   {
+-    id: "02",
+     title: "Gmail et Outlook",
+-    desc: "Vos emails partent de votre propre boîte.",
++    desc: "Vos e-mails partent de votre propre boîte.",
+     img: "/images/site/capabilities/gmail-outlook.png",
+   },
+   {
+-    id: "03",
+     title: "WhatsApp et LinkedIn",
+     desc: "Écrivez à vos prospects là où ils répondent.",
+     img: "/images/site/capabilities/whatsapp-linkedin.png",
+   },
+   {
+-    id: "04",
+     title: "Vos clés API",
+-    desc: "En option, sans marge de notre part.",
++    desc: "En option. Vous payez le fournisseur directement, sans marge de notre part.",
+     img: "/images/site/capabilities/api-keys.png",
+   },
+ ];
+ 
+-const FeatureCard = ({ 
+-  item, 
+-  index, 
+-  total,
+-  progress 
+-}: { 
+-  item: typeof CAPABILITIES[0]; 
+-  index: number; 
+-  total: number;
+-  progress: MotionValue<number> 
+-}) => {
+-  const step = 1 / (total - 0.5);
+-  const start = index * step;
+-  const mid = start + step * 0.6;
+-  const end = start + step * 1.2;
+-
+-  const y = useTransform(progress, [start, mid], ["100%", "0%"]);
+-  const rotateX = useTransform(progress, [start, mid], [25, 0]);
+-  const opacity = useTransform(progress, [start, start + 0.05], [0, 1]);
+-
+-  const isLast = index === total - 1;
+-  
+-  const targetScale = isLast ? 1 : 0.85;
+-  const targetY = isLast ? "0%" : "-8%";
+-  const targetX = isLast ? "0%" : (index % 2 === 0 ? "-8%" : "8%");
+-  const targetRotate = isLast ? 0 : (index % 2 === 0 ? -6 : 6);
+-
+-  const scale = useTransform(progress, [mid, end], [1, targetScale]);
+-  const yExit = useTransform(progress, [mid, end], ["0%", targetY]);
+-  const xExit = useTransform(progress, [mid, end], ["0%", targetX]);
+-  const rotateZ = useTransform(progress, [mid, end], [0, targetRotate]);
+-
+-  const yCombined = useTransform(
+-    [y, yExit],
+-    ([latestY, latestYExit]) => `calc(${latestY} + ${latestYExit})`
+-  );
+-
+-  return (
+-    <motion.div
+-      style={{
+-        y: yCombined,
+-        x: xExit,
+-        scale,
+-        rotateX,
+-        rotateZ,
+-        opacity,
+-        zIndex: index,
+-        transformStyle: "preserve-3d",
+-      }}
+-      className="absolute inset-0 w-full max-w-[900px] mx-auto px-4 md:px-0 flex items-center justify-center"
+-    >
+-      <div className="w-full bg-[#0b0b12] rounded-3xl border border-white/10 overflow-hidden flex flex-col md:flex-row shadow-2xl relative">
+-        
+-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+-
+-        <div className="relative w-full md:w-1/2 bg-[#141414] p-8 flex items-center justify-center overflow-hidden">
+-          <img 
+-            src={item.img} 
+-            alt={item.title} 
+-            className="relative z-10 w-full h-auto max-h-[300px] object-contain drop-shadow-2xl rounded-2xl"
+-          />
+-
+-          <div className="absolute top-6 left-6 z-20 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg">
+-            <span className="font-mono text-sm font-bold text-white">
+-              {item.id}
+-            </span>
+-          </div>
+-        </div>
+-
+-        <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-[#0b0b12]">
+-          <h3 className="text-2xl md:text-4xl font-display text-white mb-6 leading-tight">
+-            {item.title}
+-          </h3>
+-          
+-          <p className="text-white/60 text-sm md:text-base leading-relaxed mb-8">
+-            {item.desc}
+-          </p>
+-          
+-          <a href="/product" className="inline-flex items-center text-sm font-semibold text-primary hover:text-primary/80 transition-colors gap-2 mt-auto">
+-            En savoir plus
+-            <ArrowRight className="w-4 h-4" />
+-          </a>
+-        </div>
+-      </div>
+-    </motion.div>
+-  );
+-};
+-
+ export function LeadCortexTablet() {
+-  const containerRef = useRef<HTMLDivElement>(null);
+-
+-  const { scrollYProgress } = useScroll({
+-    target: containerRef,
+-    offset: ["start start", "end end"],
+-  });
+-
+-  const smoothProgress = useSpring(scrollYProgress, {
+-    stiffness: 90,
+-    damping: 25,
+-    mass: 0.5,
+-    restDelta: 0.001,
+-  });
+-
+-  const monitorRotateX = useTransform(smoothProgress, [0, 0.2], [12, 0]);
+-  const monitorRotateY = useTransform(smoothProgress, [0, 0.2], [-8, 0]);
+-  const monitorZ = useTransform(smoothProgress, [0, 0.2], [0, 2500]);
+-  const monitorScale = useTransform(smoothProgress, [0, 0.2], [1, 4]);
+-  const monitorOpacity = useTransform(smoothProgress, [0.15, 0.22], [1, 0]);
+-  const screenContentOpacity = useTransform(smoothProgress, [0.02, 0.1, 0.16], [0, 1, 0]);
+-  const screenContentScale = useTransform(smoothProgress, [0.02, 0.16], [0.92, 1]);
+-
+-  const sideTextX = useTransform(smoothProgress, [0, 0.15], [0, 200]);
+-  const sideTextOpacity = useTransform(smoothProgress, [0, 0.1], [1, 0]);
+-
+-  const cardsProgress = useTransform(smoothProgress, [0.2, 0.9], [0, 1]);
+-  const innerOpacity = useTransform(smoothProgress, [0.18, 0.28], [0, 1]);
+-
+-  const bgOpacity = useTransform(smoothProgress, [0.9, 1], [1, 0]);
+-  const contentFade = useTransform(smoothProgress, [0.85, 0.95], [1, 0]);
+-
+   return (
+-    <div ref={containerRef} className="relative h-[450vh] bg-transparent">
+-      <div
+-        className="sticky top-0 h-screen w-full overflow-hidden"
+-        style={{ perspective: "1200px" }}
+-      >
+-        <motion.div
+-          style={{
+-            rotateX: monitorRotateX,
+-            rotateY: monitorRotateY,
+-            z: monitorZ,
+-            scale: monitorScale,
+-            opacity: monitorOpacity,
+-            transformOrigin: "50% 40%", 
+-            transformStyle: "preserve-3d",
+-          }}
+-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
+-        >
+-          <div
+-            className="relative aspect-square -translate-x-[5%]"
+-            style={{ width: "min(90vw, 85vh, 1000px)" }}
+-          >
+-            <img
+-              src="/images/site/capabilities/monitor.svg" 
+-              alt="Écran d'ordinateur LeadCortex"
+-              className="w-full h-full object-contain drop-shadow-2xl"
+-            />
+-            <motion.div
+-              aria-hidden="true"
+-              style={{
+-                opacity: screenContentOpacity,
+-                scale: screenContentScale,
+-              }}
+-              className="absolute left-[3%] top-[14%] grid h-[54%] w-[94%] grid-cols-2 grid-rows-2 gap-[2%] rounded-[2%] bg-[#0b0b12]/95 p-[3%]"
++    <section id="capabilities" className="bg-[#0b0b12] py-24 text-white">
++      <div className="mx-auto max-w-6xl px-6">
++        <h2 className="max-w-2xl">
++          Ce qui est <em>inclus</em>.
++        </h2>
++        <div className="mt-12 grid gap-6 md:grid-cols-2">
++          {CAPABILITIES.map((item) => (
++            <article
++              key={item.title}
++              className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#141414]"
+             >
+-              {CAPABILITIES.map((item) => (
++              <div className="flex aspect-[16/9] items-center justify-center p-8">
+                 <img
+-                  key={item.id}
+                   src={item.img}
+                   alt=""
+-                  loading="eager"
+-                  className="h-full w-full object-contain"
++                  loading="lazy"
++                  className="max-h-full w-auto object-contain"
+                 />
+-              ))}
+-            </motion.div>
+-          </div>
+-
+-          <motion.div
+-            style={{ x: sideTextX, opacity: sideTextOpacity }}
+-            className="absolute right-[5%] top-1/2 -translate-y-1/2 max-w-[420px]"
+-          >
+-          </motion.div>
+-        </motion.div>
+-
+-        <motion.div
+-          style={{ opacity: innerOpacity }}
+-          className="absolute inset-0 z-30"
+-        >
+-          <motion.div style={{ opacity: bgOpacity }} className="absolute inset-0 bg-[#0b0b12]" />
+-
+-          <motion.div
+-            style={{ opacity: contentFade }}
+-            className="relative z-10 w-full h-full"
+-          >
+-            <div className="absolute top-[8vh] left-0 w-full text-center px-6 pointer-events-none z-50">
+-              <h2 className="text-3xl md:text-5xl font-display text-white">
+-                LeadCortex s'adapte à votre <em>workflow</em>.
+-              </h2>
+-            </div>
+-
+-            <div className="absolute inset-0 flex items-center justify-center" style={{ perspective: "1500px" }}>
+-              <div className="relative w-full max-w-[900px] h-[500px] md:h-[450px]">
+-                {CAPABILITIES.map((item, i) => (
+-                  <FeatureCard 
+-                    key={item.id} 
+-                    item={item} 
+-                    index={i} 
+-                    total={CAPABILITIES.length}
+-                    progress={cardsProgress} 
+-                  />
+-                ))}
+               </div>
+-            </div>
+-          </motion.div>
+-        </motion.div>
++              <div className="flex flex-1 flex-col border-t border-white/10 p-6">
++                <h3 className="text-2xl leading-tight">{item.title}</h3>
++                <p className="mt-2 max-w-[48ch] text-[15px] leading-relaxed text-white/70">
++                  {item.desc}
++                </p>
++              </div>
++            </article>
++          ))}
++        </div>
++        <SiteLink to={routes.product} className="lc-feature-link mt-8">
++          Voir tout le produit
++          <ArrowRight size={17} />
++        </SiteLink>
+       </div>
+-    </div>
++    </section>
+   );
+ }
+diff --git a/frontend/components/skeletons/dashboard-skeleton.tsx b/frontend/components/skeletons/dashboard-skeleton.tsx
+index 6f1c9db..0b0dfc2 100644
+--- a/frontend/components/skeletons/dashboard-skeleton.tsx
++++ b/frontend/components/skeletons/dashboard-skeleton.tsx
+@@ -131,7 +131,7 @@ export function DashboardSkeleton() {
+         </div>
+         <div className="overflow-x-auto scrollbar-hide">
+           <table className="w-full min-w-[640px] text-left text-sm">
+-            <thead className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
++            <thead className="text-xs text-muted-foreground">
+               <tr>
+                 {["Opportunité", "Contact", "Étape", "Proba.", "Montant", "Clôture"].map((_, i) => (
+                   <th
+diff --git a/frontend/components/ui/checkbox.tsx b/frontend/components/ui/checkbox.tsx
+index df859a0..dd272ea 100644
+--- a/frontend/components/ui/checkbox.tsx
++++ b/frontend/components/ui/checkbox.tsx
+@@ -14,12 +14,11 @@ const Checkbox = React.forwardRef<
+     ref={ref}
+     className={cn(
+       "grid place-content-center peer h-[18px] w-[18px] shrink-0 rounded-md border border-border bg-background",
+-      "cursor-pointer transition-all duration-150",
+-      "hover:border-primary/50",
++      "cursor-pointer transition-colors duration-150 ease-out",
++      "hover:border-foreground/40",
+       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
+       "disabled:cursor-not-allowed disabled:opacity-50",
+       "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
+-      "data-[state=checked]:shadow-[0_2px_0_color-mix(in_oklab,var(--primary)_62%,black)]",
+       className,
+     )}
+     {...props}
+diff --git a/frontend/routes/app/index.tsx b/frontend/routes/app/index.tsx
+index 460d880..146c3e4 100644
+--- a/frontend/routes/app/index.tsx
++++ b/frontend/routes/app/index.tsx
+@@ -10,16 +10,14 @@ import {
+   EyeOff,
+   RotateCcw,
+   SlidersHorizontal,
+-  Sparkles,
+-  Workflow as WorkflowIcon,
+ } from "@/components/icons";
+ 
+ import { PageHeader } from "@/components/common/ui-primitives";
+ import { KnownPeopleExplorer } from "@/components/discovery/known-people";
+ import { EmptyDashboard } from "@/components/onboarding/empty-dashboard";
+ import { WelcomeSkeleton } from "@/components/skeletons";
++import { Button } from "@/components/ui/button";
+ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+-import { KpiStrip } from "@/components/dashboard/dashboard-kpis";
+ import {
+   ChannelChart,
+   FunnelChart,
+@@ -60,13 +58,13 @@ import { cn } from "@/lib/core/utils";
+ export const Route = createFileRoute("/app/")({
+   head: () => ({
+     meta: [
+-      { title: "Dashboard — LeadCortex" },
++      { title: "Dashboard · LeadCortex" },
+       {
+         name: "description",
+         content:
+           "Vue d'ensemble LeadCortex : pipeline, automatisations, priorités du jour et prospects.",
+       },
+-      { property: "og:title", content: "Dashboard — LeadCortex" },
++      { property: "og:title", content: "Dashboard · LeadCortex" },
+     ],
+   }),
+   pendingComponent: () => <WelcomeSkeleton />,
+@@ -115,24 +113,39 @@ type WidgetDef = {
+   id: string;
+   label: string;
+   size: WidgetSize;
++  secondary?: boolean;
+   visible: (d: DashData) => boolean;
+   render: (d: DashData) => ReactNode;
+ };
+ 
+ const WIDGETS: WidgetDef[] = [
+   {
+-    id: "trend",
+-    label: "Volume de prospection",
++    id: "insights",
++    label: "À traiter maintenant",
++    size: 7,
++    visible: (d) => d.insights.length > 0,
++    render: (d) => <InsightsWidget insights={d.insights} />,
++  },
++  {
++    id: "tasks",
++    label: "Tâches",
++    size: 5,
++    visible: (d) => d.src.tasks.length > 0,
++    render: (d) => <TasksWidget tasks={d.src.tasks} onToggle={d.toggleTask} />,
++  },
++  {
++    id: "priorities",
++    label: "Prospects prioritaires",
+     size: 7,
+     visible: () => true,
+-    render: (d) => <TrendChart range={d.range} onRangeChange={d.setRange} />,
++    render: (d) => <PrioritiesWidget leads={d.priorities} />,
+   },
+   {
+-    id: "insights",
+-    label: "À traiter maintenant",
++    id: "meetings",
++    label: "Prochains rendez-vous",
+     size: 5,
+-    visible: (d) => d.insights.length > 0,
+-    render: (d) => <InsightsWidget insights={d.insights} />,
++    visible: (d) => d.src.meetings.length > 0,
++    render: (d) => <MeetingsWidget meetings={d.src.meetings} />,
+   },
+   {
+     id: "funnel",
+@@ -148,10 +161,34 @@ const WIDGETS: WidgetDef[] = [
+     visible: (d) => d.stages.length > 0,
+     render: (d) => <PipelineDonut stages={d.stages} />,
+   },
++  {
++    id: "deals",
++    label: "Opportunités récentes",
++    size: 7,
++    visible: (d) => d.src.deals.length > 0,
++    render: (d) => <DealsWidget deals={d.src.deals} />,
++  },
++  {
++    id: "trend",
++    label: "Volume de prospection",
++    size: 7,
++    secondary: true,
++    visible: () => true,
++    render: (d) => <TrendChart range={d.range} onRangeChange={d.setRange} />,
++  },
++  {
++    id: "signals",
++    label: "Signaux chauds",
++    size: 5,
++    secondary: true,
++    visible: (d) => d.signals.length > 0,
++    render: (d) => <SignalsWidget groups={d.signals} />,
++  },
+   {
+     id: "workflows",
+     label: "Exécutions des automatisations",
+     size: 7,
++    secondary: true,
+     visible: (d) => d.health.total > 0,
+     render: (d) => (
+       <WorkflowRunsChart
+@@ -165,6 +202,7 @@ const WIDGETS: WidgetDef[] = [
+     id: "scores",
+     label: "Qualité des prospects",
+     size: 5,
++    secondary: true,
+     visible: (d) => d.scores.buckets.some((b) => b.value > 0),
+     render: (d) => <ScoreHistogram buckets={d.scores.buckets} unscored={d.scores.unscored} />,
+   },
+@@ -172,61 +210,43 @@ const WIDGETS: WidgetDef[] = [
+     id: "channels",
+     label: "Canaux d'activité",
+     size: 5,
++    secondary: true,
+     visible: (d) => d.channels.length > 0,
+     render: (d) => <ChannelChart channels={d.channels} />,
+   },
+-  {
+-    id: "priorities",
+-    label: "Prospects prioritaires",
+-    size: 7,
+-    visible: () => true,
+-    render: (d) => <PrioritiesWidget leads={d.priorities} />,
+-  },
+-  {
+-    id: "signals",
+-    label: "Signaux chauds",
+-    size: 5,
+-    visible: (d) => d.signals.length > 0,
+-    render: (d) => <SignalsWidget groups={d.signals} />,
+-  },
+-  {
+-    id: "meetings",
+-    label: "Prochains rendez-vous",
+-    size: 7,
+-    visible: (d) => d.src.meetings.length > 0,
+-    render: (d) => <MeetingsWidget meetings={d.src.meetings} />,
+-  },
+-  {
+-    id: "deals",
+-    label: "Opportunités récentes",
+-    size: 7,
+-    visible: (d) => d.src.deals.length > 0,
+-    render: (d) => <DealsWidget deals={d.src.deals} />,
+-  },
+-  {
+-    id: "tasks",
+-    label: "Tâches",
+-    size: 5,
+-    visible: (d) => d.src.tasks.length > 0,
+-    render: (d) => <TasksWidget tasks={d.src.tasks} onToggle={d.toggleTask} />,
+-  },
+ ];
+ 
+ const DEFAULT_ORDER = WIDGETS.map((w) => w.id);
+ 
+-const LEGACY_DEFAULT_ORDER = [
+-  "trend",
+-  "insights",
+-  "funnel",
+-  "pipeline",
+-  "scores",
+-  "priorities",
+-  "signals",
+-  "meetings",
+-  "workflows",
+-  "channels",
+-  "deals",
+-  "tasks",
++const LEGACY_DEFAULT_ORDERS = [
++  [
++    "trend",
++    "insights",
++    "funnel",
++    "pipeline",
++    "scores",
++    "priorities",
++    "signals",
++    "meetings",
++    "workflows",
++    "channels",
++    "deals",
++    "tasks",
++  ],
++  [
++    "trend",
++    "insights",
++    "funnel",
++    "pipeline",
++    "workflows",
++    "scores",
++    "channels",
++    "priorities",
++    "signals",
++    "meetings",
++    "deals",
++    "tasks",
++  ],
+ ];
+ 
+ const LAYOUT_KEY = "leadcortex.dashboard.layout.v1";
+@@ -242,9 +262,9 @@ function sanitizeLayout(raw: unknown): LayoutPrefs {
+     ? source.order.filter((id): id is string => typeof id === "string" && known.has(id))
+     : [];
+   const complete = [...order, ...DEFAULT_ORDER.filter((id) => !order.includes(id))];
+-  const untouched =
+-    complete.length === LEGACY_DEFAULT_ORDER.length &&
+-    complete.every((id, i) => id === LEGACY_DEFAULT_ORDER[i]);
++  const untouched = LEGACY_DEFAULT_ORDERS.some(
++    (legacy) => complete.length === legacy.length && complete.every((id, i) => id === legacy[i]),
++  );
+   const hidden = Array.isArray(source.hidden)
+     ? source.hidden.filter((id): id is string => typeof id === "string" && known.has(id))
+     : [];
+@@ -347,20 +367,17 @@ function LayoutMenu({
+   return (
+     <Popover>
+       <PopoverTrigger asChild>
+-        <button
+-          type="button"
+-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium transition-colors hover:bg-surface"
+-        >
+-          <SlidersHorizontal className="size-3.5" /> Personnaliser
+-        </button>
++        <Button variant="outline" size="sm">
++          <SlidersHorizontal /> Personnaliser
++        </Button>
+       </PopoverTrigger>
+       <PopoverContent align="end" className="w-80 p-2">
+         <div className="flex items-center justify-between px-2 pb-2 pt-1">
+-          <p className="text-xs font-semibold">Cartes du dashboard</p>
++          <p className="text-[13px] font-semibold">Sections affichées</p>
+           <button
+             type="button"
+             onClick={onReset}
+-            className="inline-flex items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
++            className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+           >
+             <RotateCcw className="size-3" /> Réinitialiser
+           </button>
+@@ -385,7 +402,7 @@ function LayoutMenu({
+                 </button>
+                 <span
+                   className={cn(
+-                    "min-w-0 flex-1 truncate text-xs",
++                    "min-w-0 flex-1 truncate text-[13px]",
+                     hidden && "text-muted-foreground line-through",
+                   )}
+                 >
+@@ -454,6 +471,7 @@ function DashboardPage() {
+   );
+ 
+   const kpis = useMemo(() => buildKpis(src), [src]);
++  const [showMore, setShowMore] = useState(false);
+   const data = useMemo<DashData>(
+     () => ({
+       range,
+@@ -472,12 +490,15 @@ function DashboardPage() {
+     [range, src, toggleTask],
+   );
+ 
+-  const placed = useMemo(() => {
++  const { mainPlaced, morePlaced } = useMemo(() => {
+     const byId = new Map(WIDGETS.map((w) => [w.id, w]));
+     const visible = layout.order
+       .map((id) => byId.get(id))
+       .filter((w): w is WidgetDef => !!w && !layout.hidden.includes(w.id) && w.visible(data));
+-    return packRows(visible);
++    return {
++      mainPlaced: packRows(visible.filter((w) => !w.secondary)),
++      morePlaced: packRows(visible.filter((w) => w.secondary)),
++    };
+   }, [layout, data]);
+ 
+   const prevLeadCountRef = useRef<number>(store.leads.length);
+@@ -501,7 +522,7 @@ function DashboardPage() {
+ 
+       if (result.justHidden) {
+         toast.info("Suggestions de décideurs masquées", {
+-          description: `Vous avez maintenant ${current} prospects dans votre base. Les suggestions sont masquées automatiquement pour garder la liste lisible. Vous pouvez les réactiver dans les préférences de la section Prospects.`,
++          description: `Vous avez ${current} prospects. Réactivez les suggestions dans les préférences de Prospects.`,
+           duration: 6000,
+         });
+       }
+@@ -514,49 +535,74 @@ function DashboardPage() {
+     month: "long",
+   });
+ 
+-  const description =
+-    data.insights.length > 0
+-      ? `${data.insights.length} point${data.insights.length > 1 ? "s" : ""} demande${data.insights.length > 1 ? "nt" : ""} votre attention aujourd'hui.`
+-      : "Tout est à jour : voici l'état de votre activité.";
++  const pipelineKpi = kpis.find((k) => k.id === "pipeline");
++  const replyKpi = kpis.find((k) => k.id === "reply-rate");
++  const summary = [
++    pipelineKpi && `${pipelineKpi.value} en pipeline pondéré`,
++    replyKpi && `${replyKpi.value} de réponse sur 7 jours`,
++  ]
++    .filter(Boolean)
++    .join(" · ");
+ 
+   return (
+-    <div className="mx-auto w-full min-w-0 max-w-[1400px] space-y-6 pb-10">
++    <div className="mx-auto w-full min-w-0 max-w-[1400px] pb-12">
+       <PageHeader
+         eyebrow={todayLabel}
+         title={`Bonjour, ${user.firstName}.`}
+-        description={description}
++        description={summary}
+         actions={
+           <>
+             <LayoutMenu layout={layout} onToggle={toggle} onMove={move} onReset={reset} />
+-            <Link
+-              to="/app/workflows"
+-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium transition-colors hover:bg-surface"
+-            >
+-              <WorkflowIcon className="size-3.5" /> Workflows
+-            </Link>
+-            <Link
+-              to="/app/people/new"
+-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground btn-tactile"
+-            >
+-              <Sparkles className="size-3.5" /> Prospecter
+-            </Link>
++            <Button asChild variant="ghost" size="sm">
++              <Link to="/app/workflows">Workflows</Link>
++            </Button>
++            <Button asChild size="sm">
++              <Link to="/app/people/new">Prospecter</Link>
++            </Button>
+           </>
+         }
+       />
+ 
+-      <KpiStrip items={kpis} />
+-
+       <div className="@container min-w-0">
+-        <div className="grid grid-cols-1 gap-4 @4xl:grid-cols-12 @4xl:gap-5">
+-          {placed.map(({ widget, span }) => (
+-            <div key={widget.id} className={cn("min-w-0", SPAN_CLASS[span])}>
+-              {widget.render(data)}
+-            </div>
+-          ))}
+-        </div>
++        <WidgetGrid placed={mainPlaced} data={data} />
++
++        {morePlaced.length > 0 && (
++          <div className="mt-12 border-t border-border/60 pt-6">
++            <button
++              type="button"
++              onClick={() => setShowMore((v) => !v)}
++              aria-expanded={showMore}
++              className="inline-flex items-center gap-1 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
++            >
++              {showMore ? "Moins de détails" : "Plus de détails"}
++              <ChevronDown className={cn("size-4 transition-transform", showMore && "rotate-180")} />
++            </button>
++            {showMore && (
++              <div className="mt-8">
++                <WidgetGrid placed={morePlaced} data={data} />
++              </div>
++            )}
++          </div>
++        )}
+       </div>
+ 
+-      {showKnown && <KnownPeopleExplorer />}
++      {showKnown && (
++        <div className="mt-12">
++          <KnownPeopleExplorer />
++        </div>
++      )}
++    </div>
++  );
++}
++
++function WidgetGrid({ placed, data }: { placed: PlacedWidget[]; data: DashData }) {
++  return (
++    <div className="grid grid-cols-1 gap-8 @4xl:grid-cols-12 @4xl:gap-x-12 @4xl:gap-y-12">
++      {placed.map(({ widget, span }) => (
++        <div key={widget.id} className={cn("min-w-0", SPAN_CLASS[span])}>
++          {widget.render(data)}
++        </div>
++      ))}
+     </div>
+   );
+ }
+diff --git a/frontend/styles.css b/frontend/styles.css
+index 235e4c7..c23d872 100644
+--- a/frontend/styles.css
++++ b/frontend/styles.css
+@@ -89,7 +89,7 @@
+   --secondary-foreground: var(--foreground);
+ 
+   --muted: oklch(0.9 0.015 78);
+-  --muted-foreground: oklch(0.55 0.02 70);
++  --muted-foreground: oklch(0.49 0.02 70);
+ 
+   --success: oklch(0.68 0.11 140);
+   --warning: oklch(0.76 0.13 68);
+@@ -473,11 +473,10 @@
+ 
+ .table-tactile {
+   position: relative;
+-  border: 1.5px solid var(--border);
+-  border-radius: 14px;
++  border: 1px solid var(--border);
++  border-radius: 16px;
+   overflow: clip;
+   background: var(--card);
+-  box-shadow: 0 3px 0 var(--border);
+   isolation: isolate;
+ }
+ 
+@@ -496,52 +495,42 @@
+ }
+ 
+ .table-tactile thead th {
+-  font-size: 10.5px;
+-  font-weight: 700;
+-  text-transform: uppercase;
+-  letter-spacing: 0.08em;
+-  color: color-mix(in oklab, var(--primary) 60%, var(--foreground));
+-  background: color-mix(in oklab, var(--primary) 10%, var(--card));
+-  border-bottom: 1.5px solid color-mix(in oklab, var(--primary) 30%, var(--border));
+-  padding-top: 12px;
+-  padding-bottom: 12px;
+-}
+-
+-.dark .table-tactile thead th {
+-  color: color-mix(in oklab, var(--primary) 72%, var(--foreground));
+-  background: color-mix(in oklab, var(--primary) 12%, var(--card));
+-  border-bottom-color: color-mix(in oklab, var(--primary) 45%, var(--border));
++  font-size: 12px;
++  font-weight: 500;
++  letter-spacing: 0;
++  text-transform: none;
++  color: var(--muted-foreground);
++  background: color-mix(in oklab, var(--foreground) 2.5%, var(--card));
++  border-bottom: 1px solid var(--border);
++  padding-top: 10px;
++  padding-bottom: 10px;
+ }
+ 
+ .table-tactile thead tr:first-child th:first-child {
+-  border-top-left-radius: 12.5px;
++  border-top-left-radius: 15px;
+ }
+ .table-tactile thead tr:first-child th:last-child {
+-  border-top-right-radius: 12.5px;
++  border-top-right-radius: 15px;
+ }
+ .table-tactile tbody tr:last-child td:first-child {
+-  border-bottom-left-radius: 12.5px;
++  border-bottom-left-radius: 15px;
+ }
+ .table-tactile tbody tr:last-child td:last-child {
+-  border-bottom-right-radius: 12.5px;
++  border-bottom-right-radius: 15px;
+ }
+ 
+ .table-tactile tbody tr {
+   background: var(--card);
+-  transition: background-color 150ms ease;
+-}
+-
+-.table-tactile tbody tr:nth-child(even) {
+-  background: color-mix(in oklab, var(--foreground) 2%, var(--card));
++  transition: background-color 120ms ease-out;
+ }
+ 
+ .table-tactile tbody tr:hover {
+-  background: color-mix(in oklab, var(--primary) 6%, var(--card));
++  background: color-mix(in oklab, var(--foreground) 3%, var(--card));
+ }
+ 
+ .table-tactile tbody tr[data-selected="true"] {
+-  background: color-mix(in oklab, var(--primary) 9%, var(--card));
+-  box-shadow: inset 3px 0 0 0 var(--primary);
++  background: color-mix(in oklab, var(--primary) 7%, var(--card));
++  box-shadow: inset 2px 0 0 0 var(--primary);
+ }
+ 
+ .table-tactile tbody td {
+@@ -556,33 +545,27 @@
+   display: grid;
+   grid-template-columns: auto minmax(120px, 200px) minmax(80px, 1fr) auto auto;
+   align-items: center;
+-  gap: 14px;
+-  padding: 14px 18px;
+-  border: 1.5px solid var(--border);
+-  border-radius: 14px;
++  gap: 12px;
++  padding: 12px 16px;
++  border: 1px solid var(--border);
++  border-radius: 12px;
+   background: var(--card);
+-  transition: border-color 180ms ease, background-color 180ms ease;
+-}
+-
+-.coverage-row:hover {
+-  border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+-  background: color-mix(in oklab, var(--primary) 3%, var(--card));
+ }
+ 
+ .coverage-row__icon {
+   display: grid;
+   place-items: center;
+-  width: 34px;
+-  height: 34px;
+-  border-radius: 10px;
+-  background: color-mix(in oklab, var(--primary) 10%, transparent);
+-  color: var(--primary);
++  width: 32px;
++  height: 32px;
++  border-radius: 8px;
++  background: color-mix(in oklab, var(--foreground) 4%, transparent);
++  color: var(--muted-foreground);
+   flex-shrink: 0;
+ }
+ 
+ .coverage-row__label {
+-  font-size: 13.5px;
+-  font-weight: 600;
++  font-size: 14px;
++  font-weight: 500;
+   color: var(--foreground);
+   white-space: nowrap;
+   overflow: hidden;
+@@ -590,9 +573,8 @@
+ }
+ 
+ .coverage-row__value {
+-  font-family: var(--font-mono, ui-monospace, monospace);
+   font-size: 13px;
+-  font-weight: 600;
++  font-weight: 500;
+   color: var(--foreground);
+   font-variant-numeric: tabular-nums;
+   min-width: 44px;
+@@ -602,7 +584,7 @@
+ .coverage-row__providers {
+   display: flex;
+   align-items: center;
+-  gap: 6px;
++  gap: 4px;
+   flex-wrap: nowrap;
+   overflow: hidden;
+ }
+@@ -614,7 +596,7 @@
+       "icon label value"
+       "bar  bar   bar"
+       "prov prov  prov";
+-    row-gap: 10px;
++    row-gap: 8px;
+   }
+   .coverage-row__icon { grid-area: icon; }
+   .coverage-row__label { grid-area: label; }
+@@ -629,28 +611,23 @@
+ 
+ .recharts-cartesian-axis-tick text {
+   fill: var(--muted-foreground);
+-  font-size: 11px;
++  font-size: 12px;
+ }
+ 
+ .recharts-tooltip-cursor {
+-  fill: color-mix(in oklab, var(--primary) 4%, transparent) !important;
+-  stroke: color-mix(in oklab, var(--primary) 20%, transparent) !important;
+-}
+-
+-.recharts-active-dot circle,
+-.recharts-dot {
+-  filter: drop-shadow(0 0 4px color-mix(in oklab, var(--primary) 30%, transparent));
++  fill: color-mix(in oklab, var(--foreground) 4%, transparent) !important;
++  stroke: color-mix(in oklab, var(--foreground) 12%, transparent) !important;
+ }
+ 
+ .recharts-bar-rectangle {
+-  transition: opacity 150ms ease;
++  transition: opacity 120ms ease-out;
+ }
+ .recharts-bar-rectangle:hover {
+   opacity: 0.85;
+ }
+ 
+ .recharts-pie-sector path {
+-  transition: opacity 150ms ease;
++  transition: opacity 120ms ease-out;
+ }
+ .recharts-pie-sector:hover path {
+   opacity: 0.88;
+@@ -659,279 +636,86 @@
+ .chart-card-atelier {
+   position: relative;
+   overflow: hidden;
+-  border-radius: 18px;
+-  border: 1.5px solid var(--border);
++  border-radius: 16px;
++  border: 1px solid var(--border);
+   background: var(--card);
+-  box-shadow:
+-    0 1px 0 color-mix(in oklab, white 4%, transparent) inset,
+-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+-    0 4px 0 color-mix(in oklab, var(--border) 88%, transparent);
+-  transition: border-color 200ms ease, box-shadow 200ms ease;
+-}
+-.chart-card-atelier:hover {
+-  border-color: color-mix(in oklab, var(--primary) 25%, var(--border));
+-  box-shadow:
+-    0 1px 0 color-mix(in oklab, white 5%, transparent) inset,
+-    0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent),
+-    0 4px 0 color-mix(in oklab, var(--border) 88%, transparent),
+-    0 12px 34px -16px color-mix(in oklab, var(--primary) 26%, transparent);
+-}
+-.dark .chart-card-atelier {
+-  box-shadow:
+-    0 1px 0 color-mix(in oklab, white 4%, transparent) inset,
+-    0 1px 3px oklch(0 0 0 / 0.4),
+-    0 4px 0 oklch(0 0 0 / 0.4);
+-}
+-.dark .chart-card-atelier:hover {
+-  box-shadow:
+-    0 1px 0 color-mix(in oklab, white 5%, transparent) inset,
+-    0 1px 3px oklch(0 0 0 / 0.5),
+-    0 4px 0 oklch(0 0 0 / 0.45),
+-    0 16px 44px -18px color-mix(in oklab, var(--primary) 32%, transparent);
+ }
+ 
+ .chart-card-atelier__aurora {
+-  position: absolute;
+-  right: -3rem;
+-  top: -3rem;
+-  width: 12rem;
+-  height: 12rem;
+-  border-radius: 50%;
+-  background: radial-gradient(closest-side, var(--primary), transparent);
+-  opacity: 0.07;
+-  filter: blur(32px);
+-  pointer-events: none;
+-}
+-.dark .chart-card-atelier__aurora {
+-  opacity: 0.15;
++  display: none;
+ }
+ 
+ .chart-shell {
+   position: relative;
+-  border-radius: 14px;
++  border-radius: 12px;
+   padding: 8px 4px 4px;
+-  background:
+-    radial-gradient(
+-      120% 60% at 50% 0%,
+-      color-mix(in oklab, var(--primary) 5%, transparent),
+-      transparent 70%
+-    );
+ }
+ 
+ .kpi-tactile {
+   position: relative;
+   overflow: hidden;
+-  border-radius: 14px;
+-  border: 1.5px solid var(--border);
++  border-radius: 16px;
++  border: 1px solid var(--border);
+   background: var(--card);
+-  box-shadow:
+-    0 1px 0 color-mix(in oklab, white 4%, transparent) inset,
+-    0 1px 2px color-mix(in oklab, var(--foreground) 4%, transparent),
+-    0 3px 0 color-mix(in oklab, var(--border) 85%, transparent);
+-  transition: border-color 180ms ease, box-shadow 180ms ease;
+-}
+-.kpi-tactile:hover {
+-  border-color: color-mix(in oklab, var(--primary) 22%, var(--border));
+-  box-shadow:
+-    0 1px 0 color-mix(in oklab, white 5%, transparent) inset,
+-    0 1px 3px color-mix(in oklab, var(--foreground) 5%, transparent),
+-    0 3px 0 color-mix(in oklab, var(--border) 85%, transparent),
+-    0 10px 28px -14px color-mix(in oklab, var(--primary) 22%, transparent);
+-}
+-
+-.kpi-tactile {
+-  position: relative;
+-  overflow: hidden;
+-  border-radius: 14px;
+-  border: 1.5px solid var(--border);
+-  background: linear-gradient(
+-    180deg,
+-    color-mix(in oklab, var(--primary) 5%, var(--card)) 0%,
+-    color-mix(in oklab, var(--primary) 1.5%, var(--card)) 45%,
+-    var(--card) 100%
+-  );
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+-    0 3px 0 color-mix(in oklab, var(--border) 88%, transparent);
+-  transition:
+-    border-color 180ms ease,
+-    box-shadow 180ms ease,
+-    transform 180ms ease;
+-}
+-
+-.kpi-tactile::before {
+-  content: "";
+-  position: absolute;
+-  left: 0;
+-  top: 10px;
+-  bottom: 10px;
+-  width: 3px;
+-  border-radius: 0 999px 999px 0;
+-  background: linear-gradient(
+-    180deg,
+-    var(--primary),
+-    color-mix(in oklab, var(--primary) 30%, transparent)
+-  );
+-  opacity: 0.8;
+-}
+-
+-.kpi-tactile:hover {
+-  border-color: color-mix(in oklab, var(--primary) 28%, var(--border));
+-  transform: translateY(-1px);
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 60%, transparent),
+-    0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent),
+-    0 3px 0 color-mix(in oklab, var(--border) 88%, transparent),
+-    0 14px 32px -16px color-mix(in oklab, var(--primary) 26%, transparent);
+-}
+-
+-.dark .kpi-tactile {
+-  border-color: color-mix(in oklab, var(--primary) 22%, var(--border));
+-  background: linear-gradient(
+-    180deg,
+-    color-mix(in oklab, var(--primary) 14%, var(--card)) 0%,
+-    color-mix(in oklab, var(--primary) 6%, var(--card)) 50%,
+-    var(--card) 100%
+-  );
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 6%, transparent),
+-    0 1px 3px oklch(0 0 0 / 0.5),
+-    0 3px 0 oklch(0 0 0 / 0.45),
+-    0 0 28px -10px color-mix(in oklab, var(--primary) 32%, transparent);
+-}
+-
+-.dark .kpi-tactile:hover {
+-  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+-    0 1px 3px oklch(0 0 0 / 0.55),
+-    0 3px 0 oklch(0 0 0 / 0.5),
+-    0 0 36px -8px color-mix(in oklab, var(--primary) 48%, transparent);
+ }
+ 
+ .kpi-label {
+-  padding-left: 10px;
+-  font-size: 10px;
+-  font-weight: 700;
+-  letter-spacing: 0.09em;
+-  text-transform: uppercase;
+-  color: color-mix(in oklab, var(--primary) 40%, var(--muted-foreground));
++  font-size: 12px;
++  font-weight: 500;
++  letter-spacing: 0;
++  text-transform: none;
++  color: var(--muted-foreground);
+ }
+ 
+ .kpi-value {
+-  padding-left: 10px;
+-  font-family: var(--font-display, ui-serif, Georgia, serif);
+-  font-style: italic;
+-  font-weight: 400;
+-  letter-spacing: -0.015em;
++  font-family: var(--font-sans);
++  font-style: normal;
++  font-weight: 600;
++  letter-spacing: -0.01em;
++  font-variant-numeric: tabular-nums;
+   color: var(--foreground);
+-  text-shadow:
+-    0 1px 0 color-mix(in oklab, white 45%, transparent),
+-    0 -1px 0 color-mix(in oklab, var(--foreground) 4%, transparent);
+-}
+-
+-.dark .kpi-value {
+-  color: color-mix(in oklab, var(--foreground) 96%, var(--primary));
+-  text-shadow:
+-    0 1px 0 color-mix(in oklab, white 3%, transparent),
+-    0 0 24px color-mix(in oklab, var(--primary) 26%, transparent);
+ }
+ 
+ .kpi-delta {
+   display: inline-flex;
+   align-items: center;
+-  gap: 3px;
++  gap: 4px;
+   padding: 2px 8px;
+   border-radius: 999px;
+-  font-size: 10.5px;
+-  font-weight: 700;
++  font-size: 12px;
++  font-weight: 500;
+   font-variant-numeric: tabular-nums;
+   white-space: nowrap;
+-  color: color-mix(in oklab, var(--success) 78%, var(--foreground));
+-  background: color-mix(in oklab, var(--success) 14%, var(--card));
+-  border: 1.5px solid color-mix(in oklab, var(--success) 34%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 40%, transparent),
+-    0 1.5px 0 color-mix(in oklab, var(--success) 30%, transparent);
++  color: color-mix(in oklab, var(--success) 70%, var(--foreground));
++  background: color-mix(in oklab, var(--success) 12%, var(--card));
+ }
+ 
+ .kpi-delta--down {
+-  color: color-mix(in oklab, var(--destructive) 82%, var(--foreground));
+-  background: color-mix(in oklab, var(--destructive) 12%, var(--card));
+-  border-color: color-mix(in oklab, var(--destructive) 32%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 38%, transparent),
+-    0 1.5px 0 color-mix(in oklab, var(--destructive) 30%, transparent);
++  color: color-mix(in oklab, var(--destructive) 80%, var(--foreground));
++  background: color-mix(in oklab, var(--destructive) 10%, var(--card));
+ }
+ 
+ .dark .kpi-delta {
+-  color: color-mix(in oklab, var(--success) 88%, white);
+-  background: color-mix(in oklab, var(--success) 22%, var(--card));
+-  border-color: color-mix(in oklab, var(--success) 52%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+-    0 1.5px 0 oklch(0 0 0 / 0.4),
+-    0 0 14px -4px color-mix(in oklab, var(--success) 50%, transparent);
++  color: color-mix(in oklab, var(--success) 85%, white);
++  background: color-mix(in oklab, var(--success) 18%, var(--card));
+ }
+ 
+ .dark .kpi-delta--down {
+-  color: color-mix(in oklab, var(--destructive) 88%, white);
+-  background: color-mix(in oklab, var(--destructive) 22%, var(--card));
+-  border-color: color-mix(in oklab, var(--destructive) 50%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+-    0 1.5px 0 oklch(0 0 0 / 0.4),
+-    0 0 14px -4px color-mix(in oklab, var(--destructive) 48%, transparent);
++  color: color-mix(in oklab, var(--destructive) 85%, white);
++  background: color-mix(in oklab, var(--destructive) 18%, var(--card));
+ }
+ 
+ .kpi-sub {
+-  padding-left: 10px;
+-  font-size: 10.5px;
++  font-size: 12px;
+   color: var(--muted-foreground);
+ }
+ 
+ .section-atelier {
+   position: relative;
+   overflow: hidden;
+-  border-radius: 18px;
+-  border: 1.5px solid var(--border);
++  border-radius: 16px;
++  border: 1px solid var(--border);
+   background: var(--card);
+-  box-shadow:
+-    0 1px 0 color-mix(in oklab, white 4%, transparent) inset,
+-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+-    0 4px 0 color-mix(in oklab, var(--border) 88%, transparent);
+-}
+-.dark .section-atelier {
+-  border-color: color-mix(in oklab, var(--primary) 18%, var(--border));
+-  background: linear-gradient(
+-    180deg,
+-    color-mix(in oklab, var(--primary) 6%, var(--card)) 0%,
+-    var(--card) 30%
+-  );
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 4%, transparent),
+-    0 1px 3px oklch(0 0 0 / 0.5),
+-    0 4px 0 oklch(0 0 0 / 0.45),
+-    0 0 32px -12px color-mix(in oklab, var(--primary) 22%, transparent);
+-}
+-
+-.recharts-bar-rectangle path {
+-  filter: drop-shadow(0 1.5px 0 color-mix(in oklab, var(--foreground) 12%, transparent));
+-}
+-.dark .recharts-bar-rectangle path {
+-  filter: drop-shadow(0 1.5px 0 oklch(0 0 0 / 0.55));
+-}
+-
+-.recharts-area-area {
+-  filter: drop-shadow(0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent));
+-}
+-
+-.recharts-pie-sector path {
+-  filter: drop-shadow(0 1px 0 color-mix(in oklab, var(--foreground) 10%, transparent));
+-}
+-.dark .recharts-pie-sector path {
+-  filter: drop-shadow(0 1px 0 oklch(0 0 0 / 0.5));
+ }
+ 
+ .section-atelier__head {
+@@ -940,46 +724,19 @@
+   grid-template-columns: minmax(0, 1fr) auto;
+   align-items: center;
+   gap: 12px;
+-  margin-bottom: 14px;
+-  padding-bottom: 14px;
++  margin-bottom: 16px;
++  padding-bottom: 12px;
+   border-bottom: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+ }
+-.section-atelier__head::after {
+-  content: "";
+-  position: absolute;
+-  left: 0;
+-  bottom: -1px;
+-  width: 46px;
+-  height: 2px;
+-  border-radius: 999px;
+-  background: linear-gradient(90deg, var(--primary), transparent);
+-  opacity: 0.7;
+-}
+ 
+ .section-atelier__title {
+   position: relative;
+-  padding-left: 16px;
+-  font-family: var(--font-display, ui-serif, Georgia, serif);
+-  font-style: italic;
++  font-family: var(--font-sans);
++  font-style: normal;
++  font-weight: 600;
+   letter-spacing: -0.01em;
+   color: var(--foreground);
+ }
+-.section-atelier__title::before {
+-  content: "";
+-  position: absolute;
+-  left: 0;
+-  top: 50%;
+-  transform: translateY(-50%);
+-  width: 4px;
+-  height: 1.05em;
+-  border-radius: 999px;
+-  background: linear-gradient(
+-    180deg,
+-    var(--primary),
+-    color-mix(in oklab, var(--primary) 35%, transparent)
+-  );
+-  box-shadow: inset 0 1px 0 color-mix(in oklab, black 25%, transparent);
+-}
+ 
+ .section-atelier__link {
+   display: inline-flex;
+@@ -987,57 +744,44 @@
+   gap: 4px;
+   padding: 4px 8px;
+   border-radius: 8px;
+-  font-size: 11px;
++  font-size: 12px;
++  font-weight: 500;
+   color: var(--muted-foreground);
+-  transition: color 160ms ease, background-color 160ms ease;
++  transition: color 120ms ease-out, background-color 120ms ease-out;
+ }
+ .section-atelier__link:hover {
+-  color: var(--primary);
+-  background: color-mix(in oklab, var(--primary) 8%, transparent);
++  color: var(--foreground);
++  background: color-mix(in oklab, var(--foreground) 5%, transparent);
++}
++.section-atelier__link:focus-visible {
++  outline: 2px solid var(--ring);
++  outline-offset: 2px;
+ }
+ 
+ .counter-pill {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+-  min-width: 30px;
+-  height: 24px;
+-  padding: 0 9px;
++  min-width: 24px;
++  height: 20px;
++  padding: 0 8px;
+   border-radius: 999px;
+-  font-family: var(--font-mono, ui-monospace, monospace);
+-  font-size: 11.5px;
+-  font-weight: 600;
++  font-size: 12px;
++  font-weight: 500;
+   font-variant-numeric: tabular-nums;
+   line-height: 1;
+-  color: color-mix(in oklab, var(--primary) 82%, var(--foreground));
++  color: color-mix(in oklab, var(--primary) 80%, var(--foreground));
+   background: color-mix(in oklab, var(--primary) 12%, var(--card));
+-  border: 1.5px solid color-mix(in oklab, var(--primary) 34%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 45%, transparent),
+-    0 2px 0 color-mix(in oklab, var(--primary) 30%, transparent);
+ }
+ .dark .counter-pill {
+-  color: color-mix(in oklab, var(--primary) 92%, white);
++  color: color-mix(in oklab, var(--primary) 90%, white);
+   background: color-mix(in oklab, var(--primary) 20%, var(--card));
+-  border-color: color-mix(in oklab, var(--primary) 48%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 12%, transparent),
+-    0 2px 0 oklch(0 0 0 / 0.5),
+-    0 0 14px -3px color-mix(in oklab, var(--primary) 50%, transparent);
+ }
+ 
+-.counter-pill--muted {
++.counter-pill--muted,
++.dark .counter-pill--muted {
+   color: var(--muted-foreground);
+   background: var(--secondary);
+-  border-color: var(--border);
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 32%, transparent),
+-    0 2px 0 color-mix(in oklab, var(--border) 90%, transparent);
+-}
+-.dark .counter-pill--muted {
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 5%, transparent),
+-    0 2px 0 oklch(0 0 0 / 0.4);
+ }
+ 
+ .list-item-atelier {
+@@ -1045,24 +789,10 @@
+   border-radius: 12px;
+   border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+   background: var(--card);
+-  transition:
+-    border-color 160ms ease,
+-    box-shadow 160ms ease,
+-    background-color 160ms ease,
+-    transform 160ms ease;
++  transition: background-color 120ms ease-out;
+ }
+ .list-item-atelier:hover {
+-  border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+-  background: color-mix(in oklab, var(--primary) 4%, var(--card));
+-  box-shadow:
+-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+-    0 8px 20px -12px color-mix(in oklab, var(--primary) 30%, transparent);
+-  transform: translateY(-1px);
+-}
+-.dark .list-item-atelier:hover {
+-  box-shadow:
+-    0 1px 3px oklch(0 0 0 / 0.5),
+-    0 10px 24px -12px color-mix(in oklab, var(--primary) 38%, transparent);
++  background: color-mix(in oklab, var(--foreground) 3%, var(--card));
+ }
+ 
+ .date-badge {
+@@ -1070,41 +800,21 @@
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+-  width: 68px;
++  width: 64px;
+   flex-shrink: 0;
+-  padding: 8px 6px;
++  padding: 8px 4px;
+   border-radius: 12px;
+-  background: linear-gradient(
+-    180deg,
+-    color-mix(in oklab, var(--primary) 8%, var(--card)),
+-    var(--card)
+-  );
+-  border: 1.5px solid color-mix(in oklab, var(--primary) 22%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+-    0 2px 0 color-mix(in oklab, var(--primary) 22%, transparent);
++  background: color-mix(in oklab, var(--foreground) 3%, var(--card));
++  border: 1px solid var(--border);
+   text-align: center;
+ }
+-.dark .date-badge {
+-  background: linear-gradient(
+-    180deg,
+-    color-mix(in oklab, var(--primary) 16%, var(--card)),
+-    var(--card)
+-  );
+-  border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+-    0 2px 0 oklch(0 0 0 / 0.45),
+-    0 0 16px -5px color-mix(in oklab, var(--primary) 45%, transparent);
+-}
+ 
+ .priority-dot {
+   display: inline-block;
+-  width: 6px;
+-  height: 6px;
++  width: 8px;
++  height: 8px;
+   border-radius: 999px;
+   flex-shrink: 0;
+-  box-shadow: 0 0 0 2px color-mix(in oklab, currentColor 12%, transparent);
+ }
+ .priority-dot--high {
+   background: var(--destructive);
+@@ -1119,53 +829,34 @@
+   color: var(--muted-foreground);
+ }
+ 
+-@keyframes count-pop-in {
+-  0% {
+-    opacity: 0;
+-    transform: translateY(6px) scale(0.98);
+-  }
+-  100% {
+-    opacity: 1;
+-    transform: translateY(0) scale(1);
+-  }
+-}
+-
+ .counter-anim {
+   display: inline-block;
+   font-variant-numeric: tabular-nums;
+-  animation: count-pop-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+-  will-change: opacity, transform;
+ }
+ 
+ .counter-anim__value {
+   display: inline-block;
+   font-variant-numeric: tabular-nums;
+-  transition: color 200ms ease;
+ }
+ 
+ .counter-pill--sm {
+-  min-width: 24px;
+-  height: 20px;
+-  padding: 0 7px;
+-  font-size: 10.5px;
++  min-width: 20px;
++  height: 18px;
++  padding: 0 6px;
++  font-size: 11px;
+ }
+ .counter-pill--lg {
+-  min-width: 38px;
+-  height: 28px;
+-  padding: 0 11px;
++  min-width: 32px;
++  height: 24px;
++  padding: 0 8px;
+   font-size: 13px;
+ }
+ 
+-.counter-pill--ghost {
+-  color: var(--muted-foreground);
+-  background: transparent;
+-  border: 1px dashed color-mix(in oklab, var(--border) 90%, transparent);
+-  box-shadow: none;
+-}
++.counter-pill--ghost,
+ .dark .counter-pill--ghost {
+   color: var(--muted-foreground);
+   background: transparent;
+-  box-shadow: none;
++  box-shadow: inset 0 0 0 1px var(--border);
+ }
+ 
+ .stat-tile {
+@@ -1173,78 +864,11 @@
+   overflow: hidden;
+   display: flex;
+   flex-direction: column;
+-  gap: 10px;
+-  padding: 14px 16px;
++  gap: 8px;
++  padding: 16px;
+   border-radius: 16px;
+-  border: 1.5px solid var(--border);
+-  background:
+-    radial-gradient(
+-      140% 90% at 100% 0%,
+-      color-mix(in oklab, var(--primary) 6%, transparent),
+-      transparent 55%
+-    ),
+-    linear-gradient(
+-      180deg,
+-      color-mix(in oklab, var(--primary) 4%, var(--card)) 0%,
+-      var(--card) 100%
+-    );
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+-    0 3px 0 color-mix(in oklab, var(--border) 88%, transparent);
+-  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+-}
+-.stat-tile:hover {
+-  border-color: color-mix(in oklab, var(--primary) 28%, var(--border));
+-  transform: translateY(-1px);
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 60%, transparent),
+-    0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent),
+-    0 3px 0 color-mix(in oklab, var(--border) 88%, transparent),
+-    0 14px 32px -16px color-mix(in oklab, var(--primary) 26%, transparent);
+-}
+-.dark .stat-tile {
+-  border-color: color-mix(in oklab, var(--primary) 22%, var(--border));
+-  background:
+-    radial-gradient(
+-      140% 90% at 100% 0%,
+-      color-mix(in oklab, var(--primary) 14%, transparent),
+-      transparent 55%
+-    ),
+-    linear-gradient(
+-      180deg,
+-      color-mix(in oklab, var(--primary) 12%, var(--card)) 0%,
+-      var(--card) 100%
+-    );
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 6%, transparent),
+-    0 1px 3px oklch(0 0 0 / 0.5),
+-    0 3px 0 oklch(0 0 0 / 0.45),
+-    0 0 28px -10px color-mix(in oklab, var(--primary) 30%, transparent);
+-}
+-.dark .stat-tile:hover {
+-  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+-    0 1px 3px oklch(0 0 0 / 0.55),
+-    0 3px 0 oklch(0 0 0 / 0.5),
+-    0 0 40px -10px color-mix(in oklab, var(--primary) 46%, transparent);
+-}
+-
+-.stat-tile::before {
+-  content: "";
+-  position: absolute;
+-  left: 0;
+-  top: 14px;
+-  bottom: 14px;
+-  width: 3px;
+-  border-radius: 0 999px 999px 0;
+-  background: linear-gradient(
+-    180deg,
+-    var(--primary),
+-    color-mix(in oklab, var(--primary) 30%, transparent)
+-  );
+-  opacity: 0.75;
++  border: 1px solid var(--border);
++  background: var(--card);
+ }
+ 
+ .stat-tile__head {
+@@ -1252,14 +876,11 @@
+   align-items: center;
+   justify-content: space-between;
+   gap: 8px;
+-  padding-left: 10px;
+ }
+ .stat-tile__label {
+-  font-size: 10.5px;
+-  font-weight: 700;
+-  letter-spacing: 0.09em;
+-  text-transform: uppercase;
+-  color: color-mix(in oklab, var(--primary) 40%, var(--muted-foreground));
++  font-size: 13px;
++  font-weight: 500;
++  color: var(--muted-foreground);
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+@@ -1267,52 +888,30 @@
+ .stat-tile__icon {
+   display: grid;
+   place-items: center;
+-  width: 26px;
+-  height: 26px;
+-  border-radius: 8px;
++  width: 20px;
++  height: 20px;
+   flex-shrink: 0;
+-  background: color-mix(in oklab, var(--primary) 10%, var(--card));
+-  border: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
+-  color: var(--primary);
+-  box-shadow: inset 0 1px 0 color-mix(in oklab, white 40%, transparent);
+-}
+-.dark .stat-tile__icon {
+-  background: color-mix(in oklab, var(--primary) 18%, var(--card));
+-  border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+-  box-shadow:
+-    inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+-    0 0 14px -4px color-mix(in oklab, var(--primary) 45%, transparent);
++  color: var(--muted-foreground);
+ }
+ 
+ .stat-tile__value {
+-  padding-left: 10px;
+-  font-family: var(--font-display, ui-serif, Georgia, serif);
+-  font-style: italic;
+-  font-weight: 400;
+-  font-size: 26px;
+-  line-height: 1;
+-  letter-spacing: -0.015em;
++  font-family: var(--font-sans);
++  font-weight: 600;
++  font-size: 24px;
++  line-height: 1.1;
++  letter-spacing: -0.01em;
++  font-variant-numeric: tabular-nums;
+   color: var(--foreground);
+-  text-shadow:
+-    0 1px 0 color-mix(in oklab, white 45%, transparent),
+-    0 -1px 0 color-mix(in oklab, var(--foreground) 4%, transparent);
+-}
+-.dark .stat-tile__value {
+-  color: color-mix(in oklab, var(--foreground) 96%, var(--primary));
+-  text-shadow:
+-    0 1px 0 color-mix(in oklab, white 3%, transparent),
+-    0 0 24px color-mix(in oklab, var(--primary) 26%, transparent);
+ }
+ 
+ .stat-tile__foot {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+-  gap: 6px;
+-  padding-left: 10px;
++  gap: 8px;
+ }
+ .stat-tile__sub {
+-  font-size: 10.5px;
++  font-size: 12px;
+   color: var(--muted-foreground);
+   white-space: nowrap;
+   overflow: hidden;
+@@ -1323,47 +922,27 @@
+   display: flex;
+   align-items: center;
+   gap: 12px;
+-  margin: 28px 0 18px;
++  margin: 32px 0 16px;
+   color: var(--muted-foreground);
+ }
+ .section-divider__line {
+   flex: 1;
+   height: 1px;
+-  background: linear-gradient(
+-    90deg,
+-    transparent,
+-    color-mix(in oklab, var(--border) 90%, transparent) 30%,
+-    color-mix(in oklab, var(--border) 90%, transparent) 70%,
+-    transparent
+-  );
++  background: var(--border);
+ }
+ .section-divider__label {
+-  font-family: var(--font-display, ui-serif, Georgia, serif);
+-  font-style: italic;
+   font-size: 12px;
+-  letter-spacing: 0.02em;
+-  color: color-mix(in oklab, var(--primary) 60%, var(--muted-foreground));
++  font-weight: 500;
++  color: var(--muted-foreground);
+   white-space: nowrap;
+ }
+ 
+ @media (prefers-reduced-motion: reduce) {
+-  .counter-anim,
+-  .counter-anim__value {
+-    animation: none !important;
+-    transition: none !important;
+-  }
+-  .stat-tile,
+-  .kpi-tactile,
++  .table-tactile tbody tr,
+   .list-item-atelier,
+-  .section-atelier,
+-  .chart-card-atelier {
++  .section-atelier__link {
+     transition: none !important;
+   }
+-  .stat-tile:hover,
+-  .kpi-tactile:hover,
+-  .list-item-atelier:hover {
+-    transform: none !important;
+-  }
+ }
+ 
+ @layer base {
+@@ -1497,13 +1076,11 @@
+ }
+ 
+ .library-block {
+-  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
++  transition: background-color 0.15s ease-out;
+ }
+ .library-block:hover {
+   background-color: var(--surface);
+-  box-shadow: var(--shadow-card);
+ }
+-.library-block:active { transform: scale(0.97); }
+ 
+ .suggestion-item {
+   transition: background-color 0.15s ease, border-color 0.15s ease;

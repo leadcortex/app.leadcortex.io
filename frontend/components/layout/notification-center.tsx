@@ -76,8 +76,7 @@ function useHoldToDelete({ onInstant, onHold }: { onInstant: () => void; onHold:
       e.stopPropagation();
       try {
         e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-      }
+      } catch {}
       fired.current = false;
       startedAt.current = performance.now();
       setHolding(true);
@@ -367,101 +366,101 @@ export function NotificationCenter({ headless = false }: { headless?: boolean } 
   return (
     <>
       {!headless && (
-      <div
-        ref={rootRef}
-        className="relative"
-        onMouseEnter={openSoon}
-        onMouseLeave={closeSoon}
-        onFocus={() => {
-          clearTimer();
-          setPreviewOpen(true);
-        }}
-      >
-        <button
-          type="button"
-          aria-label={`Ouvrir les notifications${importantUnreadCount ? `, ${importantUnreadCount} importantes non lues` : ""}`}
-          aria-haspopup="dialog"
-          onClick={() => {
+        <div
+          ref={rootRef}
+          className="relative"
+          onMouseEnter={openSoon}
+          onMouseLeave={closeSoon}
+          onFocus={() => {
             clearTimer();
-            setPreviewOpen(false);
-            setCenterOpen(true);
+            setPreviewOpen(true);
           }}
-          className={cn(
-            "relative rounded-lg p-1.5 transition-colors hover:bg-surface md:p-2",
-            (previewOpen || centerOpen) && "bg-surface",
-          )}
         >
-          <Bell className="size-4 md:size-5" strokeWidth={1.5} />
-          {importantUnreadCount > 0 && (
-            <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold tabular-nums text-white shadow-[0_2px_0_color-mix(in_oklab,var(--destructive)_60%,black)] md:text-[10px]">
-              {Math.min(importantUnreadCount, 99)}
-              {importantUnreadCount > 99 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute -right-1.5 -top-1 grid size-2.5 place-items-center rounded-full bg-background text-[8px] font-bold leading-none text-destructive ring-1 ring-destructive/30"
-                >
-                  +
-                </span>
-              )}
-            </span>
-          )}
-        </button>
-
-        {previewOpen && !centerOpen && (
-          <div className="absolute right-0 top-full z-[90] w-80 max-w-[calc(100vw-1rem)] pt-2">
-            <div
-              role="region"
-              aria-label="Notifications importantes récentes"
-              className="overflow-hidden rounded-xl border border-border bg-background shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)]"
-            >
-              <div className="flex items-center justify-between border-b border-border/60 px-3 py-2.5">
-                <div>
-                  <p className="text-xs font-semibold">À ne pas manquer</p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground">
-                    Les {PREVIEW_COUNT} dernières importantes
-                  </p>
-                </div>
-                {importantUnreadCount > 0 && (
-                  <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
-                    {importantUnreadCount > 99 ? "99+" : importantUnreadCount}
+          <button
+            type="button"
+            aria-label={`Ouvrir les notifications${importantUnreadCount ? `, ${importantUnreadCount} importantes non lues` : ""}`}
+            aria-haspopup="dialog"
+            onClick={() => {
+              clearTimer();
+              setPreviewOpen(false);
+              setCenterOpen(true);
+            }}
+            className={cn(
+              "relative rounded-lg p-1.5 transition-colors hover:bg-surface md:p-2",
+              (previewOpen || centerOpen) && "bg-surface",
+            )}
+          >
+            <Bell className="size-4 md:size-5" strokeWidth={1.5} />
+            {importantUnreadCount > 0 && (
+              <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold tabular-nums text-white shadow-[0_2px_0_color-mix(in_oklab,var(--destructive)_60%,black)] md:text-[10px]">
+                {Math.min(importantUnreadCount, 99)}
+                {importantUnreadCount > 99 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -right-1.5 -top-1 grid size-2.5 place-items-center rounded-full bg-background text-[8px] font-bold leading-none text-destructive ring-1 ring-destructive/30"
+                  >
+                    +
                   </span>
                 )}
-              </div>
-              <div className="max-h-[min(60vh,24rem)] overflow-y-auto p-1.5">
-                {previewNotifications.length === 0 ? (
-                  <p className="px-3 py-6 text-center text-xs text-muted-foreground">
-                    Aucune notification importante.
-                  </p>
-                ) : (
-                  <ul>
-                    {previewNotifications.map((notification) => (
-                      <li key={notification.id} className={SEPARATOR_CLASS}>
-                        <NotificationRow
-                          notification={notification}
-                          removing={removing.has(notification.id)}
-                          onActivate={() => selectNotification(notification)}
-                          onDelete={() => deleteWithUndo([notification.id])}
-                          onHoldDelete={() => holdDelete([notification.id])}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setPreviewOpen(false);
-                  setCenterOpen(true);
-                }}
-                className="w-full border-t border-border/60 px-3 py-2.5 text-left text-xs font-medium text-primary transition-colors hover:bg-surface"
+              </span>
+            )}
+          </button>
+
+          {previewOpen && !centerOpen && (
+            <div className="absolute right-0 top-full z-[90] w-80 max-w-[calc(100vw-1rem)] pt-2">
+              <div
+                role="region"
+                aria-label="Notifications importantes récentes"
+                className="overflow-hidden rounded-xl border border-border bg-background shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)]"
               >
-                Ouvrir le centre complet
-              </button>
+                <div className="flex items-center justify-between border-b border-border/60 px-3 py-2.5">
+                  <div>
+                    <p className="text-xs font-semibold">À ne pas manquer</p>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground">
+                      Les {PREVIEW_COUNT} dernières importantes
+                    </p>
+                  </div>
+                  {importantUnreadCount > 0 && (
+                    <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+                      {importantUnreadCount > 99 ? "99+" : importantUnreadCount}
+                    </span>
+                  )}
+                </div>
+                <div className="max-h-[min(60vh,24rem)] overflow-y-auto p-1.5">
+                  {previewNotifications.length === 0 ? (
+                    <p className="px-3 py-6 text-center text-xs text-muted-foreground">
+                      Aucune notification importante.
+                    </p>
+                  ) : (
+                    <ul>
+                      {previewNotifications.map((notification) => (
+                        <li key={notification.id} className={SEPARATOR_CLASS}>
+                          <NotificationRow
+                            notification={notification}
+                            removing={removing.has(notification.id)}
+                            onActivate={() => selectNotification(notification)}
+                            onDelete={() => deleteWithUndo([notification.id])}
+                            onHoldDelete={() => holdDelete([notification.id])}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewOpen(false);
+                    setCenterOpen(true);
+                  }}
+                  className="w-full border-t border-border/60 px-3 py-2.5 text-left text-xs font-medium text-primary transition-colors hover:bg-surface"
+                >
+                  Ouvrir le centre complet
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       )}
 
       <Dialog
@@ -489,9 +488,7 @@ export function NotificationCenter({ headless = false }: { headless?: boolean } 
 
           <div className="flex min-h-0 flex-1">
             <aside className="flex w-32 shrink-0 flex-col border-r border-border bg-surface/25 p-2 sm:w-44 sm:p-3">
-              <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                Sections
-              </p>
+              <p className="mb-2 px-2 text-xs font-medium text-muted-foreground">Sections</p>
               <nav className="space-y-1" role="tablist" aria-label="Sections des notifications">
                 <SectionButton
                   active={section === "important"}
@@ -988,7 +985,7 @@ function NotificationRow({
             )}
           </span>
           {notification.important && (
-            <span className="mt-1 inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wide text-warning">
+            <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-warning">
               <BellRing className="size-3" strokeWidth={2} />
               Importante
             </span>
@@ -1015,7 +1012,7 @@ function NotificationRow({
         <button
           type="button"
           {...handlers}
-          aria-label="Supprimer cette notification (clic) — maintenir pour une suppression animée"
+          aria-label="Supprimer cette notification (clic), maintenir pour une suppression animée"
           title="Clic : supprimer · Maintenir : suppression animée"
           className="relative z-20 grid size-7 shrink-0 touch-none select-none place-items-center rounded-md text-muted-foreground opacity-100 transition-all hover:bg-destructive/10 hover:text-destructive focus-visible:opacity-100 sm:pointer-events-none sm:opacity-0 sm:group-hover:pointer-events-auto sm:group-hover:opacity-100 sm:group-focus-within:pointer-events-auto sm:group-focus-within:opacity-100"
         >

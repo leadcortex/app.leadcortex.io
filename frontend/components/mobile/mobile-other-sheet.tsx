@@ -3,10 +3,7 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { ChevronRight } from "@/components/icons";
 import { MobileSheet } from "@/components/ui/mobile-sheet";
-import {
-  isLinkActive,
-  type MobileNavSection,
-} from "@/lib/mobile/nav-tree";
+import { isLinkActive, type MobileNavSection } from "@/lib/mobile/nav-tree";
 import { cn } from "@/lib/core/utils";
 
 export type MobileOtherSheetProps = {
@@ -26,12 +23,10 @@ export function MobileOtherSheet({ open, onOpenChange, section }: MobileOtherShe
 
   return (
     <MobileSheet open={open} onOpenChange={onOpenChange} title={section.label}>
-      <div className="space-y-4 px-3 py-3">
+      <div className="space-y-6 px-4 py-4">
         {section.groups?.map((group) => (
           <section key={group.label}>
-            <h3 className="mb-1.5 px-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              {group.label}
-            </h3>
+            <h3 className="mb-2 px-2 text-xs font-medium text-muted-foreground">{group.label}</h3>
             <ul className="overflow-hidden rounded-2xl border border-border/70 bg-surface/30">
               {group.items.map((item, i) => {
                 const Icon = item.icon;
@@ -42,33 +37,30 @@ export function MobileOtherSheet({ open, onOpenChange, section }: MobileOtherShe
                       type="button"
                       onClick={() => handleSelect(item.to)}
                       className={cn(
-                        "flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors",
+                        "flex min-h-12 w-full items-center gap-3 px-4 py-3 text-left transition-colors",
                         "active:bg-surface/70",
                         i < group.items.length - 1 && "border-b border-border/50",
                         active && "bg-primary/[0.06]",
                       )}
                     >
-                      <span
+                      <Icon
                         className={cn(
-                          "grid size-8 shrink-0 place-items-center rounded-full",
-                          active
-                            ? "bg-primary/15 text-primary"
-                            : "bg-primary/[0.08] text-primary",
+                          "size-5 shrink-0",
+                          active ? "text-primary" : "text-muted-foreground",
                         )}
-                      >
-                        <Icon className="size-4" strokeWidth={1.9} />
-                      </span>
+                        strokeWidth={1.75}
+                      />
                       <span
                         className={cn(
-                          "min-w-0 flex-1 truncate text-[14px]",
+                          "min-w-0 flex-1 truncate text-[15px]",
                           active && "font-medium text-primary",
                         )}
                       >
                         {item.label}
                       </span>
                       <ChevronRight
-                        className="size-4 shrink-0 text-muted-foreground/70"
-                        strokeWidth={1.8}
+                        className="size-4 shrink-0 text-muted-foreground"
+                        strokeWidth={1.75}
                       />
                     </button>
                   </li>

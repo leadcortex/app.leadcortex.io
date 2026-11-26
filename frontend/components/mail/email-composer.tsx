@@ -143,10 +143,7 @@ function buildInitial(state: ComposerState | null, account: MailAccount): Compos
   }
 
   if (state.mode === "replyAll") {
-    const to = uniqueByEmail([
-      src.from,
-      ...src.to.filter((a) => a.email !== account.email),
-    ]);
+    const to = uniqueByEmail([src.from, ...src.to.filter((a) => a.email !== account.email)]);
     const cc = uniqueByEmail(addrList(src.cc).filter((a) => a.email !== account.email));
     return {
       ...empty,
@@ -194,9 +191,7 @@ export function EmailComposer({
   onDiscard,
   cortexSuggestion,
 }: EmailComposerProps) {
-  const [payload, setPayload] = useState<ComposerPayload>(() =>
-    buildInitial(state, account),
-  );
+  const [payload, setPayload] = useState<ComposerPayload>(() => buildInitial(state, account));
   const [sending, setSending] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [showCc, setShowCc] = useState(false);
@@ -236,10 +231,7 @@ export function EmailComposer({
     }
   }, [payload.mode]);
 
-  const commit = async (
-    sender: (p: ComposerPayload) => void | Promise<void>,
-    at?: Date,
-  ) => {
+  const commit = async (sender: (p: ComposerPayload) => void | Promise<void>, at?: Date) => {
     setSending(true);
     try {
       if (at && onScheduleSend) {
@@ -328,12 +320,7 @@ export function EmailComposer({
       >
         <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3 pr-14">
           <div className="flex min-w-0 items-center gap-2">
-            <h2 className="truncate font-display text-base italic md:text-lg">{title}</h2>
-            {payload.mode === "draft" && (
-              <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                brouillon
-              </span>
-            )}
+            <h2 className="truncate text-base font-semibold">{title}</h2>
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <button
@@ -347,7 +334,8 @@ export function EmailComposer({
             <button
               type="button"
               onClick={handleDiscard}
-              aria-label="Fermer"
+              aria-label="Supprimer le message"
+              title="Supprimer le message"
               className="grid size-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
               <Trash2 className="size-4" />
@@ -360,12 +348,10 @@ export function EmailComposer({
 
           <div className="shrink-0 space-y-0 border-b border-border">
             <div className="flex items-center gap-3 border-b border-border/60 px-4 py-2">
-              <span className="w-12 shrink-0 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                De
-              </span>
+              <span className="w-12 shrink-0 text-xs font-medium text-muted-foreground">De</span>
               <div className="flex min-w-0 flex-1 items-center gap-2">
                 <LetterAvatar name={account.name} size={20} shape="rounded" />
-                <span className="truncate text-xs">
+                <span className="truncate text-sm">
                   {account.name}{" "}
                   <span className="text-muted-foreground">&lt;{account.email}&gt;</span>
                 </span>
@@ -388,7 +374,7 @@ export function EmailComposer({
                   <button
                     type="button"
                     onClick={() => setShowCc(true)}
-                    className="ml-auto text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+                    className="ml-auto text-[11px] text-muted-foreground transition-colors hover:text-foreground"
                   >
                     Cc
                   </button>
@@ -413,7 +399,7 @@ export function EmailComposer({
                     <button
                       type="button"
                       onClick={() => setShowBcc(true)}
-                      className="ml-auto text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+                      className="ml-auto text-[11px] text-muted-foreground transition-colors hover:text-foreground"
                     >
                       Cci
                     </button>
@@ -438,14 +424,12 @@ export function EmailComposer({
             )}
 
             <div className="flex items-center gap-3 border-t border-border/60 px-4 py-2">
-              <span className="w-12 shrink-0 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Objet
-              </span>
+              <span className="w-12 shrink-0 text-xs font-medium text-muted-foreground">Objet</span>
               <input
                 value={payload.subject}
                 onChange={(e) => setPayload((p) => ({ ...p, subject: e.target.value }))}
                 placeholder="Sans objet"
-                className="w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground"
+                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
           </div>
@@ -456,7 +440,7 @@ export function EmailComposer({
               value={payload.body}
               onChange={(e) => setPayload((p) => ({ ...p, body: e.target.value }))}
               placeholder="Écrivez votre message…"
-              className="min-h-[160px] w-full flex-1 resize-none bg-transparent px-4 py-3 text-[12.5px] leading-relaxed outline-none placeholder:text-muted-foreground"
+              className="min-h-[160px] w-full flex-1 resize-none bg-transparent px-4 py-3 text-sm leading-relaxed outline-none placeholder:text-muted-foreground"
             />
           </div>
 
@@ -481,9 +465,7 @@ export function EmailComposer({
                   <Sparkles className="size-3.5" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">
-                    Suggestion Cortex
-                  </p>
+                  <p className="text-xs font-medium text-primary">Suggestion Cortex</p>
                   <p className="mt-0.5 line-clamp-2 text-[11px] text-foreground/80">
                     {cortexSuggestion.body}
                   </p>
@@ -491,7 +473,7 @@ export function EmailComposer({
                 <button
                   type="button"
                   onClick={cortexSuggestion.onUse}
-                  className="shrink-0 rounded-md border border-primary/40 bg-background px-2 py-1 text-[10px] font-medium text-primary transition-colors hover:bg-primary/10"
+                  className="shrink-0 rounded-md border border-primary/40 bg-background px-2 py-1 text-[11px] font-medium text-primary transition-colors hover:bg-primary/10"
                 >
                   Utiliser
                 </button>
@@ -505,7 +487,7 @@ export function EmailComposer({
             type="button"
             onClick={handleSend}
             disabled={sending || payload.to.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-foreground px-3 text-[13px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             <Send className="size-3.5" />
             {sending ? "Envoi…" : "Envoyer"}
@@ -518,7 +500,7 @@ export function EmailComposer({
                 <button
                   type="button"
                   disabled={sending || payload.to.length === 0}
-                  className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-surface hover:text-foreground disabled:opacity-50"
+                  className="inline-flex h-8 items-center gap-1 rounded-lg border border-border px-2 text-xs text-muted-foreground transition-colors hover:bg-surface hover:text-foreground disabled:opacity-50"
                 >
                   <Clock className="size-3.5" />
                   <ChevronDown className="size-3" />
@@ -553,7 +535,7 @@ export function EmailComposer({
               <button
                 type="button"
                 onClick={handleDraft}
-                className="rounded-lg border border-border px-2.5 py-1.5 text-[11px] text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+                className="inline-flex h-8 items-center rounded-lg border border-border px-3 text-[13px] text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
               >
                 Brouillon
               </button>
@@ -561,7 +543,7 @@ export function EmailComposer({
             <button
               type="button"
               onClick={handleDiscard}
-              className="rounded-lg px-2.5 py-1.5 text-[11px] text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+              className="inline-flex h-8 items-center rounded-lg px-3 text-[13px] text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
               Annuler
             </button>
@@ -593,9 +575,7 @@ function RecipientRow({
 }) {
   return (
     <div className="flex items-start gap-3 border-b border-border/60 px-4 py-2">
-      <span className="mt-1 w-12 shrink-0 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
+      <span className="mt-1 w-12 shrink-0 text-xs font-medium text-muted-foreground">{label}</span>
       <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
         {chips.map((c) => (
           <span
@@ -604,9 +584,7 @@ function RecipientRow({
           >
             <span className="truncate font-medium">{c.name ?? c.email}</span>
             {c.name && (
-              <span className="truncate text-[10px] text-muted-foreground">
-                &lt;{c.email}&gt;
-              </span>
+              <span className="truncate text-[11px] text-muted-foreground">&lt;{c.email}&gt;</span>
             )}
             <button
               type="button"
@@ -626,7 +604,7 @@ function RecipientRow({
             if (input.trim()) onAdd();
           }}
           placeholder={chips.length === 0 ? "nom@exemple.com" : ""}
-          className="min-w-[140px] flex-1 bg-transparent py-0.5 text-xs outline-none placeholder:text-muted-foreground"
+          className="min-w-[140px] flex-1 bg-transparent py-0.5 text-sm outline-none placeholder:text-muted-foreground"
           type="email"
         />
       </div>
@@ -638,15 +616,29 @@ function RecipientRow({
 function FormattingToolbar() {
   return (
     <div className="flex shrink-0 items-center gap-0.5">
-      <FmtBtn label="Gras"><Bold className="size-3.5" /></FmtBtn>
-      <FmtBtn label="Italique"><Italic className="size-3.5" /></FmtBtn>
-      <FmtBtn label="Souligné"><Underline className="size-3.5" /></FmtBtn>
+      <FmtBtn label="Gras">
+        <Bold className="size-3.5" />
+      </FmtBtn>
+      <FmtBtn label="Italique">
+        <Italic className="size-3.5" />
+      </FmtBtn>
+      <FmtBtn label="Souligné">
+        <Underline className="size-3.5" />
+      </FmtBtn>
       <span className="mx-0.5 h-4 w-px bg-border" />
-      <FmtBtn label="Liste à puces"><List className="size-3.5" /></FmtBtn>
-      <FmtBtn label="Liste numérotée"><ListOrdered className="size-3.5" /></FmtBtn>
+      <FmtBtn label="Liste à puces">
+        <List className="size-3.5" />
+      </FmtBtn>
+      <FmtBtn label="Liste numérotée">
+        <ListOrdered className="size-3.5" />
+      </FmtBtn>
       <span className="mx-0.5 h-4 w-px bg-border" />
-      <FmtBtn label="Lien"><LinkIcon className="size-3.5" /></FmtBtn>
-      <FmtBtn label="Pièce jointe"><Paperclip className="size-3.5" /></FmtBtn>
+      <FmtBtn label="Lien">
+        <LinkIcon className="size-3.5" />
+      </FmtBtn>
+      <FmtBtn label="Pièce jointe">
+        <Paperclip className="size-3.5" />
+      </FmtBtn>
     </div>
   );
 }

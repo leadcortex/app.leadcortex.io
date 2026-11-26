@@ -10,11 +10,10 @@ export function TimePanel() {
   const [length, setLength] = useState("concise");
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Clock}
         title="Temps et concision"
-        description="Définissez la longueur et le niveau de détail des réponses générées."
+        description="Longueur et niveau de détail des réponses."
       />
 
       <PanelGroup label="Longueur des réponses">
@@ -33,10 +32,10 @@ export function TimePanel() {
                   onClick={() => setLength(opt.value)}
                   aria-pressed={active}
                   className={cn(
-                    "rounded-xl border p-3 text-center text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "rounded-xl border p-3 text-center text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     active
                       ? "border-primary bg-primary/5 font-medium text-primary"
-                      : "border-border hover:border-primary/30 hover:bg-surface/50",
+                      : "border-border hover:bg-surface/50",
                   )}
                 >
                   {opt.label}

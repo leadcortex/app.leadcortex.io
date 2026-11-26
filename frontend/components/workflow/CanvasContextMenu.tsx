@@ -118,13 +118,13 @@ export function CanvasContextMenu({
         onClick();
         onClose();
       }}
-      className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-[12px] hover:bg-accent ${
+      className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-accent ${
         danger ? "text-destructive" : "text-foreground"
       }`}
     >
       <Icon className="h-3.5 w-3.5 shrink-0" />
       <span className="flex-1 truncate">{label}</span>
-      {hint && <kbd className="text-[10px] text-muted-foreground">{hint}</kbd>}
+      {hint && <kbd className="text-[11px] text-muted-foreground">{hint}</kbd>}
     </button>
   );
 
@@ -139,9 +139,7 @@ export function CanvasContextMenu({
     >
       {t?.type === "edge" ? (
         <>
-          <div className="px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-            Connexion
-          </div>
+          <div className="px-2 py-1 text-[11px] text-muted-foreground">Connexion</div>
           <Item
             icon={Trash2}
             label="Supprimer la connexion"
@@ -151,7 +149,7 @@ export function CanvasContextMenu({
         </>
       ) : t ? (
         <>
-          <div className="px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+          <div className="px-2 py-1 text-[11px] text-muted-foreground">
             {t.type === "node" ? "Bloc" : "Note"}
           </div>
           <Item
@@ -205,9 +203,7 @@ export function CanvasContextMenu({
         </>
       ) : (
         <>
-          <div className="px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-            Canevas
-          </div>
+          <div className="px-2 py-1 text-[11px] text-muted-foreground">Canevas</div>
           <Item
             icon={Plus}
             label="Ajouter un bloc"

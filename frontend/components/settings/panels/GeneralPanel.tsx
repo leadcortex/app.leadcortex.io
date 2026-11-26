@@ -196,9 +196,9 @@ function TimezoneSelect({ value, onChange }: { value: string; onChange: (v: stri
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "flex h-10 w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-3 text-sm transition-all",
+          "flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-3 text-sm transition-colors md:h-9",
           "focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
-          "hover:border-primary/30",
+          "hover:bg-foreground/[0.03]",
         )}
       >
         <span className="flex min-w-0 items-center gap-2">
@@ -251,7 +251,7 @@ function TimezoneSelect({ value, onChange }: { value: string; onChange: (v: stri
             )}
             {grouped.map(([region, items]) => (
               <div key={region} className="mb-1 last:mb-0">
-                <p className="px-2 pb-1 pt-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
+                <p className="px-2 pb-1 pt-1.5 text-xs font-medium text-muted-foreground/70">
                   {region}
                 </p>
                 {items.map((tz) => {
@@ -346,16 +346,15 @@ export function GeneralPanel() {
   const [currency, setCurrency] = useState("EUR");
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={LayoutPanelLeft}
         title="Général"
+        description="Ces réglages valent pour tout votre espace de travail."
       />
 
-      <PanelGroup label="Apparence">
+      <PanelGroup label="Apparence et langue">
         <SettingsCard
           title="Thème"
-          icon={Sparkles}
         >
           <div className="grid grid-cols-3 gap-3 md:gap-4">
             {(
@@ -377,10 +376,10 @@ export function GeneralPanel() {
                 >
                   <div
                     className={cn(
-                      "w-full rounded-2xl p-1 transition-all",
+                      "w-full rounded-2xl p-1 transition-colors",
                       active
                         ? "ring-2 ring-primary/70"
-                        : "ring-1 ring-transparent group-hover:ring-border",
+                        : "ring-1 ring-transparent",
                     )}
                   >
                     <ThemePreview variant={opt.value as ThemeMode} />
@@ -400,15 +399,13 @@ export function GeneralPanel() {
             })}
           </div>
         </SettingsCard>
-      </PanelGroup>
 
-      <PanelGroup label="Langue">
         <SettingsCard
-          title="Langue de l'interface"
-          icon={Globe2}
+          title="Langue"
+          description="L'anglais arrive bientôt."
         >
           <Select value={language} onValueChange={setLanguage}>
-            <SelectTrigger className="h-10 w-full border-input bg-background md:w-[280px]">
+            <SelectTrigger className="h-11 w-full border-input bg-background md:h-9 md:w-[280px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
@@ -426,7 +423,7 @@ export function GeneralPanel() {
                     🇬🇧
                   </span>
                   <span className="flex-1">English</span>
-                  <span className="ml-2 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <span className="ml-2 rounded-full bg-secondary px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
                     Bientôt
                   </span>
                 </span>
@@ -436,10 +433,9 @@ export function GeneralPanel() {
         </SettingsCard>
       </PanelGroup>
 
-      <PanelGroup label="Organisation & région">
+      <PanelGroup label="Organisation et région">
         <SettingsCard
           title="Organisation"
-          icon={Building2}
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Nom de l'organisation">
@@ -453,7 +449,7 @@ export function GeneralPanel() {
             </Field>
             <Field label="Votre rôle">
               <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
+                <SelectTrigger className="h-11 w-full border-input bg-background md:h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
@@ -476,16 +472,16 @@ export function GeneralPanel() {
             </Field>
             <Field label="Taille de l'équipe">
               <Select value={teamSize} onValueChange={setTeamSize}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
+                <SelectTrigger className="h-11 w-full border-input bg-background md:h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
                   {[
                     { value: "solo", label: "Solo" },
-                    { value: "1-5", label: "1 – 5 personnes" },
-                    { value: "6-20", label: "6 – 20 personnes" },
-                    { value: "21-50", label: "21 – 50 personnes" },
-                    { value: "50+", label: "50+ personnes" },
+                    { value: "1-5", label: "1 à 5 personnes" },
+                    { value: "6-20", label: "6 à 20 personnes" },
+                    { value: "21-50", label: "21 à 50 personnes" },
+                    { value: "50+", label: "Plus de 50 personnes" },
                   ].map((s) => (
                     <SelectItem key={s.value} value={s.value}>
                       {s.label}
@@ -498,8 +494,7 @@ export function GeneralPanel() {
         </SettingsCard>
 
         <SettingsCard
-          title="Région & préférences"
-          icon={Globe2}
+          title="Région"
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
@@ -509,7 +504,7 @@ export function GeneralPanel() {
             </div>
             <Field label="Format de date">
               <Select value={dateFormat} onValueChange={setDateFormat}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
+                <SelectTrigger className="h-11 w-full border-input bg-background md:h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>
@@ -523,7 +518,7 @@ export function GeneralPanel() {
             </Field>
             <Field label="Devise">
               <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger className="h-10 w-full border-input bg-background">
+                <SelectTrigger className="h-11 w-full border-input bg-background md:h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent position="popper" sideOffset={4} className={SELECT_Z}>

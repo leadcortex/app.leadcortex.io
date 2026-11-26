@@ -166,8 +166,8 @@ export function NewConversationModal({
     const base: ProspectThread = {
       id: thread?.id ?? `cv${Date.now()}`,
       contact,
-      role: role.trim() || "—",
-      company: company.trim() || "—",
+      role: role.trim(),
+      company: company.trim(),
       avatarTone: thread?.avatarTone ?? TONES[Math.floor(Math.random() * TONES.length)]!,
       channel: ordered[0]!,
       channels: ordered,
@@ -178,7 +178,7 @@ export function NewConversationModal({
         new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
       unread: thread?.unread ?? 0,
       stage: stage.trim() || "Nouveau",
-      location: location.trim() || "—",
+      location: location.trim(),
       tags: thread?.tags ?? [],
       notes: notes.trim(),
       messages: thread?.messages ?? {
@@ -308,7 +308,7 @@ export function NewConversationModal({
             const t = CHANNELS[c];
             const f = HANDLE_FIELDS[c];
             return (
-              <Field key={c} label={`${t.label} — ${t.handleLabel}`}>
+              <Field key={c} label={`${t.label} · ${t.handleLabel}`}>
                 <input
                   value={handles[c] ?? ""}
                   onChange={(e) => setHandles((h) => ({ ...h, [c]: e.target.value }))}
@@ -320,7 +320,7 @@ export function NewConversationModal({
               </Field>
             );
           })}
-          <p className="text-[10.5px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Les réseaux laissés sans identifiant sont ignorés.
           </p>
         </div>
@@ -393,7 +393,7 @@ export function NewConversationModal({
   return createPortal(
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-foreground/40 backdrop-blur-[2px]" onClick={onClose} />
-      <div className="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:max-h-[88dvh] sm:max-w-lg">
+      <div className="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full flex-col overflow-hidden rounded-3xl border border-border bg-background shadow-float sm:max-h-[88dvh] sm:max-w-lg">
         <header className="flex items-start gap-3 border-b border-border px-4 py-3 md:px-5">
           <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
             <UserPlus className="size-4.5" strokeWidth={1.6} />

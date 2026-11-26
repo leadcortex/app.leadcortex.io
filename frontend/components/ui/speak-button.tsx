@@ -25,7 +25,7 @@ export function SpeakButton({
         <button
           type="button"
           aria-disabled="true"
-          onClick={() => toast.info("Relecture audio — bientôt disponible")}
+          onClick={() => toast.info("La relecture audio arrive bientôt")}
           className={cn(
             "grid place-items-center rounded-md text-muted-foreground/70 transition-colors hover:bg-secondary/60",
             dims,

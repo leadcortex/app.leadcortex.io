@@ -134,13 +134,11 @@ export function ChartCard({
 }) {
   return (
     <section className={cn("chart-card-atelier min-w-0 flex flex-col p-4 md:p-6", className)}>
-      <span aria-hidden className="chart-card-atelier__aurora" />
-
-      <header className="relative mb-4 flex flex-wrap items-start justify-between gap-x-3 gap-y-2 md:mb-5">
+      <header className="relative mb-4 flex flex-wrap items-start justify-between gap-x-3 gap-y-2 md:mb-6">
         <div className="min-w-0 flex-1 basis-48">
-          <h2 className="font-display text-base italic tracking-tight md:text-lg">{title}</h2>
+          <h2 className="text-[15px] font-semibold tracking-tight md:text-base">{title}</h2>
           {subtitle && (
-            <p className="mt-0.5 text-[11px] text-muted-foreground md:text-xs">{subtitle}</p>
+            <p className="mt-1 text-xs text-muted-foreground md:text-[13px]">{subtitle}</p>
           )}
         </div>
         {actions && <div className="flex shrink-0 items-center gap-1">{actions}</div>}
@@ -148,7 +146,7 @@ export function ChartCard({
 
       <div className="relative min-w-0 flex-1">{children}</div>
 
-      {footer && <div className="relative mt-4 border-t border-border/60 pt-3">{footer}</div>}
+      {footer && <div className="relative mt-4 border-t border-border/60 pt-4">{footer}</div>}
     </section>
   );
 }
@@ -163,13 +161,13 @@ export function RangeToggle({
   options?: string[];
 }) {
   return (
-    <div className="flex shrink-0 items-center gap-0.5 rounded-lg border border-border bg-surface/60 p-0.5">
+    <div className="flex shrink-0 items-center gap-1 rounded-lg bg-secondary p-1">
       {options.map((o) => (
         <button
           key={o}
           type="button"
           onClick={() => onChange(o)}
-          className={`rounded-md px-2 py-1 text-[10px] font-medium transition-colors md:text-xs ${
+          className={`rounded-md px-2 py-1 text-xs font-medium transition-colors ${
             value === o
               ? "bg-background text-foreground shadow-sm"
               : "text-muted-foreground hover:text-foreground"
@@ -198,21 +196,14 @@ export function ChartTooltip({
   if (!active || !payload || payload.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-border bg-popover/95 px-3 py-2 shadow-float backdrop-blur dark:shadow-[0_0_24px_-6px_color-mix(in_oklab,var(--primary)_45%,transparent)]">
-      {label !== undefined && (
-        <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-          {label}
-        </p>
-      )}
+    <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-float">
+      {label !== undefined && <p className="mb-1 text-xs font-medium text-foreground">{label}</p>}
       <ul className="space-y-1">
         {payload.map((row, i) => (
           <li key={`${row.dataKey ?? row.name ?? i}`} className="flex items-center gap-2 text-xs">
             <span
               className="size-2 shrink-0 rounded-full"
-              style={{
-                backgroundColor: row.color ?? "var(--primary)",
-                boxShadow: `0 0 6px color-mix(in oklab, ${row.color ?? "var(--primary)"} 55%, transparent)`,
-              }}
+              style={{ backgroundColor: row.color ?? "var(--primary)" }}
             />
             <span className="text-muted-foreground">{row.name}</span>
             <span className="ml-auto font-mono font-medium tabular-nums">
@@ -229,16 +220,10 @@ export function ChartTooltip({
 
 export function ChartLegend({ items }: { items: { label: string; color: string }[] }) {
   return (
-    <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+    <ul className="flex flex-wrap items-center gap-x-4 gap-y-2">
       {items.map((it) => (
-        <li key={it.label} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          <span
-            className="size-2 rounded-full"
-            style={{
-              backgroundColor: it.color,
-              boxShadow: `0 0 4px color-mix(in oklab, ${it.color} 45%, transparent)`,
-            }}
-          />
+        <li key={it.label} className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="size-2 rounded-full" style={{ backgroundColor: it.color }} />
           {it.label}
         </li>
       ))}

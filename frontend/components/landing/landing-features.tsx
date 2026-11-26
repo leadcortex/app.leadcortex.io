@@ -1,10 +1,7 @@
 // frontend/components/landing/landing-features.tsx
 
-import { useEffect, useRef } from "react";
 import { ArrowRight } from "./landing-icons";
 import { SiteLink, routes } from "./landing-link";
-import { Reveal } from "./landing-reveal";
-import { eyebrow } from "./landing-styles";
 
 const backgroundBlue = "/images/site/features/blue.avif";
 const backgroundGreen = "/images/site/features/green.avif";
@@ -17,72 +14,37 @@ const tabMultichannel = "/images/site/tabs/multichannel.webp";
 
 const features = [
   {
-    t: "Décrivez votre cible. L'IA trouve les prospects.",
-    d: ["En langage naturel, avec les signaux d'achat."],
+    t: "Décrivez votre cible, l'IA trouve les prospects.",
+    d: ["Écrivez-la comme à un collègue. Les résultats tiennent compte des signaux d'achat : recrutements, levées, changements de poste."],
     img: tabSignals,
     bg: backgroundBlue,
   },
   {
-    t: "Emails et téléphones vérifiés.",
-    d: ["Vous ne payez que ce qui aboutit."],
+    t: "E-mails et téléphones vérifiés",
+    d: ["Un crédit n'est décompté que si la donnée est trouvée."],
     img: tabLeads,
     bg: backgroundGreen,
   },
   {
-    t: "Des messages écrits pour chaque prospect.",
-    d: ["Pas de « Bonjour {Prénom} »."],
+    t: "Un message écrit pour chaque prospect",
+    d: ["L'IA part du poste, de l'entreprise et des signaux du prospect. Vous relisez avant l'envoi."],
     img: tabAgent,
     bg: backgroundPink,
   },
   {
-    t: "Du signal au premier message, en automatique.",
-    d: ["Un canevas visuel, en glisser-déposer."],
+    t: "Du signal au premier message, sans intervention",
+    d: ["Vous dessinez le scénario sur un canevas, en glisser-déposer."],
     img: tabMultichannel,
     bg: backgroundOrange,
   },
 ];
 
-function FeatureCard({ f, i }: { f: (typeof features)[number]; i: number; total: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const next = el.nextElementSibling;
-      const progress = next
-        ? Math.max(
-            0,
-            Math.min(
-              1,
-              (window.innerHeight * 0.8 - next.getBoundingClientRect().top) /
-                (window.innerHeight * 0.7),
-            ),
-          )
-        : 0;
-      el.style.setProperty("--stack-scale", String(1 - 0.08 * progress));
-      el.style.setProperty("--stack-rotate", `${(i % 2 ? 3 : -3) * progress}deg`);
-      el.style.setProperty("--stack-y", `${progress * 45}px`);
-      el.style.setProperty("--stack-progress", String(progress));
-    };
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    window.addEventListener("scroll", schedule, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", schedule);
-      cancelAnimationFrame(frame);
-    };
-  }, [i]);
+function FeatureCard({ f, i }: { f: (typeof features)[number]; i: number }) {
   return (
-    <div ref={ref} className="lc-feature-card">
+    <div className="lc-feature-card">
       <div className="lc-feature-inner">
         <div className="lc-feature-copy">
-          <div className="lc-feature-badge">
-            <img src={f.bg} alt="" />
-            <span className="lc-feature-badge-number font-mono">0{i + 1}</span>
-          </div>
+          <span className="lc-feature-index tabular-nums">0{i + 1}</span>
           <h3>{f.t}</h3>
           {f.d.map((text) => (
             <p key={text}>{text}</p>
@@ -111,15 +73,12 @@ function FeatureCard({ f, i }: { f: (typeof features)[number]; i: number; total:
 export function LandingFeatures() {
   return (
     <section id="features" className="lc-features lc-container">
-      <Reveal>
-        <p className={eyebrow}>Fonctionnalités</p>
-        <h2 className="mt-3 max-w-3xl">
-          Des agents qui <em>travaillent pour vous</em>.
-        </h2>
-      </Reveal>
+      <h2 className="max-w-3xl">
+        Ce que font <em>les deux agents</em>.
+      </h2>
       <div className="lc-feature-stack">
         {features.map((f, i) => (
-          <FeatureCard key={f.t} f={f} i={i} total={features.length} />
+          <FeatureCard key={f.t} f={f} i={i} />
         ))}
       </div>
     </section>

@@ -1,12 +1,7 @@
 // frontend/components/mail/email-shortcuts.tsx
 
 import { useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/core/utils";
 
 export type EmailShortcuts = {
@@ -31,8 +26,7 @@ export type EmailShortcuts = {
   disabled?: boolean;
 };
 
-const EDITABLE_SELECTOR =
-  'input, textarea, select, [contenteditable="true"], [contenteditable=""]';
+const EDITABLE_SELECTOR = 'input, textarea, select, [contenteditable="true"], [contenteditable=""]';
 
 function isEditable(el: EventTarget | null): boolean {
   if (!el || !(el instanceof HTMLElement)) return false;
@@ -56,59 +50,112 @@ export function useEmailShortcuts(s: EmailShortcuts) {
 
       switch (k) {
         case "c":
-          if (s.onCompose) { e.preventDefault(); s.onCompose(); }
+          if (s.onCompose) {
+            e.preventDefault();
+            s.onCompose();
+          }
           return;
         case "r":
-          if (s.onReply) { e.preventDefault(); s.onReply(); }
+          if (s.onReply) {
+            e.preventDefault();
+            s.onReply();
+          }
           return;
         case "a":
-          if (s.onReplyAll) { e.preventDefault(); s.onReplyAll(); }
+          if (s.onReplyAll) {
+            e.preventDefault();
+            s.onReplyAll();
+          }
           return;
         case "f":
-          if (s.onForward) { e.preventDefault(); s.onForward(); }
+          if (s.onForward) {
+            e.preventDefault();
+            s.onForward();
+          }
           return;
         case "e":
-          if (s.onArchive) { e.preventDefault(); s.onArchive(); }
+          if (s.onArchive) {
+            e.preventDefault();
+            s.onArchive();
+          }
           return;
         case "#":
-          if (s.onDelete) { e.preventDefault(); s.onDelete(); }
+          if (s.onDelete) {
+            e.preventDefault();
+            s.onDelete();
+          }
           return;
         case "s":
-          if (s.onToggleStar) { e.preventDefault(); s.onToggleStar(); }
+          if (s.onToggleStar) {
+            e.preventDefault();
+            s.onToggleStar();
+          }
           return;
         case "u":
-          if (e.shiftKey && s.onMarkUnread) { e.preventDefault(); s.onMarkUnread(); }
-          else if (s.onToggleRead) { e.preventDefault(); s.onToggleRead(); }
+          if (e.shiftKey && s.onMarkUnread) {
+            e.preventDefault();
+            s.onMarkUnread();
+          } else if (s.onToggleRead) {
+            e.preventDefault();
+            s.onToggleRead();
+          }
           return;
         case "b":
-          if (s.onSnooze) { e.preventDefault(); s.onSnooze(); }
+          if (s.onSnooze) {
+            e.preventDefault();
+            s.onSnooze();
+          }
           return;
         case "j":
         case "ArrowDown":
-          if (s.onNext) { e.preventDefault(); s.onNext(); }
+          if (s.onNext) {
+            e.preventDefault();
+            s.onNext();
+          }
           return;
         case "k":
         case "ArrowUp":
-          if (s.onPrev) { e.preventDefault(); s.onPrev(); }
+          if (s.onPrev) {
+            e.preventDefault();
+            s.onPrev();
+          }
           return;
         case "Enter":
         case "o":
-          if (s.onOpen) { e.preventDefault(); s.onOpen(); }
+          if (s.onOpen) {
+            e.preventDefault();
+            s.onOpen();
+          }
           return;
         case "Escape":
-          if (s.onEscape) { e.preventDefault(); s.onEscape(); }
+          if (s.onEscape) {
+            e.preventDefault();
+            s.onEscape();
+          }
           return;
         case "*":
-          if (s.onSelectAll) { e.preventDefault(); s.onSelectAll(); }
+          if (s.onSelectAll) {
+            e.preventDefault();
+            s.onSelectAll();
+          }
           return;
         case "z":
-          if (s.onUndo) { e.preventDefault(); s.onUndo(); }
+          if (s.onUndo) {
+            e.preventDefault();
+            s.onUndo();
+          }
           return;
         case "/":
-          if (s.onSearch) { e.preventDefault(); s.onSearch(); }
+          if (s.onSearch) {
+            e.preventDefault();
+            s.onSearch();
+          }
           return;
         case "?":
-          if (s.onHelp) { e.preventDefault(); s.onHelp(); }
+          if (s.onHelp) {
+            e.preventDefault();
+            s.onHelp();
+          }
           return;
         default:
           return;
@@ -172,9 +219,7 @@ export function ShortcutsHelpDialog({
         <div className="space-y-4">
           {SHORTCUTS.map((sec) => (
             <section key={sec.group}>
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {sec.group}
-              </p>
+              <p className="mb-2 text-xs font-medium text-muted-foreground">{sec.group}</p>
               <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border">
                 {sec.items.map(([key, label]) => (
                   <li
@@ -185,7 +230,7 @@ export function ShortcutsHelpDialog({
                     <kbd
                       className={cn(
                         "inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-surface px-1.5",
-                        "font-mono text-[10px] text-muted-foreground",
+                        "font-mono text-[11px] text-muted-foreground",
                       )}
                     >
                       {key}

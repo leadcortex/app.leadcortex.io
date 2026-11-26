@@ -16,20 +16,17 @@ const Progress = React.forwardRef<
     <ProgressPrimitive.Root
       ref={ref}
       className={cn(
-        "relative h-2.5 w-full overflow-hidden rounded-full",
+        "relative h-2 w-full overflow-hidden rounded-full",
         "bg-[var(--track,color-mix(in_oklab,var(--foreground)_7%,transparent))]",
-        "shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--foreground)_10%,transparent)]",
         className,
       )}
       value={value}
       {...props}
     >
       <ProgressPrimitive.Indicator
-        className="h-full w-full flex-1 rounded-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        className="h-full w-full flex-1 rounded-full bg-primary transition-transform duration-300 ease-out"
         style={{
           transform: `translateX(-${100 - pct}%)`,
-          background:
-            "linear-gradient(90deg, color-mix(in oklab, var(--primary) 78%, transparent), var(--primary))",
         }}
       />
     </ProgressPrimitive.Root>

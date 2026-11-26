@@ -20,14 +20,7 @@ function autoTone(value: number): CoverageBarProps["tone"] {
   return "destructive";
 }
 
-export function CoverageBar({
-  icon,
-  label,
-  value,
-  providers,
-  tone,
-  className,
-}: CoverageBarProps) {
+export function CoverageBar({ icon, label, value, providers, tone, className }: CoverageBarProps) {
   const resolvedTone = tone ?? autoTone(value);
   return (
     <div className={cn("coverage-row", className)}>

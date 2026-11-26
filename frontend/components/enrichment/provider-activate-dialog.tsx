@@ -1,7 +1,7 @@
 // frontend/components/enrichment/provider-activate-dialog.tsx
 
 import { useState } from "react";
-import { Check, Zap } from "@/components/icons";
+import { Check } from "@/components/icons";
 import {
   Dialog,
   DialogContent,
@@ -46,9 +46,9 @@ export function ProviderActivateDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-base md:text-lg">Activer un provider</DialogTitle>
+          <DialogTitle className="text-base md:text-lg">Activer des sources</DialogTitle>
           <DialogDescription>
-            Sélectionnez les sources à brancher au waterfall. L'ordre pourra être ajusté ensuite.
+            Choisissez les sources à ajouter. Vous pourrez changer leur ordre ensuite.
           </DialogDescription>
         </DialogHeader>
 
@@ -62,13 +62,13 @@ export function ProviderActivateDialog({
                   onClick={() => toggle(p.id)}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-colors",
-                    checked ? "border-primary bg-primary/5" : "border-border hover:bg-surface/60",
+                    checked ? "border-primary bg-primary/5" : "border-border hover:bg-surface/70",
                   )}
                 >
                   <ProviderBadge slug={p.slug} size={32} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{p.name}</p>
-                    <p className="line-clamp-1 text-[11px] text-muted-foreground">
+                    <p className="line-clamp-1 text-xs text-muted-foreground">
                       {p.description}
                     </p>
                   </div>
@@ -92,7 +92,7 @@ export function ProviderActivateDialog({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-surface"
+            className="inline-flex h-9 items-center rounded-lg border border-border px-4 text-sm font-medium transition-colors hover:bg-surface/70"
           >
             Annuler
           </button>
@@ -100,9 +100,10 @@ export function ProviderActivateDialog({
             type="button"
             onClick={submit}
             disabled={selected.size === 0}
-            className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs text-background transition-opacity hover:opacity-90 disabled:opacity-40"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
-            <Zap className="size-3.5" /> Activer {selected.size > 0 ? `(${selected.size})` : ""}
+            Activer{selected.size > 0 ? ` ${selected.size} source${selected.size > 1 ? "s" : ""}` : ""}
+
           </button>
         </DialogFooter>
       </DialogContent>

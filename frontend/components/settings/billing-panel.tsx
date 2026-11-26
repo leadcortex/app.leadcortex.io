@@ -3,5 +3,5 @@
 import { BillingPage } from "@/components/payment/billing-page";
 
 export function BillingPanel() {
-  return <BillingPage embedded />;
+  return <BillingPage />;
 }

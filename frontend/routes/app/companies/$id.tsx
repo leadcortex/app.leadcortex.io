@@ -7,21 +7,17 @@ import {
   AlertCircle,
   ArrowLeft,
   Briefcase,
-  Building2,
   Copy,
   Edit,
   ExternalLink,
-  FileText,
   Globe,
   Linkedin,
   Mail,
   MapPin,
   Pencil,
   Plus,
-  Radio,
   Save,
   Send,
-  Sparkles,
   Star,
   Tag as TagIcon,
   Trash2,
@@ -34,7 +30,6 @@ import { DetailViewSkeleton } from "@/components/skeletons";
 import { ActionMenu } from "@/components/common/action-menu";
 import { CompanyLogo } from "@/components/company-logo";
 import { LetterAvatar } from "@/components/ui/letter-avatar";
-import { ProgressCapsule } from "@/components/ui/capsule-progress";
 import { ImageCropperDialog } from "@/components/ui/image-cropper-dialog";
 import { useContextMenu } from "@/hooks/use-context-menu";
 import { ContextMenu, type ContextMenuSection } from "@/components/common/context-menu";
@@ -52,7 +47,7 @@ import { intentLabels } from "@/lib/companies/helpers";
 import { cn } from "@/lib/core/utils";
 
 export const Route = createFileRoute("/app/companies/$id")({
-  head: () => ({ meta: [{ title: "Entreprise — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Entreprise · LeadCortex" }] }),
   pendingComponent: () => <DetailViewSkeleton />,
   component: CompaniesDetailPage,
 });
@@ -133,18 +128,17 @@ function CompaniesDetailPage() {
   if (!company) {
     return (
       <div className="mx-auto w-full max-w-[1400px] p-4 md:p-8 text-center">
-        <div className="mx-auto max-w-md rounded-2xl border-2 border-dashed border-border bg-surface/30 p-6 md:p-8 shadow-[0_3px_0_var(--border)]">
-          <AlertCircle className="size-10 md:size-12 mx-auto text-muted-foreground mb-3 md:mb-4" />
-          <h2 className="font-display text-xl md:text-2xl italic">Entreprise introuvable</h2>
-          <p className="text-muted-foreground text-xs md:text-sm mt-2">
-            Cette entreprise n'existe pas ou a été supprimée.
+        <div className="mx-auto max-w-md rounded-xl border border-dashed border-border p-6 md:p-8">
+          <AlertCircle className="size-8 mx-auto text-muted-foreground mb-4" />
+          <h2 className="text-lg font-semibold">Entreprise introuvable</h2>
+          <p className="text-muted-foreground text-sm mt-2">
+            Elle n'existe pas ou a été supprimée.
           </p>
-          <p className="text-muted-foreground/60 text-[10px] mt-1 font-mono">id : {String(id)}</p>
           <Link
             to="/app/companies"
-            className="inline-flex items-center gap-2 mt-4 md:mt-6 text-xs md:text-sm text-primary hover:underline"
+            className="inline-flex items-center gap-2 mt-6 text-sm text-primary hover:underline"
           >
-            <ArrowLeft className="size-3.5 md:size-4" /> Retour à la liste
+            <ArrowLeft className="size-4" /> Retour à la liste
           </Link>
         </div>
       </div>
@@ -174,14 +168,14 @@ function CompaniesDetailPage() {
       return;
     }
     updateCompany(company.id, { tags: [...current, clean] });
-    addActivity("Tag ajouté", `${company.name} — ${clean}`);
+    addActivity("Tag ajouté", `${company.name} · ${clean}`);
     toast.success(`Tag « ${clean} » ajouté`);
   };
 
   const removeTag = (tag: string) => {
     const current = company.tags ?? [];
     updateCompany(company.id, { tags: current.filter((t) => t !== tag) });
-    addActivity("Tag retiré", `${company.name} — ${tag}`);
+    addActivity("Tag retiré", `${company.name} · ${tag}`);
     toast.success(`Tag « ${tag} » retiré`);
   };
 
@@ -194,7 +188,7 @@ function CompaniesDetailPage() {
   const handleCreateContact = () => {
     const newLead = addLead({
       name: "Nouveau contact",
-      title: "—",
+      title: "",
       company: company.name,
       industry: company.industry,
       location: company.location,
@@ -203,7 +197,7 @@ function CompaniesDetailPage() {
       stage: "new",
       saved: false,
     });
-    addActivity("Contact créé", `${newLead.name} — ${company.name}`);
+    addActivity("Contact créé", `${newLead.name} · ${company.name}`);
     toast.success("Contact créé");
     navigate({ to: "/app/people/$id", params: { id: newLead.id } });
   };
@@ -214,7 +208,7 @@ function CompaniesDetailPage() {
       toast.error("Aucun contact avec un email dans cette entreprise");
       return;
     }
-    addActivity("Email envoyé", `À ${contact.name} — ${subject}`);
+    addActivity("Email envoyé", `À ${contact.name} · ${subject}`);
     store.sendEmail({
       id: `e-${Date.now()}`,
       threadId: `t-${Date.now()}`,
@@ -417,73 +411,57 @@ function CompaniesDetailPage() {
         <div className="flex items-center gap-2">
           <Link
             to="/app/companies"
-            className="rounded-lg border border-border bg-background p-1.5 hover:bg-surface transition-colors shrink-0 shadow-[0_1px_0_var(--border)]"
+            className="grid size-8 place-items-center rounded-lg border border-border bg-background hover:bg-surface/70 transition-colors shrink-0"
             title="Retour"
+            aria-label="Retour"
           >
             <ArrowLeft className="size-4" />
           </Link>
 
           <div className="hidden md:flex items-center gap-2 min-w-0">
             <span className="truncate font-medium text-sm">{company.name}</span>
-            <span className="text-muted-foreground text-xs">·</span>
-            <span className="truncate text-xs text-muted-foreground">
-              {company.domain || "—"}
-            </span>
+            {company.domain && (
+              <>
+                <span className="text-muted-foreground text-xs">·</span>
+                <span className="truncate text-xs text-muted-foreground">{company.domain}</span>
+              </>
+            )}
           </div>
 
           <div className="flex-1" />
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleCreateContact}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-2.5 md:px-3 py-1.5 text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity shadow-[0_2px_0_color-mix(in_oklab,var(--foreground)_70%,black)] active:translate-y-[2px] active:shadow-none"
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-foreground text-background px-3 text-[13px] font-medium hover:opacity-90 transition-opacity"
             >
-              <Plus className="size-3.5" />
-              <span className="hidden sm:inline">Contact</span>
+              <Plus className="size-4" />
+              <span className="hidden sm:inline">Ajouter un contact</span>
             </button>
             {company.domain && (
               <button
                 onClick={() => window.open(`https://${company.domain}`, "_blank", "noopener")}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 md:px-3 py-1.5 text-[10px] md:text-xs hover:bg-surface transition-colors shadow-[0_1px_0_var(--border)]"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[13px] hover:bg-surface/70 transition-colors"
               >
-                <Globe className="size-3.5" />
+                <Globe className="size-4" />
                 <span className="hidden sm:inline">Site</span>
               </button>
             )}
-
-            <span className="w-px h-5 bg-border mx-1" />
-
-            <div className="hidden md:flex items-center gap-1.5 rounded-lg border border-border bg-background px-2 py-1 shadow-[0_1px_0_var(--border)]">
-              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                Intent
-              </span>
-              <span
-                className={cn(
-                  "text-xs font-semibold",
-                  intent === "hot"
-                    ? "text-primary"
-                    : intent === "warm"
-                      ? "text-amber-600 dark:text-amber-400"
-                      : "text-muted-foreground",
-                )}
-              >
-                {intentLabels[intent]}
-              </span>
-            </div>
             <button
               onClick={() => {
                 toggleCompanySaved(company.id);
                 toast.success(company.saved ? "Retiré des favoris" : "Ajouté aux favoris");
               }}
               className={cn(
-                "rounded-lg border p-1.5 transition-colors",
+                "grid size-8 place-items-center rounded-lg border transition-colors",
                 company.saved
-                  ? "border-primary bg-primary/5 text-primary shadow-[0_1px_0_color-mix(in_oklab,var(--primary)_40%,transparent)]"
-                  : "border-border bg-background hover:bg-surface shadow-[0_1px_0_var(--border)]",
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border bg-background hover:bg-surface/70",
               )}
               title={company.saved ? "Retirer des favoris" : "Ajouter aux favoris"}
+              aria-label={company.saved ? "Retirer des favoris" : "Ajouter aux favoris"}
             >
-              <Star className={cn("size-3.5", company.saved && "fill-primary")} />
+              <Star className={cn("size-4", company.saved && "fill-primary")} />
             </button>
             <ActionMenu
               items={[
@@ -528,7 +506,7 @@ function CompaniesDetailPage() {
 
       <div className="mx-auto w-full max-w-[1400px] pb-10">
         <section
-          className="section-atelier p-4 md:p-6 mb-4 md:mb-6"
+          className="mb-8 md:mb-12"
           onContextMenu={ctx.bind({ type: "hero" }).onContextMenu}
         >
           <div className="flex flex-col sm:flex-row items-start gap-4 md:gap-6">
@@ -543,12 +521,11 @@ function CompaniesDetailPage() {
               {company.companyLogoUrl ? (
                 <div
                   style={{
-                    width: 96,
-                    height: 96,
+                    width: 80,
+                    height: 80,
                     borderRadius: "0.75rem",
                     overflow: "hidden",
-                    boxShadow:
-                      "0 0 0 2px color-mix(in oklab, var(--primary) 20%, transparent), 0 1px 2px rgba(0,0,0,0.05)",
+                    boxShadow: "inset 0 0 0 1px var(--border)",
                   }}
                 >
                   <img
@@ -559,11 +536,11 @@ function CompaniesDetailPage() {
                   />
                 </div>
               ) : (
-                <CompanyLogo name={company.name} domain={company.domain} size={96} rounded="lg" />
+                <CompanyLogo name={company.name} domain={company.domain} size={80} rounded="lg" />
               )}
               <span
                 aria-hidden
-                className="pointer-events-none absolute -bottom-1 -right-1 grid size-7 place-items-center rounded-full border border-border bg-background shadow-[0_1px_0_var(--border)] opacity-0 transition-opacity group-hover/logo:opacity-100"
+                className="pointer-events-none absolute -bottom-1 -right-1 grid size-7 place-items-center rounded-full border border-border bg-background opacity-0 transition-opacity group-hover/logo:opacity-100"
               >
                 <Edit className="size-3.5" />
               </span>
@@ -573,25 +550,31 @@ function CompaniesDetailPage() {
               <h1 className="font-display text-2xl md:text-4xl italic break-words">
                 {company.name}
               </h1>
-              <p
-                className="text-sm md:text-base text-muted-foreground mt-0.5 md:mt-1 font-mono cursor-context-menu"
-                onContextMenu={ctx.bind({ type: "domain" }).onContextMenu}
-              >
-                {company.domain || "—"}
-              </p>
-              <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-2 md:mt-3 text-xs md:text-sm text-muted-foreground">
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="size-3.5" /> {company.location || "—"}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Users className="size-3.5" />{" "}
+              {company.domain && (
+                <p
+                  className="text-sm text-muted-foreground mt-1 cursor-context-menu"
+                  onContextMenu={ctx.bind({ type: "domain" }).onContextMenu}
+                >
+                  {company.domain}
+                </p>
+              )}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm text-muted-foreground">
+                {company.location && (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="size-4" /> {company.location}
+                  </span>
+                )}
+                <span className="flex items-center gap-1.5 tabular-nums">
+                  <Users className="size-4" />
                   {(Number(company.employees) || 0).toLocaleString("fr-FR")} employés
                 </span>
-                <span className="hidden md:flex items-center gap-1.5">
-                  <Briefcase className="size-3.5" /> {company.industry || "—"}
-                </span>
+                {company.industry && (
+                  <span className="hidden md:flex items-center gap-1.5">
+                    <Briefcase className="size-4" /> {company.industry}
+                  </span>
+                )}
               </div>
-              <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mt-3">
+              <div className="flex flex-wrap items-center gap-2 mt-4">
                 <Badge
                   tone={intent === "hot" ? "primary" : intent === "warm" ? "warning" : "muted"}
                 >
@@ -603,83 +586,44 @@ function CompaniesDetailPage() {
                 {company.revenue && company.revenue !== "—" && (
                   <Badge tone="muted">{company.revenue}</Badge>
                 )}
-                {linkedContacts.length > 0 && (
-                  <Badge tone="primary">
-                    <Users className="size-2.5 mr-1" />
-                    {linkedContacts.length} contact{linkedContacts.length > 1 ? "s" : ""}
-                  </Badge>
-                )}
               </div>
             </div>
           </div>
         </section>
 
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-4 md:gap-6 items-start">
-          <div className="space-y-4 md:space-y-5 min-w-0">
-            <section className="section-atelier p-4 md:p-5">
-              <div className="section-atelier__head">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Users className="size-4 shrink-0 text-muted-foreground" />
-                  <h2 className="section-atelier__title min-w-0 text-sm md:text-base leading-tight">
-                    Couverture contacts
-                  </h2>
-                </div>
-                <span className="counter-pill shrink-0">{linkedContacts.length}</span>
-              </div>
-
-              <div className="mb-4">
-                <ProgressCapsule
-                  value={Math.min(linkedContacts.length, 10)}
-                  max={10}
-                  size="md"
-                  tone={linkedContacts.length >= 3 ? "success" : "primary"}
-                />
-                <p className="text-[10.5px] text-muted-foreground mt-1.5">
-                  {linkedContacts.length === 0
-                    ? "Aucun contact identifié — ajoutez-en pour enrichir ce compte."
-                    : `${linkedContacts.length} contact${linkedContacts.length > 1 ? "s" : ""} — vous avez une bonne couverture.`}
-                </p>
-              </div>
-
-              <button
-                onClick={handleCreateContact}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 text-primary px-3 py-1.5 text-[11px] md:text-xs hover:bg-primary/15 transition-colors shadow-[0_1px_0_color-mix(in_oklab,var(--primary)_20%,transparent)]"
-              >
-                <Plus className="size-3.5" /> Ajouter un contact
-              </button>
-            </section>
-
-            <section className="section-atelier p-4 md:p-5">
-              <div className="section-atelier__head">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Sparkles className="size-4 shrink-0 text-primary" />
-                  <h2 className="section-atelier__title min-w-0 text-sm md:text-base leading-tight">
-                    Notes d'approche
-                  </h2>
-                </div>
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_320px] gap-8 lg:gap-12 items-start">
+          <div className="space-y-6 min-w-0">
+            <section className="rounded-xl border border-border bg-background p-4 md:p-6">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <h2 className="text-base font-semibold">Notes d'approche</h2>
                 <button
                   onClick={() => setNotesEditOpen(true)}
-                  className="rounded-md p-1 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors shrink-0"
+                  className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-surface/70 hover:text-foreground transition-colors shrink-0"
                   title="Modifier les notes"
+                  aria-label="Modifier les notes"
                 >
-                  <Pencil className="size-3.5" />
+                  <Pencil className="size-4" />
                 </button>
               </div>
               <div
                 onContextMenu={ctx.bind({ type: "notes" }).onContextMenu}
-                className="text-xs md:text-sm leading-relaxed whitespace-pre-line"
+                className="text-sm leading-relaxed whitespace-pre-line max-w-prose"
               >
                 {company.notes?.trim() || (
-                  <span className="text-muted-foreground italic">
-                    Aucune note d'approche. Cliquez sur ✏ pour en ajouter.
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setNotesEditOpen(true)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Aucune note pour l'instant. Ajouter une note
+                  </button>
                 )}
               </div>
             </section>
 
-            <section className="section-atelier overflow-hidden">
-              <div className="border-b border-border px-3 md:px-4 overflow-x-auto scrollbar-hide">
-                <div className="flex gap-3 md:gap-5 min-w-max">
+            <section className="rounded-xl border border-border bg-background overflow-hidden">
+              <div className="border-b border-border px-4 md:px-6 overflow-x-auto scrollbar-hide">
+                <div className="flex gap-6 min-w-max">
                   {(["overview", "contacts", "activity", "notes"] as const).map((tab) => {
                     const labels = {
                       overview: "Aperçu",
@@ -699,7 +643,7 @@ function CompaniesDetailPage() {
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={cn(
-                          "relative py-3 text-xs md:text-sm font-medium transition-colors whitespace-nowrap inline-flex items-center gap-1.5",
+                          "relative py-3 text-sm font-medium transition-colors whitespace-nowrap inline-flex items-center gap-1.5",
                           active
                             ? "text-foreground"
                             : "text-muted-foreground hover:text-foreground",
@@ -728,7 +672,7 @@ function CompaniesDetailPage() {
                 </div>
               </div>
 
-              <div className="p-4 md:p-5">
+              <div className="p-4 md:p-6">
                 {activeTab === "overview" && <OverviewTab company={company} />}
                 {activeTab === "contacts" && (
                   <ContactsTab
@@ -751,33 +695,26 @@ function CompaniesDetailPage() {
             </section>
           </div>
 
-          <aside className="space-y-3 md:space-y-4 lg:sticky lg:top-20 lg:self-start">
-            <section className="section-atelier p-4">
-              <div className="section-atelier__head">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Globe className="size-4 shrink-0 text-muted-foreground" />
-                  <h2 className="section-atelier__title truncate text-base">Coordonnées</h2>
-                </div>
-              </div>
-              <div className="space-y-2.5">
+          <aside className="space-y-8 lg:sticky lg:top-20 lg:self-start">
+            <section>
+              <h2 className="mb-3 text-base font-semibold">Coordonnées</h2>
+              <div className="space-y-1">
                 {company.domain && (
                   <div
                     onContextMenu={ctx.bind({ type: "domain" }).onContextMenu}
-                    className="flex items-center gap-2 group list-item-atelier p-2 cursor-context-menu"
+                    className="flex items-center gap-2 group rounded-lg px-2 py-2 -mx-2 cursor-context-menu hover:bg-surface/70"
                   >
-                    <Globe className="size-3.5 text-muted-foreground shrink-0" />
-                    <span className="text-[11px] font-mono truncate flex-1">
-                      {company.domain}
-                    </span>
+                    <Globe className="size-4 text-muted-foreground shrink-0" />
+                    <span className="text-[13px] truncate flex-1">{company.domain}</span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         copyText(company.domain!, "Domaine");
                       }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 hover:bg-surface"
+                      className="md:opacity-0 md:group-hover:opacity-100 transition-opacity rounded p-1 hover:bg-surface"
                       aria-label="Copier le domaine"
                     >
-                      <Copy className="size-3 text-muted-foreground" />
+                      <Copy className="size-3.5 text-muted-foreground" />
                     </button>
                   </div>
                 )}
@@ -787,11 +724,11 @@ function CompaniesDetailPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onContextMenu={ctx.bind({ type: "website" }).onContextMenu}
-                    className="flex items-center gap-2 text-[11px] text-primary hover:underline list-item-atelier p-2 border-primary/20 cursor-context-menu"
+                    className="flex items-center gap-2 text-[13px] text-primary rounded-lg px-2 py-2 -mx-2 hover:bg-surface/70 cursor-context-menu"
                   >
-                    <Globe className="size-3.5 shrink-0" />
+                    <Globe className="size-4 shrink-0" />
                     <span className="truncate">Site web</span>
-                    <ExternalLink className="size-3 ml-auto shrink-0" />
+                    <ExternalLink className="size-3.5 ml-auto shrink-0" />
                   </a>
                 )}
                 <a
@@ -802,14 +739,14 @@ function CompaniesDetailPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onContextMenu={ctx.bind({ type: "linkedin" }).onContextMenu}
-                  className="flex items-center gap-2 text-[11px] text-primary hover:underline list-item-atelier p-2 border-primary/20 cursor-context-menu"
+                  className="flex items-center gap-2 text-[13px] text-primary rounded-lg px-2 py-2 -mx-2 hover:bg-surface/70 cursor-context-menu"
                 >
-                  <Linkedin className="size-3.5 shrink-0" />
+                  <Linkedin className="size-4 shrink-0" />
                   <span className="truncate">LinkedIn</span>
-                  <ExternalLink className="size-3 ml-auto shrink-0" />
+                  <ExternalLink className="size-3.5 ml-auto shrink-0" />
                 </a>
                 {!company.domain && !company.website && !company.linkedin && (
-                  <p className="text-[11px] text-muted-foreground italic">
+                  <p className="text-[13px] text-muted-foreground">
                     Aucune coordonnée renseignée.
                   </p>
                 )}
@@ -818,33 +755,30 @@ function CompaniesDetailPage() {
 
             <TagsSection company={company} onAdd={addTag} onRemove={removeTag} onContext={ctx.bind} />
 
-            <section className="section-atelier p-4">
-              <div className="section-atelier__head">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Users className="size-4 shrink-0 text-muted-foreground" />
-                  <h2 className="section-atelier__title truncate text-base">Contacts liés</h2>
-                </div>
+            <section>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <h2 className="text-base font-semibold">Contacts liés</h2>
                 <span className="counter-pill counter-pill--sm">{linkedContacts.length}</span>
               </div>
 
               {linkedContacts.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-border/60 bg-surface/20 p-4 text-center">
-                  <p className="text-[11px] text-muted-foreground mb-2">Aucun contact lié.</p>
+                <div className="text-[13px] text-muted-foreground">
+                  <p>Aucun contact lié.</p>
                   <button
                     onClick={handleCreateContact}
-                    className="inline-flex items-center gap-1.5 text-[11px] text-primary hover:underline"
+                    className="mt-1 inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
                   >
-                    <Plus className="size-3" /> Ajouter un contact
+                    <Plus className="size-3.5" /> Ajouter un contact
                   </button>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {linkedContacts.slice(0, 5).map((c) => (
                     <Link
                       key={c.id}
                       to="/app/people/$id"
                       params={{ id: c.id }}
-                      className="list-item-atelier p-2.5 flex items-center gap-2 hover:bg-primary/[0.04]"
+                      className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-surface/70 transition-colors"
                     >
                       {c.avatarUrl ? (
                         <img
@@ -856,13 +790,13 @@ function CompaniesDetailPage() {
                         <LetterAvatar name={c.name} size={28} shape="circle" />
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-medium truncate">{c.name}</p>
-                        <p className="text-[10px] text-muted-foreground truncate">
-                          {c.title}
-                        </p>
+                        <p className="text-[13px] font-medium truncate">{c.name}</p>
+                        {c.title && (
+                          <p className="text-xs text-muted-foreground truncate">{c.title}</p>
+                        )}
                       </div>
                       {typeof c.score === "number" && (
-                        <span className="shrink-0 rounded px-1.5 py-0.5 bg-primary/10 text-primary text-[10px] font-mono font-semibold">
+                        <span className="shrink-0 rounded px-1.5 py-0.5 bg-primary/10 text-primary text-xs font-medium tabular-nums">
                           {c.score.toFixed(1)}
                         </span>
                       )}
@@ -871,9 +805,9 @@ function CompaniesDetailPage() {
                   {linkedContacts.length > 5 && (
                     <button
                       onClick={() => setActiveTab("contacts")}
-                      className="w-full text-center text-[10px] text-primary hover:underline py-1"
+                      className="mt-1 text-[13px] font-medium text-primary hover:underline"
                     >
-                      Voir les {linkedContacts.length - 5} autres →
+                      Voir les {linkedContacts.length - 5} autres
                     </button>
                   )}
                 </div>
@@ -967,26 +901,22 @@ function CompaniesDetailPage() {
 function OverviewTab({ company }: { company: any }) {
   const employees = Number(company.employees) || 0;
   return (
-    <div className="grid md:grid-cols-2 gap-3 md:gap-4">
-      <div className="list-item-atelier p-3 md:p-4">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-3 inline-flex items-center gap-1.5">
-          <Building2 className="size-3 text-primary" /> Informations
-        </h3>
-        <div className="space-y-1.5 text-xs">
-          <Row label="Industrie" value={company.industry || "—"} />
-          <Row label="Localisation" value={company.location || "—"} />
+    <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+      <div>
+        <h3 className="text-[13px] font-medium text-muted-foreground mb-3">Informations</h3>
+        <div className="space-y-2 text-sm">
+          <Row label="Industrie" value={company.industry || "Non renseigné"} />
+          <Row label="Localisation" value={company.location || "Non renseigné"} />
           <Row label="Effectif" value={employees.toLocaleString("fr-FR")} />
-          <Row label="Tranche" value={company.size || "—"} />
-          <Row label="Chiffre d'affaires" value={company.revenue || "—"} />
-          <Row label="Domaine" value={company.domain || "—"} mono />
+          <Row label="Tranche" value={company.size || "Non renseigné"} />
+          <Row label="Chiffre d'affaires" value={company.revenue || "Non renseigné"} />
+          <Row label="Domaine" value={company.domain || "Non renseigné"} />
         </div>
       </div>
 
-      <div className="list-item-atelier p-3 md:p-4">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-3 inline-flex items-center gap-1.5">
-          <Sparkles className="size-3 text-primary" /> Qualification
-        </h3>
-        <div className="space-y-1.5 text-xs">
+      <div>
+        <h3 className="text-[13px] font-medium text-muted-foreground mb-3">Qualification</h3>
+        <div className="space-y-2 text-sm">
           <Row
             label="Intention"
             value={
@@ -1012,13 +942,11 @@ function OverviewTab({ company }: { company: any }) {
   );
 }
 
-function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-3">
       <span className="text-muted-foreground shrink-0">{label}</span>
-      <span className={mono ? "font-mono text-[10px] md:text-xs text-right break-all" : "text-right"}>
-        {value}
-      </span>
+      <span className="text-right break-words tabular-nums">{value}</span>
     </div>
   );
 }
@@ -1034,46 +962,43 @@ function ContactsTab({
 }) {
   if (contacts.length === 0) {
     return (
-      <div className="text-center py-8 rounded-lg border border-dashed border-border">
-        <Users className="mx-auto size-6 text-muted-foreground/40 mb-2" />
-        <p className="text-xs text-muted-foreground mb-3">
-          Aucun contact identifié pour cette entreprise.
-        </p>
+      <div className="text-center py-8">
+        <p className="text-sm text-muted-foreground mb-3">Aucun contact pour cette entreprise.</p>
         <button
           onClick={onCreate}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-[11px] hover:brightness-110 transition-all"
+          className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-[13px] font-medium hover:bg-surface/70 transition-colors"
         >
-          <Plus className="size-3" /> Ajouter un contact
+          <Plus className="size-4" /> Ajouter un contact
         </button>
       </div>
     );
   }
 
   return (
-    <ul className="space-y-2">
+    <ul className="divide-y divide-border">
       {contacts.map((c) => (
         <li
           key={c.id}
           onClick={() => onOpen(c.id)}
-          className="list-item-atelier p-3 flex items-start gap-3 cursor-pointer"
+          className="-mx-2 flex items-start gap-3 rounded-lg px-2 py-3 cursor-pointer hover:bg-surface/70 transition-colors"
         >
           <LetterAvatar name={c.name} size={36} shape="circle" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className="text-xs md:text-sm font-medium truncate">{c.name}</p>
+              <p className="text-sm font-medium truncate">{c.name}</p>
               {typeof c.score === "number" && (
-                <span className="shrink-0 rounded px-1.5 py-0.5 bg-primary/10 text-primary text-[10px] font-mono font-semibold">
+                <span className="shrink-0 rounded px-1.5 py-0.5 bg-primary/10 text-primary text-xs font-medium tabular-nums">
                   {c.score.toFixed(1)}
                 </span>
               )}
             </div>
-            <p className="text-[10px] md:text-xs text-muted-foreground truncate">
-              {c.title}
-            </p>
-            <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
-              {c.email && <Mail className="size-3 text-primary" />}
-              {c.phone && <span className="font-mono">{c.phone}</span>}
-            </div>
+            {c.title && <p className="text-xs text-muted-foreground truncate">{c.title}</p>}
+            {(c.email || c.phone) && (
+              <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                {c.email && <Mail className="size-3.5" />}
+                {c.phone && <span className="tabular-nums">{c.phone}</span>}
+              </div>
+            )}
           </div>
         </li>
       ))}
@@ -1088,31 +1013,21 @@ function ActivityTab({
 }) {
   if (activities.length === 0) {
     return (
-      <div className="text-center py-6">
-        <p className="text-xs md:text-sm text-muted-foreground">
-          Aucune activité pour cette entreprise.
-        </p>
-        <p className="mt-1 text-[10.5px] text-muted-foreground/70">
-          Les actions apparaîtront ici automatiquement.
-        </p>
+      <div className="text-center py-8">
+        <p className="text-sm text-muted-foreground">Aucune activité pour l'instant.</p>
       </div>
     );
   }
 
   return (
-    <ul className="space-y-2">
+    <ul className="divide-y divide-border">
       {activities.map((a) => (
-        <li key={a.id} className="list-item-atelier p-3 flex items-start gap-3">
-          <div className="size-7 rounded-full bg-primary/10 text-primary grid place-items-center shrink-0 mt-0.5">
-            <Radio className="size-3.5" />
+        <li key={a.id} className="flex items-start justify-between gap-4 py-3">
+          <div className="min-w-0">
+            <p className="text-sm font-medium">{a.label}</p>
+            <p className="text-xs text-muted-foreground">{a.detail.replace(/ — /g, " · ")}</p>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs md:text-sm font-medium">{a.label}</p>
-            <p className="text-[10px] md:text-xs text-muted-foreground">{a.detail}</p>
-            <p className="text-[9px] md:text-[10px] text-muted-foreground/60 mt-0.5">
-              {a.time}
-            </p>
-          </div>
+          <p className="shrink-0 text-xs text-muted-foreground">{a.time}</p>
         </li>
       ))}
     </ul>
@@ -1138,24 +1053,21 @@ function NotesTab({
         onChange={(e) => setDraft(e.target.value)}
         placeholder="Notes d'approche, contexte, objections, prochaines étapes…"
         rows={8}
-        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs md:text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[140px] shadow-[0_2px_0_var(--border)] focus:shadow-none focus:translate-y-[2px]"
+        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[140px]"
       />
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[10px] text-muted-foreground">
-          Sauvegarde via le bouton, ou appuyez sur ✏ dans l'en-tête.
-        </p>
+      <div className="flex items-center justify-end gap-2">
         <div className="flex items-center gap-2">
           <button
             onClick={onEdit}
-            className="rounded-lg border border-border bg-background px-3 py-1.5 text-[11px] hover:bg-surface transition-colors shadow-[0_1px_0_var(--border)]"
+            className="inline-flex h-8 items-center rounded-lg px-3 text-[13px] text-muted-foreground hover:bg-surface/70 hover:text-foreground transition-colors"
           >
-            Éditer en plein écran
+            Plein écran
           </button>
           <button
             onClick={() => onSave(draft)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-[11px] hover:brightness-110 transition-all shadow-[0_2px_0_color-mix(in_oklab,var(--primary)_60%,black)] active:translate-y-[2px] active:shadow-none"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 text-[13px] font-medium hover:bg-primary/90 transition-colors"
           >
-            <Save className="size-3" /> Enregistrer
+            <Save className="size-3.5" /> Enregistrer
           </button>
         </div>
       </div>
@@ -1202,37 +1114,34 @@ function TagsSection({
     !allTags.some((t) => t.toLowerCase() === query.trim().toLowerCase());
 
   return (
-    <section className="section-atelier p-4">
-      <div className="section-atelier__head">
-        <div className="flex items-center gap-2 min-w-0">
-          <TagIcon className="size-4 shrink-0 text-muted-foreground" />
-          <h2 className="section-atelier__title truncate text-base">Tags</h2>
-        </div>
+    <section>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="text-base font-semibold">Tags</h2>
         <span className="counter-pill counter-pill--sm">{tags.length}</span>
       </div>
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-2">
         {tags.map((t) => (
           <span
             key={t}
             onContextMenu={onContext({ type: "tag", tag: t }).onContextMenu}
-            className="group/tag inline-flex items-center gap-1 rounded-full bg-secondary/60 px-2 py-0.5 text-[10px] text-foreground cursor-context-menu hover:bg-secondary transition-colors"
+            className="inline-flex items-center gap-1 rounded-full bg-secondary/60 py-0.5 pl-2.5 pr-1 text-xs text-foreground cursor-context-menu"
           >
             <span className="truncate">{t}</span>
             <button
               onClick={() => onRemove(t)}
-              className="grid size-3 place-items-center rounded-full text-muted-foreground/60 hover:bg-destructive/15 hover:text-destructive transition-colors"
+              className="grid size-5 place-items-center rounded-full text-muted-foreground hover:bg-destructive/15 hover:text-destructive transition-colors"
               aria-label={`Retirer ${t}`}
             >
-              <X className="size-2.5" />
+              <X className="size-3" />
             </button>
           </span>
         ))}
 
         <Popover open={addOpen} onOpenChange={setAddOpen}>
           <PopoverTrigger asChild>
-            <button className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-[10px] text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors">
-              <Plus className="size-2.5" /> Ajouter
+            <button className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-0.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+              <Plus className="size-3" /> Ajouter
             </button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-64 p-0">
@@ -1255,7 +1164,7 @@ function TagsSection({
 
             <ul className="max-h-56 overflow-y-auto p-1">
               {suggestions.length === 0 && !canCreate && (
-                <li className="px-3 py-4 text-center text-[11px] text-muted-foreground">
+                <li className="px-3 py-4 text-center text-xs text-muted-foreground">
                   {query.trim() ? "Aucun tag correspondant." : "Aucun tag existant."}
                 </li>
               )}
@@ -1336,30 +1245,25 @@ function ComposeEmailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl italic">Nouveau message</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Nouveau message</DialogTitle>
           <DialogDescription>
-            À <span className="font-mono">{contact?.email || "Aucun contact avec email"}</span> —{" "}
-            {company.name}
+            À {contact?.email || "aucun contact avec e-mail"} · {company.name}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
           <div>
-            <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Objet
-            </label>
+            <label className="text-[13px] font-medium">Objet</label>
             <input
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="Objet de l'email"
+              placeholder="Objet de l'e-mail"
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Message
-            </label>
+            <label className="text-[13px] font-medium">Message</label>
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
@@ -1372,16 +1276,16 @@ function ComposeEmailDialog({
         <DialogFooter className="gap-2">
           <button
             onClick={() => onOpenChange(false)}
-            className="rounded-lg border border-border bg-background px-4 py-2 text-sm hover:bg-surface transition-colors shadow-[0_1px_0_var(--border)]"
+            className="inline-flex h-9 items-center rounded-lg border border-border bg-background px-4 text-sm font-medium hover:bg-surface/70 transition-colors"
           >
             Annuler
           </button>
           <button
             onClick={submit}
             disabled={!subject.trim() || !contact?.email}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50 shadow-[0_2px_0_color-mix(in_oklab,var(--foreground)_70%,black)] active:translate-y-[2px] active:shadow-none transition-all"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-4 text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
           >
-            <Send className="size-3.5" /> Envoyer
+            <Send className="size-4" /> Envoyer
           </button>
         </DialogFooter>
       </DialogContent>
@@ -1409,10 +1313,8 @@ function NotesEditDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-display text-lg italic">Notes d'approche</DialogTitle>
-          <DialogDescription>
-            Notes internes, contexte, objections, prochaines étapes. Persistées sur la fiche.
-          </DialogDescription>
+          <DialogTitle className="text-lg font-semibold">Notes d'approche</DialogTitle>
+          <DialogDescription>Contexte, objections, prochaines étapes.</DialogDescription>
         </DialogHeader>
 
         <textarea
@@ -1426,15 +1328,16 @@ function NotesEditDialog({
         <DialogFooter>
           <button
             onClick={() => onOpenChange(false)}
-            className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs hover:bg-surface transition-colors"
+            className="inline-flex h-9 items-center rounded-lg border border-border bg-background px-4 text-sm font-medium hover:bg-surface/70 transition-colors"
           >
             Annuler
           </button>
           <button
             onClick={() => onSave(draft)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-3 py-1.5 text-xs hover:opacity-90 transition-opacity"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-4 text-sm font-medium hover:bg-primary/90 transition-colors"
           >
-            <Save className="size-3" /> Enregistrer
+            <Save className="size-4" /> Enregistrer
+
           </button>
         </DialogFooter>
       </DialogContent>

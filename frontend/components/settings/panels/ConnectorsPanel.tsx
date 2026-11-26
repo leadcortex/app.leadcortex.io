@@ -12,11 +12,10 @@ export function ConnectorsPanel() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Plug}
         title="Connecteurs"
-        description="Connectez vos services externes à LeadCortex."
+        description="Reliez LeadCortex aux outils que vous utilisez déjà."
       />
 
       <PanelGroup label="Services disponibles">
@@ -34,7 +33,7 @@ export function ConnectorsPanel() {
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">{c.name}</p>
                     {c.connected && (
-                      <span className="rounded-full bg-success/10 px-2 py-0.5 text-[9px] font-medium text-success">
+                      <span className="rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-medium text-success">
                         Connecté
                       </span>
                     )}

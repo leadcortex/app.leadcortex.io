@@ -53,8 +53,7 @@ export function readNotificationPosition(): NotificationPosition {
     if (raw && (VALID_POSITIONS as string[]).includes(raw)) {
       return raw as NotificationPosition;
     }
-  } catch {
-  }
+  } catch {}
   return DEFAULT_POSITION;
 }
 
@@ -63,12 +62,10 @@ export function writeNotificationPosition(pos: NotificationPosition) {
   if (!(VALID_POSITIONS as string[]).includes(pos)) return;
   try {
     window.localStorage.setItem(NOTIFICATION_POSITION_KEY, pos);
-  } catch {
-  }
+  } catch {}
   try {
     window.dispatchEvent(new CustomEvent(NOTIFICATION_POSITION_EVENT, { detail: pos }));
-  } catch {
-  }
+  } catch {}
 }
 
 export function readNotificationMobilePosition(): NotificationMobilePosition {
@@ -76,8 +73,7 @@ export function readNotificationMobilePosition(): NotificationMobilePosition {
   try {
     const raw = window.localStorage.getItem(NOTIFICATION_MOBILE_POSITION_KEY);
     if (raw === "top" || raw === "bottom") return raw;
-  } catch {
-  }
+  } catch {}
   return DEFAULT_MOBILE_POSITION;
 }
 
@@ -86,12 +82,10 @@ export function writeNotificationMobilePosition(pos: NotificationMobilePosition)
   if (pos !== "top" && pos !== "bottom") return;
   try {
     window.localStorage.setItem(NOTIFICATION_MOBILE_POSITION_KEY, pos);
-  } catch {
-  }
+  } catch {}
   try {
     window.dispatchEvent(new CustomEvent(NOTIFICATION_MOBILE_POSITION_EVENT, { detail: pos }));
-  } catch {
-  }
+  } catch {}
 }
 
 export function readNotificationSize(): number {
@@ -102,8 +96,7 @@ export function readNotificationSize(): number {
       const n = Number(raw);
       if (!Number.isNaN(n) && n >= 0 && n <= 100) return n;
     }
-  } catch {
-  }
+  } catch {}
   return DEFAULT_SIZE;
 }
 
@@ -112,12 +105,10 @@ export function writeNotificationSize(size: number) {
   const clamped = Math.max(0, Math.min(100, Math.round(size)));
   try {
     window.localStorage.setItem(NOTIFICATION_SIZE_KEY, String(clamped));
-  } catch {
-  }
+  } catch {}
   try {
     window.dispatchEvent(new CustomEvent(NOTIFICATION_SIZE_EVENT, { detail: clamped }));
-  } catch {
-  }
+  } catch {}
 }
 
 export function notificationScaleFromSize(size: number): number {

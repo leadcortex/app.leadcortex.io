@@ -49,7 +49,7 @@ import {
 import { cn } from "@/lib/core/utils";
 
 export const Route = createFileRoute("/app/companies/new")({
-  head: () => ({ meta: [{ title: "Nouvelle entreprise — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Nouvelle entreprise · LeadCortex" }] }),
   pendingComponent: () => <CreateFormSkeleton variant="company" />,
   component: NewCompanyPage,
 });
@@ -146,7 +146,7 @@ function Field({
 
 function LivePreviewCard({ form }: { form: FormData }) {
   const displayName = form.name.trim() || "Nouvelle entreprise";
-  const displayDomain = form.domain.trim() || guessDomainFromName(form.name) || "—";
+  const displayDomain = form.domain.trim() || guessDomainFromName(form.name) || "";
 
   return (
     <div className="space-y-3">
@@ -174,8 +174,8 @@ function LivePreviewCard({ form }: { form: FormData }) {
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-display text-lg italic leading-tight truncate">{displayName}</p>
-          <p className="mt-0.5 text-[11px] font-mono text-muted-foreground truncate">
+          <p className="text-base font-semibold leading-tight truncate">{displayName}</p>
+          <p className="mt-1 text-xs text-muted-foreground truncate">
             {displayDomain}
           </p>
           <div className="mt-2 flex flex-wrap gap-1.5">
@@ -190,14 +190,14 @@ function LivePreviewCard({ form }: { form: FormData }) {
       {(form.location || form.employees) && (
         <div className="space-y-1 pt-3 border-t border-border/60">
           {form.location && (
-            <p className="text-[10px] text-muted-foreground truncate flex items-center gap-1">
-              <MapPin className="size-2.5 shrink-0" />
+            <p className="text-xs text-muted-foreground truncate flex items-center gap-1.5">
+              <MapPin className="size-3 shrink-0" />
               {form.location}
             </p>
           )}
           {form.employees && (
-            <p className="text-[10px] text-muted-foreground truncate flex items-center gap-1">
-              <Users className="size-2.5 shrink-0" />
+            <p className="text-xs text-muted-foreground truncate flex items-center gap-1.5">
+              <Users className="size-3 shrink-0" />
               {form.employees} employés
             </p>
           )}
@@ -332,7 +332,7 @@ function NewCompanyPage() {
     }));
     setCompanyOpen(false);
     setCompanyQuery("");
-    toast.info(`${c.name} chargée — complétez les champs manquants.`);
+    toast.info(`${c.name} chargée. Complétez les champs manquants.`);
   };
 
   const selectApiCompany = (c: CompanyResult) => {
@@ -472,7 +472,7 @@ Consignes :
       <div className="mb-2 flex items-center gap-2">
         <button
           onClick={() => navigate({ to: "/app/companies" })}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-surface hover:text-foreground shadow-[0_1px_0_var(--border)]"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
           <span className="hidden sm:inline">Entreprises</span>
@@ -488,7 +488,7 @@ Consignes :
             type="button"
             onClick={handleOpenAiAssistant}
             disabled={isGenerating}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors disabled:opacity-50 shadow-[0_1px_0_color-mix(in_oklab,var(--primary)_20%,transparent)]"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/15 transition-colors disabled:opacity-50"
           >
             <Sparkles className="size-3.5" />
             {isGenerating ? "…" : "Remplir avec l'IA"}
@@ -517,10 +517,10 @@ Consignes :
               </p>
 
               <div className="mb-4 rounded-xl border border-border bg-surface/20 p-3">
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2.5">
+                <div className="flex items-center gap-1.5 text-[13px] font-medium mb-3">
                   <ImageIcon className="size-3 text-primary" />
                   Logo
-                  <span className="ml-auto text-[9px] font-normal normal-case tracking-normal text-muted-foreground/70">
+                  <span className="ml-auto text-xs font-normal text-muted-foreground">
                     Optionnel
                   </span>
                 </div>
@@ -593,7 +593,7 @@ Consignes :
                     )}
                   </div>
                   {matchingLeadsForName.length > 0 && (
-                    <p className="mt-1 text-[10px] text-primary inline-flex items-center gap-1">
+                    <p className="mt-1 text-xs text-primary inline-flex items-center gap-1">
                       <CheckCircle2 className="size-3" />
                       {matchingLeadsForName.length} contact{matchingLeadsForName.length > 1 ? "s" : ""}{" "}
                       déjà lié{matchingLeadsForName.length > 1 ? "s" : ""} à ce nom
@@ -888,12 +888,12 @@ Consignes :
         </div>
 
         <div className="sticky bottom-0 z-30 -mx-3 md:mx-0 md:static mt-4 md:mt-6">
-          <div className="rounded-t-2xl md:rounded-2xl border border-border bg-background/95 px-4 py-3 md:px-4 shadow-[0_-8px_24px_-12px_rgba(0,0,0,0.18)] backdrop-blur md:shadow-none md:backdrop-blur-none md:bg-background">
+          <div className="rounded-t-2xl md:rounded-2xl border border-border bg-background/95 px-4 py-3 md:px-4 shadow-float backdrop-blur md:shadow-none md:backdrop-blur-none md:bg-background">
             <div className="flex items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => navigate({ to: "/app/companies" })}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg bg-background hover:bg-surface transition-colors shadow-[0_2px_0_var(--border)] active:translate-y-[2px] active:shadow-none"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg bg-background hover:bg-surface/70 transition-colors"
               >
                 Annuler
               </button>
@@ -901,7 +901,7 @@ Consignes :
                 type="submit"
                 disabled={isSubmitting || !form.name.trim()}
                 title={!form.name.trim() ? "Le nom est requis" : undefined}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-foreground text-background rounded-lg shadow-[0_2px_0_color-mix(in_oklab,var(--foreground)_70%,black)] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:translate-y-[2px] active:shadow-none"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-foreground text-background rounded-lg hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
               >
                 {isSubmitting ? (
                   <>
@@ -929,7 +929,7 @@ Consignes :
           >
             {userCompaniesFiltered.length > 0 && (
               <>
-                <p className="border-b border-border/60 bg-surface/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                <p className="border-b border-border/60 bg-surface/40 px-3 py-1.5 text-xs font-medium text-muted-foreground">
                   Mes entreprises
                 </p>
                 {userCompaniesFiltered.map((c) => (
@@ -949,7 +949,7 @@ Consignes :
                     />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-medium">{c.name}</p>
-                      <p className="truncate text-[10px] text-muted-foreground">
+                      <p className="truncate text-xs text-muted-foreground">
                         {c.industry} · {c.location}
                       </p>
                     </div>
@@ -962,7 +962,7 @@ Consignes :
               <>
                 <p
                   className={cn(
-                    "border-b border-border/60 bg-surface/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground",
+                    "border-b border-border/60 bg-surface/40 px-3 py-1.5 text-xs font-medium text-muted-foreground",
                     userCompaniesFiltered.length > 0 && "border-t border-border",
                   )}
                 >
@@ -979,11 +979,11 @@ Consignes :
                     <CompanyLogo name={c.name} size={24} className="shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-medium">{c.name}</p>
-                      <p className="truncate text-[10px] text-muted-foreground">
+                      <p className="truncate text-xs text-muted-foreground">
                         {c.industry} · {c.location}
                       </p>
                     </div>
-                    <span className="shrink-0 text-[10px] text-muted-foreground">{c.category}</span>
+                    <span className="shrink-0 text-xs text-muted-foreground">{c.category}</span>
                   </button>
                 ))}
               </>
@@ -999,7 +999,7 @@ Consignes :
               companyResults.length === 0 && (
                 <p className="px-3 py-5 text-center text-[11px] text-muted-foreground">
                   {companyQuery.trim()
-                    ? "Aucune entreprise trouvée — le nom saisi sera conservé."
+                    ? "Aucune entreprise trouvée. Le nom saisi sera conservé."
                     : "Tapez pour rechercher une entreprise"}
                 </p>
               )}

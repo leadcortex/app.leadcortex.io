@@ -295,11 +295,11 @@ export function SearchSelect({
               zIndex: 9999,
             }}
             className={cn(
-              "flex flex-col overflow-hidden rounded-xl border border-border bg-popover shadow-2xl backdrop-blur-md",
+              "flex flex-col overflow-hidden rounded-xl border border-border bg-popover shadow-float",
               "animate-in fade-in-0 zoom-in-95",
             )}
           >
-            <div className="shrink-0 border-b border-border bg-popover/95 p-2 backdrop-blur">
+            <div className="shrink-0 border-b border-border bg-popover p-2">
               <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-2.5 py-1.5 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20">
                 <Search className="size-3.5 shrink-0 text-muted-foreground" />
                 <input
@@ -307,7 +307,7 @@ export function SearchSelect({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="w-full bg-transparent text-[12.5px] outline-none placeholder:text-muted-foreground"
+                  className="w-full bg-transparent text-[13px] outline-none placeholder:text-muted-foreground"
                 />
                 {query && (
                   <button
@@ -320,11 +320,7 @@ export function SearchSelect({
                   </button>
                 )}
               </div>
-              {title && (
-                <p className="px-1 pt-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  {title}
-                </p>
-              )}
+              {title && <p className="px-1 pt-2 text-xs text-muted-foreground">{title}</p>}
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-1">
@@ -337,7 +333,7 @@ export function SearchSelect({
               {grouped.map(([group, items]) => (
                 <div key={group} className="mb-1">
                   {group && (
-                    <p className="px-2.5 pb-1 pt-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                    <p className="px-2.5 pb-1 pt-2 text-xs font-medium text-muted-foreground">
                       {group}
                     </p>
                   )}

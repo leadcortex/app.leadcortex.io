@@ -37,12 +37,7 @@ export function ScrollableTable({
   if (!headers.length) return null;
 
   return (
-    <div
-      className={cn(
-        "not-prose my-2 flex flex-col overflow-hidden table-tactile",
-        className,
-      )}
-    >
+    <div className={cn("not-prose my-2 flex flex-col overflow-hidden table-tactile", className)}>
       {caption && (
         <div className="shrink-0 border-b border-border bg-secondary/30 px-3 py-1.5 text-[10.5px] font-medium uppercase tracking-wider text-muted-foreground">
           {caption}
@@ -56,13 +51,7 @@ export function ScrollableTable({
           <thead className="sticky top-0 z-10">
             <tr>
               {headers.map((h, i) => (
-                <th
-                  key={i}
-                  className={cn(
-                    "px-3 py-2 text-[10.5px]",
-                    alignClass(align[i]),
-                  )}
-                >
+                <th key={i} className={cn("px-3 py-2 text-[10.5px]", alignClass(align[i]))}>
                   {h}
                 </th>
               ))}

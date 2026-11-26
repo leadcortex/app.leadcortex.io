@@ -54,7 +54,7 @@ export function Markdown({ text, className }: { text: string; className?: string
     if (!line.trim()) return;
     if (line.startsWith("### "))
       blocks.push(
-        <h4 key={i} className="text-[12px] font-semibold">
+        <h4 key={i} className="text-xs font-semibold">
           {inline(line.slice(4), `h${i}`)}
         </h4>,
       );

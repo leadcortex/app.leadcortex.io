@@ -76,16 +76,16 @@ function CompanyRow({
         <div className="flex items-center gap-1.5">
           <span className="truncate text-xs font-medium">{company.name}</span>
           {!company.active && (
-            <Badge tone="muted" className="shrink-0 text-[9px]">
+            <Badge tone="muted" className="shrink-0 text-xs">
               Radiée
             </Badge>
           )}
-          <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
+          <span className="ml-auto shrink-0 text-xs text-muted-foreground">
             {company.category}
           </span>
         </div>
-        <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{company.industry}</p>
-        <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+        <p className="mt-0.5 truncate text-xs text-muted-foreground">{company.industry}</p>
+        <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
           <MapPin className="size-2.5 shrink-0" />
           <span className="truncate">{company.location}</span>
         </div>
@@ -133,8 +133,8 @@ function CompanyPreview({
         <div className="flex items-start gap-3 md:gap-4">
           <CompanyAvatar name={company.name} domain={company.domain} size={56} shape="rounded" />
           <div className="min-w-0 flex-1">
-            <h2 className="truncate font-display text-lg italic md:text-2xl">{company.name}</h2>
-            <p className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground md:text-xs">
+            <h2 className="truncate text-lg font-semibold md:text-xl">{company.name}</h2>
+            <p className="mt-0.5 truncate font-mono text-xs text-muted-foreground">
               SIREN {company.id}
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -171,14 +171,14 @@ function CompanyPreview({
         </div>
 
         <div className="rounded-xl border border-border/70 bg-surface/30 p-3 md:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="text-[13px] font-medium text-foreground">
             Domaine probable
           </p>
           <div className="mt-1.5 flex items-center gap-2">
             <Globe className="size-3.5 text-muted-foreground shrink-0" />
             <span className="truncate font-mono text-xs md:text-sm">{domain ?? "—"}</span>
           </div>
-          <p className="mt-1 text-[10px] text-muted-foreground">
+          <p className="mt-1 text-xs text-muted-foreground">
             Vérifiez avant d'utiliser cette adresse pour un envoi.
           </p>
         </div>
@@ -189,7 +189,7 @@ function CompanyPreview({
           <button
             type="button"
             onClick={() => onAdd(company)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-[10px] text-background transition-opacity hover:opacity-90 md:text-xs"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-xs text-background transition-opacity hover:opacity-90"
           >
             <Plus className="size-3.5" /> Ajouter à ma base
           </button>
@@ -198,7 +198,7 @@ function CompanyPreview({
               href={`https://${domain}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-[10px] transition-colors hover:bg-surface md:text-xs"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs transition-colors hover:bg-surface"
             >
               <Globe className="size-3.5" /> Visiter
             </a>
@@ -206,7 +206,7 @@ function CompanyPreview({
           <button
             type="button"
             onClick={() => toast.info(`Analyse IA de ${company.name} en cours…`)}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-[10px] transition-colors hover:bg-surface md:text-xs"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs transition-colors hover:bg-surface"
           >
             <Sparkles className="size-3.5" /> Enrichir
           </button>
@@ -219,7 +219,7 @@ function CompanyPreview({
 function Stat({ icon: Icon, label, value }: { icon: typeof MapPin; label: string; value: string }) {
   return (
     <div className="rounded-lg border border-border/70 bg-surface/30 p-2.5">
-      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Icon className="size-3" />
         {label}
       </div>
@@ -437,10 +437,10 @@ export function KnownCompaniesExplorer() {
       </div>
 
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-3 py-2">
-        <h3 className="truncate font-display text-sm italic">
+        <h3 className="truncate text-base font-semibold">
           {query.trim() ? "Résultats" : "Suggestions"}
         </h3>
-        <span className="shrink-0 text-[10px] text-muted-foreground">
+        <span className="shrink-0 text-xs text-muted-foreground">
           {hasQuery
             ? `${results.length} résultat${results.length > 1 ? "s" : ""}`
             : defaultsLoading
@@ -497,7 +497,7 @@ export function KnownCompaniesExplorer() {
               </div>
             )}
 
-            <div className="border-t border-border/60 px-3 py-2 text-center text-[10px] text-muted-foreground/70">
+            <div className="border-t border-border/60 px-3 py-2 text-center text-xs text-muted-foreground/70">
               Source : API Recherche d'Entreprises (gouvernement français)
             </div>
           </>
@@ -527,11 +527,11 @@ export function KnownCompaniesExplorer() {
           <div
             data-known-companies-dropdown
             style={dropdownStyle}
-            className="overflow-y-auto overscroll-contain rounded-xl border border-border bg-popover shadow-2xl animate-in fade-in-0 zoom-in-95"
+            className="overflow-y-auto overscroll-contain rounded-xl border border-border bg-popover shadow-float animate-in fade-in-0"
           >
             {!query.trim() ? (
               <>
-                <p className="px-3 pb-1 pt-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                <p className="px-3 pb-1 pt-2 text-xs font-medium text-muted-foreground">
                   Recherches suggérées
                 </p>
                 {SUGGESTED_QUERIES.map((s) => (
@@ -554,7 +554,7 @@ export function KnownCompaniesExplorer() {
             ) : loading ? (
               <div className="p-4 text-center">
                 <Loader2 className="mx-auto size-4 animate-spin text-muted-foreground" />
-                <p className="mt-2 text-[10px] text-muted-foreground">Recherche…</p>
+                <p className="mt-2 text-xs text-muted-foreground">Recherche…</p>
               </div>
             ) : results.length === 0 ? (
               <p className="px-3 py-5 text-center text-[11px] text-muted-foreground">
@@ -578,11 +578,11 @@ export function KnownCompaniesExplorer() {
                   <CompanyAvatar name={c.name} domain={c.domain} size={24} shape="rounded" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-medium">{c.name}</p>
-                    <p className="truncate text-[10px] text-muted-foreground">
+                    <p className="truncate text-xs text-muted-foreground">
                       {c.industry} · {c.location}
                     </p>
                   </div>
-                  <span className="shrink-0 text-[10px] text-muted-foreground">{c.category}</span>
+                  <span className="shrink-0 text-xs text-muted-foreground">{c.category}</span>
                 </button>
               ))
             )}

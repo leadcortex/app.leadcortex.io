@@ -79,10 +79,8 @@ export function LetterAvatar({
         width: size,
         height: size,
         backgroundColor: color,
-        backgroundImage:
-          "linear-gradient(135deg, rgba(255,255,255,0.10), transparent 55%)",
-        boxShadow:
-          "inset 0 -1px 0 rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.06)",
+        backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0.10), transparent 55%)",
+        boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.06)",
         fontSize: size * 0.44,
         lineHeight: 1,
         textShadow: "0 1px 0 rgba(0,0,0,0.12)",

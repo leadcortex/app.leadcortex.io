@@ -21,7 +21,7 @@ export function DurationPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="flex h-[38px] w-full items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 text-sm shadow-[0_2px_0_var(--border)] transition-all active:translate-y-[2px] active:shadow-none"
+          className="flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 text-sm transition-colors hover:bg-surface/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <span className="flex items-center gap-2">
             <Timer className="size-4 text-primary shrink-0" />
@@ -31,7 +31,7 @@ export function DurationPicker({
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[140px] p-1 rounded-xl border-2 border-border shadow-xl"
+        className="w-[140px] p-1 rounded-xl border border-border shadow-float"
         align="start"
         collisionPadding={12}
       >

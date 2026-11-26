@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2 } from "@/components/icons";
 
 import type { OnboardingStepDefinition } from "@/lib/onboarding";
-import { cn } from "@/lib/core/utils";
+import { Button } from "@/components/ui/button";
 import { StepIllustration } from "./step-illustrations";
 
 type StepCardProps = {
@@ -18,67 +18,33 @@ type StepCardProps = {
 };
 
 export function StepCard({ step, index, featured = false, done = false }: StepCardProps) {
-  const indexLabel = String(index).padStart(2, "0");
-
   return (
-    <article
-      className={cn(
-        "@container group min-w-0 rounded-2xl border bg-background p-5 shadow-[var(--shadow-card)] transition-colors",
-        done ? "border-success/30 bg-success/[0.03]" : "border-border hover:border-primary/30",
-      )}
-    >
-      <div className="grid items-center gap-4 @sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] @sm:gap-5 @lg:grid-cols-[minmax(0,11.5rem)_minmax(0,1fr)]">
-        <div className="mx-auto w-full max-w-[14rem] overflow-hidden rounded-2xl bg-primary/[0.08] @sm:mx-0 @sm:max-w-none">
+    <article className="@container min-w-0 rounded-xl border border-border bg-card p-6">
+      <div className="grid items-center gap-4 @sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] @sm:gap-6 @lg:grid-cols-[minmax(0,11.5rem)_minmax(0,1fr)]">
+        <div className="mx-auto w-full max-w-[14rem] overflow-hidden rounded-xl bg-primary/[0.08] @sm:mx-0 @sm:max-w-none">
           <StepIllustration kind={step.kind} blob={false} />
         </div>
 
         <div className="min-w-0">
-          <div className="mb-2 flex flex-wrap items-center gap-2">
-            <span
-              className={cn(
-                "inline-flex h-5 min-w-7 items-center justify-center rounded-full px-2 text-[11px] font-semibold tabular-nums",
-                done ? "bg-success/15 text-success" : "bg-primary/10 text-primary",
-              )}
-            >
-              {indexLabel}
-            </span>
-            {done && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-success">
-                <CheckCircle2 className="size-3" />
-                Terminé
-              </span>
-            )}
-          </div>
-
-          <h3 className="text-balance break-words text-base font-semibold leading-snug tracking-tight">
-            {step.label}
-          </h3>
-          <p className="mt-1.5 text-pretty break-words text-[13px] leading-relaxed text-muted-foreground">
+          <p className="text-xs tabular-nums text-muted-foreground">Étape {index}</p>
+          <h3 className="mt-1 text-balance break-words text-base font-semibold">{step.label}</h3>
+          <p className="mt-1 text-pretty break-words text-[13px] text-muted-foreground">
             {step.description}
           </p>
 
           <div className="mt-4">
             {done ? (
-              <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-success">
+              <span className="inline-flex items-center gap-2 text-[13px] font-medium text-success">
                 <CheckCircle2 className="size-4" />
                 Étape validée
               </span>
             ) : (
-              <Link
-                to={step.href}
-                className={cn(
-                  "inline-flex h-9 max-w-full items-center gap-2 rounded-full px-4 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  featured
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "bg-primary/10 text-primary hover:bg-primary/[0.16]",
-                )}
-              >
-                <span className="min-w-0 truncate">{step.cta}</span>
-                <ArrowRight
-                  className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
-                  strokeWidth={1.8}
-                />
-              </Link>
+              <Button asChild size="sm" variant={featured ? "default" : "outline"}>
+                <Link to={step.href}>
+                  {step.cta}
+                  <ArrowRight />
+                </Link>
+              </Button>
             )}
           </div>
         </div>

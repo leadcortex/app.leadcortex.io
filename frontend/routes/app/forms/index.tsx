@@ -1,7 +1,8 @@
 // frontend/routes/app/forms/index.tsx
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { PageHeader, Badge, Kpi } from "@/components/common/ui-primitives";
+import { PageHeader, Badge } from "@/components/common/ui-primitives";
+import { Button } from "@/components/ui/button";
 import DataTable, { type Column } from "@/components/common/data-table";
 import { Plus, FileInput, MoreHorizontal, Code } from "@/components/icons";
 import { useState } from "react";
@@ -11,7 +12,7 @@ import { EmptyState } from "@/components/common/empty-state";
 import { CardViewSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/app/forms/")({
-  head: () => ({ meta: [{ title: "Formulaires — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Formulaires · LeadCortex" }] }),
   pendingComponent: () => <CardViewSkeleton label="Chargement des formulaires" cards={6} />,
   component: FormsPage,
 });
@@ -30,11 +31,9 @@ function FormsPage() {
       header: "Formulaire",
       sortable: true,
       accessor: (row) => (
-        <div className="flex items-center gap-2 md:gap-3">
-          <div className="size-8 md:size-10 rounded-lg bg-primary/8 text-primary grid place-items-center shrink-0">
-            <FileInput className="size-3.5 md:size-4" strokeWidth={1.75} />
-          </div>
-          <p className="font-medium text-xs md:text-sm">{row.name}</p>
+        <div className="flex items-center gap-2">
+          <FileInput className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
+          <p className="text-[13px] font-medium">{row.name}</p>
         </div>
       ),
       cellClassName: "min-w-[140px] md:min-w-[200px]",
@@ -43,7 +42,7 @@ function FormsPage() {
       key: "submissions",
       header: "Soumissions",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.submissions}</span>,
+      accessor: (row) => <span className="text-[13px] tabular-nums">{row.submissions}</span>,
       className: "text-center",
       cellClassName: "text-center",
     },
@@ -51,7 +50,7 @@ function FormsPage() {
       key: "conversion",
       header: "Conversion",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.conversion}</span>,
+      accessor: (row) => <span className="text-[13px] tabular-nums">{row.conversion}</span>,
       className: "text-center",
       cellClassName: "text-center",
       hideOnMobile: true,
@@ -71,18 +70,18 @@ function FormsPage() {
       header: "",
       sortable: false,
       accessor: (row) => (
-        <div className="flex flex-wrap items-center justify-end gap-1 md:gap-2">
-          <button
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={(e) => {
               e.stopPropagation();
               toggleFormStatus(row.id);
               toast.success(`Formulaire ${row.status === "live" ? "mis en brouillon" : "publié"}`);
             }}
           >
-            <Badge tone={row.status === "live" ? "primary" : "muted"}>
-              {row.status === "live" ? "En ligne" : "Brouillon"}
-            </Badge>
-          </button>
+            {row.status === "live" ? "Dépublier" : "Publier"}
+          </Button>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -91,19 +90,20 @@ function FormsPage() {
               );
               toast.success("Snippet copié");
             }}
-            className="text-[9px] md:text-xs inline-flex items-center gap-0.5 md:gap-1 text-muted-foreground hover:text-foreground"
+            className="inline-flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-muted-foreground hover:bg-surface/70 hover:text-foreground"
           >
-            <Code className="size-2.5 md:size-3" /> Intégrer
+            <Code className="size-3.5" /> Intégrer
           </button>
           <button
             onClick={(e) => e.stopPropagation()}
-            className="p-0.5 md:p-1 rounded hover:bg-secondary"
+            aria-label="Plus d'actions"
+            className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-surface/70 hover:text-foreground"
           >
-            <MoreHorizontal className="size-3.5 md:size-4" />
+            <MoreHorizontal className="size-4" />
           </button>
         </div>
       ),
-      className: "w-32 md:w-48",
+      className: "w-44 md:w-56",
     },
   ];
 
@@ -112,24 +112,21 @@ function FormsPage() {
       <div className="max-w-5xl">
         <PageHeader
           eyebrow="Inbound · Formulaires"
-          title="Captez vos leads inbound."
-          description="Créez des formulaires branchés au pipeline. Enrichissement automatique."
+          title="Vos formulaires."
+          description="Chaque envoi crée un prospect enrichi dans votre pipeline."
           actions={
-            <button
-              onClick={() => toast.info("Ouvre le builder de formulaire.")}
-              className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all"
-            >
-              <Plus className="size-3 md:size-3.5" /> Créer un formulaire
-            </button>
+            <Button onClick={() => toast.info("L'éditeur de formulaire arrive bientôt.")}>
+              <Plus /> Créer un formulaire
+            </Button>
           }
         />
         <EmptyState
           icon={FileInput}
           title="Aucun formulaire"
-          description="Créez votre premier formulaire pour capturer des leads inbound."
+          description="Créez un formulaire pour recevoir des demandes depuis votre site."
           action={{
             label: "Créer un formulaire",
-            onClick: () => toast.info("Ouvre le builder de formulaire."),
+            onClick: () => toast.info("L'éditeur de formulaire arrive bientôt."),
             icon: Plus,
           }}
           size="lg"
@@ -142,27 +139,20 @@ function FormsPage() {
     <div className="max-w-5xl">
       <PageHeader
         eyebrow="Inbound · Formulaires"
-        title="Captez vos leads inbound."
-        description="Créez des formulaires branchés au pipeline. Enrichissement automatique."
+        title="Vos formulaires."
+        description="Chaque envoi crée un prospect enrichi dans votre pipeline."
         actions={
-          <button
-            onClick={() => toast.info("Ouvre le builder de formulaire.")}
-            className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all"
-          >
-            <Plus className="size-3 md:size-3.5" /> Créer un formulaire
-          </button>
+          <Button onClick={() => toast.info("L'éditeur de formulaire arrive bientôt.")}>
+            <Plus /> Créer un formulaire
+          </Button>
         }
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 mb-4 md:mb-8">
-        <Kpi
-          label="Formulaires actifs"
-          value={String(live)}
-          sub={`${forms.length - live} en brouillon`}
-        />
-        <Kpi label="Soumissions" value={String(total)} delta="+18%" up sub="tous formulaires" />
-        <Kpi label="Conversion moyenne" value="8.2%" delta="+1.4%" up />
-      </div>
+      <p className="mb-6 text-[13px] text-muted-foreground">
+        <span className="font-medium text-foreground tabular-nums">{live}</span> en ligne sur{" "}
+        {forms.length} ·{" "}
+        <span className="font-medium text-foreground tabular-nums">{total}</span> envois au total
+      </p>
 
       <DataTable
         data={forms}

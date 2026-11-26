@@ -37,15 +37,14 @@ export function FieldCoverage({
               value={pct}
               providers={
                 sources.length === 0 ? (
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60">
-                    aucune source
-                  </span>
+                  <span className="text-xs text-muted-foreground">Aucune source</span>
                 ) : (
                   <>
                     {sources.slice(0, 3).map((p) => (
                       <span
                         key={p.id}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-1.5 py-0.5 text-[10px]"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2 py-0.5 text-xs"
+
                         title={`${p.name} · ${p.coverage[f]}%`}
                       >
                         <ProviderBadge slug={p.slug} size={14} ring={false} />

@@ -84,7 +84,7 @@ export function BottomToolbar({ mode, setMode, onAddBlock, bottomOffset, docked 
     <>
       <Btn
         icon={Wand2}
-        label="Curseur intelligent (S) — fond : main, bloc : déplacement, port : lien"
+        label="Curseur intelligent (S) : déplace le canvas, les blocs ou crée un lien selon ce que vous saisissez"
         active={mode === "smart"}
         onClick={() => setMode("smart")}
       />

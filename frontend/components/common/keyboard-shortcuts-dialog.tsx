@@ -36,8 +36,7 @@ function ShortcutRow({ s }: { s: ShortcutDef }) {
       <kbd
         className={cn(
           "shrink-0 inline-flex items-center rounded-md border border-border bg-surface/60",
-          "px-2 py-1 font-mono text-[10.5px] font-semibold text-foreground",
-          "shadow-[0_1px_0_var(--border)]",
+          "px-2 py-1 font-mono text-[11px] font-medium text-foreground",
         )}
       >
         {s.keys}
@@ -74,9 +73,7 @@ function ShortcutsBody() {
 
       {grouped.map(({ group, items }) => (
         <section key={group}>
-          <h3 className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            {group}
-          </h3>
+          <h3 className="mb-2 px-3 text-xs font-medium text-muted-foreground">{group}</h3>
           <ul className="overflow-hidden rounded-xl border border-border bg-background">
             {items.map((s) => (
               <ShortcutRow key={s.id} s={s} />
@@ -110,7 +107,8 @@ export function KeyboardShortcutsDialog({ open, onOpenChange }: KeyboardShortcut
             Raccourcis clavier
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Appuyez sur <kbd className="rounded border border-border px-1 py-0.5 font-mono text-[10px]">?</kbd>{" "}
+            Appuyez sur{" "}
+            <kbd className="rounded border border-border px-1 py-0.5 font-mono text-[11px]">?</kbd>{" "}
             à tout moment pour rouvrir cette aide.
           </DialogDescription>
         </DialogHeader>

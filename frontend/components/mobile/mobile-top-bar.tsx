@@ -42,10 +42,7 @@ export function MobileTopBar() {
   const unreadEmails = store.emails.filter((e) => e.unread).length;
   const index = useMobileSearchIndex();
 
-  const results = useMemo(
-    () => searchEntries(debouncedQuery, index, 14),
-    [debouncedQuery, index],
-  );
+  const results = useMemo(() => searchEntries(debouncedQuery, index, 14), [debouncedQuery, index]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, SearchHit[]>();
@@ -97,12 +94,12 @@ export function MobileTopBar() {
 
   return (
     <>
-      <header className="flex items-center gap-1.5 rounded-2xl border border-border/70 bg-background px-1.5 py-1.5 shadow-sm">
+      <header className="flex items-center gap-1 rounded-2xl border border-border/70 bg-background p-1 shadow-sm">
         <button
           type="button"
           onClick={() => setProfileOpen(true)}
           aria-label="Ouvrir le menu du compte"
-          className="grid size-10 shrink-0 place-items-center rounded-full transition-colors active:bg-surface"
+          className="grid size-11 shrink-0 place-items-center rounded-full transition-colors active:bg-surface"
         >
           <span className="relative block size-8">
             <LetterAvatar name={user.fullName} size={32} shape="circle" />
@@ -121,7 +118,7 @@ export function MobileTopBar() {
         </button>
 
         <div ref={containerRef} className="relative min-w-0 flex-1">
-          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+          <SearchIcon className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             ref={inputRef}
             type="search"
@@ -149,7 +146,7 @@ export function MobileTopBar() {
             spellCheck={false}
             enterKeyHint="search"
             className={cn(
-              "h-10 w-full rounded-full border border-transparent bg-surface/60 pl-9 pr-8",
+              "h-11 w-full rounded-full border border-transparent bg-surface/60 pl-10 pr-11",
               "text-[16px] leading-tight text-foreground",
               "outline-none transition-colors placeholder:text-muted-foreground",
               "focus:border-border focus:bg-background",
@@ -165,9 +162,9 @@ export function MobileTopBar() {
                 setQuery("");
                 inputRef.current?.focus();
               }}
-              className="absolute right-2 top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded-full text-muted-foreground transition-colors active:bg-surface"
+              className="absolute right-0 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full text-muted-foreground transition-colors active:bg-surface"
             >
-              <X className="size-3.5" />
+              <X className="size-4" />
             </button>
           )}
 
@@ -187,13 +184,13 @@ export function MobileTopBar() {
           type="button"
           onClick={() => navigate({ to: "/app/conversations" })}
           aria-label="Ouvrir les conversations"
-          className="relative grid size-10 shrink-0 place-items-center rounded-full transition-colors active:bg-surface"
+          className="relative grid size-11 shrink-0 place-items-center rounded-full transition-colors active:bg-surface"
         >
-          <MessageSquare className="size-[18px]" strokeWidth={1.9} />
+          <MessageSquare className="size-5" strokeWidth={1.75} />
           {unreadEmails > 0 && (
             <span
               aria-hidden
-              className="pointer-events-none absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[9.5px] font-bold leading-none text-primary-foreground"
+              className="pointer-events-none absolute right-1 top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-primary px-1 text-[11px] font-semibold leading-none tabular-nums text-primary-foreground"
             >
               {unreadEmails > 99 ? "99+" : unreadEmails}
             </span>
@@ -205,9 +202,9 @@ export function MobileTopBar() {
             type="button"
             onClick={() => openAssistant()}
             aria-label="Ouvrir l'assistant IA"
-            className="relative grid size-10 shrink-0 place-items-center rounded-full transition-colors active:bg-surface"
+            className="relative grid size-11 shrink-0 place-items-center rounded-full transition-colors active:bg-surface"
           >
-            <span className="relative grid size-[18px] place-items-center">
+            <span className="relative grid size-5 place-items-center">
               <BrandLogoMark size="100%" aria-label="" className="size-full" />
               <span
                 aria-hidden
@@ -258,19 +255,16 @@ function SearchDropdown({
         <div className="px-3 py-8 text-center">
           <SearchIcon className="mx-auto mb-2 size-6 text-muted-foreground/30" />
           <p className="text-[13px] text-muted-foreground">
-            Aucun résultat pour «{" "}
-            <span className="font-medium text-foreground">{query}</span> »
+            Aucun résultat pour « <span className="font-medium text-foreground">{query}</span> »
           </p>
-          <p className="mt-1 text-[11px] text-muted-foreground/70">
+          <p className="mt-1 text-xs text-muted-foreground">
             Essayez « prospects », « facturation », « workflows »…
           </p>
         </div>
       ) : (
         grouped.map(([category, items]) => (
           <div key={category} className="mb-1 last:mb-0">
-            <p className="px-2.5 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              {category}
-            </p>
+            <p className="px-3 pb-1 pt-2 text-xs font-medium text-muted-foreground">{category}</p>
             <div className="space-y-0.5">
               {items.map((r) => {
                 cursor++;
@@ -334,10 +328,7 @@ function ResultRow({
         <span className="block truncate text-[13px] font-medium leading-tight">
           {parts.map((part, i) =>
             part.match ? (
-              <mark
-                key={i}
-                className="rounded-[3px] bg-transparent font-semibold text-primary"
-              >
+              <mark key={i} className="rounded-[3px] bg-transparent font-semibold text-primary">
                 {part.text}
               </mark>
             ) : (
@@ -345,16 +336,13 @@ function ResultRow({
             ),
           )}
         </span>
-        <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">
+        <span className="mt-0.5 block truncate text-xs text-muted-foreground">
           {entry.description}
         </span>
       </span>
 
       {active && (
-        <CornerDownLeft
-          className="mt-1 size-3 shrink-0 text-muted-foreground/60"
-          strokeWidth={2}
-        />
+        <CornerDownLeft className="mt-1 size-3 shrink-0 text-muted-foreground/60" strokeWidth={2} />
       )}
     </button>
   );

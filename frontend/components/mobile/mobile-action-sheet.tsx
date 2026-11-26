@@ -83,7 +83,7 @@ export function MobileActionSheet({
             <div key={`s-${si}`}>
               {si > 0 && <DropdownMenuSeparator />}
               {section.label && (
-                <DropdownMenuLabel className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <DropdownMenuLabel className="truncate text-xs font-medium text-muted-foreground">
                   {section.label}
                 </DropdownMenuLabel>
               )}
@@ -120,7 +120,7 @@ export function MobileActionSheet({
           {sections?.map((section, si) => (
             <div key={`s-${si}`} className={cn(si > 0 && "mt-2 border-t border-border/60 pt-2")}>
               {section.label && (
-                <p className="px-3 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                <p className="px-3 pb-1 pt-1 text-xs font-medium text-muted-foreground">
                   {section.label}
                 </p>
               )}

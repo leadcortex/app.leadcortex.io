@@ -103,15 +103,13 @@ export function ContextMenu({
       className={cn(
         "max-h-[min(70vh,420px)] overflow-y-auto overscroll-contain",
         "rounded-xl border border-border bg-popover p-1",
-        "shadow-[0_1px_2px_color-mix(in_oklab,var(--foreground)_8%,transparent),0_18px_48px_-16px_color-mix(in_oklab,var(--foreground)_28%,transparent)]",
+        "shadow-float",
         "animate-in fade-in-0 zoom-in-95 duration-100",
       )}
       onContextMenu={(e) => e.preventDefault()}
     >
       {title && (
-        <p className="px-2.5 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          {title}
-        </p>
+        <p className="px-2.5 pb-1 pt-1 text-xs font-medium text-muted-foreground">{title}</p>
       )}
 
       {sections.map((section, si) => {
@@ -119,7 +117,7 @@ export function ContextMenu({
         return (
           <div key={section.id} className={cn(si > 0 && "mt-1 border-t border-border/60 pt-1")}>
             {section.label && (
-              <p className="px-2.5 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <p className="px-2.5 pb-1 pt-1 text-xs font-medium text-muted-foreground">
                 {section.label}
               </p>
             )}

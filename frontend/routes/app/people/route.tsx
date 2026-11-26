@@ -332,9 +332,11 @@ function PeopleListContent() {
   const bindContext = useCallback(
     (payload: { id: string }) => {
       const multi = selectedIds.has(payload.id) && selectedIds.size > 1;
-      return ctx.bind({ id: payload.id, multi });
+      // Sur mobile, pas de menu contextuel à l'appui long : il ferait doublon
+      // avec les cases à cocher et la barre d'actions de sélection.
+      return ctx.bind({ id: payload.id, multi }, { disabled: isMobile });
     },
-    [ctx, selectedIds],
+    [ctx, selectedIds, isMobile],
   );
 
   useKeyboardShortcuts([
@@ -657,14 +659,11 @@ function PeopleListContent() {
                 },
               ]}
               hint={
-                <div className="flex w-full items-center justify-between gap-2">
-                  <span className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/30 bg-primary/[0.08] px-3 text-[12px] font-semibold text-primary tabular-nums">
-                    {selectedIds.size} sélectionné{selectedIds.size > 1 ? "s" : ""}
-                  </span>
+                <div className="flex w-full items-center">
                   <button
                     type="button"
                     onClick={() => setSelectedIds(new Set())}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[12px] font-medium text-muted-foreground shadow-[0_2px_0_var(--border)] transition-all active:translate-y-[2px] active:shadow-none"
+                    className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[12px] font-medium text-muted-foreground shadow-[0_2px_0_var(--border)] transition-all active:translate-y-[2px] active:shadow-none"
                   >
                     <X className="size-3.5" />
                     <span className="whitespace-nowrap">Tout désélectionner</span>

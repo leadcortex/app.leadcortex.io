@@ -13,15 +13,14 @@ import { LeadCortexTablet } from "@/components/landing/lead-cortex-tablet";
 import { LandingDocs } from "@/components/landing/landing-docs";
 import { LandingFaq } from "@/components/landing/landing-faq";
 import { LandingFooter } from "@/components/landing/landing-footer";
-import { Reveal } from "@/components/landing/landing-reveal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LeadCortex — Équipe d'agents IA de prospection B2B" },
+      { title: "LeadCortex · Agents IA de prospection B2B" },
       {
         name: "description",
-        content: "L'équipe d'agents IA qui trouve, enrichit et contacte vos prospects B2B.",
+        content: "Deux agents IA trouvent vos prospects B2B, vérifient leurs coordonnées et préparent les messages.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -44,32 +43,18 @@ function LandingPage() {
       <LandingNav />
       <main>
         <LandingHero />
-        <Reveal>
-          <LandingCompetitors />
-        </Reveal>
-        <Reveal>
-          <LandingIntegrations />
-        </Reveal>
+        <LandingCompetitors />
+        <LandingIntegrations />
         <LandingFeatures />
         <Divider />
-        <Reveal>
-          <LandingPersonas />
-        </Reveal>
+        <LandingPersonas />
         <Divider />
-        <Reveal>
-          <LandingPricing />
-        </Reveal>
+        <LandingPricing />
         <Divider />
-        <Reveal>
-          <LeadCortexTablet />
-        </Reveal>
-        <Reveal>
-          <LandingDocs />
-        </Reveal>
+        <LeadCortexTablet />
+        <LandingDocs />
         <Divider />
-        <Reveal>
-          <LandingFaq />
-        </Reveal>
+        <LandingFaq />
       </main>
       <LandingFooter />
     </div>

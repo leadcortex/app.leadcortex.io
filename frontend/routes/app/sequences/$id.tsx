@@ -1,7 +1,8 @@
 // frontend/routes/app/sequences/$id.tsx
 
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Badge, Kpi } from "@/components/common/ui-primitives";
+import { Badge, PageHeader } from "@/components/common/ui-primitives";
+import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/state/store";
 import {
   ArrowLeft,
@@ -9,23 +10,18 @@ import {
   Pause,
   Edit,
   MoreHorizontal,
-  Mail,
   Users,
-  Eye,
-  MessageSquare,
-  Clock,
-  Calendar,
-  AlertCircle,
   BarChart3,
   Send,
 } from "@/components/icons";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DetailViewSkeleton } from "@/components/skeletons";
+import { cn } from "@/lib/core/utils";
 
 export const Route = createFileRoute("/app/sequences/$id")({
   head: () => ({
-    meta: [{ title: "Séquence — LeadCortex" }],
+    meta: [{ title: "Séquence · LeadCortex" }],
   }),
   pendingComponent: () => <DetailViewSkeleton />,
   component: SequencesDetailPage,
@@ -40,18 +36,14 @@ function SequencesDetailPage() {
 
   if (!sequence) {
     return (
-      <div className="p-4 md:p-8 text-center">
-        <AlertCircle className="size-10 md:size-12 mx-auto text-muted-foreground mb-3 md:mb-4" />
-        <h2 className="font-display text-xl md:text-2xl italic">Séquence introuvable</h2>
-        <p className="text-muted-foreground text-xs md:text-sm mt-2">
-          Cette séquence n'existe pas ou a été supprimée.
-        </p>
-        <Link
-          to="/app/sequences"
-          className="inline-flex items-center gap-2 mt-4 md:mt-6 text-xs md:text-sm text-primary hover:underline"
-        >
-          <ArrowLeft className="size-3.5 md:size-4" /> Retour aux séquences
-        </Link>
+      <div className="mx-auto max-w-md py-16 text-center">
+        <h1 className="text-lg font-semibold">Séquence introuvable</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Elle a peut-être été supprimée.</p>
+        <Button variant="outline" className="mt-6" asChild>
+          <Link to="/app/sequences">
+            <ArrowLeft /> Retour aux séquences
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -62,78 +54,51 @@ function SequencesDetailPage() {
     <div className="max-w-6xl">
       <Link
         to="/app/sequences"
-        className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground hover:text-foreground transition-colors mb-3 md:mb-6"
+        className="mb-6 inline-flex items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="size-3.5 md:size-4" /> Retour aux séquences
+        <ArrowLeft className="size-4" /> Séquences
       </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-3 md:gap-4 mb-4 md:mb-8">
-        <div>
-          <h1 className="font-display text-2xl md:text-4xl italic break-words">{sequence.name}</h1>
-          <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-1.5 md:mt-2 text-xs md:text-sm text-muted-foreground">
-            <span className="flex items-center gap-1 md:gap-1.5">
-              <Mail className="size-3.5 md:size-4" /> Email + LinkedIn
-            </span>
-            <span className="flex items-center gap-1 md:gap-1.5">
-              <Users className="size-3.5 md:size-4" /> {sequence.leads} leads
-            </span>
-            <span className="flex items-center gap-1 md:gap-1.5 hide-on-xs">
-              <Clock className="size-3.5 md:size-4" /> {sequence.steps} étapes
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
-          <button
-            onClick={() => {
-              toggleSequenceStatus(sequence.id);
-              toast.success(isActive ? "Séquence mise en pause" : "Séquence activée");
-            }}
-            className={`inline-flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-sm rounded-lg transition-colors ${
-              isActive
-                ? "bg-amber-500/10 text-amber-600 border border-amber-200 hover:bg-amber-500/20"
-                : "bg-primary text-primary-foreground hover:brightness-110"
-            }`}
-          >
-            {isActive ? (
-              <Pause className="size-3 md:size-4" />
-            ) : (
-              <Play className="size-3 md:size-4" />
-            )}
-            {isActive ? "Pauser" : "Activer"}
-          </button>
-          <button className="p-1.5 md:p-2 rounded-lg border border-border hover:bg-surface transition-colors">
-            <Edit className="size-3.5 md:size-4" />
-          </button>
-          <button className="p-1.5 md:p-2 rounded-lg border border-border hover:bg-surface transition-colors">
-            <MoreHorizontal className="size-3.5 md:size-4" />
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow={isActive ? "Séquence active" : "Séquence en pause"}
+        title={sequence.name}
+        description={`${sequence.leads} leads · ${sequence.replies} de réponses`}
+        actions={
+          <>
+            <Button
+              variant={isActive ? "outline" : "default"}
+              onClick={() => {
+                toggleSequenceStatus(sequence.id);
+                toast.success(isActive ? "Séquence mise en pause" : "Séquence activée");
+              }}
+            >
+              {isActive ? <Pause /> : <Play />}
+              {isActive ? "Mettre en pause" : "Activer"}
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Modifier" title="Modifier">
+              <Edit />
+            </Button>
+            <Button variant="ghost" size="icon" aria-label="Plus d'actions" title="Plus d'actions">
+              <MoreHorizontal />
+            </Button>
+          </>
+        }
+      />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-8">
-        <Kpi label="Taux d'ouverture" value={sequence.opens} delta="+4%" up />
-        <Kpi label="Taux de réponse" value={sequence.replies} delta="+2%" up />
-        <Kpi label="Leads actifs" value={String(sequence.leads)} />
-        <Kpi label="Étapes" value={String(sequence.steps)} />
-      </div>
-
-      <div className="mb-4 md:mb-8">
-        <Badge tone={isActive ? "primary" : "muted"}>{isActive ? "Actif" : "En pause"}</Badge>
-      </div>
-
-      <div className="border-b border-border mb-4 md:mb-6 overflow-x-auto scrollbar-hide">
-        <div className="flex gap-3 md:gap-6 min-w-max">
+      <div className="mb-6 overflow-x-auto border-b border-border scrollbar-hide md:mb-8">
+        <div className="flex min-w-max gap-6">
           {(["overview", "steps", "analytics"] as const).map((tab) => {
             const labels = { overview: "Aperçu", steps: "Étapes", analytics: "Analyses" };
             return (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-2 md:pb-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                className={cn(
+                  "-mb-px whitespace-nowrap border-b-2 pb-3 text-sm font-medium transition-colors",
                   activeTab === tab
                     ? "border-primary text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+                    : "border-transparent text-muted-foreground hover:text-foreground",
+                )}
               >
                 {labels[tab]}
               </button>
@@ -142,186 +107,140 @@ function SequencesDetailPage() {
         </div>
       </div>
 
-      <div className="animate-fade-in-up">
-        {activeTab === "overview" && <OverviewTab sequence={sequence} />}
-        {activeTab === "steps" && <StepsTab sequence={sequence} />}
-        {activeTab === "analytics" && <AnalyticsTab sequence={sequence} />}
-      </div>
+      {activeTab === "overview" && <OverviewTab sequence={sequence} />}
+      {activeTab === "steps" && <StepsTab />}
+      {activeTab === "analytics" && <AnalyticsTab />}
     </div>
   );
 }
 
-function OverviewTab({ sequence }: { sequence: any }) {
+type SequenceRow = ReturnType<typeof useAppStore>["sequences"][number];
+
+function OverviewTab({ sequence }: { sequence: SequenceRow }) {
+  const rows: { label: string; value: React.ReactNode }[] = [
+    { label: "Canaux", value: "Email et LinkedIn" },
+    {
+      label: "Statut",
+      value: (
+        <Badge tone={sequence.status === "active" ? "primary" : "muted"}>
+          {sequence.status === "active" ? "Active" : "En pause"}
+        </Badge>
+      ),
+    },
+    { label: "Leads", value: sequence.leads },
+    { label: "Étapes", value: sequence.steps },
+    { label: "Taux d'ouverture", value: sequence.opens },
+    { label: "Taux de réponse", value: sequence.replies },
+  ];
+
   return (
-    <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-      <div className="rounded-xl border border-border bg-background p-4 md:p-6">
-        <h3 className="text-[10px] md:text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-3 md:mb-4">
-          Détails
-        </h3>
-        <div className="space-y-2 md:space-y-3 text-xs md:text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Nom</span>
-            <span className="font-medium">{sequence.name}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Statut</span>
-            <Badge tone={sequence.status === "active" ? "primary" : "muted"}>
-              {sequence.status === "active" ? "Actif" : "En pause"}
-            </Badge>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Leads</span>
-            <span>{sequence.leads}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Étapes</span>
-            <span>{sequence.steps}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Taux d'ouverture</span>
-            <span>{sequence.opens}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Taux de réponse</span>
-            <span>{sequence.replies}</span>
-          </div>
-        </div>
-      </div>
+    <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_280px] md:gap-12">
+      <section>
+        <h2 className="text-base font-semibold">Détails</h2>
+        <dl className="mt-4 divide-y divide-border border-y border-border">
+          {rows.map((r) => (
+            <div key={r.label} className="flex items-center justify-between gap-4 py-3 text-sm">
+              <dt className="text-muted-foreground">{r.label}</dt>
+              <dd className="font-medium tabular-nums">{r.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
-      <div className="rounded-xl border border-border bg-background p-4 md:p-6">
-        <h3 className="text-[10px] md:text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-3 md:mb-4">
-          Actions rapides
-        </h3>
-        <div className="space-y-2 md:space-y-3">
-          <button
+      <section>
+        <h2 className="text-base font-semibold">Actions</h2>
+        <div className="mt-4 flex flex-col gap-2">
+          <Button
+            variant="outline"
+            className="justify-start"
             onClick={() => toast.info("Ajout de leads...")}
-            className="w-full inline-flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm border border-border rounded-lg hover:bg-surface transition-colors"
           >
-            <Users className="size-3.5 md:size-4" /> Ajouter des leads
-          </button>
-          <button
+            <Users /> Ajouter des leads
+          </Button>
+          <Button
+            variant="outline"
+            className="justify-start"
             onClick={() => toast.info("Édition de la séquence...")}
-            className="w-full inline-flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm border border-border rounded-lg hover:bg-surface transition-colors"
           >
-            <Edit className="size-3.5 md:size-4" /> Modifier la séquence
-          </button>
-          <button
+            <Edit /> Modifier la séquence
+          </Button>
+          <Button
+            variant="outline"
+            className="justify-start"
             onClick={() => toast.info("Export en cours...")}
-            className="w-full inline-flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm border border-border rounded-lg hover:bg-surface transition-colors"
           >
-            <Send className="size-3.5 md:size-4" /> Exporter les données
-          </button>
+            <Send /> Exporter les données
+          </Button>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
 
-function StepsTab({ sequence }: { sequence: any }) {
+function StepsTab() {
   const steps = [
     { number: 1, label: "Email de prospection", channel: "Email", delay: "Jour 1" },
     { number: 2, label: "Relance LinkedIn", channel: "LinkedIn", delay: "Jour 3" },
     { number: 3, label: "Email de suivi", channel: "Email", delay: "Jour 5" },
     { number: 4, label: "Relance finale", channel: "Email", delay: "Jour 8" },
-    { number: 5, label: "Appel de clôture", channel: "Call", delay: "Jour 12" },
+    { number: 5, label: "Appel de clôture", channel: "Appel", delay: "Jour 12" },
   ];
 
   return (
-    <div className="rounded-xl border border-border bg-background overflow-hidden">
-      <div className="overflow-x-auto scrollbar-hide table-scroll">
-        <table className="w-full text-left text-xs md:text-sm min-w-[400px]">
-          <thead className="bg-surface/50 text-muted-foreground text-[8px] md:text-[10px] uppercase tracking-[0.12em]">
-            <tr>
-              <th className="px-3 md:px-4 py-2 font-medium border-b border-border">#</th>
-              <th className="px-3 md:px-4 py-2 font-medium border-b border-border">Étape</th>
-              <th className="px-3 md:px-4 py-2 font-medium border-b border-border">Canal</th>
-              <th className="px-3 md:px-4 py-2 font-medium border-b border-border">Délai</th>
-              <th className="px-3 md:px-4 py-2 font-medium border-b border-border"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {steps.map((s) => (
-              <tr key={s.number} className="hover:bg-surface/40 transition-colors">
-                <td className="px-3 md:px-4 py-2 md:py-3 text-center font-mono text-xs md:text-sm">
-                  {s.number}
-                </td>
-                <td className="px-3 md:px-4 py-2 md:py-3 font-medium text-xs md:text-sm">
-                  {s.label}
-                </td>
-                <td className="px-3 md:px-4 py-2 md:py-3">
-                  <Badge
-                    tone={
-                      s.channel === "Email"
-                        ? "primary"
-                        : s.channel === "LinkedIn"
-                          ? "warning"
-                          : "muted"
-                    }
-                  >
-                    {s.channel}
-                  </Badge>
-                </td>
-                <td className="px-3 md:px-4 py-2 md:py-3 text-muted-foreground text-[10px] md:text-xs">
-                  {s.delay}
-                </td>
-                <td className="px-3 md:px-4 py-2 md:py-3 text-right">
-                  <button className="text-[10px] md:text-xs text-primary hover:underline">
-                    Modifier
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <ol className="divide-y divide-border border-y border-border">
+      {steps.map((s) => (
+        <li key={s.number} className="flex items-center gap-4 py-3">
+          <span className="w-6 shrink-0 text-sm tabular-nums text-muted-foreground">
+            {s.number}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium">{s.label}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {s.channel} · {s.delay}
+            </p>
+          </div>
+          <Button variant="ghost" size="sm">
+            Modifier
+          </Button>
+        </li>
+      ))}
+    </ol>
   );
 }
 
-function AnalyticsTab({ sequence }: { sequence: any }) {
+function AnalyticsTab() {
+  const items = [
+    { label: "Email 1 envoyé", value: 42, total: 42 },
+    { label: "Email 1 ouvert", value: 28, total: 42 },
+    { label: "Relance LinkedIn", value: 18, total: 42 },
+    { label: "Email 2 envoyé", value: 12, total: 42 },
+  ];
   return (
-    <div className="rounded-xl border border-border bg-background p-4 md:p-6">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
-        <Kpi label="Total leads" value={String(sequence.leads)} />
-        <Kpi label="Taux d'ouverture" value={sequence.opens} delta="+4%" up />
-        <Kpi label="Taux de réponse" value={sequence.replies} delta="+2%" up />
-      </div>
-
-      <div className="space-y-3 md:space-y-4">
-        <div className="p-3 md:p-4 rounded-lg bg-surface/40 border border-border">
-          <h4 className="text-xs md:text-sm font-medium mb-2">Distribution par étape</h4>
-          <div className="space-y-1.5 md:space-y-2">
-            {[
-              { label: "Email 1 envoyé", value: 42, total: 42 },
-              { label: "Email 1 ouvert", value: 28, total: 42 },
-              { label: "Relance LinkedIn", value: 18, total: 42 },
-              { label: "Email 2 envoyé", value: 12, total: 42 },
-            ].map((item) => (
-              <div key={item.label} className="flex items-center gap-2 md:gap-3">
-                <span className="text-[10px] md:text-xs text-muted-foreground w-20 md:w-32 truncate">
-                  {item.label}
-                </span>
-                <div className="flex-1 h-1.5 md:h-2 bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary rounded-full"
-                    style={{ width: `${(item.value / item.total) * 100}%` }}
-                  />
-                </div>
-                <span className="text-[10px] md:text-xs font-mono">{item.value}</span>
-              </div>
-            ))}
+    <section className="max-w-2xl">
+      <h2 className="text-base font-semibold">Leads par étape</h2>
+      <div className="mt-4 space-y-3">
+        {items.map((item) => (
+          <div key={item.label} className="flex items-center gap-3">
+            <span className="w-32 shrink-0 truncate text-[13px] text-muted-foreground md:w-40">
+              {item.label}
+            </span>
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-secondary">
+              <div
+                className="h-full rounded-full bg-primary"
+                style={{ width: `${(item.value / item.total) * 100}%` }}
+              />
+            </div>
+            <span className="w-8 shrink-0 text-right text-[13px] tabular-nums">{item.value}</span>
           </div>
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            onClick={() => toast.info("Rapport détaillé en cours...")}
-            className="inline-flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-primary hover:underline"
-          >
-            <BarChart3 className="size-3.5 md:size-4" /> Voir le rapport complet
-          </button>
-        </div>
+        ))}
       </div>
-    </div>
+      <Button
+        variant="link"
+        className="mt-6 px-0"
+        onClick={() => toast.info("Rapport détaillé en cours...")}
+      >
+        <BarChart3 /> Voir le rapport complet
+      </Button>
+    </section>
   );
 }

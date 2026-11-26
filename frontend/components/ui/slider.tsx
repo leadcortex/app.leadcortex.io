@@ -16,33 +16,28 @@ const Slider = React.forwardRef<
   >
     <SliderPrimitive.Track
       className={cn(
-        "relative h-2.5 w-full grow overflow-hidden rounded-full",
+        "relative h-2 w-full grow overflow-hidden rounded-full",
         "bg-[var(--track,color-mix(in_oklab,var(--foreground)_7%,transparent))]",
-        "shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--foreground)_10%,transparent)]",
       )}
     >
       <SliderPrimitive.Range
         className="absolute h-full rounded-full"
         style={{
-          background:
-            "linear-gradient(90deg, color-mix(in oklab, var(--primary) 78%, transparent), var(--primary))",
+          background: "var(--primary)",
         }}
       />
     </SliderPrimitive.Track>
     <SliderPrimitive.Thumb
       className={cn(
         "block size-5 rounded-full border-0 bg-background",
-        "shadow-[0_0_0_2px_color-mix(in_oklab,var(--primary)_60%,transparent),0_0_10px_color-mix(in_oklab,var(--primary)_40%,transparent)]",
-        "transition-[box-shadow,transform] duration-150",
-        "hover:shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_50%,transparent),0_0_14px_color-mix(in_oklab,var(--primary)_55%,transparent)]",
-        "focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_55%,transparent),0_0_14px_color-mix(in_oklab,var(--primary)_60%,transparent)]",
+        "shadow-[0_0_0_2px_var(--primary),0_1px_3px_color-mix(in_oklab,var(--foreground)_20%,transparent)]",
+        "transition-[box-shadow] duration-150 ease-out",
+        "cursor-grab active:cursor-grabbing",
+        "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--primary),0_0_0_6px_color-mix(in_oklab,var(--primary)_20%,transparent)]",
         "disabled:pointer-events-none disabled:opacity-50",
       )}
     >
-      <span
-        aria-hidden
-        className="absolute inset-[3px] rounded-full bg-primary"
-      />
+      <span aria-hidden className="absolute inset-[3px] rounded-full bg-primary" />
     </SliderPrimitive.Thumb>
   </SliderPrimitive.Root>
 ));

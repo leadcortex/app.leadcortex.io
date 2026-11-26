@@ -19,8 +19,8 @@ function Inspector() {
   const node = doc.nodes.find((n) => n.id === selection[0]);
   if (!node)
     return (
-      <p className="p-3 text-[11.5px] text-muted-foreground">
-        Sélectionne un bloc pour éditer sa configuration.
+      <p className="p-4 text-[13px] text-muted-foreground">
+        Sélectionnez un bloc pour le configurer.
       </p>
     );
   const block = blockMap[node.blockId];
@@ -35,46 +35,45 @@ function Inspector() {
     }));
 
   return (
-    <div className="space-y-3 p-3">
-      <div className="flex items-center gap-2">
-        <span className="h-2.5 w-2.5 rounded-sm" style={{ background: cat.color }} />
+    <div className="space-y-4 p-4">
+      <div className="flex items-center gap-3 border-b border-border pb-4">
+        <span className="size-2.5 shrink-0 rounded-full" style={{ background: cat.color }} />
         <div className="min-w-0">
-          <p className="truncate text-[12.5px] font-semibold">{node.title}</p>
-          <p className="truncate text-[10.5px] text-muted-foreground">{cat.label}</p>
+          <p className="truncate text-sm font-semibold">{node.title}</p>
+          <p className="truncate text-xs text-muted-foreground">{cat.label}</p>
         </div>
       </div>
       {block?.configFields.map((f) => {
         const v = node.config[f.key];
         if (f.type === "toggle") {
           return (
-            <div key={f.key} className="space-y-1">
+            <div key={f.key} className="space-y-2">
               <div className="flex items-center justify-between gap-3">
-                <span className="min-w-0 flex-1 text-[11px] text-muted-foreground">
-                  {f.label}
-                </span>
+                <span className="min-w-0 flex-1 text-[13px] font-medium">{f.label}</span>
                 <button
                   type="button"
                   role="switch"
                   aria-checked={Boolean(v)}
                   aria-label={f.label}
                   onClick={() => set(f.key, !v)}
-                  className={cn("h-4 w-8 shrink-0 rounded-full", v ? "bg-primary" : "bg-muted")}
+                  className={cn(
+                    "h-5 w-9 shrink-0 rounded-full transition-colors",
+                    v ? "bg-primary" : "bg-muted",
+                  )}
                 >
                   <span
-                    className="block h-3 w-3 rounded-full bg-background"
-                    style={{ transform: v ? "translateX(17px)" : "translateX(2px)" }}
+                    className="block size-4 rounded-full bg-background transition-transform"
+                    style={{ transform: v ? "translateX(18px)" : "translateX(2px)" }}
                   />
                 </button>
               </div>
-              {f.help && (
-                <span className="block text-[10px] text-muted-foreground">{f.help}</span>
-              )}
+              {f.help && <span className="block text-xs text-muted-foreground">{f.help}</span>}
             </div>
           );
         }
         return (
-          <label key={f.key} className="block space-y-1">
-            <span className="block text-[11px] text-muted-foreground">{f.label}</span>
+          <label key={f.key} className="block space-y-2">
+            <span className="block text-[13px] font-medium">{f.label}</span>
             {f.type === "select" ? (
               <NodeSelect
                 value={String(v ?? "")}
@@ -90,7 +89,7 @@ function Inspector() {
                 onChange={(e) => set(f.key, e.target.value)}
                 onFocus={scrollFieldIntoView}
                 rows={3}
-                className="w-full resize-y rounded border border-input bg-input-bg p-1.5 text-[16px] outline-none focus:border-ring sm:text-[11.5px]"
+                className="w-full resize-y rounded-lg border border-input bg-input-bg px-3 py-2 text-[16px] leading-relaxed outline-none focus:border-ring sm:text-[13px]"
               />
             ) : (
               <input
@@ -101,12 +100,10 @@ function Inspector() {
                   set(f.key, f.type === "number" ? Number(e.target.value) : e.target.value)
                 }
                 onFocus={scrollFieldIntoView}
-                className="h-7 w-full min-w-0 rounded border border-input bg-input-bg px-1.5 text-[16px] outline-none focus:border-ring sm:text-[11.5px]"
+                className="h-11 w-full min-w-0 rounded-lg border border-input bg-input-bg px-3 text-[16px] outline-none focus:border-ring sm:h-9 sm:text-[13px]"
               />
             )}
-            {f.help && (
-              <span className="block text-[10px] text-muted-foreground">{f.help}</span>
-            )}
+            {f.help && <span className="block text-xs text-muted-foreground">{f.help}</span>}
           </label>
         );
       })}
@@ -133,9 +130,9 @@ export function RightPanel({
             onClick={() => {
               if (!showContent) onRequestExpand?.();
             }}
-            className="flex flex-1 items-center justify-center gap-1.5 py-2 text-[11px] font-medium text-foreground"
+            className="flex h-10 flex-1 items-center justify-center gap-2 text-[13px] font-medium text-foreground"
           >
-            <Sliders className="h-3.5 w-3.5" /> Propriétés
+            <Sliders className="size-4" /> Propriétés
           </button>
         </div>
       )}

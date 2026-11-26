@@ -1,8 +1,9 @@
 // frontend/routes/app/deals/$id.tsx
 
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Badge, Kpi } from "@/components/common/ui-primitives";
+import { Badge } from "@/components/common/ui-primitives";
 import { useAppStore } from "@/lib/state/store";
+import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
   Building2,
@@ -29,11 +30,19 @@ import { DealDetailSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/app/deals/$id")({
   head: () => ({
-    meta: [{ title: "Opportunité — LeadCortex" }],
+    meta: [{ title: "Opportunité · LeadCortex" }],
   }),
   pendingComponent: () => <DealDetailSkeleton />,
   component: DealsDetailPage,
 });
+
+const STAGE_LABELS: Record<string, string> = {
+  qualified: "Qualifié",
+  proposal: "Proposition",
+  negotiation: "Négociation",
+  won: "Gagné",
+  lost: "Perdu",
+};
 
 function DealsDetailPage() {
   const { id } = Route.useParams();
@@ -46,9 +55,9 @@ function DealsDetailPage() {
 
   if (!deal) {
     return (
-      <div className="p-8 text-center">
+      <div className="py-12 text-center">
         <AlertCircle className="size-12 mx-auto text-muted-foreground mb-4" />
-        <h2 className="font-display text-2xl italic">Opportunité introuvable</h2>
+        <h2 className="text-xl font-semibold">Opportunité introuvable</h2>
         <p className="text-muted-foreground text-sm mt-2">
           Cette opportunité n'existe pas ou a été supprimée.
         </p>
@@ -67,7 +76,7 @@ function DealsDetailPage() {
   const canAdvance = !isWon && !isLost;
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="max-w-6xl">
       <Link
         to="/app/deals"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -75,44 +84,47 @@ function DealsDetailPage() {
         <ArrowLeft className="size-4" /> Retour au pipeline
       </Link>
 
-      <div className="flex items-start justify-between gap-4 mb-8">
-        <div>
-          <h1 className="font-display text-4xl italic">{deal.name}</h1>
-          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
-            <span className="flex items-center gap-1.5">
-              <Building2 className="size-4" /> {deal.company}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <User className="size-4" /> {deal.contact}
-            </span>
-            <span className="flex items-center gap-1.5">
+      <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
+        <div className="min-w-0">
+          <h1 className="font-display text-3xl italic md:text-4xl">{deal.name}</h1>
+          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap tabular-nums">
+            {deal.company && deal.company !== "—" && (
+              <span className="flex items-center gap-2">
+                <Building2 className="size-4" /> {deal.company}
+              </span>
+            )}
+            {deal.contact && deal.contact !== "—" && (
+              <span className="flex items-center gap-2">
+                <User className="size-4" /> {deal.contact}
+              </span>
+            )}
+            <span className="flex items-center gap-2">
               <DollarSign className="size-4" /> {deal.amount.toLocaleString("fr-FR")} €
             </span>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {canAdvance && (
-            <button
+            <Button
               onClick={() => {
                 advanceDealStage(deal.id);
                 addActivity("Étape avancée", deal.name);
-                toast.success(`${deal.name} → étape suivante`);
+                toast.success(`${deal.name} passe à l'étape suivante`);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:brightness-110 transition-all"
             >
-              Avancer <ArrowRight className="size-4" />
-            </button>
+              Avancer <ArrowRight />
+            </Button>
           )}
-          <button className="p-2 rounded-lg border border-border hover:bg-surface transition-colors">
-            <Edit className="size-4" />
-          </button>
-          <button className="p-2 rounded-lg border border-border hover:bg-surface transition-colors">
-            <MoreHorizontal className="size-4" />
-          </button>
+          <Button variant="outline" size="icon" aria-label="Modifier">
+            <Edit />
+          </Button>
+          <Button variant="outline" size="icon" aria-label="Plus d'actions">
+            <MoreHorizontal />
+          </Button>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 mb-8">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-8 text-sm">
         <Badge
           tone={
             deal.stage === "won"
@@ -124,36 +136,17 @@ function DealsDetailPage() {
                   : "muted"
           }
         >
-          {deal.stage}
+          {STAGE_LABELS[deal.stage] ?? deal.stage}
         </Badge>
-        <Badge tone="muted">Probabilité {deal.probability}%</Badge>
-        <Badge tone="muted">Clôture {deal.close}</Badge>
-        <Badge tone="muted">
-          <Clock className="size-3 mr-1" /> Montant {deal.amount.toLocaleString("fr-FR")} €
-        </Badge>
-      </div>
-
-      <div className="grid sm:grid-cols-4 gap-3 mb-8">
-        <Kpi
-          label="Montant"
-          value={`${(deal.amount / 1000).toFixed(0)}K€`}
-          sub={`${deal.probability}% probabilité`}
-        />
-        <Kpi
-          label="Étape"
-          value={deal.stage}
-          sub={deal.stage === "won" ? "Gagné 🎉" : deal.stage === "lost" ? "Perdu" : "En cours"}
-        />
-        <Kpi
-          label="Clôture"
-          value={deal.close}
-          sub={isWon ? "À confirmer" : isLost ? "À analyser" : "Objectif"}
-        />
-        <Kpi
-          label="Valeur pondérée"
-          value={`${((deal.amount * deal.probability) / 100 / 1000).toFixed(0)}K€`}
-          sub="(Montant × Probabilité)"
-        />
+        <span className="text-muted-foreground">
+          Clôture <span className="text-foreground">{deal.close}</span>
+        </span>
+        <span className="text-muted-foreground">
+          Valeur pondérée{" "}
+          <span className="tabular-nums text-foreground">
+            {Math.round((deal.amount * deal.probability) / 100).toLocaleString("fr-FR")} €
+          </span>
+        </span>
       </div>
 
       <div className="mb-8 p-4 rounded-xl bg-surface/40 border border-border">
@@ -167,7 +160,7 @@ function DealsDetailPage() {
             style={{ width: `${deal.probability}%` }}
           />
         </div>
-        <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
+        <div className="flex justify-between mt-2 text-[11px] text-muted-foreground">
           {["Qualifié", "Proposition", "Négociation", "Gagné"].map((stage, i) => {
             const stageKeys = ["qualified", "proposal", "negotiation", "won"];
             const isActive = stageKeys.indexOf(deal.stage) >= i;
@@ -221,7 +214,7 @@ function OverviewTab({ deal }: { deal: any }) {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="rounded-xl border border-border bg-background p-6">
-        <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-4">
+        <h3 className="text-base font-semibold mb-4">
           Détails de l'opportunité
         </h3>
         <div className="space-y-3 text-sm">
@@ -243,7 +236,9 @@ function OverviewTab({ deal }: { deal: any }) {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Étape</span>
-            <Badge tone={deal.stage === "won" ? "success" : "primary"}>{deal.stage}</Badge>
+            <Badge tone={deal.stage === "won" ? "success" : "primary"}>
+              {STAGE_LABELS[deal.stage] ?? deal.stage}
+            </Badge>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Probabilité</span>
@@ -258,7 +253,7 @@ function OverviewTab({ deal }: { deal: any }) {
 
       <div className="space-y-6">
         <div className="rounded-xl border border-border bg-background p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-4">
+          <h3 className="text-base font-semibold mb-4">
             Actions rapides
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -284,12 +279,12 @@ function OverviewTab({ deal }: { deal: any }) {
         </div>
 
         <div className="rounded-xl border border-border bg-background p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-4">
+          <h3 className="text-base font-semibold mb-4">
             Indicateurs
           </h3>
           <div className="flex items-center gap-6">
             <div className="text-center">
-              <div className="text-3xl font-display text-primary">{deal.probability}%</div>
+              <div className="text-3xl font-semibold tabular-nums text-primary">{deal.probability} %</div>
               <p className="text-xs text-muted-foreground mt-1">Probabilité</p>
             </div>
             <div className="flex-1">
@@ -319,7 +314,7 @@ function ActivityTab({ deal }: { deal: any }) {
       id: "a1",
       type: "stage",
       label: "Changement d'étape",
-      detail: `Passage à "${deal.stage}"`,
+      detail: `Passage à « ${STAGE_LABELS[deal.stage] ?? deal.stage} »`,
       time: "il y a 2h",
     },
     {
@@ -350,7 +345,7 @@ function ActivityTab({ deal }: { deal: any }) {
             <div className="flex-1">
               <p className="text-sm font-medium">{a.label}</p>
               <p className="text-xs text-muted-foreground">{a.detail}</p>
-              <p className="text-[10px] text-muted-foreground/60 mt-1">{a.time}</p>
+              <p className="text-[11px] text-muted-foreground mt-1">{a.time}</p>
             </div>
           </div>
         ))}

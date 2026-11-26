@@ -125,7 +125,7 @@ export function CompaniesSearchDropdown({
       className={cn(
         "overflow-y-auto overscroll-contain",
         "rounded-xl border border-border bg-popover p-1.5",
-        "shadow-[0_8px_32px_-8px_rgba(0,0,0,0.3)]",
+        "shadow-float",
         "animate-in fade-in-0 zoom-in-95 duration-100",
       )}
     >
@@ -136,13 +136,13 @@ export function CompaniesSearchDropdown({
             Aucune entreprise pour{" "}
             <span className="font-medium text-foreground">« {query.trim()} »</span>
           </p>
-          <p className="mt-1 text-[10.5px] text-muted-foreground/70">
+          <p className="mt-1 text-xs text-muted-foreground/70">
             Essayez « acme », « saas », « paris »…
           </p>
         </div>
       ) : (
         <>
-          <p className="px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="px-2 py-1 text-xs font-medium text-muted-foreground">
             {results.length} résultat{results.length > 1 ? "s" : ""}
           </p>
           {results.map((hit, i) => {
@@ -189,8 +189,8 @@ export function CompaniesSearchDropdown({
                       <Bookmark className="size-2.5 shrink-0 fill-primary text-primary" />
                     )}
                   </div>
-                  <p className="truncate text-[10.5px] text-muted-foreground">
-                    {hit.company.domain || "—"} · {hit.company.industry || "—"}
+                  <p className="truncate text-xs text-muted-foreground">
+                    {[hit.company.domain, hit.company.industry].filter(Boolean).join(" · ")}
                   </p>
                 </div>
                 {active && (

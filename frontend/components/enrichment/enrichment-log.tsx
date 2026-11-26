@@ -32,7 +32,7 @@ export function EnrichmentLog({
 }) {
   if (jobs.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
+      <div className="rounded-xl border border-dashed border-border p-6 text-center text-[13px] text-muted-foreground">
         {emptyLabel}
       </div>
     );
@@ -46,25 +46,23 @@ export function EnrichmentLog({
         return (
           <li
             key={job.id}
-            className="grid items-center gap-3 px-3 py-2.5 md:grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1fr)_auto_auto] md:px-4"
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-3 md:grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1fr)_auto_auto]"
           >
             <div className="min-w-0">
-              <p className="truncate text-xs font-medium md:text-sm">{job.leadName}</p>
-              <p className="truncate text-[10px] text-muted-foreground md:text-[11px]">
-                {job.company}
-              </p>
+              <p className="truncate text-sm font-medium">{job.leadName}</p>
+              <p className="truncate text-xs text-muted-foreground">{job.company}</p>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface/40 px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-              <ProviderBadge slug={job.providerName.toLowerCase()} size={12} ring={false} />
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <ProviderBadge slug={job.providerName.toLowerCase()} size={14} ring={false} />
               {job.providerName}
             </span>
 
-            <span className="truncate text-[10px] uppercase tracking-wider text-muted-foreground md:text-[11px]">
+            <span className="hidden truncate text-xs text-muted-foreground md:block">
               {job.field === "full" ? "Fiche complète" : job.field}
             </span>
 
-            <span className="inline-flex items-center gap-1.5 text-[10px] text-muted-foreground md:text-[11px]">
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <Icon
                 className={cn(
                   "size-3.5",
@@ -75,7 +73,7 @@ export function EnrichmentLog({
               {st.label}
             </span>
 
-            <span className="text-right text-[10px] text-muted-foreground md:text-[11px]">
+            <span className="text-right text-xs text-muted-foreground tabular-nums">
               {relative(job.timestamp)}
               {job.cost > 0 && (
                 <Badge tone="muted" className="ml-2">
@@ -83,6 +81,7 @@ export function EnrichmentLog({
                 </Badge>
               )}
             </span>
+
           </li>
         );
       })}

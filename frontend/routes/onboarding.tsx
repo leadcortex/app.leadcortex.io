@@ -456,7 +456,7 @@ const steps = [
   {
     key: "role",
     title: "Quel est votre profil ?",
-    subtitle: "On adapte le workspace à votre façon de travailler.",
+    subtitle: "Le workspace s’adapte à votre façon de travailler.",
   },
   {
     key: "icp",
@@ -465,40 +465,40 @@ const steps = [
   },
   {
     key: "channel",
-    title: "Par quels canaux vos prospects vous répondent-ils ?",
-    subtitle: "On calibre les séquences et le ton en conséquence.",
+    title: "Où vos prospects vous répondent-ils ?",
+    subtitle: "Les séquences et le ton en dépendent.",
   },
   {
     key: "sector",
-    title: "Dans quel secteur évoluez-vous ?",
-    subtitle: "Pour mieux cibler vos prospects.",
+    title: "Dans quel secteur travaillez-vous ?",
+    subtitle: "",
   },
   {
     key: "goal",
     title: "Combien de nouveaux leads par mois ?",
-    subtitle: "On ajuste les recommandations.",
+    subtitle: "",
   },
   {
     key: "tone",
-    title: "Quel ton adopter avec vos prospects ?",
-    subtitle: "L'agent s'alignera sur votre style naturel.",
+    title: "Quel ton prendre avec vos prospects ?",
+    subtitle: "L’agent écrira dans ce style.",
   },
   {
     key: "value",
-    title: "Quelle est votre proposition de valeur principale ?",
-    subtitle: "En une phrase, qu'est-ce qui vous rend unique ?",
+    title: "Qu’est-ce qui vous distingue ?",
+    subtitle: "Votre proposition de valeur, en une phrase.",
   },
   {
     key: "objections",
-    title: "Quelles objections rencontrez-vous le plus souvent ?",
-    subtitle: "L'agent préparera des réponses adaptées. (Optionnel)",
+    title: "Quelles objections entendez-vous le plus ?",
+    subtitle: "Facultatif. L’agent préparera des réponses.",
   },
   {
     key: "byok",
-    title: "Connectez votre propre fournisseur d'IA",
-    subtitle: "Optionnel. L'IA intégrée fonctionne par défaut.",
+    title: "Votre propre fournisseur d’IA",
+    subtitle: "Facultatif. L’IA intégrée fonctionne sans configuration.",
   },
-  { key: "ready", title: "Prêt à décoller.", subtitle: "L'agent a tout ce qu'il lui faut." },
+  { key: "ready", title: "C’est prêt.", subtitle: "Voici ce que l’agent sait de vous." },
 ];
 
 const roleOptions = ["Founder solo", "Petite équipe (2-5)", "Agence", "Autre"];
@@ -560,7 +560,7 @@ function AutoResizeTextarea({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full rounded-2xl border border-border bg-surface/40 px-4 md:px-5 py-3 md:py-4 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all resize-none overflow-hidden"
+      className="w-full resize-none overflow-hidden rounded-xl border border-input bg-background px-4 py-3 text-base placeholder:text-muted-foreground transition-[border-color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
       style={{ minHeight }}
     />
   );
@@ -605,7 +605,7 @@ function ModalShell({
       <div
         ref={ref}
         tabIndex={-1}
-        className={`relative w-full ${maxWidth} rounded-2xl border border-border bg-background p-6 md:p-8 shadow-2xl animate-fade-in-up`}
+        className={`relative w-full ${maxWidth} rounded-3xl border border-border bg-background p-6 md:p-8 shadow-float animate-fade-in-up focus:outline-none`}
       >
         {children}
       </div>
@@ -613,48 +613,59 @@ function ModalShell({
   );
 }
 
+function CloseButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="absolute right-4 top-4 grid size-9 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface/70 hover:text-foreground"
+      aria-label="Fermer"
+    >
+      <X className="size-4" />
+    </button>
+  );
+}
+
+const primaryButton =
+  "inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-colors duration-150 ease-out hover:bg-foreground/90 disabled:cursor-not-allowed disabled:opacity-40 md:h-10";
+const outlineButton =
+  "inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors duration-150 ease-out hover:bg-surface/70 md:h-10";
+const ghostButton =
+  "inline-flex h-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-out hover:bg-surface/70 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 md:h-10";
+
 function GuideModal({ guide, onClose }: { guide: ProviderGuide; onClose: () => void }) {
   return (
     <ModalShell onClose={onClose} maxWidth="max-w-lg" labelledBy="guide-title">
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 rounded-md p-1 text-muted-foreground hover:text-foreground"
-        aria-label="Fermer"
-      >
-        <X className="size-5" />
-      </button>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="size-10 shrink-0 grid place-items-center rounded-lg border border-border bg-background text-foreground">
+      <CloseButton onClick={onClose} />
+      <div className="mb-6 flex items-center gap-3 pr-10">
+        <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-border bg-background text-foreground">
           {guide.icon}
         </div>
-        <h3 id="guide-title" className="font-display text-xl md:text-2xl italic">
-          Comment trouver votre clé {guide.name} ?
+        <h3 id="guide-title" className="text-base font-semibold">
+          Trouver votre clé {guide.name}
         </h3>
       </div>
       <ol className="space-y-3">
         {guide.steps.map((step, i) => (
-          <li key={i} className="flex gap-3 text-sm text-muted-foreground">
-            <span className="shrink-0 size-6 rounded-full bg-primary/10 grid place-items-center text-xs font-medium text-primary">
-              {i + 1}
+          <li key={i} className="flex gap-3 text-sm">
+            <span className="w-4 shrink-0 text-right tabular-nums text-muted-foreground">
+              {i + 1}.
             </span>
             <span>{step}</span>
           </li>
         ))}
       </ol>
-      <div className="mt-6 flex items-center justify-between">
+      <div className="mt-8 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
         <a
           href={guide.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+          className="inline-flex items-center justify-center gap-1 text-sm text-primary hover:underline"
         >
           {guide.linkLabel} <ExternalLink className="size-3.5" />
         </a>
-        <button
-          onClick={onClose}
-          className="rounded-xl bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90"
-        >
-          J'ai compris
+        <button type="button" onClick={onClose} className={primaryButton}>
+          J’ai compris
         </button>
       </div>
     </ModalShell>
@@ -670,58 +681,21 @@ function SkipConfirmModal({
 }) {
   return (
     <ModalShell onClose={onCancel} maxWidth="max-w-md" labelledBy="skip-confirm-title">
-      <button
-        onClick={onCancel}
-        className="absolute top-4 right-4 rounded-md p-1 text-muted-foreground hover:text-foreground"
-        aria-label="Fermer"
-      >
-        <X className="size-5" />
-      </button>
-
-      <div className="flex items-start gap-4">
-        <div className="shrink-0 size-11 rounded-full bg-amber-500/10 grid place-items-center">
-          <AlertTriangle className="size-5 text-amber-500" />
-        </div>
-        <div className="min-w-0">
-          <h3
-            id="skip-confirm-title"
-            className="font-display text-xl md:text-2xl italic leading-tight"
-          >
-            Passer le questionnaire ?
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Votre agent IA sera configuré avec les réglages par défaut. Votre expérience ne sera pas
-            la même : moins de personnalisation, séquences génériques et résultats moins précis dès
-            les premières utilisations.
-          </p>
-
-          <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <span className="mt-1 size-1.5 rounded-full bg-muted-foreground/50 shrink-0" />
-              <span>
-                Vous pourrez toujours compléter votre profil plus tard depuis les réglages.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1 size-1.5 rounded-full bg-muted-foreground/50 shrink-0" />
-              <span>Environ 1 minute suffit pour terminer le questionnaire.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
-        <button
-          onClick={onConfirm}
-          className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-foreground/30 hover:bg-surface/50 transition-all"
-        >
+      <CloseButton onClick={onCancel} />
+      <h3 id="skip-confirm-title" className="pr-10 text-base font-semibold">
+        Passer le questionnaire ?
+      </h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        L’agent partira des réglages par défaut : séquences plus génériques, résultats moins précis
+        au début. Le questionnaire prend environ 1 minute, et vous pourrez le compléter plus tard
+        dans les réglages.
+      </p>
+      <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" onClick={onConfirm} className={outlineButton}>
           Passer quand même
         </button>
-        <button
-          onClick={onCancel}
-          className="rounded-xl bg-foreground text-background px-4 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
-        >
-          Revenir au questionnaire
+        <button type="button" onClick={onCancel} className={primaryButton}>
+          Continuer le questionnaire
         </button>
       </div>
     </ModalShell>
@@ -738,77 +712,42 @@ function SkipByokModal({
   onBack: () => void;
 }) {
   return (
-    <ModalShell onClose={onBack} maxWidth="max-w-lg" labelledBy="skip-byok-title">
-      <button
-        onClick={onBack}
-        className="absolute top-4 right-4 rounded-md p-1 text-muted-foreground hover:text-foreground"
-        aria-label="Fermer"
-      >
-        <X className="size-5" />
-      </button>
-
-      <div className="flex items-start gap-4">
-        <div className="shrink-0 size-11 rounded-full bg-primary/10 grid place-items-center">
-          <Sparkles className="size-5 text-primary" />
-        </div>
-        <div className="min-w-0">
-          <h3
-            id="skip-byok-title"
-            className="font-display text-xl md:text-2xl italic leading-tight"
-          >
-            Une dernière chose — votre clé API.
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            L'IA intégrée fonctionne, mais elle est limitée. En branchant votre propre fournisseur
-            (Anthropic, OpenAI, Google…), vous débloquez :
-          </p>
-        </div>
-      </div>
-
-      <ul className="mt-5 space-y-2.5">
+    <ModalShell onClose={onBack} maxWidth="max-w-md" labelledBy="skip-byok-title">
+      <CloseButton onClick={onBack} />
+      <h3 id="skip-byok-title" className="pr-10 text-base font-semibold">
+        Ajouter votre clé API ?
+      </h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        L’IA intégrée fonctionne, avec des limites. Avec votre propre fournisseur (Anthropic,
+        OpenAI, Google…) :
+      </p>
+      <ul className="mt-4 space-y-2 text-sm">
         {[
-          "Aucune marge cachée — vous payez votre fournisseur au prix réel.",
-          "Continuez bien au-delà des limites gratuites incluses.",
-          "Chat illimité avec votre agent, sans plafond de tokens.",
+          "vous payez le fournisseur au prix réel, sans marge ;",
+          "vous dépassez les limites gratuites ;",
+          "le chat avec l’agent n’a plus de plafond de tokens.",
         ].map((benefit) => (
-          <li key={benefit} className="flex items-start gap-3 text-sm">
-            <span className="mt-0.5 shrink-0 size-5 rounded-full bg-emerald-500/10 grid place-items-center">
-              <Check className="size-3 text-emerald-500" strokeWidth={3} />
-            </span>
-            <span className="text-foreground/90">{benefit}</span>
+          <li key={benefit} className="flex items-start gap-2">
+            <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+            <span>{benefit}</span>
           </li>
         ))}
       </ul>
+      <p className="mt-4 text-xs text-muted-foreground">
+        Vous pourrez l’ajouter plus tard dans les réglages du workspace.
+      </p>
 
-      <div className="mt-6 space-y-2">
-        <button
-          onClick={onAddKey}
-          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-foreground text-background px-4 py-3 text-sm font-medium hover:opacity-90 transition-opacity group"
-        >
-          <Key className="size-4" />
-          Ajouter ma clé API maintenant
-          <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
+      <div className="mt-6 grid gap-2">
+        <button type="button" onClick={onAddKey} className={primaryButton}>
+          Ajouter ma clé API
         </button>
-
-        <button
-          onClick={onSkipAnyway}
-          className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-foreground/30 hover:bg-surface/50 transition-all"
-        >
-          <SkipForward className="size-4" />
-          Passer quand même → workspace
+        <button type="button" onClick={onSkipAnyway} className={outlineButton}>
+          Aller au workspace sans clé
         </button>
-
-        <button
-          onClick={onBack}
-          className="w-full text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors pt-1"
-        >
+        <button type="button" onClick={onBack} className={ghostButton}>
           Revenir au questionnaire
         </button>
       </div>
-
-      <p className="mt-5 text-[11px] text-muted-foreground/70 text-center">
-        Vous pourrez ajouter votre clé API à tout moment depuis les réglages du workspace.
-      </p>
     </ModalShell>
   );
 }
@@ -818,7 +757,7 @@ const providerPlaceholders: Record<string, string> = {
   OpenAI: "sk-...",
   "Google Gemini": "AIza...",
   Groq: "gsk_...",
-  "Mistral AI": "Clé API...",
+  "Mistral AI": "Clé API",
   Perplexity: "pplx-...",
   DeepSeek: "sk-...",
 };
@@ -835,19 +774,17 @@ function ProviderCard({
   onOpenGuide: (guide: ProviderGuide) => void;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-surface/40 p-4 md:p-5">
-      <div className="flex items-center justify-between gap-3 mb-3">
+    <div className="rounded-xl border border-border bg-background p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <div className="size-9 shrink-0 grid place-items-center rounded-lg border border-border bg-background text-foreground">
             {provider.icon}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm md:text-base truncate">{provider.name}</span>
+              <span className="truncate text-sm font-medium">{provider.name}</span>
               {provider.included && (
-                <span className="shrink-0 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary uppercase tracking-wide">
-                  Inclus
-                </span>
+                <span className="shrink-0 text-xs text-muted-foreground">Inclus</span>
               )}
             </div>
           </div>
@@ -855,17 +792,18 @@ function ProviderCard({
         <button
           type="button"
           onClick={() => onOpenGuide(provider)}
-          className="text-xs text-primary hover:underline shrink-0"
+          className="shrink-0 text-[13px] text-primary hover:underline"
         >
-          Comment trouver votre clé ?
+          Où la trouver ?
         </button>
       </div>
       <input
         type="password"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={providerPlaceholders[provider.name] ?? "Clé API..."}
-        className="w-full rounded-xl border border-border bg-background px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
+        placeholder={providerPlaceholders[provider.name] ?? "Clé API"}
+        aria-label={`Clé API ${provider.name}`}
+        className="h-11 w-full rounded-lg border border-input bg-background px-3 text-base placeholder:text-muted-foreground transition-[border-color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 md:h-10 md:text-sm [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
       />
     </div>
   );
@@ -881,10 +819,9 @@ interface ChoiceQuestion {
 }
 
 const optionBase =
-  "w-full flex items-center justify-between gap-2 text-left p-3 md:p-4 rounded-xl border transition-all";
-const optionOn = "border-primary bg-primary/5 ring-2 ring-primary/10";
-const optionOff =
-  "border-border bg-background/80 backdrop-blur-sm hover:border-foreground/20 hover:bg-surface/60";
+  "flex h-12 w-full items-center justify-between gap-2 rounded-xl border px-4 text-left transition-colors duration-150 ease-out";
+const optionOn = "border-primary bg-primary/5";
+const optionOff = "border-border bg-background hover:bg-surface/70";
 
 function OptionGrid({ question }: { question: ChoiceQuestion }) {
   const { options, selected, onSelect } = question;
@@ -892,9 +829,9 @@ function OptionGrid({ question }: { question: ChoiceQuestion }) {
   const isCustom = selected !== null && !options.includes(selected);
 
   return (
-    <div className="grid grid-cols-2 gap-2 md:gap-3">
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:gap-3">
       {options.map((opt, i) => {
-        const span = isOdd && i === options.length - 1 ? "col-span-2" : "";
+        const span = isOdd && i === options.length - 1 ? "sm:col-span-2" : "";
 
         if (opt === "Autre") {
           return (
@@ -918,9 +855,9 @@ function OptionGrid({ question }: { question: ChoiceQuestion }) {
               onClick={() => onSelect(opt)}
               className={`${optionBase} ${selected === opt ? optionOn : optionOff}`}
             >
-              <span className="flex items-center gap-2.5 min-w-0">
+              <span className="flex min-w-0 items-center gap-3">
                 <OptionIcon label={opt} active={selected === opt} />
-                <span className="text-xs md:text-sm font-medium truncate">{opt}</span>
+                <span className="truncate text-sm font-medium">{opt}</span>
               </span>
               {selected === opt && <Check className="size-4 shrink-0 text-primary" />}
             </button>
@@ -1001,11 +938,11 @@ function OtherOption({
         onClick={toggle}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className={`${optionBase} ${isCustom ? optionOn : open ? "border-foreground/30 bg-surface/60 backdrop-blur-sm" : optionOff}`}
+        className={`${optionBase} ${isCustom ? optionOn : open ? "border-foreground/30 bg-surface/70" : optionOff}`}
       >
-        <span className="flex items-center gap-2.5 min-w-0">
+        <span className="flex min-w-0 items-center gap-3">
           <OptionIcon label="Autre" active={isCustom} />
-          <span className="text-xs md:text-sm font-medium truncate">
+          <span className="truncate text-sm font-medium">
             {isCustom ? `Autre : ${selected}` : "Autre"}
           </span>
         </span>
@@ -1018,13 +955,11 @@ function OtherOption({
         <div
           role="listbox"
           aria-label={title}
-          className={`absolute z-40 w-72 rounded-xl border border-border bg-background p-2 shadow-xl animate-fade-in-up ${
+          className={`absolute z-40 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-background p-2 shadow-float animate-fade-in ${
             placement.v === "down" ? "top-full mt-2" : "bottom-full mb-2"
           } ${placement.h === "right" ? "right-0" : "left-0"}`}
         >
-          <p className="px-2 pt-1 pb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-            {title}
-          </p>
+          <p className="px-2 pb-2 pt-1 text-xs font-medium text-muted-foreground">{title}</p>
 
           <div className="max-h-44 overflow-y-auto space-y-1">
             {choices.map((c) => (
@@ -1034,8 +969,8 @@ function OtherOption({
                 role="option"
                 aria-selected={selected === c}
                 onClick={() => choose(c)}
-                className={`w-full flex items-center justify-between gap-2 text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  selected === c ? "bg-primary/5 text-primary font-medium" : "hover:bg-surface/60"
+                className={`flex h-10 w-full items-center justify-between gap-2 rounded-lg px-3 text-left text-sm transition-colors ${
+                  selected === c ? "bg-primary/5 font-medium text-primary" : "hover:bg-surface/70"
                 }`}
               >
                 <span className="flex items-center gap-2.5 min-w-0">
@@ -1056,13 +991,13 @@ function OtherOption({
                 if (e.key === "Enter" && custom.trim()) choose(custom.trim());
               }}
               placeholder={placeholder}
-              className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
+              className="h-10 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-base placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 md:h-9 md:text-sm"
             />
             <button
               type="button"
               disabled={!custom.trim()}
               onClick={() => choose(custom.trim())}
-              className="shrink-0 rounded-lg bg-foreground text-background px-3 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="h-10 shrink-0 rounded-lg bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 disabled:cursor-not-allowed disabled:opacity-40 md:h-9"
             >
               OK
             </button>
@@ -1105,7 +1040,7 @@ function OnboardingPage() {
       onSelect: setRole,
       otherTitle: "Autres profils",
       otherOptions: otherRoleOptions,
-      otherPlaceholder: "Précisez votre profil...",
+      otherPlaceholder: "Votre profil…",
     },
     channel: {
       options: channelOptions,
@@ -1113,7 +1048,7 @@ function OnboardingPage() {
       onSelect: setChannel,
       otherTitle: "Autres canaux",
       otherOptions: otherChannelOptions,
-      otherPlaceholder: "Précisez vos canaux...",
+      otherPlaceholder: "Vos canaux…",
     },
     sector: {
       options: sectorOptions,
@@ -1121,7 +1056,7 @@ function OnboardingPage() {
       onSelect: setSector,
       otherTitle: "Autres secteurs",
       otherOptions: otherSectorOptions,
-      otherPlaceholder: "Précisez votre secteur...",
+      otherPlaceholder: "Votre secteur…",
     },
     goal: {
       options: goalOptions,
@@ -1129,7 +1064,7 @@ function OnboardingPage() {
       onSelect: setGoal,
       otherTitle: "Autres objectifs",
       otherOptions: otherGoalOptions,
-      otherPlaceholder: "Précisez votre objectif...",
+      otherPlaceholder: "Votre objectif…",
     },
     tone: {
       options: toneOptions,
@@ -1137,7 +1072,7 @@ function OnboardingPage() {
       onSelect: setTone,
       otherTitle: "Autres tons",
       otherOptions: otherToneOptions,
-      otherPlaceholder: "Précisez votre ton...",
+      otherPlaceholder: "Votre ton…",
     },
   };
   const choice = choiceQuestions[current.key];
@@ -1221,7 +1156,7 @@ function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       {guideModal && <GuideModal guide={guideModal} onClose={() => setGuideModal(null)} />}
       {showSkipConfirm && (
         <SkipConfirmModal onCancel={() => setShowSkipConfirm(false)} onConfirm={confirmSkip} />
@@ -1237,79 +1172,74 @@ function OnboardingPage() {
         />
       )}
 
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-xl">
-        <div className="mx-auto max-w-3xl px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-2">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div className="min-w-0 shrink">
             <BrandLogo />
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 md:gap-2">
-            {steps.map((_, i) => (
-              <div
-                key={i}
-                className={`h-1 w-6 md:w-8 rounded-full transition-colors ${i <= step ? "bg-foreground" : "bg-border"}`}
-              />
-            ))}
+          <div className="flex items-center gap-4">
+            <span className="hidden text-xs tabular-nums text-muted-foreground sm:inline">
+              Étape {step + 1} sur {steps.length}
+            </span>
+            <button
+              type="button"
+              onClick={handleSkipQuestionnaire}
+              className="h-9 shrink-0 whitespace-nowrap rounded-lg px-3 text-[13px] text-muted-foreground transition-colors hover:bg-surface/70 hover:text-foreground"
+            >
+              Passer le questionnaire
+            </button>
           </div>
-          <button
-            onClick={handleSkipQuestionnaire}
-            className="shrink-0 whitespace-nowrap rounded-md px-2 py-1 text-[11px] md:text-sm text-muted-foreground hover:text-foreground transition-colors"
-            title="Passer tout le questionnaire"
-          >
-            Passer le questionnaire
-          </button>
         </div>
-        <div className="border-t border-border/40 bg-background/50">
-          <div className="mx-auto max-w-3xl px-4 md:px-6 py-1.5 md:py-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] md:text-xs font-medium text-muted-foreground">
-                Étape {step + 1} sur {steps.length}
-              </span>
-              <span className="text-[10px] md:text-xs text-muted-foreground/60">
-                {Math.round(((step + 1) / steps.length) * 100)}% complété
-              </span>
-            </div>
-            <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-border sm:hidden">
-              <div
-                className="h-full rounded-full bg-foreground transition-all duration-300"
-                style={{ width: `${((step + 1) / steps.length) * 100}%` }}
-              />
-            </div>
-          </div>
+        <div
+          className="h-0.5 w-full bg-border"
+          role="progressbar"
+          aria-label={`Étape ${step + 1} sur ${steps.length}`}
+          aria-valuemin={1}
+          aria-valuemax={steps.length}
+          aria-valuenow={step + 1}
+        >
+          <div
+            className="h-full bg-foreground transition-[width] duration-200 ease-out"
+            style={{ width: `${((step + 1) / steps.length) * 100}%` }}
+          />
         </div>
       </header>
 
-      <main className="flex-1 flex items-center relative overflow-hidden">
+      <main className="relative flex flex-1 items-start overflow-hidden md:items-center">
         {isChannelStep && (
           <>
             <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 md:opacity-30 pointer-events-none"
+              className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 md:opacity-30"
               style={{ backgroundImage: "url('/images/app/networks.webp')" }}
               aria-hidden="true"
             />
             <div
-              className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background/80 pointer-events-none"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background/80"
               aria-hidden="true"
             />
           </>
         )}
 
-        <div className="w-full mx-auto max-w-2xl px-4 md:px-6 py-8 md:py-16 relative z-10">
-          <div key={step} className="animate-fade-in-up">
-            <h1 className="font-display text-2xl md:text-5xl italic leading-tight tracking-tight">
+        <div className="relative z-10 mx-auto w-full max-w-2xl px-4 py-8 md:px-6 md:py-16">
+          <div key={step} className="animate-fade-in">
+            <p className="text-xs tabular-nums text-muted-foreground sm:hidden">
+              Étape {step + 1} sur {steps.length}
+            </p>
+            <h1 className="mt-2 font-display text-3xl italic leading-tight tracking-tight sm:mt-0 md:text-5xl">
               {current.title}
             </h1>
-            <p className="mt-1 md:mt-2 text-sm md:text-lg text-muted-foreground">
-              {current.subtitle}
-            </p>
+            {current.subtitle && (
+              <p className="mt-2 text-sm text-muted-foreground md:text-base">{current.subtitle}</p>
+            )}
 
-            <div className="mt-6 md:mt-10">
+            <div className="mt-8">
               {choice && <OptionGrid question={choice} />}
 
               {current.key === "icp" && (
                 <AutoResizeTextarea
                   value={icp}
                   onChange={setIcp}
-                  placeholder="Ex. CTO d'entreprises industrielles françaises de 50 à 500 personnes qui recrutent des ingénieurs..."
+                  placeholder="Ex. CTO d’entreprises industrielles françaises de 50 à 500 personnes qui recrutent des ingénieurs"
                   minHeight={120}
                 />
               )}
@@ -1318,7 +1248,7 @@ function OnboardingPage() {
                 <AutoResizeTextarea
                   value={value}
                   onChange={setValue}
-                  placeholder="Ex. Nous aidons les équipes commerciales B2B à doubler leur taux de réponse grâce à des séquences hyper-personnalisées par IA."
+                  placeholder="Ex. Nous aidons les équipes commerciales B2B à obtenir plus de réponses avec des séquences personnalisées."
                   minHeight={120}
                 />
               )}
@@ -1327,32 +1257,19 @@ function OnboardingPage() {
                 <AutoResizeTextarea
                   value={objections}
                   onChange={setObjections}
-                  placeholder="Ex. « C'est trop cher », « On a déjà un outil », « Je n'ai pas le temps », « Comment garantissez-vous les résultats ? »"
+                  placeholder="Ex. « C’est trop cher », « On a déjà un outil », « Je n’ai pas le temps »"
                   minHeight={100}
                 />
               )}
 
               {current.key === "byok" && (
                 <div className="space-y-6">
-                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 md:p-5 flex gap-3">
-                    <Info className="size-5 text-primary shrink-0 mt-0.5" />
-                    <div className="text-sm md:text-base">
-                      <p className="font-medium text-foreground">
-                        Allez plus loin : grâce à votre propre fournisseur, bénéficiez de vos
-                        consommations sans marge cachée et profitez d'un chat illimité.
-                      </p>
-                      <p className="mt-1 text-xs md:text-sm text-muted-foreground">
-                        L'ajout d'une clé API personnelle n'est <strong>pas obligatoire</strong>.
-                        Les modèles inclus (Claude, ChatGPT, Gemini, Perplexity) restent disponibles
-                        sans aucune configuration.
-                      </p>
-                    </div>
-                  </div>
+                  <p className="max-w-prose text-sm text-muted-foreground">
+                    Les modèles inclus (Claude, ChatGPT, Gemini, Perplexity) marchent sans clé. Avec
+                    la vôtre, vous payez le fournisseur au prix réel et le chat n’a plus de limite.
+                  </p>
 
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                      Fournisseurs principaux
-                    </h3>
+                  <div className="space-y-2">
                     {providerGuides.slice(0, 3).map((provider) => (
                       <ProviderCard
                         key={provider.name}
@@ -1364,18 +1281,8 @@ function OnboardingPage() {
                     ))}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setShowOtherProviders(!showOtherProviders)}
-                    className="w-full rounded-xl border border-dashed border-border p-3 text-sm text-muted-foreground hover:border-foreground/20 hover:text-foreground transition-all"
-                  >
-                    {showOtherProviders
-                      ? "Masquer les autres fournisseurs"
-                      : "Autres fournisseurs..."}
-                  </button>
-
                   {showOtherProviders && (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {providerGuides.slice(3).map((provider) => (
                         <ProviderCard
                           key={provider.name}
@@ -1388,88 +1295,77 @@ function OnboardingPage() {
                     </div>
                   )}
 
-                  <p className="text-[10px] md:text-xs text-muted-foreground">
-                    Vos clés sont chiffrées côté client. Nous ne les stockons jamais en clair.
-                  </p>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <button
+                      type="button"
+                      onClick={() => setShowOtherProviders(!showOtherProviders)}
+                      aria-expanded={showOtherProviders}
+                      className="inline-flex items-center gap-1 self-start text-[13px] font-medium text-foreground hover:text-primary"
+                    >
+                      {showOtherProviders ? "Moins de fournisseurs" : "Autres fournisseurs"}
+                      <ChevronDown
+                        className={`size-4 transition-transform ${showOtherProviders ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                    <p className="text-xs text-muted-foreground">
+                      Clés chiffrées côté client, jamais stockées en clair.
+                    </p>
+                  </div>
                 </div>
               )}
 
               {current.key === "ready" && (
-                <div className="rounded-2xl border border-border bg-surface/40 p-6 md:p-8 text-center">
-                  <div className="mx-auto size-10 md:size-14 rounded-full bg-primary/10 grid place-items-center">
-                    <Check className="size-5 md:size-6 text-primary" strokeWidth={2} />
-                  </div>
-                  <h3 className="mt-4 md:mt-6 font-display text-2xl md:text-3xl italic">
-                    L'agent est configuré.
-                  </h3>
-                  <p className="mt-1 md:mt-2 text-xs md:text-sm text-muted-foreground">
-                    On vous emmène dans votre workspace.
-                  </p>
-                  <div className="mt-6 text-left text-sm text-muted-foreground space-y-2 max-w-md mx-auto">
-                    <p>
-                      <strong className="text-foreground">Profil :</strong>{" "}
-                      {getSelectedValue("role") || "Non renseigné"}
-                    </p>
-                    <p>
-                      <strong className="text-foreground">ICP :</strong> {icp || "Non renseigné"}
-                    </p>
-                    <p>
-                      <strong className="text-foreground">Canaux :</strong>{" "}
-                      {getSelectedValue("channel") || "Non renseigné"}
-                    </p>
-                    <p>
-                      <strong className="text-foreground">Secteur :</strong>{" "}
-                      {getSelectedValue("sector") || "Non renseigné"}
-                    </p>
-                    <p>
-                      <strong className="text-foreground">Objectif :</strong>{" "}
-                      {getSelectedValue("goal") || "Non renseigné"}
-                    </p>
-                    <p>
-                      <strong className="text-foreground">Ton :</strong>{" "}
-                      {getSelectedValue("tone") || "Non renseigné"}
-                    </p>
-                    <p>
-                      <strong className="text-foreground">Proposition de valeur :</strong>{" "}
-                      {value || "Non renseigné"}
-                    </p>
-                    <p>
-                      <strong className="text-foreground">Objections :</strong>{" "}
-                      {objections || "Non renseigné"}
-                    </p>
-                  </div>
-                </div>
+                <dl className="divide-y divide-border rounded-xl border border-border bg-background">
+                  {(
+                    [
+                      ["Profil", getSelectedValue("role")],
+                      ["Client idéal", icp],
+                      ["Canaux", getSelectedValue("channel")],
+                      ["Secteur", getSelectedValue("sector")],
+                      ["Objectif", getSelectedValue("goal")],
+                      ["Ton", getSelectedValue("tone")],
+                      ["Proposition de valeur", value],
+                      ["Objections", objections],
+                    ] as [string, string | null][]
+                  ).map(([label, answer]) => (
+                    <div
+                      key={label}
+                      className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[10rem_1fr] sm:gap-4"
+                    >
+                      <dt className="text-muted-foreground">{label}</dt>
+                      <dd className={answer ? "text-foreground" : "text-muted-foreground"}>
+                        {answer || "Non renseigné"}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               )}
             </div>
 
-            <div className="mt-8 md:mt-12 flex items-center justify-between gap-3">
+            <div className="mt-8 flex items-center justify-between gap-2 md:mt-12">
               <button
+                type="button"
                 onClick={() => setStep(Math.max(0, step - 1))}
                 disabled={step === 0}
-                className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl px-2 py-2.5 md:py-3 text-sm text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className={ghostButton}
               >
-                <ArrowLeft className="size-4" /> Retour
+                <ArrowLeft className="size-4" />
+                <span className="sr-only sm:not-sr-only">Retour</span>
               </button>
 
-              <div className="flex items-center gap-2 md:gap-3">
+              <div className="flex items-center gap-2">
                 {canSkip && (
-                  <button
-                    onClick={skipQuestion}
-                    className="inline-flex items-center gap-2 rounded-xl border border-border px-4 md:px-5 py-2.5 md:py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-foreground/30 hover:bg-surface/50 transition-all"
-                  >
-                    <SkipForward className="size-4" />
-                    <span>
-                      Passer<span className="hidden sm:inline"> cette question</span>
-                    </span>
+                  <button type="button" onClick={skipQuestion} className={ghostButton}>
+                    Passer
                   </button>
                 )}
                 <button
+                  type="button"
                   onClick={handleContinue}
                   disabled={!isStepValid()}
-                  className="group inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-4 md:px-5 py-2.5 md:py-3 text-sm font-medium hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className={primaryButton}
                 >
-                  {isLast ? "Entrer dans le workspace" : "Continuer"}
-                  <ArrowRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
+                  {isLast ? "Ouvrir le workspace" : "Continuer"}
                 </button>
               </div>
             </div>
@@ -1482,7 +1378,7 @@ function OnboardingPage() {
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
-    meta: [{ title: "Bienvenue — LeadCortex" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Bienvenue · LeadCortex" }, { name: "robots", content: "noindex" }],
   }),
   pendingComponent: () => <OnboardingSkeleton />,
   component: OnboardingPage,

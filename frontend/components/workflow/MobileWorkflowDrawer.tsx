@@ -124,6 +124,7 @@ export function MobileWorkflowDrawer({
         try {
           window.localStorage.setItem(TAB_STORAGE_KEY, String(tabRatioRef.current));
         } catch {
+          void 0;
         }
         return;
       }

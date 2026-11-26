@@ -82,7 +82,7 @@ export function CodeEditorModal({
           if (dirty) e.preventDefault();
         }}
       >
-        <DialogTitle className="sr-only">Éditeur de code — {target.title}</DialogTitle>
+        <DialogTitle className="sr-only">Éditeur de code · {target.title}</DialogTitle>
 
         <header className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border py-2.5 pl-3 pr-14 md:pl-4">
           <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
@@ -90,7 +90,7 @@ export function CodeEditorModal({
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[13px] font-semibold">{target.title}</p>
-            <p className="truncate text-[10.5px] text-muted-foreground">
+            <p className="truncate text-[11px] text-muted-foreground">
               {target.fieldLabel} · script.{lang.ext}
               {dirty ? " · modifié" : ""}
             </p>
@@ -107,7 +107,7 @@ export function CodeEditorModal({
               options={CODE_LANGUAGE_LABELS}
               ariaLabel="Langage du script"
               size="default"
-              className="w-auto min-w-[7.5rem]"
+              className="h-8 w-auto min-w-[7.5rem]"
             />
           </label>
 
@@ -117,7 +117,7 @@ export function CodeEditorModal({
               setCode(lang.snippet);
               setDirty(true);
             }}
-            className="hidden h-7 rounded-md border border-border px-2.5 text-[11.5px] text-muted-foreground hover:text-foreground md:inline-flex md:items-center"
+            className="hidden h-7 rounded-md border border-border px-2.5 text-xs text-muted-foreground hover:text-foreground md:inline-flex md:items-center"
           >
             Insérer un modèle
           </button>
@@ -125,7 +125,7 @@ export function CodeEditorModal({
           <button
             type="button"
             onClick={save}
-            className="inline-flex h-7 items-center gap-1.5 rounded-md bg-primary px-3 text-[11.5px] font-medium text-primary-foreground hover:brightness-110"
+            className="inline-flex h-7 items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:brightness-110"
           >
             <Save className="h-3.5 w-3.5" /> Enregistrer
           </button>
@@ -134,7 +134,7 @@ export function CodeEditorModal({
         <div className="wf-code-modal min-h-0 flex-1 overflow-hidden">
           <Suspense
             fallback={
-              <div className="flex h-full items-center justify-center gap-2 text-[12px] text-muted-foreground">
+              <div className="flex h-full items-center justify-center gap-2 text-xs text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" /> Chargement de l'éditeur…
               </div>
             }
@@ -152,7 +152,7 @@ export function CodeEditorModal({
 
         <footer
           className={cn(
-            "flex shrink-0 items-center gap-2 border-t border-border px-3 py-2 text-[11.5px]",
+            "flex shrink-0 items-center gap-2 border-t border-border px-3 py-2 text-xs",
             issues.length ? "text-destructive" : "text-muted-foreground",
           )}
         >

@@ -1,7 +1,16 @@
 // frontend/routes/app/saved/index.tsx
 
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { PageHeader, Badge, TableCard } from "@/components/common/ui-primitives";
+import { PageHeader, Badge } from "@/components/common/ui-primitives";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/core/utils";
 import { Users, Building2, Bookmark, Star } from "@/components/icons";
 import { useState } from "react";
 import { useAppStore } from "@/lib/state/store";
@@ -9,10 +18,12 @@ import { EmptyState } from "@/components/common/empty-state";
 import { SavedPageSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/app/saved/")({
-  head: () => ({ meta: [{ title: "Sauvegardés — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Sauvegardés · LeadCortex" }] }),
   pendingComponent: () => <SavedPageSkeleton />,
   component: SavedPage,
 });
+
+const intentLabels: Record<string, string> = { hot: "Forte", warm: "Moyenne", cold: "Faible" };
 
 function SavedPage() {
   const navigate = useNavigate();
@@ -20,6 +31,11 @@ function SavedPage() {
   const [tab, setTab] = useState<"people" | "company">("people");
   const savedPeople = leads.filter((l) => l.saved);
   const savedCompanies = companies.filter((c) => c.saved);
+
+  const tabs = [
+    { key: "people" as const, label: "Prospects", icon: Users, count: savedPeople.length },
+    { key: "company" as const, label: "Entreprises", icon: Building2, count: savedCompanies.length },
+  ];
 
   return (
     <div className="max-w-full">
@@ -29,23 +45,29 @@ function SavedPage() {
         description={`${savedPeople.length} prospects · ${savedCompanies.length} entreprises`}
       />
 
-      <div className="mb-3 md:mb-4 flex items-center gap-1 border border-border rounded-md p-0.5 bg-surface/40 w-fit">
-        <button
-          onClick={() => setTab("people")}
-          className={`inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1 md:py-1.5 text-[9px] md:text-xs rounded ${
-            tab === "people" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"
-          }`}
-        >
-          <Users className="size-3 md:size-3.5" /> Prospects ({savedPeople.length})
-        </button>
-        <button
-          onClick={() => setTab("company")}
-          className={`inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1 md:py-1.5 text-[9px] md:text-xs rounded ${
-            tab === "company" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"
-          }`}
-        >
-          <Building2 className="size-3 md:size-3.5" /> Entreprises ({savedCompanies.length})
-        </button>
+      <div
+        role="tablist"
+        className="mb-4 inline-flex items-center gap-1 rounded-lg border border-border bg-surface/40 p-0.5"
+      >
+        {tabs.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            role="tab"
+            aria-selected={tab === t.key}
+            onClick={() => setTab(t.key)}
+            className={cn(
+              "inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-[13px] transition-colors",
+              tab === t.key
+                ? "bg-background font-medium text-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <t.icon className="size-3.5" />
+            {t.label}
+            <span className="tabular-nums text-muted-foreground">{t.count}</span>
+          </button>
+        ))}
       </div>
 
       {tab === "people" ? (
@@ -53,129 +75,117 @@ function SavedPage() {
           <EmptyState
             icon={Star}
             title="Aucun prospect favori"
-            description="Sauvegardez des prospects pour les retrouver rapidement ici."
+            description="Ajoutez un prospect aux favoris pour le retrouver ici."
             action={{
-              label: "Explorer les prospects",
+              label: "Voir les prospects",
               onClick: () => navigate({ to: "/app/people" }),
               icon: Users,
             }}
             size="lg"
           />
         ) : (
-          <TableCard>
-            <div className="overflow-x-auto scrollbar-hide table-scroll">
-              <table className="w-full text-left text-xs md:text-sm min-w-[500px]">
-                <thead className="bg-surface/50 text-muted-foreground text-[8px] md:text-[10px] uppercase tracking-[0.12em]">
-                  <tr>
-                    <th className="px-3 md:px-4 py-2 border-b border-border font-medium">Nom</th>
-                    <th className="px-3 md:px-4 py-2 border-b border-border font-medium">
-                      Entreprise
-                    </th>
-                    <th className="px-3 md:px-4 py-2 border-b border-border font-medium">Signal</th>
-                    <th className="px-3 md:px-4 py-2 border-b border-border font-medium text-center">
-                      Score
-                    </th>
-                    <th className="px-3 md:px-4 py-2 border-b border-border w-6 md:w-8"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {savedPeople.map((l) => (
-                    <tr key={l.id} className="hover:bg-surface/40 transition-colors">
-                      <td className="px-3 md:px-4 py-2 md:py-3">
-                        <p className="font-medium text-xs md:text-sm">{l.name}</p>
-                        <p className="text-[9px] md:text-xs text-muted-foreground">{l.title}</p>
-                      </td>
-                      <td className="px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm">{l.company}</td>
-                      <td className="px-3 md:px-4 py-2 md:py-3">
-                        {l.signal ? <Badge tone="primary">{l.signal}</Badge> : "—"}
-                      </td>
-                      <td className="px-3 md:px-4 py-2 md:py-3 text-center font-mono text-xs md:text-sm">
-                        {l.score?.toFixed(1) ?? "—"}
-                      </td>
-                      <td className="px-3 md:px-4 py-2 md:py-3">
-                        <button
-                          onClick={() => toggleLeadSaved(l.id)}
-                          className="text-primary p-0.5 md:p-1"
-                        >
-                          <Bookmark className="size-3 md:size-3.5" fill="currentColor" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </TableCard>
+          <Table className="min-w-[520px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nom</TableHead>
+                <TableHead>Entreprise</TableHead>
+                <TableHead>Signal</TableHead>
+                <TableHead className="text-right">Score</TableHead>
+                <TableHead className="w-12" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {savedPeople.map((l) => (
+                <TableRow key={l.id}>
+                  <TableCell>
+                    <Link
+                      to="/app/people/$id"
+                      params={{ id: l.id }}
+                      className="block text-[13px] font-medium hover:underline"
+                    >
+                      {l.name}
+                    </Link>
+                    {l.title && <p className="text-xs text-muted-foreground">{l.title}</p>}
+                  </TableCell>
+                  <TableCell className="text-[13px]">{l.company}</TableCell>
+                  <TableCell>
+                    {l.signal && <Badge tone="primary">{l.signal}</Badge>}
+                  </TableCell>
+                  <TableCell className="text-right text-[13px] tabular-nums">
+                    {l.score?.toFixed(1)}
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      type="button"
+                      onClick={() => toggleLeadSaved(l.id)}
+                      aria-label={`Retirer ${l.name} des favoris`}
+                      title="Retirer des favoris"
+                      className="grid size-8 place-items-center rounded-lg text-primary hover:bg-surface/70"
+                    >
+                      <Bookmark className="size-4" fill="currentColor" />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )
       ) : savedCompanies.length === 0 ? (
         <EmptyState
           icon={Star}
           title="Aucune entreprise favorite"
-          description="Sauvegardez des entreprises pour les retrouver rapidement ici."
+          description="Ajoutez une entreprise aux favoris pour la retrouver ici."
           action={{
-            label: "Explorer les entreprises",
+            label: "Voir les entreprises",
             onClick: () => navigate({ to: "/app/companies" }),
             icon: Building2,
           }}
           size="lg"
         />
       ) : (
-        <TableCard>
-          <div className="overflow-x-auto scrollbar-hide table-scroll">
-            <table className="w-full text-left text-xs md:text-sm min-w-[500px]">
-              <thead className="bg-surface/50 text-muted-foreground text-[8px] md:text-[10px] uppercase tracking-[0.12em]">
-                <tr>
-                  <th className="px-3 md:px-4 py-2 border-b border-border font-medium">
-                    Entreprise
-                  </th>
-                  <th className="px-3 md:px-4 py-2 border-b border-border font-medium">
-                    Industrie
-                  </th>
-                  <th className="px-3 md:px-4 py-2 border-b border-border font-medium text-right">
-                    Revenu
-                  </th>
-                  <th className="px-3 md:px-4 py-2 border-b border-border font-medium">
-                    Intention
-                  </th>
-                  <th className="px-3 md:px-4 py-2 border-b border-border w-6 md:w-8"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {savedCompanies.map((c) => (
-                  <tr key={c.id} className="hover:bg-surface/40 transition-colors">
-                    <td className="px-3 md:px-4 py-2 md:py-3">
-                      <p className="font-medium text-xs md:text-sm">{c.name}</p>
-                      <p className="text-[9px] md:text-xs text-muted-foreground font-mono">
-                        {c.domain}
-                      </p>
-                    </td>
-                    <td className="px-3 md:px-4 py-2 md:py-3 text-muted-foreground text-xs md:text-sm">
-                      {c.industry}
-                    </td>
-                    <td className="px-3 md:px-4 py-2 md:py-3 text-right font-mono text-[10px] md:text-xs">
-                      {c.revenue}
-                    </td>
-                    <td className="px-3 md:px-4 py-2 md:py-3">
-                      <Badge tone={c.intent === "hot" ? "primary" : "warning"}>{c.intent}</Badge>
-                    </td>
-                    <td className="px-3 md:px-4 py-2 md:py-3">
-                      <button
-                        onClick={() => toggleCompanySaved(c.id)}
-                        className="text-primary p-0.5 md:p-1"
-                      >
-                        <Bookmark className="size-3 md:size-3.5" fill="currentColor" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </TableCard>
+        <Table className="min-w-[520px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Entreprise</TableHead>
+              <TableHead>Secteur</TableHead>
+              <TableHead className="text-right">Chiffre d'affaires</TableHead>
+              <TableHead>Intention</TableHead>
+              <TableHead className="w-12" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {savedCompanies.map((c) => (
+              <TableRow key={c.id}>
+                <TableCell>
+                  <p className="text-[13px] font-medium">{c.name}</p>
+                  {c.domain && <p className="text-xs text-muted-foreground">{c.domain}</p>}
+                </TableCell>
+                <TableCell className="text-[13px] text-muted-foreground">{c.industry}</TableCell>
+                <TableCell className="text-right text-[13px] tabular-nums">{c.revenue}</TableCell>
+                <TableCell>
+                  <Badge tone={c.intent === "hot" ? "primary" : "warning"}>
+                    {intentLabels[c.intent] ?? c.intent}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <button
+                    type="button"
+                    onClick={() => toggleCompanySaved(c.id)}
+                    aria-label={`Retirer ${c.name} des favoris`}
+                    title="Retirer des favoris"
+                    className="grid size-8 place-items-center rounded-lg text-primary hover:bg-surface/70"
+                  >
+                    <Bookmark className="size-4" fill="currentColor" />
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
 
-      <div className="mt-4 md:mt-8 text-xs md:text-sm text-muted-foreground">
-        Astuce : depuis{" "}
+      <p className="mt-6 text-[13px] text-muted-foreground">
+        Pour ajouter un favori, cliquez sur le signet d'une ligne dans{" "}
         <Link to="/app/people" className="text-primary hover:underline">
           Prospects
         </Link>{" "}
@@ -183,8 +193,8 @@ function SavedPage() {
         <Link to="/app/companies" className="text-primary hover:underline">
           Entreprises
         </Link>
-        , cliquez sur l'icône signet pour ajouter à vos favoris.
-      </div>
+        .
+      </p>
     </div>
   );
 }

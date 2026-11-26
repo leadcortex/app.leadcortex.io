@@ -58,7 +58,7 @@ export function ActionMenu({ items, align = "right", className = "", title = "Ac
       {open && (
         <div
           role="menu"
-          className={`absolute z-50 mt-1 min-w-[180px] rounded-lg border border-border bg-background shadow-lg p-1 ${
+          className={`absolute z-50 mt-1 min-w-[180px] rounded-lg border border-border bg-popover shadow-float p-1 ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >

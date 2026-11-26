@@ -23,6 +23,7 @@ import { Route as DocsRouteImport } from './../frontend/routes/docs'
 import { Route as AppRouteImport } from './../frontend/routes/app'
 import { Route as IndexRouteImport } from './../frontend/routes/index'
 import { Route as AppIndexRouteImport } from './../frontend/routes/app/index'
+import { Route as LegalPaiementRouteImport } from './../frontend/routes/legal.paiement'
 import { Route as LegalMentionsLegalesRouteImport } from './../frontend/routes/legal.mentions-legales'
 import { Route as LegalDpaRouteImport } from './../frontend/routes/legal.dpa'
 import { Route as LegalCookiesRouteImport } from './../frontend/routes/legal.cookies'
@@ -141,6 +142,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const LegalPaiementRoute = LegalPaiementRouteImport.update({
+  id: '/legal/paiement',
+  path: '/legal/paiement',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LegalMentionsLegalesRoute = LegalMentionsLegalesRouteImport.update({
   id: '/legal/mentions-legales',
@@ -467,6 +473,7 @@ export interface FileRoutesByFullPath {
   '/legal/cookies': typeof LegalCookiesRoute
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
+  '/legal/paiement': typeof LegalPaiementRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/mail/accounts': typeof ApiMailAccountsRoute
@@ -536,6 +543,7 @@ export interface FileRoutesByTo {
   '/legal/cookies': typeof LegalCookiesRoute
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
+  '/legal/paiement': typeof LegalPaiementRoute
   '/app': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/mail/accounts': typeof ApiMailAccountsRoute
@@ -609,6 +617,7 @@ export interface FileRoutesById {
   '/legal/cookies': typeof LegalCookiesRoute
   '/legal/dpa': typeof LegalDpaRoute
   '/legal/mentions-legales': typeof LegalMentionsLegalesRoute
+  '/legal/paiement': typeof LegalPaiementRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/mail/accounts': typeof ApiMailAccountsRoute
@@ -683,6 +692,7 @@ export interface FileRouteTypes {
     | '/legal/cookies'
     | '/legal/dpa'
     | '/legal/mentions-legales'
+    | '/legal/paiement'
     | '/app/'
     | '/api/auth/$'
     | '/api/mail/accounts'
@@ -752,6 +762,7 @@ export interface FileRouteTypes {
     | '/legal/cookies'
     | '/legal/dpa'
     | '/legal/mentions-legales'
+    | '/legal/paiement'
     | '/app'
     | '/api/auth/$'
     | '/api/mail/accounts'
@@ -824,6 +835,7 @@ export interface FileRouteTypes {
     | '/legal/cookies'
     | '/legal/dpa'
     | '/legal/mentions-legales'
+    | '/legal/paiement'
     | '/app/'
     | '/api/auth/$'
     | '/api/mail/accounts'
@@ -886,6 +898,7 @@ export interface RootRouteChildren {
   LegalCookiesRoute: typeof LegalCookiesRoute
   LegalDpaRoute: typeof LegalDpaRoute
   LegalMentionsLegalesRoute: typeof LegalMentionsLegalesRoute
+  LegalPaiementRoute: typeof LegalPaiementRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiMailAccountsRoute: typeof ApiMailAccountsRoute
   ApiMailMessagesRoute: typeof ApiMailMessagesRoute
@@ -976,6 +989,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/legal/paiement': {
+      id: '/legal/paiement'
+      path: '/legal/paiement'
+      fullPath: '/legal/paiement'
+      preLoaderRoute: typeof LegalPaiementRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/legal/mentions-legales': {
       id: '/legal/mentions-legales'
@@ -1573,6 +1593,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalCookiesRoute: LegalCookiesRoute,
   LegalDpaRoute: LegalDpaRoute,
   LegalMentionsLegalesRoute: LegalMentionsLegalesRoute,
+  LegalPaiementRoute: LegalPaiementRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiMailAccountsRoute: ApiMailAccountsRoute,
   ApiMailMessagesRoute: ApiMailMessagesRoute,

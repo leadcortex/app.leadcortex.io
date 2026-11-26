@@ -1,7 +1,7 @@
 // frontend/components/auth/otp-modal.tsx
 
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ArrowRight, Check } from "@/components/icons";
+import { AlertCircle, Check } from "@/components/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/core/utils";
@@ -95,7 +95,7 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
     if (verifying) return;
     const code = otp.join("");
     if (code.length < 6) {
-      setError("Veuillez saisir les 6 chiffres.");
+      setError("Saisissez les 6 chiffres.");
       return;
     }
     setError(null);
@@ -118,7 +118,7 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
     setCooldown(30);
     setOtp(Array(6).fill(""));
     inputRefs.current[0]?.focus();
-    setSuccess("Un nouveau code vient d'être envoyé.");
+    setSuccess("Nouveau code envoyé.");
   };
 
   return (
@@ -151,7 +151,7 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
             <h2 className="font-display text-xl italic">Vérification</h2>
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            Un code à 6 chiffres a été envoyé à{" "}
+            Code à 6 chiffres envoyé à{" "}
             <span className="break-all font-medium text-foreground">{email}</span>.
           </DialogDescription>
         </div>
@@ -196,10 +196,9 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
           <button
             onClick={handleSubmit}
             disabled={verifying}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-foreground py-2.5 text-sm font-medium text-background transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex h-11 w-full items-center justify-center rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-colors duration-150 ease-out hover:bg-foreground/90 disabled:cursor-not-allowed disabled:opacity-60 md:h-10"
           >
             {verifying ? "Vérification…" : "Vérifier"}
-            {!verifying && <ArrowRight className="size-4" />}
           </button>
 
           <div className="flex items-center justify-center">
@@ -210,20 +209,20 @@ export function OtpModal({ open, email, onVerify, onClose, redirectTo }: OtpModa
               className="text-xs text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline disabled:cursor-not-allowed disabled:opacity-60"
             >
               {resending
-                ? "Envoi en cours…"
+                ? "Envoi…"
                 : cooldown > 0
                   ? `Renvoyer le code dans ${cooldown}s`
                   : "Renvoyer le code"}
             </button>
           </div>
 
-          <div className="flex items-center justify-between border-t border-border pt-3">
+          <div className="flex items-center justify-between border-t border-border pt-4">
             <button
               type="button"
               onClick={onClose}
               className="text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
-              ← Changer d'email
+              Changer d’e-mail
             </button>
             <button
               type="button"

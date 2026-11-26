@@ -156,10 +156,7 @@ export function ImageCropperDialog({
   const effectiveCropSize = cropSize > 0 ? cropSize : FALLBACK_CROP_SIZE;
 
   const baseScale = imageReady
-    ? Math.max(
-        effectiveCropSize / naturalSize.width,
-        effectiveCropSize / naturalSize.height,
-      )
+    ? Math.max(effectiveCropSize / naturalSize.width, effectiveCropSize / naturalSize.height)
     : 0;
 
   const containZoom =
@@ -256,10 +253,7 @@ export function ImageCropperDialog({
       const [p1, p2] = Array.from(pointersRef.current.values());
       const dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
       const ratio = dist / pinchRef.current.startDist;
-      const newZoom = Math.min(
-        MAX_ZOOM,
-        Math.max(minZoom, pinchRef.current.startZoom * ratio),
-      );
+      const newZoom = Math.min(MAX_ZOOM, Math.max(minZoom, pinchRef.current.startZoom * ratio));
 
       const rect = cropEl.getBoundingClientRect();
       const midLocal = {
@@ -415,7 +409,7 @@ export function ImageCropperDialog({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium shadow-[0_1px_0_var(--border)] transition-colors hover:bg-surface active:translate-y-[1px] active:shadow-none"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium transition-colors hover:bg-surface"
           >
             <ImagePlus className="size-3.5 text-primary" />
             Changer l&apos;image
@@ -601,11 +595,10 @@ function BackgroundOption({
       type="button"
       onClick={() => onChange(value)}
       className={cn(
-        "inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-[11px] font-medium transition-all",
-        "active:translate-y-[2px] active:shadow-none",
+        "inline-flex flex-1 items-center justify-center gap-2 rounded-lg border px-2 py-2 text-xs font-medium transition-colors",
         active
-          ? "border-primary bg-primary/10 text-primary shadow-[0_2px_0_color-mix(in_oklab,var(--primary)_35%,transparent)]"
-          : "border-border bg-background text-muted-foreground hover:bg-surface shadow-[0_2px_0_var(--border)]",
+          ? "border-primary bg-primary/10 text-primary"
+          : "border-border bg-background text-muted-foreground hover:bg-surface",
       )}
     >
       <span

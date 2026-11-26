@@ -66,7 +66,7 @@ export function CommentCard({
         )}
         style={{ left: comment.x, top: comment.y, width: comment.w, height: comment.h }}
       >
-        <div className="flex items-center gap-1.5 border-b border-annotation/40 px-2 py-1 text-[10px] uppercase tracking-wider text-annotation">
+        <div className="flex items-center gap-1.5 border-b border-annotation/40 px-2 py-1 text-[11px] text-annotation">
           <CornerDownRight className="h-3 w-3" />
           <span className="flex-1 truncate">Note{target ? ` → ${target.title}` : ""}</span>
           <button

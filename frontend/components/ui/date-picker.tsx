@@ -42,10 +42,9 @@ export function DatePicker({
           variant="outline"
           disabled={disabled}
           className={cn(
-            "w-full h-[38px] px-3 gap-2 justify-start text-left font-normal",
+            "w-full h-9 px-3 gap-2 justify-start text-left font-normal",
             "border-border bg-background",
-            "shadow-[0_2px_0_var(--border)] active:translate-y-[2px] active:shadow-none transition-all",
-            !value && "text-muted-foreground"
+            !value && "text-muted-foreground",
           )}
         >
           <CalendarIcon className="size-4 text-primary shrink-0" />
@@ -64,7 +63,7 @@ export function DatePicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0 rounded-xl border-2 border-border shadow-xl overflow-hidden"
+        className="w-auto p-0 rounded-xl border border-border shadow-float overflow-hidden"
         align="start"
         collisionPadding={12}
       >

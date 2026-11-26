@@ -14,11 +14,11 @@ const tabMultichannel = "/images/site/tabs/multichannel.webp";
 const tabDeliverability = "/images/site/tabs/deliverability.webp";
 
 const tabs = [
-  { label: "Laissez l'IA s'en charger", img: tabAgent },
-  { label: "Trouvez et enrichissez vos leads", img: tabLeads },
-  { label: "Détectez les signaux d'achat", img: tabSignals },
-  { label: "Engagez sur tous les canaux", img: tabMultichannel },
-  { label: "Évitez les spams", img: tabDeliverability },
+  { label: "Agent IA", img: tabAgent },
+  { label: "Prospects enrichis", img: tabLeads },
+  { label: "Signaux d'achat", img: tabSignals },
+  { label: "Multicanal", img: tabMultichannel },
+  { label: "Délivrabilité", img: tabDeliverability },
 ];
 
 export function LandingHero() {
@@ -49,12 +49,12 @@ export function LandingHero() {
       </div>
       <div className="lc-hero-copy lc-container">
         <h1>
-          Deux IA.
+          Deux IA pour
           <br />
-          <em>Toute votre prospection.</em>
+          <em>toute votre prospection.</em>
         </h1>
         <div>
-          <p>L'une trouve vos prospects. L'autre leur écrit. Vous validez.</p>
+          <p>L'une trouve vos prospects, l'autre leur écrit. Rien ne part sans votre accord.</p>
           <p>Essai gratuit · Sans carte bancaire</p>
           <div className="lc-cta-row">
             <Button asChild variant="lcLight">

@@ -1,8 +1,9 @@
 // frontend/routes/app/meetings/index.tsx
 
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, Kpi } from "@/components/common/ui-primitives";
+import { PageHeader } from "@/components/common/ui-primitives";
 import DataTable, { type Column } from "@/components/common/data-table";
+import { Button } from "@/components/ui/button";
 import { CalendarDays, Video, Plus, Clock } from "@/components/icons";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -14,15 +15,16 @@ import { BookingLinksBoard } from "@/components/meetings/booking-links-board";
 import { mockBookingLinks, type BookingLink } from "@/lib/meetings/booking-mock";
 
 export const Route = createFileRoute("/app/meetings/")({
-  head: () => ({ meta: [{ title: "Meetings — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Rendez-vous · LeadCortex" }] }),
   pendingComponent: () => <MeetingsPageSkeleton />,
   component: MeetingsPage,
 });
-const typeColor = {
-  discovery: "bg-primary/10 text-primary",
-  demo: "bg-warning/14 text-warning",
-  "follow-up": "bg-secondary text-muted-foreground",
-  closing: "bg-success/14 text-success",
+
+const typeLabel = {
+  discovery: "Découverte",
+  demo: "Démo",
+  "follow-up": "Suivi",
+  closing: "Closing",
 } as const;
 
 function MeetingsPage() {
@@ -40,24 +42,17 @@ function MeetingsPage() {
   const columns: Column<(typeof meetings)[number]>[] = [
     {
       key: "title",
-      header: "Meeting",
+      header: "Rendez-vous",
       sortable: true,
       accessor: (row) => (
         <div>
-          <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
-            <p className="font-medium text-xs md:text-sm">{row.title}</p>
-            <span
-              className={`text-[8px] md:text-[10px] px-1.5 md:px-2 py-0.5 rounded-full uppercase font-semibold tracking-wide ${typeColor[row.type]}`}
-            >
-              {row.type}
-            </span>
-          </div>
-          <p className="text-[9px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">
-            {row.with} · {row.company}
+          <p className="text-[13px] font-medium md:text-sm">{row.title}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {typeLabel[row.type]} · {row.with}, {row.company}
           </p>
         </div>
       ),
-      cellClassName: "min-w-[140px] md:min-w-[220px]",
+      cellClassName: "min-w-[160px] md:min-w-[240px]",
     },
     {
       key: "date",
@@ -65,8 +60,8 @@ function MeetingsPage() {
       sortable: true,
       accessor: (row) => (
         <div>
-          <p className="font-medium text-xs md:text-sm">{row.date}</p>
-          <p className="text-[9px] md:text-xs text-muted-foreground">{row.time}</p>
+          <p className="text-[13px] font-medium md:text-sm">{row.date}</p>
+          <p className="text-xs tabular-nums text-muted-foreground">{row.time}</p>
         </div>
       ),
     },
@@ -75,8 +70,8 @@ function MeetingsPage() {
       header: "Durée",
       sortable: true,
       accessor: (row) => (
-        <span className="inline-flex items-center gap-1 text-[10px] md:text-xs text-muted-foreground">
-          <Clock className="size-2.5 md:size-3" /> {row.duration}
+        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <Clock className="size-3.5" /> {row.duration}
         </span>
       ),
       hideOnMobile: true,
@@ -86,17 +81,18 @@ function MeetingsPage() {
       header: "",
       sortable: false,
       accessor: () => (
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={(e) => {
             e.stopPropagation();
             toast.info("Ouverture du lien de visio...");
           }}
-          className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1.5 rounded-md bg-primary/10 text-primary text-[9px] md:text-xs hover:brightness-110 transition-all"
         >
-          <Video className="size-2.5 md:size-3.5" /> Rejoindre
-        </button>
+          <Video /> Rejoindre
+        </Button>
       ),
-      className: "w-16 md:w-24",
+      className: "w-24 md:w-28",
     },
   ];
 
@@ -106,82 +102,66 @@ function MeetingsPage() {
   return (
     <div className="max-w-6xl">
       <PageHeader
-        eyebrow="Meetings"
+        eyebrow="Rendez-vous"
         title="Vos rendez-vous."
-        description="Bookés via Cortex ou synchronisés depuis votre calendrier."
+        description={
+          hasMeetings
+            ? `${meetings.length} rendez-vous, pris via vos liens ou importés de votre agenda`
+            : "Pris via vos liens ou importés de votre agenda"
+        }
         actions={
           <>
-            <button
-              onClick={() => openBooking("list")}
-              className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs border border-border rounded-md hover:bg-surface transition-all"
-            >
-              <CalendarDays className="size-3 md:size-3.5" /> Mes liens ({bookingLinks.length})
-            </button>
-            <button
-              onClick={() => openBooking("wizard")}
-              className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all"
-            >
-              <Plus className="size-3 md:size-3.5" /> Créer un lien de booking
-            </button>
+            <Button variant="outline" onClick={() => openBooking("list")}>
+              <CalendarDays /> Mes liens ({bookingLinks.length})
+            </Button>
+            <Button onClick={() => openBooking("wizard")}>
+              <Plus /> Créer un lien
+            </Button>
           </>
         }
       />
 
       {hasMeetings ? (
-        <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-8">
-            <Kpi label="Cette semaine" value="8" sub="4 confirmés" />
-            <Kpi label="Taux de show-up" value="82%" delta="+6%" up />
-            <Kpi label="Durée moyenne" value="34min" />
-            <Kpi label="Conversion démo" value="41%" delta="+3%" up />
-          </div>
-
-          <DataTable
-            data={meetings}
-            columns={columns}
-            keyExtractor={(row) => row.id}
-            selectedIds={selectedIds}
-            onSelectRow={(id, selected) => {
-              setSelectedIds((prev) => {
-                const next = new Set(prev);
-                if (selected) next.add(id);
-                else next.delete(id);
-                return next;
-              });
-            }}
-            onSelectAll={(selected) => {
-              if (selected) {
-                setSelectedIds(new Set(meetings.map((m) => m.id)));
-              } else {
-                setSelectedIds(new Set());
-              }
-            }}
-            pageSize={10}
-            showPagination={true}
-            showSearch={true}
-            searchPlaceholder="Titre, contact, entreprise..."
-            searchFields={["title", "with", "company"]}
-            emptyMessage="Aucun meeting planifié."
-          />
-        </>
+        <DataTable
+          data={meetings}
+          columns={columns}
+          keyExtractor={(row) => row.id}
+          selectedIds={selectedIds}
+          onSelectRow={(id, selected) => {
+            setSelectedIds((prev) => {
+              const next = new Set(prev);
+              if (selected) next.add(id);
+              else next.delete(id);
+              return next;
+            });
+          }}
+          onSelectAll={(selected) => {
+            if (selected) {
+              setSelectedIds(new Set(meetings.map((m) => m.id)));
+            } else {
+              setSelectedIds(new Set());
+            }
+          }}
+          pageSize={10}
+          showPagination={true}
+          showSearch={true}
+          searchPlaceholder="Titre, contact, entreprise..."
+          searchFields={["title", "with", "company"]}
+          emptyMessage="Aucun rendez-vous prévu."
+        />
       ) : hasLinks ? (
-        <div className="mb-4 md:mb-6 p-4 rounded-xl border border-border bg-surface/40 text-center text-muted-foreground text-sm">
-          <p>
-            Aucun meeting planifié pour l'instant. Utilisez vos liens de booking ci-dessous pour
-            inviter vos prospects.
-          </p>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          Aucun rendez-vous prévu. Partagez un de vos liens ci-dessous pour en recevoir.
+        </p>
       ) : (
         <EmptyState
           icon={CalendarDays}
-          title="Aucun meeting"
-          description="Planifiez vos premiers rendez-vous avec vos prospects."
+          title="Aucun rendez-vous"
           action={{
-            label: "Créer un lien de booking",
+            label: "Créer un lien de réservation",
             onClick: () => openBooking("wizard"),
             icon: Plus,
           }}
-          size="lg"
         />
       )}
 

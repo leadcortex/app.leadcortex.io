@@ -48,10 +48,12 @@ function Section({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+        className="flex h-10 w-full items-center gap-2 px-3 text-[13px] font-semibold text-foreground"
       >
-        <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-90")} />
-        <Icon className="h-3.5 w-3.5" />
+        <ChevronRight
+          className={cn("size-4 text-muted-foreground transition-transform", open && "rotate-90")}
+        />
+        <Icon className="size-4 text-muted-foreground" />
         <span className="flex-1 truncate text-left">{title}</span>
       </button>
       {open && <div className="px-3 pb-3">{children}</div>}
@@ -61,7 +63,7 @@ function Section({
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-1 text-[11.5px]">
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-1 text-xs">
       <span className="min-w-0 truncate text-muted-foreground">{label}</span>
       {children}
     </div>
@@ -235,7 +237,7 @@ export function TreeFields({
           placeholder="Filtrer les éléments…"
           className={cn(
             "w-full rounded border border-input bg-input-bg outline-none focus:border-ring",
-            touch ? "h-10 pl-9 pr-3 text-[16px]" : "h-7 pl-7 pr-2 text-[11.5px]",
+            touch ? "h-10 pl-9 pr-3 text-[16px]" : "h-7 pl-7 pr-2 text-xs",
           )}
         />
       </div>
@@ -250,7 +252,7 @@ export function TreeFields({
               }}
               className={cn(
                 "group grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded px-1.5 text-left",
-                touch ? "min-h-10 py-1.5 text-[13px]" : "py-1 text-[11.5px]",
+                touch ? "min-h-10 py-1.5 text-[13px]" : "py-1 text-xs",
                 selection.includes(it.id) ? "bg-accent text-foreground" : "hover:bg-accent/60",
               )}
             >
@@ -297,7 +299,7 @@ function SubSection({
         onClick={onToggle}
         className={cn(
           "flex w-full items-center gap-1.5 text-left hover:text-foreground",
-          touch ? "min-h-10 py-2 text-[13px]" : "py-1.5 text-[11.5px]",
+          touch ? "min-h-10 py-2 text-[13px]" : "py-1.5 text-xs",
         )}
       >
         <ChevronRight
@@ -308,7 +310,7 @@ function SubSection({
         />
         <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: color }} />
         <span className="min-w-0 flex-1 truncate">{title}</span>
-        <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">{count}</span>
+        <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{count}</span>
       </button>
       {open && <div className="space-y-0.5 pb-1.5 pl-4">{children}</div>}
     </div>
@@ -423,7 +425,7 @@ function DraggableBlockRow({ block, touch = false }: { block: BlockDef; touch?: 
       >
         <Icon className={touch ? "h-4 w-4" : "h-3 w-3"} />
       </span>
-      <span className={cn("min-w-0 truncate", touch ? "text-[13px]" : "text-[11.5px]")}>
+      <span className={cn("min-w-0 truncate", touch ? "text-[13px]" : "text-xs")}>
         {block.title}
       </span>
       {touch ? (
@@ -490,7 +492,7 @@ export function BlockLibraryFields({ touch = false }: { touch?: boolean } = {}) 
           placeholder="Filtrer les blocs…"
           className={cn(
             "w-full rounded border border-input bg-input-bg outline-none focus:border-ring",
-            touch ? "h-10 pl-9 pr-3 text-[16px]" : "h-7 pl-7 pr-2 text-[11.5px]",
+            touch ? "h-10 pl-9 pr-3 text-[16px]" : "h-7 pl-7 pr-2 text-xs",
           )}
         />
       </div>
@@ -530,8 +532,8 @@ export function LeftPanel() {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-panel">
       <section className="flex min-h-[80px] flex-[1_1_0%] flex-col border-b border-border">
-        <header className="flex shrink-0 items-center gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <Layers className="h-3.5 w-3.5 shrink-0" />
+        <header className="flex shrink-0 items-center gap-2 h-10 px-3 text-[13px] font-semibold text-foreground">
+          <Layers className="size-4 shrink-0 text-muted-foreground" />
           <span className="min-w-0 flex-1 truncate text-left">Arborescence ({itemCount})</span>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-3 pb-3">
@@ -540,8 +542,8 @@ export function LeftPanel() {
       </section>
 
       <section className="flex min-h-0 flex-[4_1_0%] flex-col">
-        <header className="flex shrink-0 items-center gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <Blocks className="h-3.5 w-3.5 shrink-0" />
+        <header className="flex shrink-0 items-center gap-2 h-10 px-3 text-[13px] font-semibold text-foreground">
+          <Blocks className="size-4 shrink-0 text-muted-foreground" />
           <span className="min-w-0 flex-1 truncate text-left">
             Bibliothèque de blocs ({totalBlocksCount})
           </span>

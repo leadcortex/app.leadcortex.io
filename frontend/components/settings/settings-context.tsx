@@ -58,12 +58,12 @@ export const SETTINGS_GROUPS: SettingsGroupMeta[] = [
   },
   {
     key: "security",
-    label: "Sécurité & Vie privée",
+    label: "Sécurité et confidentialité",
     description: "Confidentialité, accès et intégrations.",
   },
   {
     key: "ai",
-    label: "Intelligence Artificielle",
+    label: "Intelligence artificielle",
     description: "Modèles, mémoire et comportement de l'IA.",
   },
   {
@@ -77,7 +77,7 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
   {
     key: "account",
     label: "Profil",
-    description: "Identité, organisation et préférences personnelles.",
+    description: "Nom, photo, comptes connectés et session.",
     group: "account",
     keywords:
       "profil avatar email téléphone organisation role fuseau horaire timezone devise currency déconnexion logout",
@@ -93,14 +93,14 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
   {
     key: "general",
     label: "Général",
-    description: "Thème et langue de l'interface.",
+    description: "Thème, langue, organisation et fuseau horaire.",
     group: "preferences",
     keywords: "theme dark light langue apparence",
   },
   {
     key: "display",
     label: "Affichage",
-    description: "Disposition de la barre de navigation.",
+    description: "Barre de navigation et affichage des pages.",
     group: "preferences",
     keywords:
       "affichage disposition layout barre navigation sidebar latérale gauche droite position assistant cortex",
@@ -109,7 +109,7 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
   {
     key: "notifications",
     label: "Notifications",
-    description: "Alertes, rapports et préférences d'envoi.",
+    description: "Alertes, rapports et place des notifications.",
     group: "preferences",
     keywords:
       "alertes rapports emails séquence quota délivrabilité reply weekly deliverability position",
@@ -118,7 +118,7 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
   {
     key: "security",
     label: "Sécurité",
-    description: "Authentification, sessions et contrôle des données.",
+    description: "Connexion, appareils et usage des données.",
     group: "security",
     keywords: "2fa sessions sécurité données rgpd confidentialité verrouillage",
   },
@@ -128,7 +128,6 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
     description: "Google, Microsoft, LinkedIn et autres comptes connectés.",
     group: "security",
     keywords: "oauth google microsoft linkedin gmail outlook gmail api connexion compte mail",
-    badge: "new",
   },
 
   {
@@ -141,14 +140,14 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
   {
     key: "memory",
     label: "Mémoire",
-    description: "Ce dont LeadCortex se souvient entre les sessions.",
+    description: "Ce que LeadCortex retient d'une session à l'autre.",
     group: "ai",
     keywords: "souvenirs contexte mémoire ia",
   },
   {
     key: "thinking",
     label: "Réfléchir",
-    description: "Profondeur d'analyse et raisonnement étendu.",
+    description: "Vitesse ou profondeur d'analyse.",
     group: "ai",
     keywords: "raisonnement étapes analyse réflexion",
   },
@@ -163,21 +162,21 @@ export const SETTINGS_SECTIONS: SettingsSectionMeta[] = [
   {
     key: "skills",
     label: "Compétences",
-    description: "Capacités réutilisables et prompts enregistrés.",
+    description: "Prompts et fichiers réutilisables.",
     group: "customize",
     keywords: "skills prompts compétences templates",
   },
   {
     key: "connectors",
     label: "Connecteurs",
-    description: "Services externes et intégrations.",
+    description: "Slack, Notion, HubSpot.",
     group: "customize",
     keywords: "slack notion hubspot connecteurs services",
   },
   {
     key: "plugins",
     label: "Plugins",
-    description: "Extensions tierces et outils personnalisés.",
+    description: "Modules ajoutés à LeadCortex.",
     group: "customize",
     keywords: "extensions modules plugins",
   },

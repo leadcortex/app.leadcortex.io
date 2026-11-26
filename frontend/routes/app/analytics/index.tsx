@@ -25,7 +25,6 @@ import {
 import { AnalyticsSkeleton } from "@/components/skeletons";
 import {
   CHART_COLORS,
-  ChartCard,
   ChartLegend,
   ChartTooltip,
   ClientChart,
@@ -45,26 +44,21 @@ import {
   workflowRunsSeries,
 } from "@/lib/analytics/dashboard-metrics";
 import { ProgressCapsule } from "@/components/ui/capsule-progress";
-import { TrendingDown, TrendingUp } from "@/components/icons";
+import { ChevronDown } from "@/components/icons";
 import { cn } from "@/lib/core/utils";
-import {
-  Activity,
-  CalendarCheck,
-  Mail,
-  Users,
-} from "@/components/icons";
-import { StatTile } from "@/components/ui/stat-tile";
+import { PageHeader } from "@/components/common/ui-primitives";
+import { DashSection } from "@/components/dashboard/dashboard-section";
 
 export const Route = createFileRoute("/app/analytics/")({
   head: () => ({
     meta: [
-      { title: "Analyses — LeadCortex" },
+      { title: "Analyses · LeadCortex" },
       {
         name: "description",
         content:
           "Analyses LeadCortex : entonnoir de conversion, performance des canaux, signaux d'achat et rendement des automatisations.",
       },
-      { property: "og:title", content: "Analyses — LeadCortex" },
+      { property: "og:title", content: "Analyses · LeadCortex" },
       {
         property: "og:description",
         content: "Entonnoir, canaux, signaux et automatisations : ce qui convertit vraiment.",
@@ -78,6 +72,7 @@ export const Route = createFileRoute("/app/analytics/")({
 function AnalyticsPage() {
   const store = useAppStore();
   const [range, setRange] = useState<"7j" | "30j" | "90j">("30j");
+  const [showMore, setShowMore] = useState(false);
 
   const src = useMemo(
     () =>
@@ -116,7 +111,6 @@ function AnalyticsPage() {
 
   const totalLeads = volume.reduce((n, d) => n + d.leads, 0);
   const totalReplies = volume.reduce((n, d) => n + d.replies, 0);
-  const totalMeetings = volume.reduce((n, d) => n + d.meetings, 0);
   const replyRate = totalLeads ? (totalReplies / totalLeads) * 100 : 0;
 
   const conversion = useMemo(() => {
@@ -125,60 +119,22 @@ function AnalyticsPage() {
   }, [funnel]);
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] pb-10">
-      <header className="mb-6 animate-fade-in-up md:mb-10">
-        <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground md:text-xs">
-          Analyses
-        </p>
-        <h1 className="mt-1 font-display text-2xl italic md:text-5xl">Ce qui convertit.</h1>
-        <p className="mt-1 text-xs text-muted-foreground md:mt-2 md:text-sm">
-          Entonnoir, canaux, signaux et rendement des automatisations — regardez avant de scaler.
-        </p>
-      </header>
+    <div className="mx-auto w-full max-w-[1400px] pb-12">
+      <PageHeader
+        eyebrow="Analyses"
+        title="Ce qui convertit."
+        description={`${totalLeads.toLocaleString("fr-FR")} prospects sur ${range.replace("j", " jours")} · ${replyRate.toFixed(1).replace(".", ",")} % de réponse`}
+      />
 
-      <div className="mb-6 grid grid-cols-2 gap-3 md:mb-8 md:grid-cols-4 md:gap-4">
-        <StatTile
-          label="Leads analysés"
-          value={totalLeads.toLocaleString("fr-FR")}
-          delta="+18%"
-          up
-          icon={Users}
-          delay={0}
-        />
-        <StatTile
-          label="Réponses"
-          value={totalReplies.toLocaleString("fr-FR")}
-          delta="+9%"
-          up
-          icon={Mail}
-          delay={60}
-        />
-        <StatTile
-          label="Taux de réponse"
-          value={`${replyRate.toFixed(1)} %`}
-          delta="-1,2 pt"
-          icon={Activity}
-          delay={120}
-        />
-        <StatTile
-          label="RDV obtenus"
-          value={String(totalMeetings)}
-          delta="+14%"
-          up
-          icon={CalendarCheck}
-          delay={180}
-        />
-      </div>
-
-      <div className="grid gap-4 md:gap-6 xl:grid-cols-[1.6fr_1fr]">
-        <ChartCard
+      <div className="grid gap-8 xl:grid-cols-[1.6fr_1fr] xl:gap-12">
+        <DashSection
           title="Évolution du volume"
-          subtitle="Leads, enrichissements et réponses"
+          subtitle="Prospects, enrichissements et réponses"
           actions={<RangeToggle value={range} onChange={(v) => setRange(v as "7j")} />}
           footer={
             <ChartLegend
               items={[
-                { label: "Leads", color: CHART_COLORS[0] },
+                { label: "Prospects", color: CHART_COLORS[0] },
                 { label: "Enrichis", color: CHART_COLORS[1] },
                 { label: "Réponses", color: CHART_COLORS[2] },
               ]}
@@ -191,7 +147,7 @@ function AnalyticsPage() {
                 <defs>
                   {[0, 1, 2].map((i) => (
                     <linearGradient key={i} id={`anaArea${i}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={CHART_COLORS[i]} stopOpacity={0.4} />
+                      <stop offset="0%" stopColor={CHART_COLORS[i]} stopOpacity={0.14} />
                       <stop offset="100%" stopColor={CHART_COLORS[i]} stopOpacity={0.02} />
                     </linearGradient>
                   ))}
@@ -202,7 +158,7 @@ function AnalyticsPage() {
                 <Tooltip content={<ChartTooltip />} cursor={{ stroke: GRID_COLOR }} />
                 <Area
                   type="monotone"
-                  name="Leads"
+                  name="Prospects"
                   dataKey="leads"
                   stroke={CHART_COLORS[0]}
                   strokeWidth={2.5}
@@ -227,19 +183,11 @@ function AnalyticsPage() {
               </AreaChart>
             </ClientChart>
           </ScrollFrame>
-        </ChartCard>
+        </DashSection>
 
-        <ChartCard
+        <DashSection
           title="Entonnoir de conversion"
-          subtitle="Du lead détecté à l'affaire signée"
-          footer={
-            <p className="text-[11px] text-muted-foreground md:text-xs">
-              Conversion globale{" "}
-              <span className="font-mono text-foreground">
-                {conversion[conversion.length - 1]?.rate ?? 0}%
-              </span>
-            </p>
-          }
+          subtitle={`Du prospect détecté à l'affaire signée · ${conversion[conversion.length - 1]?.rate ?? 0} % au total`}
         >
           <ScrollFrame minWidth={320}>
             <ClientChart height={300}>
@@ -267,62 +215,11 @@ function AnalyticsPage() {
               </BarChart>
             </ClientChart>
           </ScrollFrame>
-        </ChartCard>
+        </DashSection>
       </div>
 
-      <div className="mt-4 grid gap-4 md:mt-6 md:gap-6 xl:grid-cols-[1.6fr_1fr]">
-        <ChartCard
-          title="Taux de passage par étape"
-          subtitle="Part des leads initiaux encore présents à chaque étape"
-        >
-          <ScrollFrame minWidth={520}>
-            <ClientChart height={260}>
-              <LineChart data={conversion} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} vertical={false} />
-                <XAxis dataKey="step" tickLine={false} axisLine={false} fontSize={11} />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  width={44}
-                  fontSize={11}
-                  unit="%"
-                  domain={[0, 100]}
-                />
-                <Tooltip content={<ChartTooltip formatter={(v) => `${v}%`} />} />
-                <Line
-                  type="monotone"
-                  name="Taux de passage"
-                  dataKey="rate"
-                  stroke={CHART_COLORS[3]}
-                  strokeWidth={2.5}
-                  dot={{ r: 4, fill: "var(--background)", strokeWidth: 2 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ClientChart>
-          </ScrollFrame>
-        </ChartCard>
-
-        <ChartCard title="Mix des canaux" subtitle="Volume d'interactions par canal">
-          <ClientChart height={260}>
-            <RadarChart data={channels} outerRadius="72%">
-              <PolarGrid stroke={GRID_COLOR} />
-              <PolarAngleAxis dataKey="channel" tick={{ fontSize: 11 }} />
-              <Tooltip content={<ChartTooltip />} />
-              <Radar
-                name="Interactions"
-                dataKey="value"
-                stroke={CHART_COLORS[0]}
-                fill={CHART_COLORS[0]}
-                fillOpacity={0.3}
-              />
-            </RadarChart>
-          </ClientChart>
-        </ChartCard>
-      </div>
-
-      <div className="mt-4 grid gap-4 md:mt-6 md:gap-6 xl:grid-cols-3">
-        <ChartCard title="Résultats des envois" subtitle="Répartition des statuts d'emails">
+      <div className="mt-12 grid gap-8 xl:grid-cols-3 xl:gap-12">
+        <DashSection title="Résultats des envois" subtitle="Répartition des statuts d'emails">
           <ScrollFrame minWidth={300}>
             <ClientChart height={240}>
               <BarChart
@@ -349,9 +246,9 @@ function AnalyticsPage() {
               </BarChart>
             </ClientChart>
           </ScrollFrame>
-        </ChartCard>
+        </DashSection>
 
-        <ChartCard
+        <DashSection
           title="Intention des visiteurs"
           subtitle="Comptes identifiés sur le site"
           footer={
@@ -382,11 +279,11 @@ function AnalyticsPage() {
               </Pie>
             </PieChart>
           </ClientChart>
-        </ChartCard>
+        </DashSection>
 
-        <ChartCard
+        <DashSection
           title="Rendement des automatisations"
-          subtitle="Exécutions réussies vs en erreur"
+          subtitle="Exécutions réussies et en erreur"
           footer={
             <ChartLegend
               items={[
@@ -421,29 +318,24 @@ function AnalyticsPage() {
               </BarChart>
             </ClientChart>
           </ScrollFrame>
-        </ChartCard>
+        </DashSection>
       </div>
 
-      <section className="section-atelier mt-4 p-4 md:mt-6 md:p-6">
-        <div className="section-atelier__head">
-          <div className="min-w-0">
-            <h2 className="section-atelier__title truncate text-base md:text-lg">
-              Signaux d'achat détectés
-            </h2>
-            <p className="mt-0.5 text-[11px] text-muted-foreground md:text-xs">
-              Part des signaux à l'origine des réponses positives
-            </p>
-          </div>
-          <span className="counter-pill">{buyingSignals.length}</span>
-        </div>
-        <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+      <DashSection
+        className="mt-12"
+        title="Signaux d'achat"
+        subtitle="Part des signaux à l'origine des réponses positives"
+      >
+        <ul className="grid gap-x-8 gap-y-4 md:grid-cols-2 xl:grid-cols-5">
           {buyingSignals.map((s, i) => (
-            <li key={s.label} className="list-item-atelier min-w-0 p-3">
-              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-                <span className="truncate text-xs md:text-sm">{s.label}</span>
-                <span className="counter-pill counter-pill--muted">{s.value}%</span>
+            <li key={s.label} className="min-w-0">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="truncate text-[13px]">{s.label}</span>
+                <span className="shrink-0 text-[13px] font-medium tabular-nums">
+                  {s.value}&nbsp;%
+                </span>
               </div>
-              <div className="mt-2.5">
+              <div className="mt-2">
                 <ProgressCapsule
                   value={s.value}
                   max={50}
@@ -454,36 +346,72 @@ function AnalyticsPage() {
             </li>
           ))}
         </ul>
-      </section>
-    </div>
-  );
-}
+      </DashSection>
 
-function MetricTile({
-  label,
-  value,
-  delta,
-  up,
-}: {
-  label: string;
-  value: string;
-  delta?: string;
-  up?: boolean;
-}) {
-  return (
-    <div className="kpi-tactile flex min-w-0 flex-col gap-1.5 p-3 md:p-5">
-      <p className="kpi-label truncate">{label}</p>
-      <div className="flex min-w-0 items-baseline gap-2">
-        <p className="kpi-value truncate text-xl md:text-4xl">{value}</p>
-        {delta && (
-          <span className={cn("kpi-delta", !up && "kpi-delta--down")}>
-            {up ? (
-              <TrendingUp className="size-2.5" />
-            ) : (
-              <TrendingDown className="size-2.5" />
-            )}
-            {delta}
-          </span>
+      <div className="mt-12 border-t border-border/60 pt-6">
+        <button
+          type="button"
+          onClick={() => setShowMore((v) => !v)}
+          aria-expanded={showMore}
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {showMore ? "Moins de détails" : "Plus de détails"}
+          <ChevronDown className={cn("size-4 transition-transform", showMore && "rotate-180")} />
+        </button>
+        {showMore && (
+          <div className="mt-8">
+          <div className="grid gap-8 xl:grid-cols-[1.6fr_1fr] xl:gap-12">
+            <DashSection
+              title="Taux de passage par étape"
+              subtitle="Part des leads initiaux encore présents à chaque étape"
+            >
+              <ScrollFrame minWidth={520}>
+                <ClientChart height={260}>
+                  <LineChart data={conversion} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} vertical={false} />
+                    <XAxis dataKey="step" tickLine={false} axisLine={false} fontSize={11} />
+                    <YAxis
+                      tickLine={false}
+                      axisLine={false}
+                      width={44}
+                      fontSize={11}
+                      unit="%"
+                      domain={[0, 100]}
+                    />
+                    <Tooltip content={<ChartTooltip formatter={(v) => `${v}%`} />} />
+                    <Line
+                      type="monotone"
+                      name="Taux de passage"
+                      dataKey="rate"
+                      stroke={CHART_COLORS[3]}
+                      strokeWidth={2.5}
+                      dot={{ r: 4, fill: "var(--background)", strokeWidth: 2 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ClientChart>
+              </ScrollFrame>
+            </DashSection>
+
+            <DashSection title="Mix des canaux" subtitle="Volume d'interactions par canal">
+              <ClientChart height={260}>
+                <RadarChart data={channels} outerRadius="72%">
+                  <PolarGrid stroke={GRID_COLOR} />
+                  <PolarAngleAxis dataKey="channel" tick={{ fontSize: 11 }} />
+                  <Tooltip content={<ChartTooltip />} />
+                  <Radar
+                    name="Interactions"
+                    dataKey="value"
+                    stroke={CHART_COLORS[0]}
+                    fill={CHART_COLORS[0]}
+                    fillOpacity={0.3}
+                  />
+                </RadarChart>
+              </ClientChart>
+            </DashSection>
+          </div>
+
+          </div>
         )}
       </div>
     </div>

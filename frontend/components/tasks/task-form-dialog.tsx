@@ -39,7 +39,7 @@ type Props = {
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="space-y-2">
-      <h4 className="text-[9px] font-semibold uppercase tracking-[0.15em] text-muted-foreground md:text-[10px]">
+      <h4 className="text-[13px] font-medium">
         {title}
       </h4>
       {children}
@@ -134,7 +134,7 @@ export function TaskFormDialog({
     const values: TaskFormValues = {
       title: title.trim(),
       description: description.trim(),
-      contact: contact.trim() || "—",
+      contact: contact.trim(),
       type,
       priority,
       status,
@@ -161,15 +161,12 @@ export function TaskFormDialog({
         aria-describedby={undefined}
       >
         <header className="shrink-0 border-b border-border pb-3 pl-4 pr-14 pt-5 md:pl-6 md:pr-14">
-          <DialogTitle className="font-display text-xl italic tracking-tight md:text-2xl">
+          <DialogTitle className="text-lg font-semibold">
             {mode === "edit" ? "Modifier la tâche" : "Nouvelle tâche"}
           </DialogTitle>
-          <p className="mt-1 text-[11px] text-muted-foreground md:text-xs">
-            Échéance précise, récurrence, sous-tâches, étiquettes — tout est configurable.
-          </p>
         </header>
 
-        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 py-4 md:px-6">
+        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain px-4 py-4 md:px-6">
           <Section title="Titre">
             <input
               autoFocus

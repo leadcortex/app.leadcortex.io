@@ -163,10 +163,9 @@ export function MobileNavSectionButton({
               aria-hidden
               className={cn(
                 "pointer-events-none absolute right-1 top-1 z-10",
-                "grid h-[16px] min-w-[16px] place-items-center rounded-full px-1",
-                "text-[9.5px] font-bold leading-none tracking-tight text-white",
+                "grid h-[18px] min-w-[18px] place-items-center rounded-full px-1",
+                "text-[11px] font-semibold leading-none tabular-nums text-white",
                 "bg-destructive",
-                "shadow-[0_1px_0_color-mix(in_oklab,var(--destructive)_55%,black),0_2px_6px_-2px_color-mix(in_oklab,var(--destructive)_55%,transparent)]",
               )}
             >
               {badgeLabel}
@@ -185,7 +184,7 @@ export function MobileNavSectionButton({
         ref={buttonRef}
         type="button"
         data-mobile-nav-key={section.key}
-        aria-label={hasBadge ? `${section.label} — ${badge} non lus` : section.label}
+        aria-label={hasBadge ? `${section.label}, ${badge} non lus` : section.label}
         aria-haspopup={singleLink ? undefined : "menu"}
         aria-expanded={singleLink ? undefined : open}
         onClick={() => {
@@ -219,10 +218,9 @@ export function MobileNavSectionButton({
             aria-hidden
             className={cn(
               "pointer-events-none absolute right-1 top-1 z-10",
-              "grid h-[16px] min-w-[16px] place-items-center rounded-full px-1",
-              "text-[9.5px] font-bold leading-none tracking-tight text-white",
+              "grid h-[18px] min-w-[18px] place-items-center rounded-full px-1",
+              "text-[11px] font-semibold leading-none tabular-nums text-white",
               "bg-destructive",
-              "shadow-[0_1px_0_color-mix(in_oklab,var(--destructive)_55%,black),0_2px_6px_-2px_color-mix(in_oklab,var(--destructive)_55%,transparent)]",
             )}
           >
             {badgeLabel}
@@ -253,7 +251,7 @@ export function MobileNavSectionButton({
               )}
               style={{ top: placement.top, left: placement.left, width: placement.width }}
             >
-              <p className="px-2.5 pt-1.5 pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <p className="px-3 pt-2 pb-2 text-xs font-medium text-muted-foreground">
                 {section.label}
               </p>
 
@@ -269,8 +267,8 @@ export function MobileNavSectionButton({
               </div>
 
               {section.groups?.map((group) => (
-                <div key={group.label} className="mt-1.5 border-t border-border pt-1.5">
-                  <p className="px-2.5 pb-1 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/80">
+                <div key={group.label} className="mt-2 border-t border-border pt-2">
+                  <p className="px-3 pb-1 text-xs font-medium text-muted-foreground">
                     {group.label}
                   </p>
                   <div className="space-y-0.5">
@@ -309,13 +307,13 @@ function MenuLink({
       role="menuitem"
       onClick={() => onSelect(link)}
       className={cn(
-        "flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2.5 text-left text-sm transition-colors",
+        "flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm transition-colors",
         active
           ? "bg-primary/10 font-medium text-primary"
-          : "text-foreground hover:bg-secondary/60 active:bg-secondary/60",
+          : "text-foreground active:bg-secondary/60",
       )}
     >
-      <Icon className="size-4 shrink-0" strokeWidth={1.75} />
+      <Icon className="size-5 shrink-0" strokeWidth={1.75} />
       <span className="min-w-0 truncate">{link.label}</span>
     </button>
   );

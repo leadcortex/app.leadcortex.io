@@ -1,7 +1,15 @@
 // frontend/components/mail/email-snooze.tsx
 
 import { useMemo, useState } from "react";
-import { CalendarClock, Clock, Sunrise, Sun, Moon, Calendar, ChevronRight } from "@/components/icons";
+import {
+  CalendarClock,
+  Clock,
+  Sunrise,
+  Sun,
+  Moon,
+  Calendar,
+  ChevronRight,
+} from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { TimeOption } from "@shared/types/email-types";
 
@@ -49,8 +57,18 @@ export function formatScheduleHint(d: Date): string {
 
   const days = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
   const months = [
-    "jan", "fév", "mar", "avr", "mai", "juin",
-    "juil", "août", "sept", "oct", "nov", "déc",
+    "jan",
+    "fév",
+    "mar",
+    "avr",
+    "mai",
+    "juin",
+    "juil",
+    "août",
+    "sept",
+    "oct",
+    "nov",
+    "déc",
   ];
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} · ${time}`;
 }
@@ -58,21 +76,41 @@ export function formatScheduleHint(d: Date): string {
 export const SNOOZE_OPTIONS: TimeOption[] = [
   { id: "later-today", label: "Plus tard aujourd'hui", hint: "18:00", compute: () => todayAt(18) },
   { id: "tomorrow", label: "Demain matin", hint: "08:00", compute: () => tomorrowAt(8) },
-  { id: "weekend", label: "Ce week-end", hint: "sam. 09:00", compute: () => nextWeekday(new Date(), 6) },
-  { id: "next-week", label: "La semaine prochaine", hint: "lun. 08:00", compute: () => nextWeekday(new Date(), 1) },
-  { id: "next-month", label: "Dans un mois", hint: "+30 j", compute: () => {
-    const x = new Date();
-    x.setDate(x.getDate() + 30);
-    x.setHours(8, 0, 0, 0);
-    return x;
-  } },
+  {
+    id: "weekend",
+    label: "Ce week-end",
+    hint: "sam. 09:00",
+    compute: () => nextWeekday(new Date(), 6),
+  },
+  {
+    id: "next-week",
+    label: "La semaine prochaine",
+    hint: "lun. 08:00",
+    compute: () => nextWeekday(new Date(), 1),
+  },
+  {
+    id: "next-month",
+    label: "Dans un mois",
+    hint: "+30 j",
+    compute: () => {
+      const x = new Date();
+      x.setDate(x.getDate() + 30);
+      x.setHours(8, 0, 0, 0);
+      return x;
+    },
+  },
 ];
 
 export const SCHEDULE_OPTIONS: TimeOption[] = [
   { id: "in-1h", label: "Dans 1 heure", compute: () => new Date(Date.now() + 60 * 60 * 1000) },
   { id: "in-3h", label: "Dans 3 heures", compute: () => new Date(Date.now() + 3 * 60 * 60 * 1000) },
   { id: "tomorrow-8", label: "Demain matin", hint: "08:00", compute: () => tomorrowAt(8) },
-  { id: "monday-8", label: "Lundi prochain", hint: "08:00", compute: () => nextWeekday(new Date(), 1) },
+  {
+    id: "monday-8",
+    label: "Lundi prochain",
+    hint: "08:00",
+    compute: () => nextWeekday(new Date(), 1),
+  },
 ];
 
 export function SnoozeMenu({
@@ -89,9 +127,7 @@ export function SnoozeMenu({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent align="end" sideOffset={6} className="w-64 p-1">
-        <p className="px-2.5 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Reporter à
-        </p>
+        <p className="px-2.5 pb-1 pt-1.5 text-xs font-medium text-muted-foreground">Reporter à</p>
         <ul>
           {options.map((opt) => {
             const date = opt.compute();
@@ -107,7 +143,7 @@ export function SnoozeMenu({
                 >
                   <Clock className="size-3.5 shrink-0 text-muted-foreground" strokeWidth={1.8} />
                   <span className="min-w-0 flex-1 truncate">{opt.label}</span>
-                  <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                  <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
                     {opt.hint ?? ""}
                   </span>
                 </button>
@@ -146,16 +182,13 @@ export function ScheduleSendMenu({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent align="end" sideOffset={6} className="w-64 p-1">
-        <p className="px-2.5 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <p className="px-2.5 pb-1 pt-1.5 text-xs font-medium text-muted-foreground">
           Programmer l'envoi
         </p>
         <ul>
           {SCHEDULE_OPTIONS.map((opt) => {
             const date = opt.compute();
-            const Icon =
-              opt.id.includes("8") ? Sunrise :
-              opt.id === "in-3h" ? Sun :
-              Clock;
+            const Icon = opt.id.includes("8") ? Sunrise : opt.id === "in-3h" ? Sun : Clock;
             return (
               <li key={opt.id}>
                 <button
@@ -168,7 +201,7 @@ export function ScheduleSendMenu({
                 >
                   <Icon className="size-3.5 shrink-0 text-muted-foreground" strokeWidth={1.8} />
                   <span className="min-w-0 flex-1 truncate">{opt.label}</span>
-                  <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                  <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
                     {formatScheduleHint(date).split("·")[1]?.trim() ?? ""}
                   </span>
                 </button>

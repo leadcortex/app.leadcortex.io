@@ -44,11 +44,10 @@ export function MemoryPanel() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Brain}
         title="Mémoire"
-        description="LeadCortex peut retenir des informations entre les sessions pour personnaliser ses réponses."
+        description="LeadCortex retient certaines informations d'une session à l'autre pour adapter ses réponses."
       />
 
       <PanelGroup label="Activation">
@@ -94,7 +93,7 @@ export function MemoryPanel() {
                 >
                   <div className="min-w-0">
                     <p className="text-sm">{m.text}</p>
-                    <p className="mt-1 text-[10px] text-muted-foreground">{m.date}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{m.date}</p>
                   </div>
                   <Button
                     variant="ghost"

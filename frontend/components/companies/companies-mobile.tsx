@@ -34,11 +34,11 @@ export function MobileCompanyStack({
   });
 
   return (
-    <div className="px-3 pb-2 pt-2">
+    <div className="pb-2 pt-3">
       <div
         ref={rangeRootRef}
         {...rangeHandlers}
-        className="mobile-stack-scroll relative max-h-[55vh] min-h-[400px] overflow-y-auto rounded-2xl border border-border/60 bg-surface/20 p-2 shadow-inner overscroll-y-auto scrollbar-hide"
+        className="mobile-stack-scroll relative max-h-[55vh] min-h-[400px] overflow-y-auto rounded-xl border border-border bg-surface/30 p-2 overscroll-y-auto scrollbar-hide"
       >
         <div className="space-y-2">
           {companies.map((company, index) => (
@@ -47,7 +47,7 @@ export function MobileCompanyStack({
               data-range-index={index}
               className={cn(
                 tablesInOwnContainer &&
-                  "rounded-2xl border border-border bg-surface/40 p-1.5 shadow-[0_2px_0_var(--border)]",
+                  "rounded-xl border border-border bg-surface/40 p-1",
               )}
             >
               <MobileCompanyCard
@@ -122,7 +122,8 @@ function MobileCompanyCard({
   }, []);
 
   const ctxBind = bindContext({ id: company.id });
-  const intent = intentLabels[company.intent] ?? company.intent ?? "—";
+  const intent = intentLabels[company.intent] ?? company.intent ?? "";
+  const meta = [company.domain, company.industry].filter(Boolean).join(" · ");
 
   return (
     <article
@@ -134,9 +135,8 @@ function MobileCompanyCard({
         willChange: "transform, opacity",
       }}
       className={cn(
-        "relative flex items-center gap-3 rounded-2xl border bg-background p-3 shadow-sm",
-        "backdrop-blur-sm active:bg-surface",
-        selected ? "border-primary ring-2 ring-primary/30 bg-primary/[0.03]" : "border-border",
+        "relative flex items-center gap-3 rounded-xl border bg-background p-3 active:bg-surface",
+        selected ? "border-primary bg-primary/[0.03]" : "border-border",
       )}
     >
       <button
@@ -145,19 +145,21 @@ function MobileCompanyCard({
         aria-label={`${selected ? "Désélectionner" : "Sélectionner"} ${company.name}`}
         aria-pressed={selected}
         className={cn(
-          "absolute top-2.5 right-2.5 z-10 flex size-10 cursor-pointer items-center justify-center rounded-xl transition-all",
-          "border-2 active:translate-y-[2px] active:shadow-none",
-          selected
-            ? "border-primary bg-primary text-primary-foreground shadow-[0_3px_0_color-mix(in_oklab,var(--primary)_60%,black)]"
-            : "border-border bg-surface text-muted-foreground shadow-[0_3px_0_var(--border)]",
+          "absolute top-1/2 right-2 z-10 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg transition-colors",
+          selected ? "text-primary" : "text-muted-foreground",
         )}
         onClick={() => onSelect(!selected)}
       >
-        {selected ? (
-          <Check className="size-5" strokeWidth={3} />
-        ) : (
-          <span className="size-4 rounded border-2 border-muted-foreground/30" />
-        )}
+        <span
+          className={cn(
+            "grid size-5 place-items-center rounded-md border-2",
+            selected
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-muted-foreground/40",
+          )}
+        >
+          {selected && <Check className="size-3.5" strokeWidth={3} />}
+        </span>
       </button>
 
       <button
@@ -175,11 +177,12 @@ function MobileCompanyCard({
         />
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <span className="truncate text-sm font-medium">{company.name}</span>
+            {intent && (
             <span
               className={cn(
-                "shrink-0 rounded-md px-1.5 py-0.5 font-mono text-[10px] font-semibold",
+                "shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium",
                 company.intent === "hot"
                   ? "bg-primary/15 text-primary"
                   : company.intent === "warm"
@@ -189,21 +192,21 @@ function MobileCompanyCard({
             >
               {intent}
             </span>
+            )}
           </div>
-          <div className="truncate text-[11px] text-muted-foreground">
-            {company.domain || "—"} · {company.industry || "—"}
-          </div>
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground">
+          {meta && <div className="mt-0.5 truncate text-xs text-muted-foreground">{meta}</div>}
+          <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             {company.location && (
               <span className="inline-flex items-center gap-1">
-                <MapPin className="size-2.5" />
+                <MapPin className="size-3" />
                 {company.location}
               </span>
             )}
             {company.employees > 0 && (
               <span className="inline-flex items-center gap-1">
-                <Users className="size-2.5" />
-                {company.employees.toLocaleString("fr-FR")}
+                <Users className="size-3" />
+                <span className="tabular-nums">{company.employees.toLocaleString("fr-FR")}</span>
+
               </span>
             )}
           </div>

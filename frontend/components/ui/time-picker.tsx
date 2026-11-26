@@ -30,7 +30,7 @@ export function TimePicker({
   const hourColRef = useRef<HTMLDivElement>(null);
   const minColRef = useRef<HTMLDivElement>(null);
   const teleportingRef = useRef(false);
-  
+
   const snapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleOpenChange = (v: boolean) => {
@@ -128,9 +128,9 @@ export function TimePicker({
 
     const listLength = type === "h" ? HOURS.length : MINUTES.length;
     const target = (indexInOriginalList + listLength) * ITEM_HEIGHT;
-    
+
     el.scrollTo({ top: target, behavior: "smooth" });
-    
+
     setTimeout(() => {
       updateDepth(el);
       teleportingRef.current = false;
@@ -144,7 +144,7 @@ export function TimePicker({
           type="button"
           className={cn(
             "flex h-[38px] w-full items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 text-sm shadow-[0_2px_0_var(--border)] transition-all active:translate-y-[2px] active:shadow-none",
-            !value && "text-muted-foreground"
+            !value && "text-muted-foreground",
           )}
         >
           <span className="flex min-w-0 items-center gap-2">

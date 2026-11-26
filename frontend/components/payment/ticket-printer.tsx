@@ -13,6 +13,7 @@ type Props = {
   customer?: string;
   paymentLabel: string;
   onPrinted?: () => void;
+  progress?: number;
   className?: string;
 };
 
@@ -194,7 +195,7 @@ function Receipt({
       <div className="mt-3 text-center">
         <p className="text-[11px] font-bold">Merci de votre confiance.</p>
         <p className="mt-1 text-[9px] leading-relaxed opacity-55">
-          Prochain prélèvement : {order.nextChargeLabel} · Résiliable à tout moment
+          Prochaine échéance : {order.nextChargeLabel} · Résiliable à tout moment
         </p>
       </div>
     </div>
@@ -207,6 +208,7 @@ export function TicketPrinter({
   customer = "Votre compte",
   paymentLabel,
   onPrinted,
+  progress,
   className,
 }: Props) {
   const paperRef = useRef<HTMLDivElement>(null);
@@ -250,6 +252,13 @@ export function TicketPrinter({
       return;
     }
 
+    if (progress !== undefined) {
+      const ratio = Math.min(1, Math.max(0, progress));
+      setPrintedH(ratio * paperH);
+      if (ratio >= 1) onPrintedRef.current?.();
+      return;
+    }
+
     if (reducedMotion) {
       setPrintedH(paperH);
       onPrintedRef.current?.();
@@ -272,7 +281,7 @@ export function TicketPrinter({
     };
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [status, order, paperH, reducedMotion]);
+  }, [status, order, paperH, reducedMotion, progress]);
 
   const printing = status === "printing";
   const done = status === "done";
@@ -351,6 +360,8 @@ export function TicketPrinter({
           style={{
             width: PAPER_W,
             height: Math.min(printedH, paperH),
+            transition:
+              progress !== undefined && !reducedMotion ? "height 900ms ease-out" : undefined,
             filter: "drop-shadow(0 6px 10px oklch(0.2 0.02 70 / 0.28))",
           }}
           aria-hidden={false}

@@ -1,10 +1,6 @@
 // frontend/components/skeletons/mobile-people-skeleton.tsx
 
-export function MobilePeopleSkeleton({
-  label = "Chargement des prospects",
-}: {
-  label?: string;
-}) {
+export function MobilePeopleSkeleton({ label = "Chargement des prospects" }: { label?: string }) {
   return (
     <div role="status" aria-busy="true" aria-live="polite" className="animate-fade-in">
       <span className="sr-only">{label}</span>
@@ -28,7 +24,7 @@ export function MobilePeopleSkeleton({
         {[0, 1].map((i) => (
           <div
             key={i}
-            className="flex flex-col gap-2 rounded-xl border-2 border-border bg-background p-3 shadow-[0_3px_0_var(--border)]"
+            className="flex flex-col gap-2 rounded-xl border border-border bg-background p-3"
           >
             <div className="skeleton h-2.5 w-16 rounded" />
             <div className="skeleton h-6 w-14 rounded" />
@@ -42,12 +38,12 @@ export function MobilePeopleSkeleton({
       </div>
 
       <div className="px-3 pb-2 pt-2">
-        <div className="max-h-[55vh] min-h-[400px] overflow-hidden rounded-2xl border border-border/60 bg-surface/20 p-2 shadow-inner">
+        <div className="max-h-[55vh] min-h-[400px] overflow-hidden rounded-2xl border border-border/60 bg-surface/20 p-2">
           <div className="space-y-2">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="relative flex items-center gap-3 rounded-2xl border border-border bg-background p-3 shadow-sm"
+                className="relative flex items-center gap-3 rounded-2xl border border-border bg-background p-3"
               >
                 <div className="skeleton size-11 shrink-0 rounded-full" />
 
@@ -67,7 +63,7 @@ export function MobilePeopleSkeleton({
       </div>
 
       <div className="mt-3 px-3 pb-6">
-        <div className="rounded-2xl border-2 border-border bg-background p-4 shadow-[0_3px_0_var(--border)]">
+        <div className="rounded-2xl border border-border bg-background p-4">
           <div className="mb-3 flex items-center justify-between gap-2">
             <div className="skeleton h-4 w-32 rounded" />
             <div className="skeleton h-5 w-8 rounded-full" />

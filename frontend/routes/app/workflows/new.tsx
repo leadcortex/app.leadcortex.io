@@ -11,9 +11,9 @@ function NewWorkflowPage() {
 export const Route = createFileRoute("/app/workflows/new")({
   head: () => ({
     meta: [
-      { title: "Nouveau workflow — LeadCortex" },
+      { title: "Nouveau workflow · LeadCortex" },
       { name: "description", content: "Créer un nouveau workflow de prospection automatisée." },
-      { property: "og:title", content: "Nouveau workflow — LeadCortex" },
+      { property: "og:title", content: "Nouveau workflow · LeadCortex" },
       {
         property: "og:description",
         content: "Créer un nouveau workflow de prospection automatisée.",

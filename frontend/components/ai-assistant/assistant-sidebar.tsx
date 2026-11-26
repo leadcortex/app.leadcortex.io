@@ -13,7 +13,6 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
-  GripVertical,
   History,
   Image as ImageIcon,
   Link2,
@@ -400,23 +399,20 @@ export function AssistantSidebar() {
             }}
             aria-label="Ouvrir l'assistant IA"
             className={cn(
-              "fixed z-[48] flex -translate-y-1/2 cursor-ns-resize touch-none select-none flex-col items-center gap-2 border-border bg-surface/90 px-2 py-2.5 shadow-lg backdrop-blur transition-colors hover:bg-secondary/40",
+              "fixed z-[48] flex -translate-y-1/2 cursor-ns-resize touch-none select-none flex-col items-center gap-3 border border-border bg-surface px-2 py-3 shadow-float transition-colors hover:bg-secondary/40",
               sideClasses.desktopLabelPos,
               labelDragging && "bg-secondary/60",
             )}
             style={labelStyle}
           >
-            <span className="grid size-7 place-items-center rounded-lg bg-primary/10">
-              <BrandLogoMark size={18} />
+            <BrandLogoMark size={20} />
+            <span className="text-xs font-medium text-foreground/80 [writing-mode:vertical-rl]">
+              Assistant
             </span>
-            <span className="text-[10px] tracking-widest text-muted-foreground [writing-mode:vertical-rl]">
-              ASSISTANT IA
-            </span>
-            <GripVertical className="size-3 text-muted-foreground/60" />
             {isLeft ? (
-              <ChevronRight className="size-3.5 text-muted-foreground" />
+              <ChevronRight className="size-4 text-muted-foreground" />
             ) : (
-              <ChevronLeft className="size-3.5 text-muted-foreground" />
+              <ChevronLeft className="size-4 text-muted-foreground" />
             )}
           </button>
         ) : (
@@ -439,7 +435,7 @@ export function AssistantSidebar() {
             <aside
               style={{ width }}
               className={cn(
-                "relative h-full border-border bg-surface shadow-2xl",
+                "relative h-full border-border bg-surface shadow-float",
                 sideClasses.asideRounded,
                 sideClasses.panelPos,
                 !dragging && "transition-[width] duration-200 ease-out",
@@ -481,7 +477,7 @@ export function AssistantSidebar() {
           onTouchEnd={onPanelTouchEnd}
           style={{ width: "clamp(280px, 75vw, 92vw)" }}
           className={cn(
-            "absolute inset-y-0 bottom-0 border-border bg-surface shadow-2xl transition-transform duration-250 ease-out",
+            "absolute inset-y-0 bottom-0 border-border bg-surface shadow-float transition-transform duration-200 ease-out",
             sideClasses.mobilePanelPos,
             sideClasses.mobilePanelRounded,
             sideClasses.mobilePanelBorder,
@@ -510,16 +506,13 @@ export function AssistantSidebar() {
           }}
           aria-label="Ouvrir l'assistant IA"
           className={cn(
-            "fixed z-[60] flex -translate-y-1/2 cursor-ns-resize touch-none select-none flex-col items-center gap-1.5 border border-border bg-surface/90 px-2 py-2.5 shadow-lg backdrop-blur transition-colors md:hidden",
+            "fixed z-[60] flex min-h-11 -translate-y-1/2 cursor-ns-resize touch-none select-none flex-col items-center justify-center border border-border bg-surface px-2 py-3 shadow-float transition-colors md:hidden",
             isLeft ? "left-0 rounded-r-xl border-l-0" : "right-0 rounded-l-xl border-r-0",
             labelDragging && "bg-secondary/60",
           )}
           style={labelStyle}
         >
-          <span className="grid size-7 place-items-center rounded-lg bg-primary/10">
-            <BrandLogoMark size={18} />
-          </span>
-          <GripVertical className="size-3 text-muted-foreground/60" />
+          <BrandLogoMark size={20} />
         </button>
       )}
     </TooltipProvider>
@@ -744,6 +737,15 @@ function AssistantPanel({
         }),
       ),
     [attachments, unreadableAttachments],
+  );
+
+  const queuedFileWarnings = useMemo(
+    () =>
+      attachments.flatMap((attachment) => {
+        const error = attachmentErrors[attachment.id];
+        return error ? [`${attachment.name} : ${error}`] : [];
+      }),
+    [attachments, attachmentErrors],
   );
 
   const addContext = () => {
@@ -1024,33 +1026,33 @@ function AssistantPanel({
     }
   }, [onboarding.searchHintSeen]);
 
-  const spacing = density === "compact" ? "space-y-1.5 py-2" : "space-y-3 py-3";
+  const spacing = density === "compact" ? "space-y-3 py-3" : "space-y-6 py-4";
   const bubbleText =
-    density === "compact" ? "text-[12px] leading-snug" : "text-[12.5px] leading-relaxed";
+    density === "compact" ? "text-[13px] leading-snug" : "text-sm leading-relaxed";
 
   const showSearchHint =
     !onboarding.searchHintSeen && messages.length >= 3 && !searchOpen;
 
   return (
     <div className="flex h-full min-w-[280px] flex-col">
-      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-1.5 border-b border-border px-2.5 py-2.5">
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-border px-3 py-3">
         <div className="flex min-w-0 items-center gap-2">
           <button
             type="button"
             aria-label="Fermer l'assistant"
             title="Fermer l'assistant"
             onClick={onClose}
-            className="grid size-8 shrink-0 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
+            className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
           >
             <X className="size-4" strokeWidth={1.8} />
           </button>
           <div className="min-w-0">
-            <p className="truncate text-[13px] font-semibold leading-tight">Assistant IA</p>
-            <p className="truncate text-[11px] text-muted-foreground">Contexte : {ctx}</p>
+            <p className="truncate text-sm font-semibold leading-tight">Assistant</p>
+            <p className="truncate text-xs text-muted-foreground">Page : {ctx}</p>
           </div>
         </div>
 
-        <div className="relative flex shrink-0 items-center gap-0">
+        <div className="relative flex shrink-0 items-center gap-1">
           {showSearchHint && (
             <OnboardingHintBubble
               visible
@@ -1064,13 +1066,12 @@ function AssistantPanel({
 
           <IconBtn
             label="Nouvelle conversation (Ctrl+Shift+O)"
-            size="size-7"
             onClick={startNewConversation}
           >
             <Plus className="size-4" strokeWidth={1.6} />
           </IconBtn>
 
-          <IconBtn label="Historique" size="size-7" onClick={() => setHistoryOpen(true)}>
+          <IconBtn label="Historique" onClick={() => setHistoryOpen(true)}>
             <History className="size-4" strokeWidth={1.6} />
           </IconBtn>
 
@@ -1085,7 +1086,7 @@ function AssistantPanel({
         </div>
       </header>
 
-      <div className="flex items-center gap-2 border-b border-border px-2.5 py-2">
+      <div className="flex items-center gap-2 border-b border-border px-3 py-2">
         <div className="min-w-0 flex-1">
           <ModelSelector selectedConfig={selectedConfig} onConfigChange={updateSelection} />
         </div>
@@ -1120,12 +1121,12 @@ function AssistantPanel({
           ref={listRef}
           data-density={density}
           className={cn(
-            "h-full overflow-y-auto overscroll-contain scrollbar-none px-3 pr-10",
+            "h-full overflow-y-auto overscroll-contain scrollbar-none px-4 pr-10",
             spacing,
           )}
         >
           {messages.length === 0 && !isStreaming && (
-            <EmptyState salutation={greeting.salutation} pitch={greeting.pitch} ctx={ctx} />
+            <EmptyState salutation={greeting.salutation} pitch={greeting.pitch} />
           )}
 
           {messages.map((m) => (
@@ -1133,7 +1134,7 @@ function AssistantPanel({
               key={m.id}
               data-message-id={m.id}
               className={cn(
-                "group/msg flex flex-col gap-1 rounded-xl",
+                "group/msg flex flex-col gap-1",
                 m.role === "user" ? "items-end" : "items-start",
               )}
             >
@@ -1144,12 +1145,17 @@ function AssistantPanel({
                 )}
               >
                 {m.role === "agent" && (
-                  <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-lg bg-primary/10">
-                    <BrandLogoMark size={14} />
+                  <span className="mt-0.5 grid size-6 shrink-0 place-items-center">
+                    <BrandLogoMark size={16} />
                   </span>
                 )}
 
-                <div className="min-w-0 max-w-[85%] space-y-1.5">
+                <div
+                  className={cn(
+                    "min-w-0 space-y-2",
+                    m.role === "user" ? "max-w-[85%]" : "flex-1",
+                  )}
+                >
                   {m.attachments && m.attachments.length > 0 && (
                     <AttachmentPillRow
                       attachments={m.attachments}
@@ -1161,16 +1167,14 @@ function AssistantPanel({
                       className={cn(
                         bubbleText,
                         m.role === "user" &&
-                          "rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground",
+                          "rounded-2xl rounded-br-md bg-primary px-4 py-2 text-primary-foreground",
                       )}
                     >
                       {m.role === "user" ? (
                         <>
                           <p className="whitespace-pre-wrap break-words">{m.text}</p>
                           {m.edited && (
-                            <p className="mt-1 text-[9.5px] uppercase tracking-wider opacity-70">
-                              modifié
-                            </p>
+                            <p className="mt-1 text-[11px] opacity-75">Modifié</p>
                           )}
                         </>
                       ) : (
@@ -1189,12 +1193,16 @@ function AssistantPanel({
                   onRegenerate={
                     m.id === lastAgentId ? () => handleRegenerate(m.id) : undefined
                   }
-                  className="ml-8"
+                  className={cn(
+                    "ml-8",
+                    m.id !== lastAgentId &&
+                      "md:opacity-0 md:group-hover/msg:opacity-100 md:focus-within:opacity-100",
+                  )}
                 />
               )}
 
               {m.role === "user" && m.text && (
-                <div className="mr-0 flex w-full items-center justify-end">
+                <div className="flex w-full items-center justify-end transition-opacity md:opacity-0 md:group-hover/msg:opacity-100 md:focus-within:opacity-100">
                   <PromptActions
                     message={m}
                     onRelaunch={() => handleRelaunch(m.id)}
@@ -1209,16 +1217,16 @@ function AssistantPanel({
           {isStreaming && (
             <div className="group/msg flex flex-col gap-1">
               <div className="flex w-full gap-2 justify-start">
-                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-lg bg-primary/10">
-                  <BrandLogoMark size={14} />
+                <span className="mt-0.5 grid size-6 shrink-0 place-items-center">
+                  <BrandLogoMark size={16} />
                 </span>
-                <div className="min-w-0 max-w-[85%] space-y-1.5">
+                <div className="min-w-0 flex-1 space-y-2">
                   {stream.text ? (
                     <div className={cn(bubbleText)}>
                       <MessageContent text={stream.text} />
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+                    <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
                       <Loader2 className="size-3.5 animate-spin" />
                       <span>
                         <span className="font-medium text-foreground/80">
@@ -1238,9 +1246,9 @@ function AssistantPanel({
           )}
 
           {streamError && (
-            <div className="rounded-xl border border-destructive/40 bg-destructive/5 px-3 py-2 text-[11.5px] text-destructive">
-              <p className="font-medium">Erreur de génération</p>
-              <p className="mt-0.5 text-destructive/85">{streamError}</p>
+            <div className="rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+              <p className="font-medium">La réponse n'a pas pu être générée</p>
+              <p className="mt-1 text-destructive/85">{streamError}</p>
             </div>
           )}
         </div>
@@ -1250,43 +1258,41 @@ function AssistantPanel({
         {isDragging && (
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-2 z-30 flex items-center justify-center rounded-2xl border-2 border-dashed border-primary bg-primary/[0.06] backdrop-blur-sm"
+            className="pointer-events-none absolute inset-2 z-30 flex items-center justify-center rounded-xl border-2 border-dashed border-primary bg-surface/90"
           >
             <div className="flex flex-col items-center gap-2 text-primary">
-              <span className="grid size-10 place-items-center rounded-2xl bg-primary/15">
-                <Paperclip className="size-5" strokeWidth={1.8} />
-              </span>
-              <p className="text-[12.5px] font-medium">Déposez vos fichiers ici</p>
-              <p className="text-[10.5px] opacity-75">PDF, images, CSV, DOCX…</p>
+              <Paperclip className="size-5" strokeWidth={1.8} />
+              <p className="text-sm font-medium">Déposez vos fichiers ici</p>
+              <p className="text-xs opacity-75">PDF, images, CSV, DOCX…</p>
             </div>
           </div>
         )}
       </div>
 
       <div
-        className="border-t border-border p-2.5"
+        className="border-t border-border p-3"
         style={
           mobile
             ? {
                 paddingBottom:
-                  "calc(2.5 * 0.25rem + var(--pen-nav-h, 64px) + env(safe-area-inset-bottom))",
+                  "calc(3 * 0.25rem + var(--pen-nav-h, 64px) + env(safe-area-inset-bottom))",
               }
             : undefined
         }
       >
-        <div className="rounded-2xl border border-border bg-background/70 transition-colors focus-within:border-primary/50">
+        <div className="rounded-xl border border-border bg-background transition-colors focus-within:border-primary/50">
           {attachments.length > 0 && (
-            <div className="rounded-t-2xl border-b border-border/60 bg-secondary/25 px-1.5 py-1.5">
+            <div className="rounded-t-xl border-b border-border/60 p-2">
               {queuedFileWarnings.length > 0 && (
                 <div
                   role="status"
-                  className="mb-1.5 rounded-lg border border-warning/20 bg-warning/5 px-2 py-1.5 text-[10px] leading-relaxed text-muted-foreground"
+                  className="mb-2 rounded-lg border border-warning/20 bg-warning/5 px-3 py-2 text-xs leading-relaxed text-muted-foreground"
                 >
                   <p>
                     Ces fichiers restent ici et ne seront pas envoyés : seul le texte brut est
                     analysé (8 fichiers et 40 000 caractères maximum).
                   </p>
-                  <ul className="mt-0.5 list-inside list-disc">
+                  <ul className="mt-1 list-inside list-disc">
                     {queuedFileWarnings.slice(0, 3).map((warning) => (
                       <li key={warning} className="truncate">
                         {warning}
@@ -1336,8 +1342,8 @@ function AssistantPanel({
                 void send();
               }
             }}
-            placeholder={`Demandez quelque chose à propos de ${ctx}...`}
-            className="block w-full resize-none overflow-y-auto bg-transparent px-3 pt-2.5 text-[12.5px] leading-relaxed outline-none placeholder:text-muted-foreground"
+            placeholder="Écrivez votre demande…"
+            className="block w-full resize-none overflow-y-auto bg-transparent px-3 pt-3 text-sm leading-relaxed outline-none placeholder:text-muted-foreground"
             style={{ minHeight: TEXTAREA_MIN_PX, maxHeight: TEXTAREA_MAX_PX }}
           />
           <div className="flex items-center gap-1 px-2 pb-2">
@@ -1352,7 +1358,7 @@ function AssistantPanel({
               <button
                 type="button"
                 onClick={() => stream.abort()}
-                className="ml-auto rounded-lg border border-border bg-background px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="ml-auto h-8 rounded-lg border border-border bg-background px-3 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 Arrêter
               </button>
@@ -1361,7 +1367,7 @@ function AssistantPanel({
               onClick={() => void send()}
               aria-label="Envoyer"
               className={cn(
-                "grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40",
+                "grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40",
                 !isStreaming && "ml-auto",
               )}
               disabled={(!input.trim() && attachments.length === 0) || isStreaming || preparingSend}
@@ -1503,7 +1509,7 @@ function AddMenu({
     {
       id: "context" as const,
       label: "Contexte",
-      desc: `Page · ${ctx}`,
+      desc: `Page ${ctx}`,
       icon: Link2,
       onSelect: onPickContext,
     },
@@ -1530,15 +1536,12 @@ function AddMenu({
       <div
         role="menu"
         className={cn(
-          "absolute bottom-full left-0 z-30 mb-2 w-60 origin-bottom-left rounded-2xl border border-border bg-surface p-1 shadow-xl transition-all duration-150 ease-out",
+          "absolute bottom-full left-0 z-30 mb-2 w-60 origin-bottom-left rounded-lg border border-border bg-surface p-1 shadow-float transition-all duration-150 ease-out",
           open
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none translate-y-1 scale-95 opacity-0",
         )}
       >
-        <p className="px-2.5 pb-1 pt-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          Ajouter
-        </p>
         {items.map((it) => {
           const Icon = it.icon;
           return (
@@ -1550,14 +1553,12 @@ function AddMenu({
                 it.onSelect();
                 setOpen(false);
               }}
-              className="flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-left transition-colors hover:bg-secondary/60"
+              className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-secondary/60"
             >
-              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="size-4" strokeWidth={1.7} />
-              </span>
+              <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.7} />
               <span className="min-w-0">
-                <span className="block text-[12px] font-medium leading-tight">{it.label}</span>
-                <span className="block truncate text-[10.5px] leading-tight text-muted-foreground">
+                <span className="block text-[13px] font-medium leading-tight">{it.label}</span>
+                <span className="mt-0.5 block truncate text-xs leading-tight text-muted-foreground">
                   {it.desc}
                 </span>
               </span>
@@ -1569,33 +1570,12 @@ function AddMenu({
   );
 }
 
-function EmptyState({
-  salutation,
-  pitch,
-  ctx,
-}: {
-  salutation: string;
-  pitch: string;
-  ctx: string;
-}) {
+function EmptyState({ salutation, pitch }: { salutation: string; pitch: string }) {
   return (
     <div className="flex h-full flex-col items-center justify-center px-4 pb-6 text-center">
-      <div className="relative">
-        <div className="absolute inset-0 -z-10 rounded-full bg-primary/15 blur-2xl" />
-        <BrandLogoMark size={64} />
-      </div>
-
-      <h3 className="mt-6 text-[15px] font-semibold leading-tight tracking-tight text-foreground">
-        {salutation}
-      </h3>
-      <p className="mt-2 max-w-[36ch] text-[12.5px] leading-relaxed text-muted-foreground">
-        {pitch}
-      </p>
-
-      <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
-        <span className="size-1.5 rounded-full bg-primary" />
-        Contexte · {ctx}
-      </div>
+      <BrandLogoMark size={40} />
+      <h3 className="mt-4 text-base font-semibold leading-tight text-foreground">{salutation}</h3>
+      <p className="mt-2 max-w-[34ch] text-sm leading-relaxed text-muted-foreground">{pitch}</p>
     </div>
   );
 }

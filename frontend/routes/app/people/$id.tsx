@@ -67,7 +67,7 @@ import { stageLabels } from "@/lib/people/helpers";
 import { cn } from "@/lib/core/utils";
 
 export const Route = createFileRoute("/app/people/$id")({
-  head: () => ({ meta: [{ title: "Prospect — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Prospect · LeadCortex" }] }),
   pendingComponent: () => <DetailViewSkeleton />,
   component: PeopleDetailPage,
 });
@@ -188,7 +188,7 @@ function PeopleDetailPage() {
       return;
     }
     updateLead(lead.id, { tags: [...current, clean] });
-    addActivity("Tag ajouté", `${lead.name} — ${clean}`);
+    addActivity("Tag ajouté", `${lead.name} · ${clean}`);
     toast.success(`Tag « ${clean} » ajouté`);
   };
 
@@ -196,14 +196,14 @@ function PeopleDetailPage() {
     if (!lead) return;
     const current = lead.tags ?? [];
     updateLead(lead.id, { tags: current.filter((t) => t !== tag) });
-    addActivity("Tag retiré", `${lead.name} — ${tag}`);
+    addActivity("Tag retiré", `${lead.name} · ${tag}`);
     toast.success(`Tag « ${tag} » retiré`);
   };
 
   const updateSignal = (signal: string) => {
     if (!lead) return;
     updateLead(lead.id, { signal: signal || undefined });
-    addActivity("Signal mis à jour", `${lead.name} — ${signal || "aucun"}`);
+    addActivity("Signal mis à jour", `${lead.name} · ${signal || "aucun"}`);
     toast.success(signal ? "Signal mis à jour" : "Signal retiré");
   };
 
@@ -218,7 +218,7 @@ function PeopleDetailPage() {
     if (!lead) return;
     const value = score === "" ? null : Number(score);
     updateLead(lead.id, { score: value });
-    addActivity("Score mis à jour", `${lead.name} — ${value ?? "—"}`);
+    addActivity("Score mis à jour", `${lead.name} · ${value ?? "aucun"}`);
   };
 
   const handleSendEmail = (subject: string, body: string) => {
@@ -243,7 +243,7 @@ function PeopleDetailPage() {
       folder: "sent",
     };
     store.sendEmail(email);
-    addActivity("Email envoyé", `À ${lead.name} — ${subject}`);
+    addActivity("Email envoyé", `À ${lead.name} · ${subject}`);
     toast.success("Email envoyé");
     setComposeOpen(false);
   };
@@ -251,9 +251,9 @@ function PeopleDetailPage() {
   if (!lead) {
     return (
       <div className="mx-auto w-full max-w-[1400px] p-4 md:p-8 text-center">
-        <div className="mx-auto max-w-md rounded-2xl border-2 border-dashed border-border bg-surface/30 p-6 md:p-8 shadow-[0_3px_0_var(--border)]">
+        <div className="mx-auto max-w-md rounded-xl border border-border bg-card p-6 md:p-8">
           <AlertCircle className="size-10 md:size-12 mx-auto text-muted-foreground mb-3 md:mb-4" />
-          <h2 className="font-display text-xl md:text-2xl italic">Prospect introuvable</h2>
+          <h2 className="text-xl font-semibold">Prospect introuvable</h2>
           <p className="text-muted-foreground text-xs md:text-sm mt-2">
             Ce prospect n'existe pas ou a été supprimé.
           </p>
@@ -568,11 +568,11 @@ function PeopleDetailPage() {
 
   return (
     <>
-      <div className="sticky top-0 z-30 -mx-3 md:-mx-6 px-3 md:px-6 py-2.5 bg-background/90 backdrop-blur-xl border-b border-border mb-4 md:mb-6">
+      <div className="sticky top-0 z-30 -mx-4 md:-mx-8 px-4 md:px-8 py-2 bg-background/90 backdrop-blur-xl border-b border-border mb-4 md:mb-6">
         <div className="flex items-center gap-2">
           <Link
             to="/app/people"
-            className="rounded-lg border border-border bg-background p-1.5 hover:bg-surface transition-colors shrink-0 shadow-[0_1px_0_var(--border)]"
+            className="rounded-lg border border-border bg-background p-1.5 hover:bg-surface transition-colors shrink-0"
             title="Retour"
           >
             <ArrowLeft className="size-4" />
@@ -591,7 +591,7 @@ function PeopleDetailPage() {
               onClick={() => setComposeOpen(true)}
               disabled={!lead.email}
               title={!lead.email ? "Aucun email renseigné" : "Envoyer un email"}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-2.5 md:px-3 py-1.5 text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity shadow-[0_2px_0_color-mix(in_oklab,var(--foreground)_70%,black)] active:translate-y-[2px] active:shadow-none disabled:opacity-40 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-2.5 md:px-3 py-1.5 text-xs font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Send className="size-3.5" />
               <span className="hidden sm:inline">Email</span>
@@ -600,14 +600,14 @@ function PeopleDetailPage() {
               onClick={() => setCallOpen(true)}
               disabled={!lead.phone}
               title={!lead.phone ? "Aucun numéro renseigné" : "Appeler"}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 md:px-3 py-1.5 text-[10px] md:text-xs hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-[0_1px_0_var(--border)]"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 md:px-3 py-1.5 text-xs hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               <PhoneCall className="size-3.5" />
               <span className="hidden sm:inline">Appeler</span>
             </button>
             <button
               onClick={() => setScheduleOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 md:px-3 py-1.5 text-[10px] md:text-xs hover:bg-surface transition-colors shadow-[0_1px_0_var(--border)]"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 md:px-3 py-1.5 text-xs hover:bg-surface transition-colors"
             >
               <CalendarDays className="size-3.5" />
               <span className="hidden sm:inline">Planifier</span>
@@ -615,11 +615,11 @@ function PeopleDetailPage() {
 
             <span className="w-px h-5 bg-border mx-1" />
 
-            <div className="hidden md:flex items-center gap-1.5 rounded-lg border border-border bg-background px-2 py-1 shadow-[0_1px_0_var(--border)]">
+            <div className="hidden md:flex items-center gap-1.5 rounded-lg border border-border bg-background px-2 py-1">
               <span className={cn("font-mono text-xs font-semibold tabular-nums", scoreColor)}>
-                {lead.score?.toFixed(1) ?? "—"}
+                {lead.score?.toFixed(1) ?? "-"}
               </span>
-              <span className="text-[10px] text-muted-foreground">/10</span>
+              <span className="text-xs text-muted-foreground">/10</span>
             </div>
             <button
               onClick={() => {
@@ -629,8 +629,8 @@ function PeopleDetailPage() {
               className={cn(
                 "rounded-lg border p-1.5 transition-colors",
                 lead.saved
-                  ? "border-primary bg-primary/5 text-primary shadow-[0_1px_0_color-mix(in_oklab,var(--primary)_40%,transparent)]"
-                  : "border-border bg-background hover:bg-surface shadow-[0_1px_0_var(--border)]",
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-border bg-background hover:bg-surface",
               )}
               title={lead.saved ? "Retirer des favoris" : "Ajouter aux favoris"}
             >
@@ -708,7 +708,7 @@ function PeopleDetailPage() {
               )}
               <span
                 aria-hidden
-                className="pointer-events-none absolute -bottom-1 -right-1 grid size-7 place-items-center rounded-full border border-border bg-background shadow-[0_1px_0_var(--border)] opacity-0 transition-opacity group-hover/avatar:opacity-100"
+                className="pointer-events-none absolute -bottom-1 -right-1 grid size-7 place-items-center rounded-full border border-border bg-background opacity-0 transition-opacity group-hover/avatar:opacity-100"
               >
                 <Edit className="size-3.5" />
               </span>
@@ -774,7 +774,7 @@ function PeopleDetailPage() {
                       if (next !== null) updateSignal(next.trim());
                     }}
                     onContextMenu={ctx.bind({ type: "signal" }).onContextMenu}
-                    className="inline-flex items-center gap-1 rounded-full bg-warning/14 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning hover:bg-warning/20 transition-colors"
+                    className="inline-flex items-center gap-1 rounded-full bg-warning/14 px-2 py-0.5 text-xs font-medium text-warning hover:bg-warning/20 transition-colors"
                   >
                     <Radio className="size-2.5" />
                     {lead.signal}
@@ -801,8 +801,8 @@ function PeopleDetailPage() {
                   </h2>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className={cn("font-display text-2xl md:text-3xl italic tabular-nums", scoreColor)}>
-                    {lead.score?.toFixed(1) ?? "—"}
+                  <span className={cn("text-2xl font-semibold tabular-nums", scoreColor)}>
+                    {lead.score?.toFixed(1) ?? "-"}
                   </span>
                   <span className="text-xs md:text-sm text-muted-foreground">/10</span>
                   <button
@@ -874,23 +874,23 @@ function PeopleDetailPage() {
                   onClick={() => {
                     const body = `Bonjour ${lead.name.split(" ")[0]},\n\n${
                       lead.signal
-                        ? `J'ai vu que ${lead.company} ${lead.signal.toLowerCase()} — félicitations !`
+                        ? `J'ai vu que ${lead.company} ${lead.signal.toLowerCase()}, félicitations !`
                         : `J'ai vu que ${lead.company} évolue dans votre secteur.`
                     }\n\n${lead.notes || "Seriez-vous disponible pour un échange de 20 minutes ?"}\n\nBien à vous,\nUtilisateur`;
                     handleSendEmail(
-                      lead.signal ? `${lead.signal} — échange rapide ?` : "Échange rapide ?",
+                      lead.signal ? `${lead.signal} : un échange rapide ?` : "Échange rapide ?",
                       body,
                     );
                   }}
                   disabled={!lead.email}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 text-primary px-2.5 py-1 text-[10px] md:text-xs hover:bg-primary/15 transition-colors shadow-[0_1px_0_color-mix(in_oklab,var(--primary)_20%,transparent)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 text-primary px-2.5 py-1 text-xs hover:bg-primary/15 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Sparkles className="size-3" /> Générer l'email
                 </button>
                 <button
                   onClick={() => setCallOpen(true)}
                   disabled={!lead.phone}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-[10px] md:text-xs hover:bg-surface transition-colors shadow-[0_1px_0_var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-xs hover:bg-surface transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Mic className="size-3" /> Script d'appel
                 </button>
@@ -1022,7 +1022,7 @@ function PeopleDetailPage() {
                 </button>
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-sm truncate">{lead.company}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{lead.industry}</p>
+                  <p className="text-xs text-muted-foreground truncate">{lead.industry}</p>
                 </div>
               </div>
               <Link
@@ -1113,9 +1113,9 @@ function PeopleDetailPage() {
         onOpenChange={setCallOpen}
         lead={lead}
         onCompleted={(duration) => {
-          addActivity("Appel effectué", `À ${lead.name} — ${duration}`);
+          addActivity("Appel effectué", `À ${lead.name} · ${duration}`);
           store.addTask({
-            title: `Suivi après appel — ${lead.name}`,
+            title: `Suivi après appel avec ${lead.name}`,
             type: "follow-up",
             contact: lead.name,
             due: "Demain",
@@ -1129,7 +1129,7 @@ function PeopleDetailPage() {
         onOpenChange={setScheduleOpen}
         lead={lead}
         onScheduled={(summary) => {
-          addActivity("Meeting planifié", `Avec ${lead.name} — ${summary}`);
+          addActivity("Meeting planifié", `Avec ${lead.name} · ${summary}`);
           store.addTask({
             title: `Meeting avec ${lead.name}`,
             type: "call",
@@ -1276,7 +1276,7 @@ function OverviewTab({ lead }: { lead: any }) {
   return (
     <div className="grid md:grid-cols-2 gap-3 md:gap-4">
       <div className="list-item-atelier p-3 md:p-4">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-3 inline-flex items-center gap-1.5">
+        <h3 className="text-[13px] font-semibold text-foreground mb-3 inline-flex items-center gap-1.5">
           <Mail className="size-3 text-primary" /> Coordonnées
         </h3>
         <div className="space-y-2">
@@ -1300,7 +1300,7 @@ function OverviewTab({ lead }: { lead: any }) {
       </div>
 
       <div className="list-item-atelier p-3 md:p-4">
-        <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-3 inline-flex items-center gap-1.5">
+        <h3 className="text-[13px] font-semibold text-foreground mb-3 inline-flex items-center gap-1.5">
           <Building2 className="size-3 text-primary" /> Entreprise
         </h3>
         <div className="space-y-1.5 text-xs">
@@ -1331,7 +1331,7 @@ function ActivityTab({
     return (
       <div className="text-center py-6">
         <p className="text-xs md:text-sm text-muted-foreground">Aucune activité pour ce prospect.</p>
-        <p className="mt-1 text-[10.5px] text-muted-foreground/70">
+        <p className="mt-1 text-xs text-muted-foreground/70">
           Les actions apparaîtront ici automatiquement.
         </p>
       </div>
@@ -1360,8 +1360,8 @@ function ActivityTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs md:text-sm font-medium">{a.label}</p>
-              <p className="text-[10px] md:text-xs text-muted-foreground">{a.detail}</p>
-              <p className="text-[9px] md:text-[10px] text-muted-foreground/60 mt-0.5">
+              <p className="text-xs text-muted-foreground">{a.detail}</p>
+              <p className="text-xs text-muted-foreground/60 mt-0.5">
                 {a.time}
               </p>
             </div>
@@ -1392,23 +1392,23 @@ function NotesTab({
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Notes d'approche, contexte, objections, prochaines étapes…"
           rows={8}
-          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-xs md:text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[140px] shadow-[0_2px_0_var(--border)] focus:shadow-none focus:translate-y-[2px]"
+          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-xs md:text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[140px]"
         />
       </div>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[10px] text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           Sauvegarde auto via le bouton, ou appuyez sur ✏ dans l'en-tête.
         </p>
         <div className="flex items-center gap-2">
           <button
             onClick={onEdit}
-            className="rounded-lg border border-border bg-background px-3 py-1.5 text-[11px] hover:bg-surface transition-colors shadow-[0_1px_0_var(--border)]"
+            className="rounded-lg border border-border bg-background px-3 py-1.5 text-[11px] hover:bg-surface transition-colors"
           >
             Éditer en plein écran
           </button>
           <button
             onClick={() => onSave(draft)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-[11px] hover:brightness-110 transition-all shadow-[0_2px_0_color-mix(in_oklab,var(--primary)_60%,black)] active:translate-y-[2px] active:shadow-none"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-[11px] hover:brightness-110 transition-all"
           >
             <Save className="size-3" /> Enregistrer
           </button>
@@ -1461,9 +1461,9 @@ function EmailsTab({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-xs md:text-sm font-medium truncate">{e.subject}</p>
-                    <span className="shrink-0 text-[10px] text-muted-foreground">{e.time}</span>
+                    <span className="shrink-0 text-xs text-muted-foreground">{e.time}</span>
                   </div>
-                  <p className="text-[10.5px] md:text-xs text-muted-foreground truncate">
+                  <p className="text-xs text-muted-foreground truncate">
                     {e.preview}
                   </p>
                 </div>
@@ -1529,7 +1529,7 @@ function TagsSection({
           <span
             key={t}
             onContextMenu={onContext({ type: "tag", tag: t }).onContextMenu}
-            className="group/tag inline-flex items-center gap-1 rounded-full bg-secondary/60 px-2 py-0.5 text-[10px] text-foreground cursor-context-menu hover:bg-secondary transition-colors"
+            className="group/tag inline-flex items-center gap-1 rounded-full bg-secondary/60 px-2 py-0.5 text-xs text-foreground cursor-context-menu hover:bg-secondary transition-colors"
           >
             <span className="truncate">{t}</span>
             <button
@@ -1544,7 +1544,7 @@ function TagsSection({
 
         <Popover open={addOpen} onOpenChange={setAddOpen}>
           <PopoverTrigger asChild>
-            <button className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-[10px] text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors">
+            <button className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-xs text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors">
               <Plus className="size-2.5" /> Ajouter
             </button>
           </PopoverTrigger>
@@ -1648,7 +1648,7 @@ function NextActionsSection({
             }
             onSubmit={(values) => {
               store.addTask({ ...values, contact: lead.name });
-              store.addActivity("Tâche créée", `${lead.name} — ${values.title}`);
+              store.addActivity("Tâche créée", `${lead.name} · ${values.title}`);
               toast.success("Tâche créée");
             }}
           />
@@ -1671,7 +1671,7 @@ function NextActionsSection({
                 </button>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs truncate">{t.title}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">
+                  <p className="text-xs text-muted-foreground truncate">
                     {t.due} · {t.priority}
                   </p>
                 </div>
@@ -1701,7 +1701,7 @@ function NextActionsSection({
               }
               onSubmit={(values) => {
                 store.addTask({ ...values, contact: lead.name });
-                store.addActivity("Tâche créée", `${lead.name} — ${values.title}`);
+                store.addActivity("Tâche créée", `${lead.name} · ${values.title}`);
                 toast.success("Tâche ajoutée");
               }}
             />
@@ -1746,15 +1746,15 @@ function ComposeEmailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl italic">Nouveau message</DialogTitle>
+          <DialogTitle className="text-base font-semibold">Nouveau message</DialogTitle>
           <DialogDescription>
-            À <span className="font-mono">{lead.email || "Aucun email"}</span> — {lead.name}
+            {lead.name} · <span className="font-mono">{lead.email || "Aucun email"}</span>
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
           <div>
-            <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <label className="text-[13px] font-medium text-foreground">
               Objet
             </label>
             <input
@@ -1766,7 +1766,7 @@ function ComposeEmailDialog({
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <label className="text-[13px] font-medium text-foreground">
               Message
             </label>
             <textarea
@@ -1781,14 +1781,14 @@ function ComposeEmailDialog({
         <DialogFooter className="gap-2">
           <button
             onClick={() => onOpenChange(false)}
-            className="rounded-lg border border-border bg-background px-4 py-2 text-sm hover:bg-surface transition-colors shadow-[0_1px_0_var(--border)]"
+            className="rounded-lg border border-border bg-background px-4 py-2 text-sm hover:bg-surface transition-colors"
           >
             Annuler
           </button>
           <button
             onClick={submit}
             disabled={!subject.trim() || !lead.email}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50 shadow-[0_2px_0_color-mix(in_oklab,var(--foreground)_70%,black)] active:translate-y-[2px] active:shadow-none transition-all"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-all"
           >
             <Send className="size-3.5" /> Envoyer
           </button>
@@ -1824,9 +1824,9 @@ function ScoreEditDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle className="font-display text-lg italic">Modifier le score ICP</DialogTitle>
+          <DialogTitle className="text-base font-semibold">Modifier le score ICP</DialogTitle>
           <DialogDescription>
-            Score entre 0 et 10 — utilisé pour prioriser les prospects.
+            Score de 0 à 10, utilisé pour prioriser les prospects.
           </DialogDescription>
         </DialogHeader>
 
@@ -1880,7 +1880,7 @@ function NotesEditDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-display text-lg italic">Notes d'approche</DialogTitle>
+          <DialogTitle className="text-base font-semibold">Notes d'approche</DialogTitle>
           <DialogDescription>
             Notes internes, contexte, objections, prochaines étapes. Persistées sur la fiche.
           </DialogDescription>

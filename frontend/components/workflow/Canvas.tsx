@@ -1147,15 +1147,14 @@ export function Canvas({
       {!doc.nodes.length && !doc.comments.length && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center p-6">
           <div
-            className="pointer-events-auto max-w-md rounded-2xl border border-border/80 bg-panel/90 p-6 text-center shadow-node backdrop-blur-sm"
+            className="pointer-events-auto max-w-sm rounded-xl border border-border bg-panel p-6 text-center"
             onPointerDown={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-[15px] font-semibold tracking-tight">Canevas vierge</h2>
-            <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">
-              Commencez par ajouter un bloc via le <strong>clic droit</strong>, un{" "}
-              <strong>double-clic</strong> sur le canevas, ou en demandant directement à{" "}
-              <strong>l'Agent IA</strong>.
+            <h2 className="text-base font-semibold">Canevas vide</h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
+              Ajoutez un premier bloc. Vous pouvez aussi faire un clic droit, double-cliquer sur le
+              canevas ou demander à l'assistant.
             </p>
             <button
               type="button"
@@ -1166,12 +1165,12 @@ export function Canvas({
                 };
                 onOpenPalette(c);
               }}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-[12px] font-medium text-primary-foreground transition-all hover:brightness-110"
+              className="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Ajouter un bloc
             </button>
-            <p className="mt-3 text-[10.5px] text-muted-foreground">
-              Raccourci : Shift+A · Espace+Glisser pour naviguer
+            <p className="mt-4 text-xs text-muted-foreground">
+              Raccourcis : Maj+A pour ajouter, Espace et glisser pour se déplacer
             </p>
           </div>
         </div>
@@ -1251,7 +1250,7 @@ export function Canvas({
           >
             <ghostBlock.icon className="h-3.5 w-3.5" />
           </span>
-          <span className="whitespace-nowrap text-[12px] font-medium">{ghostBlock.title}</span>
+          <span className="whitespace-nowrap text-xs font-medium">{ghostBlock.title}</span>
         </div>
       )}
     </div>

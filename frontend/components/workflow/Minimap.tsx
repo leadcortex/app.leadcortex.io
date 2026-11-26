@@ -52,11 +52,7 @@ export function Minimap() {
         isMobile ? "p-1" : "p-1.5",
       )}
     >
-      {!isMobile && (
-        <div className="mb-1 px-0.5 text-[9px] uppercase tracking-wider text-muted-foreground">
-          Mini-carte
-        </div>
-      )}
+      {!isMobile && <div className="mb-1 px-0.5 text-[11px] text-muted-foreground">Mini-carte</div>}
       <svg width={MW} height={MH} className="cursor-pointer rounded bg-canvas" onClick={jump}>
         {isMobile ? (
           doc.nodes.map((n) => (

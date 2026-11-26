@@ -202,7 +202,7 @@ function AppShellBody({ children }: { children: ReactNode }) {
                   data-tab-scroll
                   className="h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain"
                 >
-                  <div className="p-3 md:p-6">{children}</div>
+                  <div className="p-4 md:p-8">{children}</div>
                 </div>
               )}
             </main>
@@ -221,24 +221,24 @@ function AppShellBody({ children }: { children: ReactNode }) {
 
 function TopBarPlaceholder() {
   return (
-    <header className="relative z-[45] flex shrink-0 items-center gap-2 rounded-2xl border border-border/70 bg-background px-2 py-2 shadow-sm md:px-3 md:py-2.5">
-      <div className="hidden w-full items-center justify-between gap-2 md:flex">
+    <header className="relative z-[45] flex shrink-0 items-center gap-2 rounded-2xl border border-border/70 bg-background p-1 shadow-sm md:h-14 md:px-3 md:py-0">
+      <div className="hidden w-full items-center justify-between gap-4 md:flex">
         <div className="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
-          <div className="h-8 w-28 shrink-0 animate-pulse rounded-lg bg-surface/60 md:w-32" />
-          <div className="h-8 w-28 shrink-0 animate-pulse rounded-lg bg-surface/60 md:w-32" />
-          <div className="h-8 w-28 shrink-0 animate-pulse rounded-lg bg-surface/60 md:w-32" />
+          <div className="h-8 w-32 shrink-0 animate-pulse rounded-lg bg-surface/60" />
+          <div className="h-8 w-32 shrink-0 animate-pulse rounded-lg bg-surface/60" />
+          <div className="h-8 w-32 shrink-0 animate-pulse rounded-lg bg-surface/60" />
         </div>
-        <div className="flex shrink-0 items-center gap-1 md:gap-2">
-          <div className="size-8 animate-pulse rounded-lg bg-surface/60" />
-          <div className="size-8 animate-pulse rounded-lg bg-surface/60" />
-          <div className="size-8 animate-pulse rounded-lg bg-surface/60" />
+        <div className="flex shrink-0 items-center gap-1">
+          <div className="size-9 animate-pulse rounded-lg bg-surface/60" />
+          <div className="size-9 animate-pulse rounded-lg bg-surface/60" />
+          <div className="size-9 animate-pulse rounded-lg bg-surface/60" />
         </div>
       </div>
 
-      <div className="flex w-full items-center gap-1.5 md:hidden">
-        <div className="size-10 shrink-0 animate-pulse rounded-full bg-surface/60" />
-        <div className="h-10 flex-1 animate-pulse rounded-full bg-surface/60" />
-        <div className="size-10 shrink-0 animate-pulse rounded-full bg-surface/60" />
+      <div className="flex w-full items-center gap-1 md:hidden">
+        <div className="size-11 shrink-0 animate-pulse rounded-full bg-surface/60" />
+        <div className="h-11 flex-1 animate-pulse rounded-full bg-surface/60" />
+        <div className="size-11 shrink-0 animate-pulse rounded-full bg-surface/60" />
       </div>
     </header>
   );
@@ -272,12 +272,12 @@ function TopBar() {
   }, [openSettings]);
 
   return (
-    <header className="relative z-[45] flex items-center justify-between gap-2 rounded-2xl border border-border/70 bg-background px-2 py-2 shadow-sm md:px-3 md:py-2.5">
-      <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
+    <header className="relative z-[45] flex h-14 shrink-0 items-center justify-between gap-4 rounded-2xl border border-border/70 bg-background px-3 shadow-sm">
+      <div className="flex min-w-0 flex-1 items-center">
         <AppTabs />
       </div>
 
-      <div className="flex shrink-0 items-center gap-1 md:gap-2">
+      <div className="flex shrink-0 items-center gap-1">
         <HeaderSearch pages={pages} />
 
         <NotificationCenter />

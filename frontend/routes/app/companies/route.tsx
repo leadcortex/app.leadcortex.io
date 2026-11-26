@@ -72,14 +72,14 @@ import { MobileCompanyStack } from "@/components/companies/companies-mobile";
 import DataTable from "@/components/common/data-table";
 import { AutoScrollOnDrag, ScrollbarStyles } from "@/components/people/people-table-layout";
 import { cn } from "@/lib/core/utils";
+import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/app/companies")({
-  head: () => ({ meta: [{ title: "Entreprises — LeadCortex" }] }),
+export const Route
+ = createFileRoute("/app/companies")({
+  head: () => ({ meta: [{ title: "Entreprises · LeadCortex" }] }),
   pendingComponent: () => (
     <TableViewSkeleton
       label="Chargement des entreprises"
-      kpis={4}
-      kpiVariant="stat"
       rows={10}
       columns={6}
       filters={4}
@@ -243,7 +243,7 @@ function CompaniesListContent() {
       setPrefs(next);
       if (result.justHidden) {
         toast.info("Suggestions d'entreprises masquées", {
-          description: `Vous avez maintenant ${current} comptes dans votre base. Les suggestions sont masquées automatiquement. Vous pouvez les réactiver dans les préférences.`,
+          description: `Vous avez ${current} comptes. Vous pouvez réafficher les suggestions dans les préférences.`,
           duration: 6000,
         });
       }
@@ -308,7 +308,7 @@ function CompaniesListContent() {
 
   const bulkExport = useCallback(() => {
     const count = selectedIds.size || searched.length;
-    toast.success(`Export CSV — ${count} lignes`);
+    toast.success(`${count} ligne${count > 1 ? "s" : ""} exportée${count > 1 ? "s" : ""} en CSV`);
     addActivity("Export", `${count} entreprises exportées`);
     setSelectedIds(new Set());
   }, [selectedIds.size, searched.length, addActivity]);
@@ -357,9 +357,11 @@ function CompaniesListContent() {
   const bindContext = useCallback(
     (payload: { id: string }) => {
       const multi = selectedIds.has(payload.id) && selectedIds.size > 1;
-      return ctx.bind({ id: payload.id, multi });
+      // Sur mobile, pas de menu contextuel à l'appui long : il ferait doublon
+      // avec les cases à cocher et la barre d'actions de sélection.
+      return ctx.bind({ id: payload.id, multi }, { disabled: isMobile });
     },
-    [ctx, selectedIds],
+    [ctx, selectedIds, isMobile],
   );
 
   useKeyboardShortcuts([
@@ -378,22 +380,20 @@ function CompaniesListContent() {
             to={`/app/companies/$id`}
             params={{ id: row.id }}
             onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-2.5 hover:text-primary transition-colors group min-w-0"
+            className="flex items-center gap-3 hover:text-primary transition-colors min-w-0"
           >
             <CompanyAvatar
               name={row.name}
               domain={row.domain}
               logoUrl={row.companyLogoUrl}
-              size={36}
+              size={32}
               shape="rounded"
             />
             <div className="min-w-0">
-              <div className="font-medium text-xs md:text-sm truncate group-hover:underline">
-                {row.name}
-              </div>
-              <div className="text-[9px] md:text-xs text-muted-foreground font-mono truncate">
-                {row.domain || "—"}
-              </div>
+              <div className="font-medium text-sm truncate">{row.name}</div>
+              {row.domain && (
+                <div className="text-xs text-muted-foreground truncate">{row.domain}</div>
+              )}
             </div>
           </Link>
         ),
@@ -407,10 +407,10 @@ function CompaniesListContent() {
         hideOnMobile: true,
         accessor: (row) => (
           <div className="min-w-0">
-            <div className="truncate text-xs md:text-sm font-medium">{row.industry || "—"}</div>
-            <div className="text-[9px] md:text-xs text-muted-foreground truncate">
-              {row.location || "—"}
-            </div>
+            <div className="truncate text-sm">{row.industry || "Non renseigné"}</div>
+            {row.location && (
+              <div className="text-xs text-muted-foreground truncate">{row.location}</div>
+            )}
           </div>
         ),
         cellClassName: "min-w-[140px] md:min-w-[180px]",
@@ -423,8 +423,7 @@ function CompaniesListContent() {
               sortable: true,
               compactHide: true,
               accessor: (row: any) => (
-                <span className="inline-flex items-center gap-1 text-[10px] md:text-xs">
-                  <Users className="size-2.5 md:size-3 text-muted-foreground" />{" "}
+                <span className="text-sm tabular-nums">
                   {(Number(row.employees) || 0).toLocaleString("fr-FR")}
                 </span>
               ),
@@ -441,7 +440,9 @@ function CompaniesListContent() {
               compactHide: true,
               hideOnMobile: true,
               accessor: (row: any) => (
-                <span className="font-mono text-[10px] md:text-xs">{row.revenue || "—"}</span>
+                <span className="text-sm tabular-nums">
+                  {row.revenue || <span className="text-muted-foreground">Inconnu</span>}
+                </span>
               ),
               cellClassName: "min-w-[90px] md:min-w-[110px]",
             } as Column<any>,
@@ -456,7 +457,7 @@ function CompaniesListContent() {
               accessor: (row: any) => (
                 <span
                   className={cn(
-                    "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium",
+                    "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium",
                     row.intent === "hot"
                       ? "bg-primary/10 text-primary"
                       : row.intent === "warm"
@@ -466,7 +467,7 @@ function CompaniesListContent() {
                 >
                   <span
                     className={cn(
-                      "size-1 rounded-full",
+                      "size-1.5 rounded-full",
                       row.intent === "hot"
                         ? "bg-primary"
                         : row.intent === "warm"
@@ -495,10 +496,11 @@ function CompaniesListContent() {
                 toggleCompanySaved(row.id);
               }}
               title={row.saved ? "Retirer des favoris" : "Sauvegarder"}
-              className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
+              aria-label={row.saved ? "Retirer des favoris" : "Sauvegarder"}
+              className="grid size-8 place-items-center rounded-lg hover:bg-surface/70 transition-colors"
             >
               <Bookmark
-                className={`size-3.5 ${row.saved ? "fill-primary text-primary" : "text-muted-foreground"}`}
+                className={`size-4 ${row.saved ? "fill-primary text-primary" : "text-muted-foreground"}`}
               />
             </button>
           </div>
@@ -598,13 +600,13 @@ function CompaniesListContent() {
     return (
       <>
         <ScrollbarStyles />
-        <div className="sticky top-2 z-30 flex justify-end items-center gap-2 px-4 pointer-events-none -mb-10">
+        <div className="sticky top-2 z-30 flex justify-end items-center gap-2 pointer-events-none -mb-10">
           <div className="pointer-events-auto flex items-center gap-2">
             <button
               type="button"
               onClick={() => setMobileSettingsOpen(true)}
               aria-label="Préférences"
-              className="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-background text-foreground shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--foreground)_25%,transparent)] active:bg-surface"
+              className="grid size-11 shrink-0 place-items-center rounded-full border border-border bg-background text-foreground shadow-float active:bg-surface"
             >
               <Settings className="size-4" strokeWidth={2} />
             </button>
@@ -612,7 +614,7 @@ function CompaniesListContent() {
               type="button"
               onClick={() => navigate({ to: "/app/companies/new" })}
               aria-label="Ajouter une entreprise"
-              className="grid size-10 shrink-0 place-items-center rounded-full bg-foreground text-background shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--foreground)_45%,transparent)] active:opacity-90"
+              className="grid size-11 shrink-0 place-items-center rounded-full bg-foreground text-background shadow-float active:opacity-90"
             >
               <Plus className="size-4" strokeWidth={2.2} />
             </button>
@@ -644,7 +646,7 @@ function CompaniesListContent() {
               >
                 <span>Filtres</span>
                 {activeFilterCount > 0 && (
-                  <span className="ml-0.5 grid size-4 place-items-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+                  <span className="ml-0.5 grid size-5 place-items-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
                     {activeFilterCount}
                   </span>
                 )}
@@ -681,17 +683,15 @@ function CompaniesListContent() {
             </button>
 
             <div className="rounded-xl border border-border bg-background px-4 py-3 space-y-2">
-              <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                Vue des entreprises
-              </p>
+              <p className="text-[13px] font-medium text-muted-foreground">Affichage</p>
               <div className="grid grid-cols-2 gap-1 p-0.5 rounded-lg border border-border bg-surface/40">
                 <button
                   type="button"
                   onClick={() => updatePrefs({ view: "table" })}
                   className={cn(
-                    "px-2 py-1.5 text-[12px] rounded-md transition-colors inline-flex items-center justify-center gap-1",
+                    "h-9 px-2 text-[13px] rounded-md transition-colors inline-flex items-center justify-center gap-1.5",
                     prefs.view === "table"
-                      ? "bg-background shadow-sm text-foreground font-medium"
+                      ? "bg-background text-foreground font-medium"
                       : "text-muted-foreground active:bg-surface",
                   )}
                 >
@@ -701,9 +701,9 @@ function CompaniesListContent() {
                   type="button"
                   onClick={() => updatePrefs({ view: "cards" })}
                   className={cn(
-                    "px-2 py-1.5 text-[12px] rounded-md transition-colors inline-flex items-center justify-center gap-1",
+                    "h-9 px-2 text-[13px] rounded-md transition-colors inline-flex items-center justify-center gap-1.5",
                     prefs.view === "cards"
-                      ? "bg-background shadow-sm text-foreground font-medium"
+                      ? "bg-background text-foreground font-medium"
                       : "text-muted-foreground active:bg-surface",
                   )}
                 >
@@ -735,11 +735,11 @@ function CompaniesListContent() {
         </MobileSheet>
 
         {!hasItems ? (
-          <div className="px-3 pt-4 pb-6">
+          <div className="pt-4 pb-6">
             <MobileEmptyState
               icon={Building2}
               title="Aucune entreprise"
-              description="Créez votre première entreprise cible pour commencer à prospecter."
+              description="Ajoutez une première entreprise à prospecter."
               action={{
                 label: "Créer une entreprise",
                 onClick: () => navigate({ to: "/app/companies/new" }),
@@ -749,7 +749,7 @@ function CompaniesListContent() {
           </div>
         ) : (
           <>
-            <div className="px-3 pt-3">
+            <div className="pt-3">
               <div className="relative">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
@@ -765,7 +765,7 @@ function CompaniesListContent() {
                   }}
                   onKeyDown={handleSearchKeyDown}
                   placeholder="Rechercher une entreprise…"
-                  className="w-full h-10 rounded-full border border-border bg-background pl-10 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-11 rounded-full border border-border bg-background pl-10 pr-10 text-base focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 {searchQuery && (
                   <button
@@ -820,14 +820,11 @@ function CompaniesListContent() {
                 },
               ]}
               hint={
-                <div className="flex w-full items-center justify-between gap-2">
-                  <span className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/30 bg-primary/[0.08] px-3 text-[12px] font-semibold text-primary tabular-nums">
-                    {selectedIds.size} sélectionnée{selectedIds.size > 1 ? "s" : ""}
-                  </span>
+                <div className="flex w-full items-center">
                   <button
                     type="button"
                     onClick={() => setSelectedIds(new Set())}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[12px] font-medium text-muted-foreground shadow-[0_2px_0_var(--border)] transition-all active:translate-y-[2px] active:shadow-none"
+                    className="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[13px] font-medium text-muted-foreground transition-colors active:bg-surface"
                   >
                     <X className="size-3.5" />
                     <span className="whitespace-nowrap">Tout désélectionner</span>
@@ -915,14 +912,14 @@ function CompaniesListContent() {
           onOpenChange={(v) => !v && setDeleteConfirm(null)}
           onConfirm={confirmDelete}
           title={`Supprimer ${deleteConfirm?.ids.length ?? 0} entreprise${(deleteConfirm?.ids.length ?? 0) > 1 ? "s" : ""} ?`}
-          description="Cette action est réversible via Ctrl+Z, mais les fiches seront retirées de votre base."
+          description="Les fiches seront retirées de votre base. Vous pourrez annuler juste après."
           confirmLabel="Supprimer"
           cancelLabel="Annuler"
           variant="destructive"
         />
 
         {!prefs.hideKnownCompanies && (
-          <div className="px-3 pb-6 mt-3">
+          <div className="pb-6 mt-8">
             <KnownCompaniesExplorer />
           </div>
         )}
@@ -936,18 +933,18 @@ function CompaniesListContent() {
   return (
     <>
       <ScrollbarStyles />
-      <div className="mx-auto w-full max-w-[1400px] space-y-4 md:space-y-6 pb-10">
+      <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-10">
         <div
           ref={floatingActionsRef}
-          className="sticky top-3 z-30 flex justify-end items-center gap-2.5 pointer-events-none -mb-10"
+          className="sticky top-3 z-30 flex justify-end items-center gap-2 pointer-events-none -mb-10"
         >
-          <div className="pointer-events-auto flex items-center gap-2.5">
+          <div className="pointer-events-auto flex items-center gap-2">
             <SettingsMenu prefs={prefs} onChange={updatePrefs} />
             <Link
               to="/app/companies/new"
-              className="inline-flex items-center gap-2 h-10 px-4 text-sm font-semibold bg-foreground text-background rounded-xl shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--foreground)_45%,transparent)] hover:opacity-90 active:translate-y-[1px] transition-all"
+              className="inline-flex items-center gap-2 h-10 px-4 text-sm font-medium bg-foreground text-background rounded-lg shadow-float hover:opacity-90 transition-opacity"
             >
-              <Plus className="size-4" strokeWidth={2.2} /> Ajouter
+              <Plus className="size-4" /> Ajouter une entreprise
             </Link>
           </div>
         </div>
@@ -958,35 +955,40 @@ function CompaniesListContent() {
           description={
             hasItems
               ? `${searched.length} sur ${companies.length} · ${savedCount} sauvegardés`
-              : "0 entreprise · 0 sauvegardée"
+              : "Aucune entreprise pour l'instant"
           }
           actions={
             <>
-              <div className="inline-flex items-center rounded-md border border-border p-0.5 bg-surface/40">
-                <button
-                  onClick={doUndo}
-                  disabled={undoStack.length === 0}
-                  title="Annuler"
-                  className="rounded p-1 text-muted-foreground hover:bg-background hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Undo2 className="size-3.5" />
-                </button>
-                <button
-                  onClick={doRedo}
-                  disabled={redoStack.length === 0}
-                  title="Rétablir"
-                  className="rounded p-1 text-muted-foreground hover:bg-background hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Redo2 className="size-3.5" />
-                </button>
-              </div>
+              {(undoStack.length > 0 || redoStack.length > 0) && (
+                <div className="inline-flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={doUndo}
+                    disabled={undoStack.length === 0}
+                    title="Annuler"
+                    aria-label="Annuler"
+                    className="px-2"
+                  >
+                    <Undo2 />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={doRedo}
+                    disabled={redoStack.length === 0}
+                    title="Rétablir"
+                    aria-label="Rétablir"
+                    className="px-2"
+                  >
+                    <Redo2 />
+                  </Button>
+                </div>
+              )}
               {hasItems && (
-                <button
-                  onClick={bulkExport}
-                  className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs border border-border rounded-md hover:bg-surface transition-colors"
-                >
-                  <Download className="size-3 md:size-3.5" /> Exporter
-                </button>
+                <Button variant="outline" size="sm" onClick={bulkExport}>
+                  <Download /> Exporter
+                </Button>
               )}
             </>
           }
@@ -996,13 +998,13 @@ function CompaniesListContent() {
           <EmptyState
             icon={Building2}
             title="Aucune entreprise"
-            description="Créez votre première entreprise cible pour commencer à prospecter."
-            actionLabel="Créer une entreprise"
+            description="Ajoutez une première entreprise à prospecter."
+            actionLabel="Ajouter une entreprise"
             onAction={() => navigate({ to: "/app/companies/new" })}
           />
         ) : (
           <>
-            <section className="section-atelier p-3 md:p-4 space-y-3">
+            <section className="space-y-3">
               <div className="flex flex-wrap items-center gap-2">
                 <FilterDropdown
                   label="Industrie"
@@ -1025,10 +1027,8 @@ function CompaniesListContent() {
                   width={220}
                 />
 
-                <div className="inline-flex items-center gap-1.5 text-xs md:text-sm h-10 px-3 border border-border rounded-lg bg-background">
-                  <span className="text-muted-foreground inline-flex items-center gap-1">
-                    Effectif
-                  </span>
+                <div className="inline-flex items-center gap-2 text-[13px] h-9 px-3 border border-border rounded-lg bg-background">
+                  <span className="text-muted-foreground">Effectif min.</span>
                   <ScoreStepper
                     value={String(prefs.minEmployees)}
                     onChange={(v) => updatePrefs({ minEmployees: Number(v) || 0 })}
@@ -1054,11 +1054,11 @@ function CompaniesListContent() {
                                 : "intent",
                     })
                   }
-                  className="inline-flex items-center gap-1.5 text-xs md:text-sm h-10 px-3 rounded-lg border border-border bg-background hover:bg-surface transition-colors"
-                  title="Basculer Intention → Nom → Effectif → Revenu → Manuel"
+                  className="inline-flex items-center gap-1.5 text-[13px] h-9 px-3 rounded-lg border border-border bg-background hover:bg-surface/70 transition-colors"
+                  title="Changer le tri : intention, nom, effectif, revenu, manuel"
                 >
-                  <span className="text-muted-foreground">Trier</span>
-                  <ArrowDown className="size-3 text-muted-foreground" />
+                  <span className="text-muted-foreground">Trier par</span>
+                  <ArrowDown className="size-3.5 text-muted-foreground" />
                   <span className="font-medium">
                     {prefs.sortBy === "intent"
                       ? "Intention"
@@ -1077,23 +1077,29 @@ function CompaniesListContent() {
                   onChange={(n) => updatePrefs({ pageSize: n })}
                 />
 
-                <div className="ml-auto inline-flex rounded-lg border border-border p-0.5 bg-surface/40 h-10">
+                <div className="ml-auto inline-flex rounded-lg border border-border p-0.5 bg-surface/40 h-9">
                   <button
                     onClick={() => updatePrefs({ view: "table" })}
                     title="Vue tableau"
+                    aria-label="Vue tableau"
                     className={cn(
-                      "rounded px-3 py-1 transition-colors",
-                      prefs.view === "table" ? "bg-background shadow-sm" : "text-muted-foreground",
+                      "rounded-md px-3 transition-colors",
+                      prefs.view === "table"
+                        ? "bg-background text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
                     )}
                   >
                     <ListIcon className="size-4" />
                   </button>
                   <button
                     onClick={() => updatePrefs({ view: "cards" })}
-                    title="Vue carte"
+                    title="Vue cartes"
+                    aria-label="Vue cartes"
                     className={cn(
-                      "rounded px-3 py-1 transition-colors",
-                      prefs.view === "cards" ? "bg-background shadow-sm" : "text-muted-foreground",
+                      "rounded-md px-3 transition-colors",
+                      prefs.view === "cards"
+                        ? "bg-background text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
                     )}
                   >
                     <LayoutGrid className="size-4" />
@@ -1102,7 +1108,7 @@ function CompaniesListContent() {
               </div>
 
               <div className="relative w-full">
-                <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
                   ref={searchInputRef}
                   value={searchQuery}
@@ -1115,8 +1121,8 @@ function CompaniesListContent() {
                     if (searchQuery.trim().length > 0) setSearchDropdownOpen(true);
                   }}
                   onKeyDown={handleSearchKeyDown}
-                  placeholder="Rechercher une entreprise par nom, domaine, ville…"
-                  className="w-full h-12 pl-12 pr-12 rounded-xl border border-border bg-background text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 shadow-[0_2px_0_var(--border)] focus:shadow-none focus:translate-y-[2px] transition-all"
+                  placeholder="Rechercher par nom, domaine ou ville…"
+                  className="w-full h-10 pl-10 pr-10 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-colors"
                 />
                 {searchQuery && (
                   <button
@@ -1124,7 +1130,7 @@ function CompaniesListContent() {
                       setSearchQuery("");
                       setSearchDropdownOpen(false);
                     }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground hover:bg-surface hover:text-foreground transition-colors"
                     aria-label="Effacer la recherche"
                   >
                     <X className="size-4" />
@@ -1139,7 +1145,7 @@ function CompaniesListContent() {
                 className="relative z-40 flex min-h-0 flex-col"
                 style={{ maxHeight: tableDockMaxHeight, overflowAnchor: "none" }}
               >
-                <AutoScrollOnDrag className="force-visible-scrollbar relative bg-background section-atelier p-0 shadow-sm rounded-2xl border border-border overflow-hidden flex min-h-0 flex-col">
+                <AutoScrollOnDrag className="force-visible-scrollbar relative bg-background p-0 rounded-xl border border-border overflow-hidden flex min-h-0 flex-col">
                   <DataTable
                     data={searched}
                     columns={columns}
@@ -1219,33 +1225,33 @@ function CompaniesListContent() {
       {selectedIds.size > 0 && (
         <div className="sticky bottom-4 z-50 h-0 w-full pointer-events-none">
           <div className="absolute inset-x-0 bottom-0 flex justify-center">
-            <div className="pointer-events-auto inline-flex max-w-full items-center gap-2 overflow-x-auto overscroll-x-contain rounded-2xl border border-border bg-background/95 px-3 py-2 shadow-[0_12px_40px_-12px_color-mix(in_oklab,var(--foreground)_35%,transparent)] backdrop-blur scrollbar-hide animate-in slide-in-from-bottom-4 fade-in">
-              <span className="shrink-0 whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+            <div className="pointer-events-auto inline-flex max-w-full items-center gap-1 overflow-x-auto overscroll-x-contain rounded-xl border border-border bg-background px-2 py-2 shadow-float scrollbar-hide animate-in slide-in-from-bottom-4 fade-in">
+              <span className="shrink-0 whitespace-nowrap px-2 text-[13px] font-medium tabular-nums">
                 {selectedIds.size} sélectionnée{selectedIds.size > 1 ? "s" : ""}
               </span>
               <span className="w-px h-5 bg-border shrink-0" />
               <button
                 onClick={bulkEnrich}
-                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] text-foreground hover:bg-surface transition-colors"
+                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg h-8 px-3 text-[13px] text-foreground hover:bg-surface/70 transition-colors"
               >
                 <Sparkles className="size-3.5" /> Enrichir
               </button>
               <button
                 onClick={bulkSave}
-                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] text-foreground hover:bg-surface transition-colors"
+                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg h-8 px-3 text-[13px] text-foreground hover:bg-surface/70 transition-colors"
               >
                 <Bookmark className="size-3.5" /> Sauvegarder
               </button>
               <button
                 onClick={bulkExport}
-                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] text-foreground hover:bg-surface transition-colors"
+                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg h-8 px-3 text-[13px] text-foreground hover:bg-surface/70 transition-colors"
               >
                 <Download className="size-3.5" /> Exporter
               </button>
               <span className="w-px h-5 bg-border shrink-0" />
               <button
                 onClick={() => askDelete(Array.from(selectedIds))}
-                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] text-destructive hover:bg-destructive/10 transition-colors"
+                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 rounded-lg h-8 px-3 text-[13px] text-destructive hover:bg-destructive/10 transition-colors"
               >
                 <Trash2 className="size-3.5" /> Supprimer
               </button>
@@ -1270,7 +1276,7 @@ function CompaniesListContent() {
         onOpenChange={(v) => !v && setDeleteConfirm(null)}
         onConfirm={confirmDelete}
         title={`Supprimer ${deleteConfirm?.ids.length ?? 0} entreprise${(deleteConfirm?.ids.length ?? 0) > 1 ? "s" : ""} ?`}
-        description="Cette action est réversible via Ctrl+Z, mais les fiches seront retirées de votre base. Êtes-vous sûr de vouloir continuer ?"
+        description="Les fiches seront retirées de votre base. Ctrl+Z permet d'annuler."
         confirmLabel="Supprimer"
         cancelLabel="Annuler"
         variant="destructive"

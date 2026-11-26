@@ -196,7 +196,7 @@ const TAB_MAX_W = 200;
 const TAB_LABEL_MIN_W = 88;
 const TAB_GAP = 4;
 const PREVIEW_DELAY_MS = 350;
-const PLUS_W = 32;
+const PLUS_W = 40;
 const CAPTURE_SETTLE_MAX_MS = 5000;
 const CAPTURE_QUIET_MS = 500;
 const CAPTURE_MIN_MS = 700;
@@ -469,12 +469,10 @@ export function TabProvider({ children }: { children: ReactNode }) {
     const json = JSON.stringify(state);
     try {
       window.sessionStorage.setItem(STORAGE_KEY, json);
-    } catch {
-    }
+    } catch {}
     try {
       window.localStorage.setItem(STORAGE_KEY, json);
-    } catch {
-    }
+    } catch {}
   }, [state, tabsHydrated]);
 
   useEffect(() => {
@@ -872,8 +870,8 @@ export function AppTabs() {
                 }
               }}
               className={cn(
-                "group relative flex h-8 shrink-0 cursor-pointer items-center rounded-lg border text-xs select-none transition-[width,background-color,color,box-shadow] duration-150",
-                "gap-1.5 px-2",
+                "group relative flex h-9 shrink-0 cursor-pointer items-center rounded-lg border text-[13px] select-none transition-[width,background-color,color,box-shadow] duration-150",
+                "gap-2 px-3",
                 isActive
                   ? "border-border bg-background text-foreground shadow-sm"
                   : "border-transparent text-muted-foreground hover:bg-surface/70 hover:text-foreground",
@@ -881,7 +879,7 @@ export function AppTabs() {
                 isDropTarget && "ring-2 ring-primary/60 ring-offset-1 ring-offset-background",
               )}
             >
-              <Icon className="size-3.5 shrink-0" strokeWidth={1.75} />
+              <Icon className="size-4 shrink-0" strokeWidth={1.75} />
               <span className="min-w-0 flex-1 truncate">{tab.label}</span>
               <button
                 type="button"
@@ -893,7 +891,7 @@ export function AppTabs() {
                 aria-label={`Fermer l'onglet ${tab.label}`}
                 className={cn(
                   "grid shrink-0 place-items-center rounded transition-colors",
-                  "size-4",
+                  "size-5",
                   isActive
                     ? "text-muted-foreground hover:bg-surface hover:text-foreground"
                     : "text-transparent group-hover:text-muted-foreground hover:!text-foreground hover:bg-surface",
@@ -916,7 +914,7 @@ export function AppTabs() {
               : "Nouvel onglet (dans la section actuelle)"
           }
           className={cn(
-            "ml-0.5 grid size-7 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors",
+            "ml-1 grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors",
             atLimit ? "cursor-not-allowed opacity-40" : "hover:bg-surface hover:text-foreground",
           )}
         >

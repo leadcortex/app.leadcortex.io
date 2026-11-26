@@ -17,19 +17,17 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col md:flex-row md:items-end justify-between mb-4 md:mb-8 animate-fade-in-up gap-3 md:gap-6">
+    <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-8 gap-4 md:gap-6">
       <div className="min-w-0">
-        <p className="text-[10px] md:text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
+        <p className="text-[13px] font-medium text-muted-foreground">
           {eyebrow}
         </p>
         <h1 className="font-display text-2xl md:text-4xl italic mt-1">{title}</h1>
         {description && (
-          <p className="mt-1 md:mt-2 text-xs md:text-sm text-muted-foreground">{description}</p>
+          <p className="mt-2 text-sm text-muted-foreground max-w-prose">{description}</p>
         )}
       </div>
-      {actions && (
-        <div className="flex flex-wrap items-center gap-1.5 md:gap-2 shrink-0">{actions}</div>
-      )}
+      {actions && <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>}
     </div>
   );
 }
@@ -48,7 +46,7 @@ export function Kpi({
   sub?: string;
 }) {
   return (
-    <div className="kpi-tactile flex min-w-0 flex-col gap-1.5 p-3 md:p-4">
+    <div className="kpi-tactile flex min-w-0 flex-col gap-1 p-4">
       <p className="kpi-label truncate">{label}</p>
       <div className="flex min-w-0 items-baseline gap-2">
         <p className="kpi-value truncate text-xl md:text-3xl">
@@ -56,7 +54,7 @@ export function Kpi({
         </p>
         {delta && (
           <span className={cn("kpi-delta", !up && "kpi-delta--down")}>
-            {up ? <TrendingUp className="size-2.5" /> : <TrendingDown className="size-2.5" />}
+            {up ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
             {delta}
           </span>
         )}
@@ -85,7 +83,7 @@ export function Badge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 text-[8px] md:text-[10px] px-1.5 md:px-2 py-0.5 rounded-full uppercase font-semibold tracking-wide ${tones[tone]} ${className}`}
+      className={`inline-flex items-center gap-1 text-[11px] md:text-xs px-2 py-0.5 rounded-full font-medium ${tones[tone]} ${className}`}
     >
       {children}
     </span>
@@ -93,16 +91,12 @@ export function Badge({
 }
 
 export function Toolbar({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-3 md:mb-4 animate-fade-in-up">
-      {children}
-    </div>
-  );
+  return <div className="flex flex-wrap items-center gap-2 mb-4">{children}</div>;
 }
 
 export function TableCard({ children }: { children: ReactNode }) {
   return (
-    <div className="table-tactile overflow-hidden animate-fade-in-up">
+    <div className="table-tactile overflow-hidden">
       <div className="table-tactile__scroll table-scroll">{children}</div>
     </div>
   );
@@ -110,7 +104,7 @@ export function TableCard({ children }: { children: ReactNode }) {
 
 export function EmptyHint({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-dashed border-border bg-surface/30 p-6 md:p-8 text-center text-xs md:text-sm text-muted-foreground">
+    <div className="rounded-xl border border-dashed border-border p-6 md:p-8 text-center text-sm text-muted-foreground">
       {children}
     </div>
   );
@@ -200,24 +194,24 @@ export function CustomSelect({
     <div className={`relative w-full ${className || ""}`} ref={selectRef}>
       <button
         type="button"
-        className="flex h-8 md:h-10 w-full items-center justify-between rounded-lg border border-border bg-background px-2 md:px-4 py-1 md:py-2 text-xs md:text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary hover:bg-surface/40"
+        className="flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-3 text-sm transition-colors hover:border-foreground/25 focus:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
-        <ChevronDown className="h-3 w-3 md:h-4 md:w-4 opacity-50 shrink-0" />
+        <ChevronDown className="size-4 opacity-50 shrink-0" />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover p-1 shadow-float max-h-60 overflow-y-auto">
           {options.map((option) => (
             <div
               key={option.value}
-              className="flex cursor-pointer items-center justify-between px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm hover:bg-surface"
+              className="flex cursor-pointer items-center justify-between rounded-sm px-3 py-2 text-sm hover:bg-surface"
               onClick={() => handleSelect(option)}
             >
               <span className="truncate">{option.label}</span>
               {option.value === selectedOption?.value && (
-                <Check className="h-3 w-3 md:h-4 md:w-4 text-primary shrink-0" />
+                <Check className="size-4 text-primary shrink-0" />
               )}
             </div>
           ))}
@@ -239,10 +233,8 @@ export function Field({
   return (
     <label className="block">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          {label}
-        </span>
-        {help ? <span className="text-[10px] text-muted-foreground">{help}</span> : null}
+        <span className="text-[13px] font-medium text-foreground">{label}</span>
+        {help ? <span className="text-xs text-muted-foreground">{help}</span> : null}
       </div>
       <div className="mt-2">{children}</div>
     </label>

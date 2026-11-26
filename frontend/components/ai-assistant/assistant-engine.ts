@@ -107,9 +107,9 @@ export function getGreeting(name: string = "Utilisateur", date: Date = new Date(
   if (h >= 5 && h < 12) {
     return {
       slot: "morning",
-      salutation: `Salut ${name}, commençons`,
+      salutation: `Bonjour ${name}`,
       pitch:
-        "Le meilleur moment pour prospecter : je peux prioriser vos leads, préparer vos accroches et lancer les relances avant votre premier appel.",
+        "Je peux vous sortir la liste des prospects à appeler ce matin ou préparer un message de relance.",
     };
   }
   if (h >= 12 && h < 18) {
@@ -117,7 +117,7 @@ export function getGreeting(name: string = "Utilisateur", date: Date = new Date(
       slot: "afternoon",
       salutation: `Bonjour ${name}`,
       pitch:
-        "Après-midi productif en vue. Je peux trier vos signaux chauds, préparer vos séquences et dégager du temps pour closer.",
+        "Je peux trier les signaux reçus aujourd'hui ou rédiger la prochaine étape d'une séquence.",
     };
   }
   if (h >= 18 && h < 23) {
@@ -125,14 +125,14 @@ export function getGreeting(name: string = "Utilisateur", date: Date = new Date(
       slot: "evening",
       salutation: `Bonsoir ${name}`,
       pitch:
-        "La journée s'achève : je peux analyser vos résultats, préparer vos séquences de demain et identifier les comptes à relancer.",
+        "Je peux faire le point sur la journée et lister les comptes à relancer demain.",
     };
   }
   return {
     slot: "night",
-    salutation: `Encore debout, ${name} ?`,
+    salutation: `Bonsoir ${name}`,
     pitch:
-      "Pendant que vos concurrents dorment, je peux lancer vos enrichissements, préparer vos listes et rédiger vos messages pour demain matin.",
+      "Je peux préparer vos listes et vos messages pour demain matin.",
   };
 }
 
@@ -145,7 +145,7 @@ const rules: { test: RegExp; reply: (ctx: string) => string }[] = [
   {
     test: /email|message|relance/i,
     reply: () =>
-      "Voici une version resserrée : accroche sur le signal détecté, une seule preuve chiffrée, un CTA à faible friction. Gain estimé : +18 % de taux de réponse.",
+      "Voici une version plus courte : une accroche sur le signal détecté, une seule preuve chiffrée et une demande simple pour finir.",
   },
   {
     test: /cto|profil|icp|lead|prospect/i,
@@ -155,7 +155,7 @@ const rules: { test: RegExp; reply: (ctx: string) => string }[] = [
   {
     test: /levée|funding|financ/i,
     reply: () =>
-      "18 comptes ont levé sur les 90 derniers jours. Fenêtre d'attaque optimale : 2 à 6 semaines après l'annonce. Je prépare la liste priorisée.",
+      "18 comptes ont levé sur les 90 derniers jours. Le bon moment pour les contacter : 2 à 6 semaines après l'annonce. Je prépare la liste priorisée.",
   },
   {
     test: /analys|rapport|kpi|performance/i,
@@ -197,11 +197,11 @@ export function generateReply(
     const fileNote = fileContents.length
       ? ` Fichiers texte lus : ${fileContents.map((file) => file.name).join(", ")}.`
       : "";
-    return `J'ai analysé ${parts.join(", ")}. J'en extrais les entités clés (sociétés, contacts, montants) et je les rapproche de vos données ${ctx}. Souhaitez-vous que je crée les enregistrements correspondants ?${fileNote}${contextNote}`;
+    return `J'ai analysé ${parts.join(", ")}. J'en extrais les sociétés, contacts et montants pour les rapprocher de vos données ${ctx}. Je crée les fiches correspondantes ?${fileNote}${contextNote}`;
   }
   const rule = rules.find((r) => r.test.test(prompt));
   if (rule) return `${rule.reply(ctx)}${contextNote}`;
-  return `Compris. Dans le contexte « ${ctx} », voici ce que je propose : 1) clarifier l'objectif, 2) isoler les 10 % d'actions à fort impact, 3) exécuter et mesurer. Dites-moi par quoi on commence.${contextNote}`;
+  return `Compris. Sur la page « ${ctx} », quel résultat cherchez-vous ? Je vous propose ensuite les premières actions à lancer.${contextNote}`;
 }
 
 export type TableAlign = "left" | "center" | "right";

@@ -109,7 +109,7 @@ function DesktopSettingsModal() {
 
       <div
         className={cn(
-          "relative z-10 flex h-[min(92vh,860px)] w-full overflow-hidden rounded-2xl border border-border bg-background shadow-[0_40px_120px_-20px_rgba(0,0,0,0.5)] animate-in zoom-in-95 fade-in duration-150",
+          "relative z-10 flex h-[min(92vh,860px)] w-full overflow-hidden rounded-3xl border border-border bg-background shadow-float animate-in zoom-in-95 fade-in duration-150",
           billingReceiptOpen ? "max-w-[760px]" : "max-w-[1100px]",
         )}
       >
@@ -160,7 +160,7 @@ function DesktopSettingsModal() {
         )}
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border/70 px-4 py-3 md:px-6">
+          <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-border/70 px-4 md:px-8">
             {billingReceiptOpen ? (
               <div className="flex min-w-0 items-center gap-3">
                 <button
@@ -172,20 +172,20 @@ function DesktopSettingsModal() {
                   <ArrowLeft className="size-4" />
                 </button>
                 <div className="min-w-0">
-                  <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                  <p className="text-xs font-medium text-muted-foreground">
                     Facturation
                   </p>
-                  <h2 className="mt-0.5 truncate text-sm font-semibold md:text-base">
+                  <h2 className="truncate text-base font-semibold">
                     Impression du ticket
                   </h2>
                 </div>
               </div>
             ) : (
               <div className="min-w-0">
-                <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground">
                   {activeGroup?.label ?? "Paramètres"}
                 </p>
-                <h2 className="mt-0.5 truncate text-sm font-semibold md:text-base">
+                <h2 className="truncate text-base font-semibold">
                   {active.label}
                 </h2>
               </div>
@@ -194,7 +194,7 @@ function DesktopSettingsModal() {
               type="button"
               onClick={closeSettings}
               aria-label="Fermer les paramètres"
-              className="grid size-7 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <X className="size-4" strokeWidth={2} />
             </button>
@@ -202,7 +202,7 @@ function DesktopSettingsModal() {
 
           <div
             className={cn(
-              "min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 md:px-8 md:py-7",
+              "min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 md:px-8 md:py-8",
               billingReceiptOpen && "px-4 md:px-6",
             )}
           >
@@ -216,8 +216,8 @@ function DesktopSettingsModal() {
 
 function NavGroup({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="mb-2 md:mb-3">
-      <p className="hidden px-3 pb-1 pt-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70 md:block">
+    <div className="mb-2 md:mb-4">
+      <p className="hidden px-3 pb-1 pt-2 text-xs font-medium text-muted-foreground md:block">
         {label}
       </p>
       <div className="mx-2 my-1 h-px bg-border/60 md:hidden" />
@@ -246,7 +246,7 @@ function NavItem({
           "flex w-full items-center justify-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition-colors md:justify-start md:py-1.5",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           active
-            ? "bg-background font-medium text-foreground shadow-sm"
+            ? "bg-background font-medium text-foreground"
             : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
         )}
       >
@@ -255,7 +255,7 @@ function NavItem({
         {meta.badge && (
           <span
             className={cn(
-              "hidden shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide md:inline-flex",
+              "hidden shrink-0 rounded-full px-1.5 py-0.5 text-[11px] font-medium md:inline-flex",
               meta.badge === "new" && "bg-primary/10 text-primary",
               meta.badge === "beta" && "bg-warning/15 text-warning",
               meta.badge === "soon" && "bg-secondary text-muted-foreground",

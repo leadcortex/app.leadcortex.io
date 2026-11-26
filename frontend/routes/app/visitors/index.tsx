@@ -1,7 +1,7 @@
 // frontend/routes/app/visitors/index.tsx
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { PageHeader, Badge, Kpi } from "@/components/common/ui-primitives";
+import { PageHeader, Badge } from "@/components/common/ui-primitives";
 import DataTable, { type Column } from "@/components/common/data-table";
 import { visitors } from "@/lib/data/mock-data";
 import { Eye, Building2, MapPin } from "@/components/icons";
@@ -11,10 +11,12 @@ import { EmptyState } from "@/components/common/empty-state";
 import { TableViewSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/app/visitors/")({
-  head: () => ({ meta: [{ title: "Visiteurs — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Visiteurs · LeadCortex" }] }),
   pendingComponent: () => <TableViewSkeleton label="Chargement des visiteurs" rows={8} />,
   component: VisitorsPage,
 });
+
+const intentLabels: Record<string, string> = { hot: "Forte", warm: "Moyenne", cold: "Faible" };
 
 function VisitorsPage() {
   const navigate = useNavigate();
@@ -28,10 +30,8 @@ function VisitorsPage() {
       sortable: true,
       accessor: (row) => (
         <div className="flex items-center gap-2">
-          <div className="size-6 md:size-7 rounded-md bg-secondary grid place-items-center">
-            <Building2 className="size-3 md:size-3.5 text-muted-foreground" />
-          </div>
-          <p className="font-medium text-xs md:text-sm">{row.company}</p>
+          <Building2 className="size-4 shrink-0 text-muted-foreground" />
+          <p className="text-[13px] font-medium">{row.company}</p>
         </div>
       ),
       cellClassName: "min-w-[120px] md:min-w-[160px]",
@@ -41,8 +41,8 @@ function VisitorsPage() {
       header: "Localisation",
       sortable: true,
       accessor: (row) => (
-        <span className="inline-flex items-center gap-1 text-[10px] md:text-xs text-muted-foreground">
-          <MapPin className="size-2.5 md:size-3" />
+        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <MapPin className="size-3" />
           {row.location}
         </span>
       ),
@@ -52,7 +52,7 @@ function VisitorsPage() {
       key: "pages",
       header: "Pages",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.pages}</span>,
+      accessor: (row) => <span className="text-[13px] tabular-nums">{row.pages}</span>,
       className: "text-center",
       cellClassName: "text-center",
     },
@@ -60,7 +60,7 @@ function VisitorsPage() {
       key: "duration",
       header: "Durée",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.duration}</span>,
+      accessor: (row) => <span className="text-[13px] tabular-nums">{row.duration}</span>,
       className: "text-center",
       cellClassName: "text-center",
       hideOnMobile: true,
@@ -73,7 +73,7 @@ function VisitorsPage() {
         <Badge
           tone={row.intent === "hot" ? "primary" : row.intent === "warm" ? "warning" : "muted"}
         >
-          {row.intent}
+          {intentLabels[row.intent] ?? row.intent}
         </Badge>
       ),
     },
@@ -82,7 +82,7 @@ function VisitorsPage() {
       header: "Quand",
       sortable: true,
       accessor: (row) => (
-        <span className="text-[9px] md:text-xs text-muted-foreground">{row.time}</span>
+        <span className="text-xs text-muted-foreground">{row.time}</span>
       ),
       className: "text-right",
       cellClassName: "text-right",
@@ -97,9 +97,9 @@ function VisitorsPage() {
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="text-[9px] md:text-xs text-primary hover:underline inline-flex items-center gap-0.5 md:gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="inline-flex items-center gap-1 text-xs text-primary hover:underline md:opacity-0 md:group-hover:opacity-100 transition-opacity"
         >
-          <Eye className="size-2.5 md:size-3" /> Détails
+          <Eye className="size-3" /> Détails
         </button>
       ),
       className: "w-14 md:w-20",
@@ -113,20 +113,20 @@ function VisitorsPage() {
         <PageHeader
           eyebrow="Inbound · Visiteurs"
           title="Qui visite votre site."
-          description="Identification anonyme des entreprises via IP + signaux."
+          description="Les entreprises reconnues à partir de leur adresse IP et de leurs visites."
         />
         <EmptyState
           icon={Eye}
           title="Aucun visiteur"
-          description="Installez le script de tracking pour identifier les entreprises qui visitent votre site."
+          description="Installez le script de suivi pour voir les entreprises qui passent sur votre site."
           size="lg"
         />
-        <section className="mt-4 md:mt-8 rounded-xl border border-dashed border-border bg-surface/30 p-4 md:p-6 text-xs md:text-sm">
-          <p className="font-medium">Script de tracking</p>
-          <p className="text-muted-foreground text-[10px] md:text-xs mt-0.5 md:mt-1">
-            Installez ce snippet dans le &lt;head&gt; de votre site pour identifier vos visiteurs.
+        <section className="mt-8 md:mt-12 border-t border-border pt-6">
+          <h2 className="text-base font-semibold">Script de suivi</h2>
+          <p className="mt-1 text-[13px] text-muted-foreground">
+            À coller dans la balise &lt;head&gt; de votre site.
           </p>
-          <div className="mt-2 md:mt-3 rounded-md bg-background border border-border p-2 md:p-3 font-mono text-[9px] md:text-xs overflow-x-auto">
+          <div className="mt-3 overflow-x-auto rounded-lg border border-border bg-card p-3 font-mono text-xs">
             {`<script src="https://leadcortex.io/track.js" data-workspace="acme-b2b"></script>`}
           </div>
         </section>
@@ -139,15 +139,17 @@ function VisitorsPage() {
       <PageHeader
         eyebrow="Inbound · Visiteurs"
         title="Qui visite votre site."
-        description="Identification anonyme des entreprises via IP + signaux."
+        description="Les entreprises reconnues à partir de leur adresse IP et de leurs visites."
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-8">
-        <Kpi label="Visiteurs identifiés" value="147" delta="+22%" up sub="cette semaine" />
-        <Kpi label="Intention forte" value="18" sub="≥ 5 pages visitées" />
-        <Kpi label="Durée moyenne" value="2m 18s" />
-        <Kpi label="Retours" value="41%" sub="visiteurs récurrents" />
-      </div>
+      <p className="mb-6 text-[13px] text-muted-foreground">
+        <span className="font-medium text-foreground tabular-nums">{visitors.length}</span>{" "}
+        entreprises identifiées, dont{" "}
+        <span className="font-medium text-foreground tabular-nums">
+          {visitors.filter((v) => v.intent === "hot").length}
+        </span>{" "}
+        avec une forte intention.
+      </p>
 
       <DataTable
         data={visitors}
@@ -177,12 +179,12 @@ function VisitorsPage() {
         emptyMessage="Aucun visiteur identifié."
       />
 
-      <section className="mt-4 md:mt-8 rounded-xl border border-dashed border-border bg-surface/30 p-4 md:p-6 text-xs md:text-sm">
-        <p className="font-medium">Script de tracking</p>
-        <p className="text-muted-foreground text-[10px] md:text-xs mt-0.5 md:mt-1">
-          Installez ce snippet dans le &lt;head&gt; de votre site pour identifier vos visiteurs.
+      <section className="mt-8 md:mt-12 border-t border-border pt-6">
+        <h2 className="text-base font-semibold">Script de suivi</h2>
+        <p className="mt-1 text-[13px] text-muted-foreground">
+          À coller dans la balise &lt;head&gt; de votre site.
         </p>
-        <div className="mt-2 md:mt-3 rounded-md bg-background border border-border p-2 md:p-3 font-mono text-[9px] md:text-xs overflow-x-auto">
+        <div className="mt-3 overflow-x-auto rounded-lg border border-border bg-card p-3 font-mono text-xs">
           {`<script src="https://leadcortex.io/track.js" data-workspace="acme-b2b"></script>`}
         </div>
       </section>

@@ -3,11 +3,7 @@
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/core/utils";
 
-export type ProgressCapsuleTone =
-  | "primary"
-  | "success"
-  | "warning"
-  | "destructive";
+export type ProgressCapsuleTone = "primary" | "success" | "warning" | "destructive";
 
 export type ProgressCapsuleProps = {
   value: number;
@@ -52,9 +48,7 @@ export function ProgressCapsule({
           {label && <span className="truncate">{label}</span>}
           <span className="ml-auto flex items-center gap-2">
             {showValue && (
-              <span className="shrink-0 font-mono tabular-nums">
-                {Math.round(pct)}%
-              </span>
+              <span className="shrink-0 font-mono tabular-nums">{Math.round(pct)}%</span>
             )}
             {trailing}
           </span>
@@ -75,17 +69,10 @@ export function ProgressCapsule({
         style={{ "--capsule-fill": fillColor } as CSSProperties}
       >
         <div className="capsule-progress__track">
-          <div
-            className="capsule-progress__fill"
-            style={{ width: `${pct}%` }}
-          />
+          <div className="capsule-progress__fill" style={{ width: `${pct}%` }} />
         </div>
         {pct > 0 && (
-          <span
-            className="capsule-progress__bead"
-            style={{ left: `${pct}%` }}
-            aria-hidden
-          />
+          <span className="capsule-progress__bead" style={{ left: `${pct}%` }} aria-hidden />
         )}
       </div>
     </div>

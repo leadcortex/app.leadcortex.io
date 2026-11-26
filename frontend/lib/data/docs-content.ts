@@ -79,6 +79,11 @@ export const legalLinks: DocLink[] = [
     description: "Tarifs, paiement, résiliation et responsabilité.",
   },
   {
+    title: "Conditions de paiement",
+    href: "/legal/paiement",
+    description: "Moyens de paiement, prélèvements automatiques, SEPA et résiliation.",
+  },
+  {
     title: "Politique de confidentialité",
     href: "/legal/confidentialite",
     description: "Ce que nous collectons, pourquoi, et comment le supprimer.",

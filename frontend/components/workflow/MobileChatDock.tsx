@@ -67,10 +67,7 @@ export function MobileChatDock() {
           )}
         </button>
         <div className="min-h-0 flex-1 overflow-hidden overscroll-none">
-          <WorkflowRightDock
-            collapsed={!expanded}
-            onRequestExpand={() => setExpanded(true)}
-          />
+          <WorkflowRightDock collapsed={!expanded} onRequestExpand={() => setExpanded(true)} />
         </div>
         <div
           aria-hidden

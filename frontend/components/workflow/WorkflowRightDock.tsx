@@ -39,6 +39,7 @@ export function WorkflowRightDock({
     try {
       window.localStorage.setItem(STORAGE_KEY, next);
     } catch {
+      void 0;
     }
   };
 
@@ -77,20 +78,14 @@ export function WorkflowRightDock({
           <div
             role="tabpanel"
             aria-label="Propriétés du bloc"
-            className={cn(
-              "min-h-0 flex-1 overflow-hidden",
-              tab !== "inspector" && "hidden",
-            )}
+            className={cn("min-h-0 flex-1 overflow-hidden", tab !== "inspector" && "hidden")}
           >
             <RightPanel hideHeader />
           </div>
           <div
             role="tabpanel"
             aria-label="Assistant IA du workflow"
-            className={cn(
-              "min-h-0 flex-1 overflow-hidden",
-              tab !== "assistant" && "hidden",
-            )}
+            className={cn("min-h-0 flex-1 overflow-hidden", tab !== "assistant" && "hidden")}
           >
             <WorkflowChatPanel />
           </div>
@@ -118,11 +113,11 @@ function TabButton({
       aria-selected={active}
       onClick={onClick}
       className={cn(
-        "relative flex flex-1 items-center justify-center gap-1.5 px-3 py-2 text-[11px] font-medium transition-colors",
+        "relative flex h-10 flex-1 items-center justify-center gap-2 px-3 text-[13px] font-medium transition-colors",
         active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
       )}
     >
-      <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={active ? 2 : 1.7} />
+      <Icon className="size-4 shrink-0" />
       <span className="truncate">{label}</span>
       {active && (
         <span className="pointer-events-none absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-primary" />

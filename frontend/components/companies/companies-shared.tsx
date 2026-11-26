@@ -212,7 +212,7 @@ export function SettingsMenu({ prefs, onChange }: SettingsMenuProps) {
         className={cn(
           "pointer-events-auto grid size-9 md:size-10 shrink-0 place-items-center rounded-full",
           "border border-border bg-background text-foreground",
-          "shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--foreground)_25%,transparent)]",
+          "shadow-float",
           "hover:bg-surface active:translate-y-[1px] transition-all",
           open && "border-primary/50 bg-primary/5 text-primary",
         )}
@@ -228,7 +228,7 @@ export function SettingsMenu({ prefs, onChange }: SettingsMenuProps) {
             style={style}
             className="overflow-y-auto rounded-xl border border-border bg-popover shadow-2xl animate-in fade-in-0 zoom-in-95 p-1"
           >
-            <p className="px-2 pt-1.5 pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="px-2 pt-1.5 pb-1 text-xs font-medium text-muted-foreground">
               Vue
             </p>
             <div className="grid grid-cols-2 gap-1 p-0.5 rounded-lg border border-border bg-surface/40 mx-1.5 mb-2">
@@ -246,7 +246,7 @@ export function SettingsMenu({ prefs, onChange }: SettingsMenuProps) {
               />
             </div>
 
-            <p className="px-2 pt-1.5 pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="px-2 pt-1.5 pb-1 text-xs font-medium text-muted-foreground">
               Densité
             </p>
             <div className="grid grid-cols-2 gap-1 p-0.5 rounded-lg border border-border bg-surface/40 mx-1.5 mb-2">
@@ -264,7 +264,7 @@ export function SettingsMenu({ prefs, onChange }: SettingsMenuProps) {
               />
             </div>
 
-            <p className="px-2 pt-1.5 pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="px-2 pt-1.5 pb-1 text-xs font-medium text-muted-foreground">
               Lignes par page
             </p>
             <div className="grid grid-cols-4 gap-1 p-0.5 rounded-lg border border-border bg-surface/40 mx-1.5 mb-2">
@@ -285,7 +285,7 @@ export function SettingsMenu({ prefs, onChange }: SettingsMenuProps) {
               ))}
             </div>
 
-            <p className="px-2 pt-1.5 pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="px-2 pt-1.5 pb-1 text-xs font-medium text-muted-foreground">
               Colonnes visibles
             </p>
             <div className="space-y-0.5 px-1.5 mb-2">
@@ -315,7 +315,7 @@ export function SettingsMenu({ prefs, onChange }: SettingsMenuProps) {
               />
             </div>
 
-            <p className="px-2 pt-1.5 pb-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="px-2 pt-1.5 pb-1 text-xs font-medium text-muted-foreground">
               Affichage avancé
             </p>
             <div className="space-y-0.5 px-1.5">

@@ -1,23 +1,22 @@
 // frontend/components/payment/billing-page.tsx
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { PaymentLogos } from "@/components/marketing/pricing-logos";
+import { ArrowLeft, Check, Download, Loader2 } from "@/components/icons";
+import { BillingFields } from "@/components/payment/checkout/billing-fields";
+import { Group } from "@/components/payment/checkout/fields";
+import { MoreInfo } from "@/components/payment/checkout/more-info";
+import { ConfirmStep, type PayPhase } from "@/components/payment/checkout/order-summary";
 import {
-  Calendar,
-  Download,
-  Receipt,
-  RotateCcw,
-  Shield,
-  TrendingDown,
-  X,
-} from "@/components/icons";
-import { TicketPrinter, type PrinterStatus } from "@/components/payment/ticket-printer";
+  PaymentMethodFields,
+  type Bind,
+} from "@/components/payment/checkout/payment-method-fields";
+import { CycleSwitch, PlanPicker } from "@/components/payment/checkout/plan-picker";
 import { CustomPlanBuilder } from "@/components/payment/custom-plan-builder";
-import { LoyaltyStairs } from "@/components/payment/loyalty-stairs";
-import { PaymentDesk } from "@/components/payment/payment-desk";
-import { PlanLadder } from "@/components/payment/plan-ladder";
-import { PriceCompare } from "@/components/payment/price-compare";
+import { TicketPrinter, type PrinterStatus } from "@/components/payment/ticket-printer";
+import { useSettings } from "@/components/settings/settings-context";
+import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { cn } from "@/lib/core/utils";
 import {
   CUSTOM_ANNUAL_DISCOUNT,
@@ -27,247 +26,215 @@ import {
   defaultSelection,
   type CustomSelection,
 } from "@/lib/data/custom-plan";
-import { getPlan, loyaltyDiscount, type PlanId } from "@/lib/data/pricing-strategy";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { useSettings } from "@/components/settings/settings-context";
+import { getPlan, type PlanId } from "@/lib/data/pricing-strategy";
 import {
-  LOYALTY_MONTHS_SIM,
+  TRANSFER_STEPS,
+  canConfirm,
+  emptyCheckout,
+  paymentLabel,
+  validateDetails,
+  type CheckoutForm,
+  type PaymentMethod,
+} from "@/lib/payment/checkout";
+import {
   buildCustomOrder,
   buildPlanOrder,
-  eur,
-  formatDateFr,
-  nextCharge,
+  stampOrder,
   type Cycle,
   type Order,
 } from "@/lib/payment/order";
 
-type Mode = "plans" | "custom";
+type PlanMode = "plans" | "custom";
+type Step = 0 | 1 | 2;
+type Receipt = { order: Order; label: string; method: PaymentMethod };
 
-type Current = { kind: "plan"; planId: PlanId; cycle: Cycle } | { kind: "custom" };
+const STEPS = ["Forfait", "Coordonnées", "Confirmation"] as const;
+const NEW_CUSTOMER_LOYALTY = 0;
+const TRANSFER_STEP_MS = 1500;
+const PROCESSING_MS: Record<PaymentMethod, number> = { card: 1400, sepa: 1200, transfer: 700 };
 
-type Props = {
-  onClose?: () => void;
-  embedded?: boolean;
-};
+const wait = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
 
-const INVOICES = [
-  { id: "INV-2026-10", label: "Abonnement Founder · Octobre", date: "12 oct. 2026", amount: 35.19 },
-  {
-    id: "INV-2026-09",
-    label: "Abonnement Founder · Septembre",
-    date: "12 sept. 2026",
-    amount: 35.99,
-  },
-  { id: "INV-2026-08", label: "Abonnement Founder · Août", date: "12 août 2026", amount: 36.79 },
-];
-
-function SectionHead({
-  kicker,
-  title,
-  right,
-}: {
-  kicker: string;
-  title: string;
-  right?: React.ReactNode;
-}) {
-  return (
-    <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-primary">{kicker}</p>
-        <h3 className="mt-1 font-display text-[26px] italic leading-tight md:text-[30px]">
-          {title}
-        </h3>
-      </div>
-      {right}
-    </div>
-  );
+function makeTransferReference() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s = "";
+  for (let i = 0; i < 6; i++) s += alphabet[Math.floor(Math.random() * alphabet.length)];
+  return `LC-${s}`;
 }
 
-function CycleToggle({
-  cycle,
-  onChange,
-  annualLabel,
-}: {
-  cycle: Cycle;
-  onChange: (c: Cycle) => void;
-  annualLabel: string;
-}) {
-  const base =
-    "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+function Stepper({ step, onBack }: { step: Step; onBack: () => void }) {
   return (
-    <div className="inline-flex items-center gap-1 rounded-full bg-surface/80 p-1 shadow-[inset_0_0_0_1px_var(--border)]">
+    <div className="flex items-center gap-3">
       <button
         type="button"
-        aria-pressed={cycle === "monthly"}
-        onClick={() => onChange("monthly")}
+        onClick={onBack}
+        aria-label="Étape précédente"
         className={cn(
-          base,
-          cycle === "monthly"
-            ? "bg-background font-bold text-foreground shadow-sm"
-            : "font-medium text-muted-foreground hover:text-foreground",
+          "grid size-8 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-surface hover:text-foreground",
+          step === 0 && "invisible",
         )}
       >
-        Mensuel
+        <ArrowLeft className="size-4" />
       </button>
-      <button
-        type="button"
-        aria-pressed={cycle === "annual"}
-        onClick={() => onChange("annual")}
-        className={cn(
-          base,
-          cycle === "annual"
-            ? "bg-background font-bold text-foreground shadow-sm"
-            : "font-medium text-muted-foreground hover:text-foreground",
-        )}
-      >
-        <Calendar className="size-3" />
-        Annuel
-        <span className="rounded-full bg-success/15 px-1.5 py-0.5 text-[10px] font-bold text-success">
-          {annualLabel}
-        </span>
-      </button>
+      <ol className="flex flex-1 items-center justify-center gap-2">
+        {STEPS.map((label, i) => (
+          <li key={label} className="flex items-center gap-2">
+            <span
+              aria-current={i === step ? "step" : undefined}
+              className={cn(
+                "text-[12px] transition-colors",
+                i === step ? "font-semibold text-foreground" : "text-muted-foreground/70",
+              )}
+            >
+              {label}
+            </span>
+            {i < STEPS.length - 1 && <span className="h-px w-5 bg-border" />}
+          </li>
+        ))}
+      </ol>
+      <span className="size-8 shrink-0" />
     </div>
   );
 }
 
-function TabSwitch({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => void }) {
-  const tab = (id: Mode, label: string, badge?: string) => (
-    <button
-      key={id}
-      type="button"
-      role="tab"
-      aria-selected={mode === id}
-      onClick={() => onChange(id)}
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs transition-all",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        mode === id
-          ? "bg-background font-bold text-foreground shadow-sm"
-          : "font-medium text-muted-foreground hover:text-foreground",
-      )}
-    >
-      {label}
-      {badge && (
-        <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
-          {badge}
-        </span>
-      )}
-    </button>
-  );
+function TransferSteps({ done }: { done: number }) {
   return (
-    <div
-      role="tablist"
-      aria-label="Type de forfait"
-      className="inline-flex items-center gap-1 rounded-full bg-surface/80 p-1 shadow-[inset_0_0_0_1px_var(--border)]"
-    >
-      {tab("plans", "Forfaits")}
-      {tab("custom", "Sur mesure", "Nouveau")}
-    </div>
+    <ol className="space-y-2.5" aria-live="polite">
+      {TRANSFER_STEPS.map((s, i) => {
+        const state = i < done ? "done" : i === done ? "active" : "todo";
+        return (
+          <li key={s.id} className="flex items-center gap-3 text-[13px]">
+            <span
+              className={cn(
+                "grid size-6 shrink-0 place-items-center rounded-full border transition-colors",
+                state === "done" && "border-success bg-success text-white",
+                state === "active" && "border-primary text-primary",
+                state === "todo" && "border-border text-muted-foreground",
+              )}
+            >
+              {state === "done" ? (
+                <Check className="size-3.5" strokeWidth={3} />
+              ) : state === "active" ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <span className="text-[10px] font-semibold">{i + 1}</span>
+              )}
+            </span>
+            <span className={cn(state === "todo" ? "text-muted-foreground" : "font-medium")}>
+              {s.label}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
-function CurrentStrip({ current }: { current: Current }) {
-  const discount = Math.round(loyaltyDiscount(LOYALTY_MONTHS_SIM) * 100);
-  const cycle: Cycle = current.kind === "plan" ? current.cycle : "monthly";
-  const name = current.kind === "plan" ? getPlan(current.planId).name : "Sur mesure";
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 rounded-2xl bg-surface/50 px-4 py-3">
-      <p className="text-sm">
-        <span className="text-muted-foreground">Vous êtes en </span>
-        <strong className="font-extrabold">{name}</strong>
-        <span className="text-muted-foreground">
-          {" "}
-          · prochain prélèvement le {formatDateFr(nextCharge(new Date(), cycle))}
-        </span>
-      </p>
-      <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-1 text-[11px] font-bold text-success">
-        <TrendingDown className="size-3" /> −{discount} % fidélité
-      </span>
-    </div>
-  );
-}
-
-function TrustSection() {
-  const downloadInvoice = (id: string) => {
-    toast.success(`Facture ${id} téléchargée`);
+function ReceiptView({
+  receipt,
+  customer,
+  form,
+}: {
+  receipt: Receipt;
+  customer: string;
+  form: CheckoutForm;
+}) {
+  const [downloading, setDownloading] = useState(false);
+  const download = async () => {
+    setDownloading(true);
+    try {
+      const { downloadInvoicePdf } = await import("@/lib/payment/invoice-pdf");
+      await downloadInvoicePdf({ order: receipt.order, form, paymentLabel: receipt.label });
+    } catch {
+      toast.error("Le PDF n'a pas pu être généré");
+    } finally {
+      setDownloading(false);
+    }
   };
-  return (
-    <section className="space-y-3">
-      <ul className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
-        <li className="flex items-center gap-1.5">
-          <Shield className="size-3.5 text-foreground" /> Paiement sécurisé
-        </li>
-        <li className="flex items-center gap-1.5">
-          <RotateCcw className="size-3.5 text-foreground" /> Résiliable à tout moment
-        </li>
-        <li className="flex items-center gap-1.5">
-          <Receipt className="size-3.5 text-foreground" /> Facture automatique
-        </li>
-      </ul>
-
-      <PaymentLogos size="sm" className="!justify-start opacity-70" />
-
-      <details className="group rounded-2xl border border-border px-4 py-3">
-        <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium">
-          Dernières factures
-          <span className="text-xs text-muted-foreground transition-transform group-open:rotate-180">
-            ▾
-          </span>
-        </summary>
-        <ul className="mt-2 divide-y divide-border">
-          {INVOICES.map((inv) => (
-            <li key={inv.id} className="flex items-center justify-between gap-4 py-2.5">
-              <div className="min-w-0">
-                <p className="truncate text-sm">{inv.label}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {inv.date} · {inv.id}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <span className="text-sm font-semibold tabular-nums">{eur(inv.amount)}</span>
-                <button
-                  type="button"
-                  aria-label={`Télécharger la facture ${inv.id}`}
-                  onClick={() => downloadInvoice(inv.id)}
-                  className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-surface hover:text-foreground"
-                >
-                  <Download className="size-4" />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </details>
-    </section>
-  );
-}
-
-export function BillingPage({ onClose, embedded = false }: Props) {
-  const { billingReceiptOpen, setBillingReceiptOpen } = useSettings();
-  const user = useCurrentUser();
-  const [mode, setMode] = useState<Mode>("plans");
-  const [cycle, setCycle] = useState<Cycle>("monthly");
-  const [selectedPlanId, setSelectedPlanId] = useState<PlanId>("founder");
-  const [selection, setSelection] = useState<CustomSelection>(defaultSelection);
-  const [receiptOrder, setReceiptOrder] = useState<Order | null>(null);
-  const [printerStatus, setPrinterStatus] = useState<PrinterStatus>("idle");
-  const [current, setCurrent] = useState<Current>({
-    kind: "plan",
-    planId: "founder",
-    cycle: "monthly",
-  });
+  const isTransfer = receipt.method === "transfer";
+  const [status, setStatus] = useState<PrinterStatus>("printing");
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (billingReceiptOpen) return;
-    setReceiptOrder(null);
-    setPrinterStatus("idle");
+    if (!isTransfer) return;
+    const timer = window.setInterval(() => {
+      setStep((s) => {
+        const next = Math.min(TRANSFER_STEPS.length, s + 1);
+        if (next === TRANSFER_STEPS.length) window.clearInterval(timer);
+        return next;
+      });
+    }, TRANSFER_STEP_MS);
+    return () => window.clearInterval(timer);
+  }, [isTransfer]);
+
+  const done = status === "done";
+
+  return (
+    <div className="mx-auto max-w-md space-y-6">
+      <div className="text-center">
+        <h3 className="font-display text-2xl italic">
+          {done ? "C'est fait." : isTransfer ? "Vérification du virement…" : "Paiement accepté"}
+        </h3>
+        {done && <p className="mt-1.5 text-sm text-muted-foreground">Reçu envoyé par e-mail.</p>}
+      </div>
+
+      {isTransfer && !done && (
+        <div className="mx-auto w-fit">
+          <TransferSteps done={step} />
+        </div>
+      )}
+
+      <TicketPrinter
+        status={status}
+        order={receipt.order}
+        customer={customer}
+        paymentLabel={receipt.label}
+        progress={isTransfer ? step / TRANSFER_STEPS.length : undefined}
+        onPrinted={() => setStatus("done")}
+        className="mx-auto max-w-sm"
+      />
+
+      {done && (
+        <div className="flex justify-center animate-in fade-in duration-300">
+          <Button variant="outline" disabled={downloading} onClick={() => void download()}>
+            <Download /> Télécharger la facture
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function BillingPage() {
+  const { setBillingReceiptOpen, billingReceiptOpen } = useSettings();
+  const user = useCurrentUser();
+  const topRef = useRef<HTMLDivElement>(null);
+
+  const [step, setStep] = useState<Step>(0);
+  const [planMode, setPlanMode] = useState<PlanMode>("plans");
+  const [cycle, setCycle] = useState<Cycle>("monthly");
+  const [planId, setPlanId] = useState<PlanId>("founder");
+  const [selection, setSelection] = useState<CustomSelection>(defaultSelection);
+
+  const [form, setForm] = useState<CheckoutForm>(() =>
+    emptyCheckout(user.isAuthenticated ? user.fullName : "", user.email ?? ""),
+  );
+  const [touched, setTouched] = useState<Set<keyof CheckoutForm>>(() => new Set());
+  const [phase, setPhase] = useState<PayPhase>("idle");
+  const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [transferReference] = useState(makeTransferReference);
+
+  useEffect(() => {
+    if (!billingReceiptOpen) setReceipt(null);
   }, [billingReceiptOpen]);
 
-  const plan = getPlan(selectedPlanId);
+  const plan = getPlan(planId);
+  const planLabel =
+    `${planMode === "plans" ? plan.name : "Sur mesure"} · ` +
+    (cycle === "annual" ? "annuel" : "mensuel");
 
   const draft = useMemo(() => {
-    if (mode === "plans") return buildPlanOrder(plan, cycle);
-
+    if (planMode === "plans") return buildPlanOrder(plan, cycle, NEW_CUSTOMER_LOYALTY);
     const items = [
       {
         id: "base",
@@ -288,153 +255,142 @@ export function BillingPage({ onClose, embedded = false }: Props) {
         ];
       }),
     ];
-    return buildCustomOrder({ items, cycle, annualDiscount: CUSTOM_ANNUAL_DISCOUNT });
-  }, [mode, plan, cycle, selection]);
+    return buildCustomOrder({
+      items,
+      cycle,
+      annualDiscount: CUSTOM_ANNUAL_DISCOUNT,
+      loyaltyMonths: NEW_CUSTOMER_LOYALTY,
+    });
+  }, [planMode, plan, cycle, selection]);
 
-  const isCurrentPlan =
-    mode === "plans" &&
-    current.kind === "plan" &&
-    current.planId === selectedPlanId &&
-    current.cycle === cycle;
+  const allErrors = useMemo(() => validateDetails(form), [form]);
+  const detailsValid = Object.keys(allErrors).length === 0;
+  const errors = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(allErrors).filter(([k]) => touched.has(k as keyof CheckoutForm)),
+      ),
+    [allErrors, touched],
+  );
 
-  const handlePaid = (order: Order) => {
-    if (mode === "plans") {
-      setCurrent({ kind: "plan", planId: selectedPlanId, cycle });
-      toast.success(`Forfait ${plan.name} activé`);
-    } else {
-      setCurrent({ kind: "custom" });
-      toast.success("Forfait sur mesure activé");
-    }
-    setReceiptOrder(order);
-    setPrinterStatus("printing");
+  const bind: Bind = {
+    form,
+    errors,
+    set: (key, value) => setForm((f) => ({ ...f, [key]: value })),
+    touch: (key) => setTouched((t) => (t.has(key) ? t : new Set(t).add(key))),
+  };
+
+  const go = (s: Step) => {
+    setStep(s);
+    topRef.current?.scrollIntoView({ block: "start" });
+  };
+
+  const annualBadge =
+    planMode === "plans"
+      ? plan.annualDiscountLabel.replace("-", "−")
+      : `−${Math.round(CUSTOM_ANNUAL_DISCOUNT * 100)} %`;
+
+  const pay = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (step !== 2 || phase === "processing" || !detailsValid) return;
+    if (!canConfirm(form)) return;
+    setPhase("processing");
+    await wait(PROCESSING_MS[form.method]);
+    setPhase("idle");
+    setReceipt({ order: stampOrder(draft), label: paymentLabel(form), method: form.method });
     setBillingReceiptOpen(true);
   };
 
-  const annualLabel =
-    mode === "plans" ? plan.annualDiscountLabel : `−${Math.round(CUSTOM_ANNUAL_DISCOUNT * 100)} %`;
-
-  const main = (
-    <div className="min-w-0 space-y-10">
-      {mode === "plans" ? (
-        <>
-          <CurrentStrip current={current} />
-
-          <section>
-            <SectionHead
-              kicker="Votre forfait"
-              title="Choisissez votre niveau."
-              right={<CycleToggle cycle={cycle} onChange={setCycle} annualLabel={annualLabel} />}
-            />
-            <PlanLadder
-              cycle={cycle}
-              selected={selectedPlanId}
-              currentPlanId={current.kind === "plan" ? current.planId : undefined}
-              onSelect={setSelectedPlanId}
-            />
-          </section>
-
-          <section>
-            <SectionHead kicker="Fidélité" title="Votre prix descend tout seul." />
-            <LoyaltyStairs
-              basePrice={cycle === "annual" ? plan.annualMonthly : plan.monthlyPrice}
-              months={LOYALTY_MONTHS_SIM}
-              planName={plan.name}
-            />
-          </section>
-
-          <section>
-            <SectionHead kicker="Comparatif" title="Ce que vous paieriez ailleurs." />
-            <PriceCompare />
-          </section>
-        </>
-      ) : (
-        <>
-          <div className="flex justify-end">
-            <CycleToggle cycle={cycle} onChange={setCycle} annualLabel={annualLabel} />
-          </div>
-          <CustomPlanBuilder
-            selection={selection}
-            onChange={setSelection}
-            onPickPlan={(id) => {
-              setSelectedPlanId(id);
-              setMode("plans");
-            }}
-          />
-        </>
-      )}
-
-      <TrustSection />
-    </div>
-  );
-
-  const desk = (
-    <PaymentDesk
-      draft={draft}
-      disabledReason={isCurrentPlan ? "Votre forfait actuel" : undefined}
-      onPaid={handlePaid}
-    />
-  );
-
-  if (receiptOrder) {
+  if (receipt) {
     return (
-      <div className="mx-auto max-w-xl space-y-5">
-        <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-            Reçu de paiement
-          </p>
-          <h3 className="mt-2 font-display text-2xl italic">Impression de votre ticket</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Le papier sort vers le bas et s’allonge au fur et à mesure de l’impression.
-          </p>
-        </div>
-        <TicketPrinter
-          status={printerStatus}
-          order={receiptOrder}
-          customer={user.fullName}
-          paymentLabel="VISA •••• 4242"
-          onPrinted={() => setPrinterStatus("done")}
-          className="mx-auto max-w-sm"
-        />
-      </div>
-    );
-  }
-
-  if (embedded) {
-    return (
-      <div className="space-y-8">
-        <TabSwitch mode={mode} onChange={setMode} />
-        {main}
-        {desk}
-      </div>
+      <ReceiptView
+        receipt={receipt}
+        form={form}
+        customer={form.company || form.fullName || user.fullName}
+      />
     );
   }
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col">
-      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border/70 px-4 py-3 md:px-8">
-        <div className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-2">
-          <h2 className="font-display text-[26px] italic leading-none">Facturation</h2>
-          <TabSwitch mode={mode} onChange={setMode} />
-        </div>
-        {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Fermer la facturation"
-            className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <X className="size-[18px]" strokeWidth={2} />
-          </button>
-        )}
-      </header>
+    <div ref={topRef} className="@container mx-auto w-full max-w-lg scroll-mt-4">
+      <Stepper step={step} onBack={() => go((step - 1) as Step)} />
 
-      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
-        <div className="mx-auto grid w-full max-w-[1180px] gap-10 px-4 py-6 md:px-8 md:py-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12">
-          {main}
-          <aside className="-mx-1 px-1 pb-8 lg:sticky lg:top-0 lg:max-h-[calc(min(94vh,900px)_-_6rem)] lg:self-start lg:overflow-y-auto scrollbar-hide">
-            {desk}
-          </aside>
-        </div>
+      <form noValidate onSubmit={(e) => void pay(e)} className="mt-6">
+        {step === 0 && (
+          <div className="space-y-5 animate-in fade-in duration-200">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-[26px] italic leading-tight">
+                Choisissez votre forfait
+              </h2>
+              <CycleSwitch cycle={cycle} onChange={setCycle} badge={annualBadge} />
+            </div>
+            {planMode === "plans" ? (
+              <PlanPicker cycle={cycle} selected={planId} onSelect={setPlanId} />
+            ) : (
+              <CustomPlanBuilder
+                selection={selection}
+                onChange={setSelection}
+                onPickPlan={(id) => {
+                  setPlanId(id);
+                  setPlanMode("plans");
+                }}
+              />
+            )}
+            <button
+              type="button"
+              onClick={() => setPlanMode((m) => (m === "plans" ? "custom" : "plans"))}
+              className="text-[13px] font-medium text-primary hover:underline"
+            >
+              {planMode === "plans" ? "Composer un forfait sur mesure" : "Revenir aux forfaits"}
+            </button>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div className="space-y-7 animate-in fade-in duration-200">
+            <Group title="Paiement">
+              <PaymentMethodFields bind={bind} />
+            </Group>
+            <Group title="Facturation">
+              <BillingFields {...bind} />
+            </Group>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="animate-in fade-in duration-200">
+            <ConfirmStep
+              draft={draft}
+              planLabel={planLabel}
+              bind={bind}
+              phase={phase}
+              transferReference={transferReference}
+              onEditPlan={() => go(0)}
+              onEditDetails={() => go(1)}
+            />
+          </div>
+        )}
+
+        {step < 2 && (
+          <div className="sticky bottom-0 z-10 -mx-4 mt-8 bg-background/90 px-4 py-3 backdrop-blur md:static md:mx-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
+            <Button
+              type="button"
+              size="lg"
+              disabled={step === 1 && !detailsValid}
+              onClick={() => go((step + 1) as Step)}
+              className="h-12 w-full text-[15px] font-semibold"
+            >
+              Continuer
+            </Button>
+          </div>
+        )}
+      </form>
+
+      <div className="mt-10">
+        <MoreInfo
+          basePrice={cycle === "annual" ? plan.annualMonthly : plan.monthlyPrice}
+          planName={planMode === "plans" ? plan.name : "Sur mesure"}
+        />
       </div>
     </div>
   );

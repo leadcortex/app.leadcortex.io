@@ -67,7 +67,7 @@ export function GlobalSearch({ open, onOpenChange, hideTrigger = false }: Global
             onClick={() => setOpen(true)}
             aria-label="Ouvrir la recherche globale"
             title="Recherche globale (⌘K)"
-            className="group flex items-center gap-2 rounded-xl border border-transparent bg-white/5 px-2.5 py-1.5 transition-all duration-200 hover:border-primary/20 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] active:scale-95"
+            className="group flex h-9 items-center gap-2 rounded-lg px-3 transition-colors duration-150 hover:bg-surface/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Search
               className="size-4 text-muted-foreground transition-colors group-hover:text-foreground"
@@ -76,7 +76,7 @@ export function GlobalSearch({ open, onOpenChange, hideTrigger = false }: Global
             <span className="hidden text-sm text-muted-foreground transition-colors group-hover:text-foreground sm:inline">
               Rechercher
             </span>
-            <kbd className="ml-1 hidden h-5 select-none items-center gap-1 rounded border border-border/50 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground lg:inline-flex">
+            <kbd className="ml-1 hidden h-5 select-none items-center gap-1 rounded border border-border/50 bg-muted/50 px-1.5 font-mono text-[11px] font-medium text-muted-foreground lg:inline-flex">
               <span className="text-xs">⌘</span>K
             </kbd>
           </button>
@@ -172,7 +172,7 @@ export function GlobalSearch({ open, onOpenChange, hideTrigger = false }: Global
                               <Star className="size-3 fill-primary text-primary shrink-0" />
                             )}
                             {item.score !== undefined && item.score > 0 && (
-                              <span className="text-[10px] font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded shrink-0">
+                              <span className="text-[11px] font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded shrink-0">
                                 {item.score.toFixed(1)}
                               </span>
                             )}

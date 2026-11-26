@@ -4,11 +4,38 @@ import { useMemo } from "react";
 import { cn } from "@/lib/core/utils";
 
 const ALLOWED_TAGS = new Set([
-  "a", "b", "strong", "i", "em", "u", "s", "p", "br", "hr",
-  "ul", "ol", "li", "blockquote", "pre", "code",
-  "h1", "h2", "h3", "h4", "h5", "h6",
-  "table", "thead", "tbody", "tr", "th", "td", "caption",
-  "img", "div", "span",
+  "a",
+  "b",
+  "strong",
+  "i",
+  "em",
+  "u",
+  "s",
+  "p",
+  "br",
+  "hr",
+  "ul",
+  "ol",
+  "li",
+  "blockquote",
+  "pre",
+  "code",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "th",
+  "td",
+  "caption",
+  "img",
+  "div",
+  "span",
 ]);
 
 const ALLOWED_ATTRS: Record<string, string[]> = {
@@ -117,7 +144,9 @@ export function EmailMessageBody({
           "[&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-lg",
           "[&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_blockquote]:my-2",
           "[&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border/60 [&_td]:p-1.5 [&_th]:border [&_th]:border-border/60 [&_th]:p-1.5 [&_th]:bg-surface/40",
-          compact ? "text-[12.5px] leading-relaxed" : "text-[13px] leading-[1.7] md:text-[14px]",
+          compact
+            ? "text-[13px] leading-relaxed"
+            : "max-w-[68ch] text-sm leading-[1.7] md:text-[15px]",
           className,
         )}
         dangerouslySetInnerHTML={{ __html: safe }}
@@ -132,7 +161,9 @@ export function EmailMessageBody({
       <div
         className={cn(
           "whitespace-pre-wrap break-words text-foreground/90",
-          compact ? "text-[12.5px] leading-relaxed" : "text-[13px] leading-[1.7] md:text-[14px]",
+          compact
+            ? "text-[13px] leading-relaxed"
+            : "max-w-[68ch] text-sm leading-[1.7] md:text-[15px]",
         )}
       >
         {mainBody}
@@ -140,13 +171,11 @@ export function EmailMessageBody({
 
       {quote && (
         <details className="group/quote rounded-lg border border-border/60 bg-surface/30">
-          <summary className="flex cursor-pointer list-none items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground">
-            <span className="inline-block transition-transform group-open/quote:rotate-90">
-              ▸
-            </span>
+          <summary className="flex cursor-pointer list-none items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <span className="inline-block transition-transform group-open/quote:rotate-90">▸</span>
             Afficher le message cité
           </summary>
-          <div className="border-t border-border/60 px-3 py-2 whitespace-pre-wrap break-words text-[12.5px] leading-relaxed text-muted-foreground">
+          <div className="border-t border-border/60 px-3 py-2 whitespace-pre-wrap break-words text-[13px] leading-relaxed text-muted-foreground">
             {quote}
           </div>
         </details>

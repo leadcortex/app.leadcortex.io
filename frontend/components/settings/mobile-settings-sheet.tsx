@@ -175,14 +175,14 @@ function MenuView({
   onSelect: (s: SettingsSection) => void;
 }) {
   return (
-    <div className="px-3 py-4">
-      <div className="relative mb-4">
+    <div className="px-4 py-4">
+      <div className="relative mb-6">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un réglage"
-          className="h-10 w-full rounded-xl border border-border bg-surface/40 pl-10 pr-9 text-sm outline-none transition focus:border-primary/40 focus:bg-background focus:ring-2 focus:ring-primary/20"
+          className="h-11 w-full rounded-xl border border-border bg-surface/40 pl-10 pr-9 text-sm outline-none transition focus:border-primary/40 focus:bg-background focus:ring-2 focus:ring-primary/20"
         />
         {query && (
           <button
@@ -202,10 +202,10 @@ function MenuView({
         </p>
       )}
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         {grouped.map((g) => (
           <section key={g.key}>
-            <h3 className="mb-1.5 px-2 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            <h3 className="mb-2 px-4 text-[13px] font-medium text-muted-foreground">
               {g.label}
             </h3>
             <ul className="overflow-hidden rounded-2xl border border-border/70 bg-surface/30">
@@ -217,7 +217,7 @@ function MenuView({
                       type="button"
                       onClick={() => onSelect(item.key)}
                       className={cn(
-                        "flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-surface/70",
+                        "flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-surface/70",
                         i < g.items.length - 1 && "border-b border-border/50",
                       )}
                     >
@@ -226,7 +226,7 @@ function MenuView({
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-medium">{item.label}</span>
-                        <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">
+                        <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                           {item.description}
                         </span>
                       </span>
@@ -248,7 +248,7 @@ function MenuView({
 
 function SectionView({ section }: { section: SettingsSection }) {
   return (
-    <div className="px-3 py-4 md:px-5">
+    <div className="px-4 pb-8 pt-4">
       <SettingsPanel section={section} />
     </div>
   );

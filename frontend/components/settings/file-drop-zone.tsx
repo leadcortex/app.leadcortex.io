@@ -157,7 +157,7 @@ export function FileDropZone({
         "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed p-6 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         dragging
           ? "border-primary bg-primary/5"
-          : "border-border bg-surface/30 hover:border-primary/40 hover:bg-surface/50",
+          : "border-border bg-surface/30 hover:bg-surface/50",
         disabled && "cursor-not-allowed opacity-50 hover:border-border hover:bg-surface/30",
         className,
       )}

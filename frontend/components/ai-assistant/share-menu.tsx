@@ -154,7 +154,7 @@ export function ShareMenu({
   };
 
   const soon = (label: string) => () => {
-    toast.info(`${label} — bientôt disponible`);
+    toast.info(`${label} : bientôt disponible`);
     setShowMore(false);
     setOpen(false);
   };

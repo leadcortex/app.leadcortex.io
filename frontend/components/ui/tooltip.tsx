@@ -19,8 +19,7 @@ TooltipTrigger.displayName = TooltipPrimitive.Trigger.displayName;
 
 export const TOOLTIP_CONTENT_CLASS_NAME = [
   "z-50 overflow-hidden rounded-lg border border-border/70 bg-popover px-3 py-1.5 text-xs font-medium text-popover-foreground",
-  "shadow-[0_1px_2px_color-mix(in_oklab,var(--foreground)_6%,transparent),0_8px_24px_-8px_color-mix(in_oklab,var(--foreground)_18%,transparent)]",
-  "dark:shadow-[0_1px_3px_oklch(0_0_0/0.4),0_10px_28px_-10px_color-mix(in_oklab,var(--primary)_22%,transparent)]",
+  "shadow-float",
 ].join(" ");
 
 const TooltipContent = React.forwardRef<

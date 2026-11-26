@@ -1,0 +1,116 @@
+}  return (
+    <div
+      ref={rangeRootRef}
+      {...rangeHandlers}
+      className={cn(
+        "mt-4 overflow-hidden rounded-xl border border-border bg-card",
+        tablesInOwnContainer ? "space-y-2 border-0 bg-transparent" : "divide-y divide-border",
+      )}
+    >
+      {leads.map((lead, index) => (
+        <div
+          key={lead.id}
+          data-range-index={index}
+          className={cn(tablesInOwnContainer && "overflow-hidden rounded-xl border border-border")}
+        >
+          <MobileNotificationCard
+            lead={lead}
+            selected={selectedIds.has(lead.id)}
+            onSelect={(sel) => onSelectRow(lead.id, sel)}
+            onOpen={() => onOpen(lead)}
+            bindContext={bindContext}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MobileNotificationCard({
+  lead,
+  selected,
+  onSelect,
+  onOpen,
+  bindContext,
+}: {
+  lead: any;
+  selected: boolean;
+  onSelect: (sel: boolean) => void;
+  onOpen: () => void;
+  bindContext: CardContextBind;
+}) {
+  const ctxBind = bindContext({ id: lead.id });
+
+  return (
+    <article
+      {...ctxBind}
+      className={cn(
+        "relative flex items-center gap-3 py-3 pl-3 pr-1 transition-colors active:bg-surface/70",
+        selected ? "bg-primary/[0.05]" : "bg-card",
+      )}
+    >
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex min-w-0 flex-1 items-center gap-3 text-left"
+        aria-label={`Ouvrir la fiche de ${lead.name}`}
+      >
+        <ProspectAvatarBadge
+          name={lead.name}
+          avatarUrl={lead.avatarUrl}
+          company={lead.company}
+          companyLogoUrl={lead.companyLogoUrl}
+          size={40}
+        />
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="truncate text-sm font-medium text-foreground">{lead.name}</span>
+            {lead.saved && (
+              <Bookmark
+                className="size-3.5 shrink-0 fill-primary text-primary"
+                aria-label="Favori"
+              />
+            )}
+            {typeof lead.score === "number" && (
+              <span className="ml-auto shrink-0 text-xs font-medium tabular-nums text-muted-foreground">
+                {lead.score.toFixed(1)}
+              </span>
+            )}
+          </div>
+          <p className="truncate text-[13px]">
+            {lead.title && <span className="text-muted-foreground">{lead.title}</span>}
+            {lead.title && lead.company && <span className="text-muted-foreground"> · </span>}
+            {lead.company && <span className="text-foreground/80">{lead.company}</span>}
+          </p>
+          {lead.signal && (
+            <p className="mt-0.5 flex min-w-0 items-center gap-1 text-xs text-primary">
+              <Radio className="size-3 shrink-0" />
+              <span className="truncate">{lead.signal}</span>
+            </p>
+          )}
+        </div>
+      </button>
+
+      <button
+        data-range-select
+        type="button"
+        aria-label={`${selected ? "Désélectionner" : "Sélectionner"} ${lead.name}`}
+        aria-pressed={selected}
+        className="grid size-11 shrink-0 cursor-pointer place-items-center"
+        onClick={() => onSelect(!selected)}
+      >
+        <span
+          className={cn(
+            "grid size-5 place-items-center rounded-md border transition-colors",
+            selected
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-background",
+          )}
+        >
+          {selected && <Check className="size-3.5" strokeWidth={3} />}
+        </span>
+      </button>
+    </article>
+  );
+}

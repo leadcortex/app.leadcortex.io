@@ -36,13 +36,13 @@ function Chips({ values }: { values: string[] }) {
       {values.slice(0, 4).map((v) => (
         <span
           key={v}
-          className="rounded-md bg-secondary px-1.5 py-0.5 text-[10px] text-secondary-foreground"
+          className="rounded-md bg-secondary px-1.5 py-0.5 text-[11px] text-secondary-foreground"
         >
           {v}
         </span>
       ))}
       {values.length > 4 ? (
-        <span className="text-[10px] text-muted-foreground">+{values.length - 4}</span>
+        <span className="text-[11px] text-muted-foreground">+{values.length - 4}</span>
       ) : null}
     </div>
   );
@@ -51,21 +51,21 @@ function Chips({ values }: { values: string[] }) {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between">
-      <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{label}</span>
+      <span className="text-[11px] text-muted-foreground">{label}</span>
       <span className="font-mono text-sm text-foreground">{value}</span>
     </div>
   );
 }
 
 function str(cfg: Record<string, unknown>, key: string, fallback = ""): string {
-  const v = cfg ? (cfg as any)[key] : undefined;
+  const v = cfg ? cfg[key] : undefined;
   return v === undefined || v === null ? fallback : String(v);
 }
 
 function list(cfg: Record<string, unknown> | undefined, ...keys: string[]): string[] {
   if (!cfg) return [];
   for (const k of keys) {
-    const v = (cfg as any)[k];
+    const v = cfg[k];
     if (Array.isArray(v)) return v as string[];
   }
   return [];
@@ -141,7 +141,7 @@ export const BranchNode = memo(function BranchNode({
   return (
     <NodeShell data={data} selected={selected}>
       {expression ? (
-        <code className="block truncate rounded-md bg-muted px-2 py-1 font-mono text-[10px] text-foreground">
+        <code className="block truncate rounded-md bg-muted px-2 py-1 font-mono text-[11px] text-foreground">
           {expression}
         </code>
       ) : null}
@@ -157,13 +157,17 @@ export const EmailNode = memo(function EmailNode({
   selected?: boolean;
 }) {
   const subject =
-    str(data.config as any, "subject") || str(data.config as any, "note") || "Sans objet";
-  const body = str(data.config as any, "body") || str(data.config as any, "note");
+    str(data.config as Record<string, unknown>, "subject") ||
+    str(data.config as Record<string, unknown>, "note") ||
+    "Sans objet";
+  const body =
+    str(data.config as Record<string, unknown>, "body") ||
+    str(data.config as Record<string, unknown>, "note");
   return (
     <NodeShell data={data} selected={selected} footer={"Variables dynamiques actives"}>
       <div className="rounded-lg border border-border/70 bg-background/60 p-2">
         <p className="truncate text-[11px] font-medium text-foreground">{subject}</p>
-        <p className="mt-1 line-clamp-3 whitespace-pre-line text-[10px] leading-snug text-muted-foreground">
+        <p className="mt-1 line-clamp-3 whitespace-pre-line text-[11px] leading-snug text-muted-foreground">
           {body || "Aucun contenu."}
         </p>
       </div>
@@ -178,18 +182,18 @@ export const MediaNode = memo(function MediaNode({
   data: WorkflowNodeData;
   selected?: boolean;
 }) {
-  const src = str(data.config as any, "asset");
+  const src = str(data.config as Record<string, unknown>, "asset");
   return (
     <NodeShell data={data} selected={selected} footer={src ? "Visuel attaché" : "Aucun visuel"}>
       {src ? (
         <img
           src={src}
-          alt={str(data.config as any, "alt", "Aperçu")}
+          alt={str(data.config as Record<string, unknown>, "alt", "Aperçu")}
           className="h-24 w-full rounded-lg object-cover"
           draggable={false}
         />
       ) : (
-        <div className="grid h-24 place-items-center rounded-lg border border-dashed border-border bg-muted/50 px-2 text-center text-[10px] leading-snug text-muted-foreground">
+        <div className="grid h-24 place-items-center rounded-lg border border-dashed border-border bg-muted/50 px-2 text-center text-[11px] leading-snug text-muted-foreground">
           Déposez une image ici
           <br />
           ou choisissez-la dans le panneau
@@ -211,11 +215,9 @@ export const NoteNode = memo(function NoteNode({
       style={{ width: 220 }}
       className={`relative rounded-xl border bg-warning/12 p-3 text-[11px] leading-snug shadow-[var(--shadow-node)] transition-colors ${selected ? "border-primary" : "border-warning/40"}`}
     >
-      <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-warning-foreground/70">
-        Note
-      </p>
+      <p className="mb-1 text-[11px] font-medium text-warning-foreground/70">Note</p>
       <p className="whitespace-pre-line text-foreground/80">
-        {str(data.config as any, "text", "Double-cliquez pour annoter.")}
+        {str(data.config as Record<string, unknown>, "text", "Double-cliquez pour annoter.")}
       </p>
     </div>
   );

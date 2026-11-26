@@ -6,11 +6,10 @@ import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
 
 export function IntegrationsPanel() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Link2}
         title="Intégrations"
-        description="Connectez vos comptes Google, Microsoft ou LinkedIn pour activer la connexion OAuth et l'accès à votre boîte mail."
+        description="Connectez Google, Microsoft ou LinkedIn pour vous connecter avec ces comptes et lire votre boîte mail."
       />
 
       <PanelGroup label="Comptes connectés">
@@ -18,7 +17,7 @@ export function IntegrationsPanel() {
       </PanelGroup>
 
       <PanelGroup label="Configuration OAuth">
-        <SettingsCard title="Scope Gmail restreint" icon={AlertCircle}>
+        <SettingsCard title="Scope Gmail restreint">
           <p className="text-xs leading-relaxed text-muted-foreground">
             La première version demande uniquement le scope de lecture Gmail. Google le classe parmi
             les scopes sensibles ou restreints selon l’usage ; une{" "}
@@ -27,14 +26,14 @@ export function IntegrationsPanel() {
           </p>
         </SettingsCard>
 
-        <SettingsCard title="Stockage chiffré" icon={ShieldCheck}>
+        <SettingsCard title="Stockage chiffré">
           <p className="text-xs leading-relaxed text-muted-foreground">
             Access tokens et refresh tokens sont stockés chiffrés au repos. Aucune clé n'est jamais
             exposée au navigateur.
           </p>
         </SettingsCard>
 
-        <SettingsCard title="Révocation" icon={LockKeyhole}>
+        <SettingsCard title="Révocation">
           <p className="text-xs leading-relaxed text-muted-foreground">
             Vous pouvez révoquer un accès à tout moment. La révocation supprime les jetons et les
             métadonnées du compte stockés par LeadCortex ; les messages ne sont pas copiés en base.

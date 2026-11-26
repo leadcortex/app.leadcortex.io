@@ -26,10 +26,7 @@ import { useSettings } from "@/components/settings/settings-context";
 import { LetterAvatar } from "@/components/ui/letter-avatar";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { openNotificationCenter } from "@/components/layout/notification-center";
-import {
-  setAssistantDocked,
-  useAssistantDocked,
-} from "@/components/ai-assistant/assistant-dock";
+import { setAssistantDocked, useAssistantDocked } from "@/components/ai-assistant/assistant-dock";
 
 export type MobileProfileDrawerProps = {
   open: boolean;
@@ -122,22 +119,22 @@ export function MobileProfileDrawer({ open, onOpenChange }: MobileProfileDrawerP
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold">{user.fullName}</p>
-            <p className="truncate text-[11.5px] text-muted-foreground">{user.email || "—"}</p>
-            <p className="mt-0.5 truncate text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/70">
-              Forfait · {user.plan}
-            </p>
+            {user.email && (
+              <p className="truncate text-[13px] text-muted-foreground">{user.email}</p>
+            )}
+            <p className="mt-1 truncate text-xs text-muted-foreground">Forfait · {user.plan}</p>
           </div>
           <button
             type="button"
             onClick={close}
             aria-label="Fermer"
-            className="grid size-8 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors active:bg-surface"
+            className="-mr-2 -mt-2 grid size-11 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors active:bg-surface"
           >
-            <X className="size-4" strokeWidth={2} />
+            <X className="size-5" strokeWidth={1.75} />
           </button>
         </header>
 
-        <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2">
+        <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-4">
           <MenuGroup>
             <MenuRow
               icon={SettingsIcon}
@@ -262,7 +259,7 @@ function MenuGroup({ children, className }: { children: ReactNode; className?: s
   return (
     <ul
       className={cn(
-        "mx-2 mb-3 overflow-hidden rounded-2xl border border-border/60 bg-surface/30",
+        "mx-3 mb-4 overflow-hidden rounded-2xl border border-border/60 bg-surface/30",
         className,
       )}
     >
@@ -301,7 +298,7 @@ function MenuRow({
         role={role}
         aria-checked={role === "switch" ? checked : undefined}
         className={cn(
-          "flex w-full items-center gap-3 px-4 py-3.5 text-left text-[14.5px] transition-colors",
+          "flex min-h-12 w-full items-center gap-3 px-4 py-3 text-left text-[15px] transition-colors",
           isDestructive
             ? "text-destructive active:bg-destructive/10"
             : "text-foreground active:bg-surface/70",
@@ -309,22 +306,22 @@ function MenuRow({
       >
         <Icon
           className={cn(
-            "size-4 shrink-0",
+            "size-5 shrink-0",
             isDestructive ? "text-destructive" : "text-muted-foreground",
           )}
-          strokeWidth={1.8}
+          strokeWidth={1.75}
         />
         <span className="min-w-0 flex-1">
           <span className="block truncate">{label}</span>
           {description && (
-            <span className="mt-0.5 block truncate text-[11.5px] text-muted-foreground">
+            <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">
               {description}
             </span>
           )}
         </span>
         {trailingNode}
         {trailing === "chevron" && (
-          <ChevronRight className="size-3.5 shrink-0 text-muted-foreground/70" strokeWidth={1.8} />
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
         )}
       </button>
     </li>

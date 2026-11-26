@@ -17,7 +17,6 @@ import {
   Search,
   LayoutList,
   Table as TableIcon,
-  AlertTriangle,
 } from "@/components/icons";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -28,6 +27,7 @@ import { TasksListSkeleton } from "@/components/skeletons";
 import { TaskCard } from "@/components/tasks/task-card";
 import { TaskFormDialog, type TaskFormValues } from "@/components/tasks/task-form-dialog";
 import { cn } from "@/lib/core/utils";
+import { Button } from "@/components/ui/button";
 import {
   PRIORITY_LABELS,
   STATUS_LABELS,
@@ -41,40 +41,12 @@ import {
 } from "@/lib/tasks/utils";
 
 export const Route = createFileRoute("/app/tasks/")({
-  head: () => ({ meta: [{ title: "Tâches — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Tâches · LeadCortex" }] }),
   pendingComponent: () => <TasksListSkeleton />,
   component: TasksPage,
 });
 
 const iconMap = { call: Phone, email: Mail, linkedin: Linkedin, "follow-up": Clock } as const;
-
-function Stat({
-  label,
-  value,
-  tone = "default",
-}: {
-  label: string;
-  value: number;
-  tone?: "default" | "danger" | "primary" | "success";
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-background px-3 py-2 md:px-4 md:py-3">
-      <p
-        className={cn(
-          "font-display text-xl md:text-2xl italic leading-none",
-          tone === "danger" && "text-red-600",
-          tone === "primary" && "text-primary",
-          tone === "success" && "text-emerald-600",
-        )}
-      >
-        {value}
-      </p>
-      <p className="mt-1 text-[10px] md:text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-        {label}
-      </p>
-    </div>
-  );
-}
 
 function TasksPage() {
   const { tasks, toggleTask, deleteTask, addTask, updateTask, toggleSubtask, addActivity } =
@@ -92,7 +64,6 @@ function TasksPage() {
   const [editOpen, setEditOpen] = useState(false);
 
   const openCount = tasks.filter((t) => !t.done).length;
-  const doneCount = tasks.filter((t) => t.done).length;
   const overdueCount = tasks.filter((t) => !t.done && dueState(t) === "overdue").length;
   const todayCount = tasks.filter((t) => !t.done && dueState(t) === "today").length;
 
@@ -130,42 +101,40 @@ function TasksPage() {
       accessor: (row) => {
         const Icon = iconMap[row.type];
         return (
-          <div className="flex items-center gap-1.5 md:gap-3">
+          <div className="flex items-center gap-3">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleTask(row.id);
               }}
               className="shrink-0"
+              aria-label={row.done ? "Marquer à faire" : "Marquer terminée"}
             >
               {row.done ? (
-                <CheckCircle2 className="size-3.5 md:size-4 text-primary" />
+                <CheckCircle2 className="size-4 text-primary" />
               ) : (
-                <Circle className="size-3.5 md:size-4 text-muted-foreground hover:text-primary transition-colors" />
+                <Circle className="size-4 text-muted-foreground transition-colors hover:text-primary" />
               )}
             </button>
-            <div className="size-5 md:size-7 rounded-md bg-secondary grid place-items-center shrink-0">
-              <Icon className="size-2.5 md:size-3.5 text-muted-foreground" />
-            </div>
+            <Icon className="size-4 shrink-0 text-muted-foreground" />
             <span
-              className={
-                row.done
-                  ? "line-through text-muted-foreground text-xs md:text-sm"
-                  : "text-xs md:text-sm"
-              }
+              className={cn(
+                "text-[13px] md:text-sm",
+                row.done && "text-muted-foreground line-through",
+              )}
             >
               {row.title}
             </span>
           </div>
         );
       },
-      cellClassName: "min-w-[120px] md:min-w-[200px]",
+      cellClassName: "min-w-[160px] md:min-w-[220px]",
     },
     {
       key: "contact",
       header: "Contact",
       sortable: true,
-      accessor: (row) => row.contact,
+      accessor: (row) => (row.contact === "—" ? "" : row.contact),
       hideOnMobile: true,
     },
     {
@@ -191,11 +160,7 @@ function TasksPage() {
       header: "Priorité",
       sortable: true,
       accessor: (row) => (
-        <Badge
-          tone={row.priority === "high" ? "primary" : row.priority === "med" ? "warning" : "muted"}
-        >
-          {PRIORITY_LABELS[row.priority]}
-        </Badge>
+        <span className="text-xs text-muted-foreground">{PRIORITY_LABELS[row.priority]}</span>
       ),
     },
     {
@@ -203,9 +168,9 @@ function TasksPage() {
       header: "Statut",
       sortable: true,
       accessor: (row) => (
-        <Badge tone={row.done ? "success" : "muted"}>
+        <span className="text-xs text-muted-foreground">
           {row.done ? "Terminée" : STATUS_LABELS[row.status ?? "todo"]}
-        </Badge>
+        </span>
       ),
       hideOnMobile: true,
     },
@@ -220,21 +185,21 @@ function TasksPage() {
             deleteTask(row.id);
             toast("Tâche supprimée");
           }}
-          className="p-0.5 md:p-1 rounded hover:bg-secondary transition-colors"
+          className="grid size-8 place-items-center rounded-lg transition-colors hover:bg-secondary"
           aria-label="Supprimer"
         >
-          <Trash2 className="size-3 md:size-3.5 text-muted-foreground" />
+          <Trash2 className="size-4 text-muted-foreground" />
         </button>
       ),
-      className: "w-6 md:w-8",
+      className: "w-10",
       cellClassName: "text-center",
     },
   ];
 
   const createTrigger = (
-    <button className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all">
-      <Plus className="size-3 md:size-3.5" /> Créer une tâche
-    </button>
+    <Button>
+      <Plus /> Créer une tâche
+    </Button>
   );
 
   if (tasks.length === 0) {
@@ -243,13 +208,11 @@ function TasksPage() {
         <PageHeader
           eyebrow="Tâches"
           title="Ce qu'il vous reste à faire."
-          description="0 en cours · 0 terminées"
           actions={<TaskFormDialog trigger={createTrigger} onSubmit={create} />}
         />
         <EmptyState
           icon={CheckSquare}
-          title="Aucune tâche"
-          description="Créez votre première tâche pour rester organisé."
+          title="Aucune tâche pour l'instant"
           action={{
             label: "Créer une tâche",
             onClick: () => {
@@ -257,40 +220,41 @@ function TasksPage() {
             },
             icon: Plus,
           }}
-          size="lg"
         />
       </div>
     );
   }
+
+  const summary = [
+    `${openCount} à faire`,
+    todayCount > 0 ? `${todayCount} aujourd'hui` : null,
+    overdueCount > 0 ? `${overdueCount} en retard` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <div className="max-w-6xl">
       <PageHeader
         eyebrow="Tâches"
         title="Ce qu'il vous reste à faire."
-        description={`${openCount} en cours · ${doneCount} terminées`}
+        description={summary}
         actions={<TaskFormDialog trigger={createTrigger} onSubmit={create} />}
       />
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-6">
-        <Stat label="En cours" value={openCount} />
-        <Stat label="Aujourd'hui" value={todayCount} tone="primary" />
-        <Stat label="En retard" value={overdueCount} tone="danger" />
-        <Stat label="Terminées" value={doneCount} tone="success" />
-      </div>
-
-      <div className="space-y-2 md:space-y-3 mb-4 md:mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto] gap-2">
+      <div className="mb-6 space-y-3 md:mb-8">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-[minmax(0,1fr)_auto]">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Rechercher une tâche, un contact, une étiquette…"
-              className="w-full rounded-xl border border-border bg-background pl-9 pr-3 py-2 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              aria-label="Rechercher une tâche"
+              className="h-11 w-full rounded-lg border border-border bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 md:h-9"
             />
           </div>
-          <div className="flex items-center gap-1 rounded-xl border border-border p-0.5 w-fit bg-surface/40">
+          <div className="flex w-fit items-center gap-1 rounded-lg border border-border bg-surface/40 p-0.5">
             {(
               [
                 { key: "list", label: "Liste", icon: LayoutList },
@@ -300,21 +264,22 @@ function TasksPage() {
               <button
                 key={v.key}
                 onClick={() => setView(v.key)}
+                aria-pressed={view === v.key}
                 className={cn(
-                  "inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] md:text-xs rounded-lg transition-colors",
+                  "inline-flex h-8 items-center gap-2 rounded-md px-3 text-[13px] transition-colors",
                   view === v.key
-                    ? "bg-background shadow-sm font-medium"
+                    ? "bg-background font-medium text-foreground"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <v.icon className="size-3.5" />
+                <v.icon className="size-4" />
                 {v.label}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <CustomSelect
             label="Statut"
             title="Statut"
@@ -404,31 +369,25 @@ function TasksPage() {
           emptyMessage="Aucune tâche."
         />
       ) : visible.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-8 text-center">
-          <AlertTriangle className="size-6 mx-auto text-muted-foreground mb-2" />
-          <p className="text-sm text-muted-foreground">Aucune tâche ne correspond à ces filtres.</p>
-        </div>
+        <EmptyState size="sm" title="Aucune tâche ne correspond à ces filtres." />
       ) : (
-        <div className="space-y-5 md:space-y-7">
+        <div className="space-y-8">
           {groups.map((group) => (
             <section key={group.key}>
-              <div className="flex items-center gap-2 mb-2 md:mb-3">
-                <h2 className="text-[10px] md:text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                  {group.label}
-                </h2>
-                <span className="text-[10px] md:text-xs text-muted-foreground">
+              <h2 className="mb-2 text-[13px] font-semibold">
+                {group.label}
+                <span className="ml-2 font-normal tabular-nums text-muted-foreground">
                   {group.items.length}
                 </span>
-                <span className="h-px flex-1 bg-border" />
-              </div>
-              <div className="space-y-2 md:space-y-2.5">
+              </h2>
+              <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
                 {group.items.map((task) => (
                   <TaskCard
                     key={task.id}
                     task={task}
                     onToggle={() => {
                       toggleTask(task.id);
-                      toast.success(task.done ? "Tâche décochée" : "Tâche terminée 🎉");
+                      toast.success(task.done ? "Tâche rouverte" : "Tâche terminée");
                     }}
                     onDelete={() => {
                       deleteTask(task.id);

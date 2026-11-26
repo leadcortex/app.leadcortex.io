@@ -2,12 +2,13 @@
 
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Compass, FileText, Play, Sparkles } from "@/components/icons";
+import { Compass, FileText, Play } from "@/components/icons";
 
 import { useAppStore } from "@/lib/state/store";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { ONBOARDING_STEPS } from "@/lib/onboarding";
-import { WelcomeHero } from "./welcome-hero";
+import { PageHeader } from "@/components/common/ui-primitives";
+import { Button } from "@/components/ui/button";
 import { StepCard } from "./step-card";
 
 import {
@@ -29,14 +30,10 @@ function BandAction({
   onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="inline-flex h-10 min-w-0 items-center gap-2 rounded-lg px-3 text-[13px] font-medium text-foreground/90 transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.7} />
-      <span className="whitespace-nowrap">{label}</span>
-    </button>
+    <Button type="button" variant="outline" size="sm" onClick={onClick}>
+      <Icon className="text-muted-foreground" strokeWidth={1.7} />
+      {label}
+    </Button>
   );
 }
 
@@ -82,53 +79,35 @@ export function EmptyDashboard() {
   };
 
   return (
-    <div className="@container mx-auto w-full min-w-0 max-w-[1180px]">
-      <div className="space-y-6 pb-10 @2xl:space-y-8">
-        <header className="min-w-0">
-          <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-            Bienvenue
+    <div className="@container mx-auto w-full min-w-0 max-w-[1180px] pb-12">
+      <PageHeader
+        eyebrow="Bienvenue"
+        title={`Bonjour, ${firstName}.`}
+        description="Quatre étapes pour lancer votre prospection."
+      />
+
+      <section aria-label="Étapes du démarrage" className="grid gap-4 @3xl:grid-cols-2">
+        {ONBOARDING_STEPS.map((step, i) => (
+          <StepCard key={step.id} step={step} index={i + 1} featured={i === 0} />
+        ))}
+      </section>
+
+      <section
+        aria-label="Accès rapides"
+        className="mt-12 flex flex-col gap-4 border-t border-border/60 pt-6 @3xl:flex-row @3xl:items-center @3xl:justify-between"
+      >
+        <div className="min-w-0">
+          <h2 className="text-base font-semibold">Déjà des données ?</h2>
+          <p className="mt-1 text-[13px] text-muted-foreground">
+            Importez vos contacts ou chargez un jeu de démonstration.
           </p>
-          <h1 className="mt-3 text-balance break-words text-[1.75rem] font-bold leading-tight tracking-tight @2xl:text-[2.5rem]">
-            Bonjour, {firstName}.
-          </h1>
-          <p className="mt-2 text-pretty text-base text-muted-foreground @2xl:text-lg">
-            Votre équipe d&apos;agents IA est prête. Voici comment démarrer.
-          </p>
-        </header>
-
-        <WelcomeHero />
-
-        <section aria-label="Étapes du démarrage" className="grid gap-4 @3xl:grid-cols-2">
-          {ONBOARDING_STEPS.map((step, i) => (
-            <StepCard key={step.id} step={step} index={i + 1} featured={i === 0} />
-          ))}
-        </section>
-
-        <section
-          aria-label="Accès rapides"
-          className="flex flex-col gap-4 rounded-2xl border border-primary/10 bg-primary/[0.05] px-5 py-4 @5xl:flex-row @5xl:items-center @5xl:justify-between @5xl:gap-6"
-        >
-          <div className="flex min-w-0 flex-col gap-1.5 @3xl:flex-row @3xl:items-center @3xl:gap-4">
-            <div className="flex shrink-0 items-center gap-3">
-              <Sparkles className="size-5 shrink-0 text-[#CC9B5C]" strokeWidth={1.7} />
-              <p className="whitespace-nowrap text-[15px] font-semibold">Déjà des données ?</p>
-            </div>
-            <span aria-hidden="true" className="hidden h-8 w-px shrink-0 bg-border @3xl:block" />
-            <p className="min-w-0 text-pretty text-xs leading-relaxed text-muted-foreground">
-              Vous avez déjà des prospects, des séquences ou des contacts ? Accédez directement à
-              vos outils.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-1 gap-y-1 @5xl:shrink-0 @5xl:flex-nowrap">
-            <BandAction icon={FileText} label="Importer un CSV" onClick={goImportCsv} />
-            <span aria-hidden="true" className="hidden h-5 w-px bg-border @2xl:block" />
-            <BandAction icon={Play} label="Voir la démo" onClick={loadDemo} />
-            <span aria-hidden="true" className="hidden h-5 w-px bg-border @2xl:block" />
-            <BandAction icon={Compass} label="Explorer les outils" onClick={goExploreTools} />
-          </div>
-        </section>
-      </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <BandAction icon={FileText} label="Importer un CSV" onClick={goImportCsv} />
+          <BandAction icon={Play} label="Voir la démo" onClick={loadDemo} />
+          <BandAction icon={Compass} label="Explorer les outils" onClick={goExploreTools} />
+        </div>
+      </section>
     </div>
   );
 }

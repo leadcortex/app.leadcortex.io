@@ -77,7 +77,7 @@ function EditablePreview({
                       {...drag.dragHandleProps}
                       data-key={key}
                       data-cell={isBubble ? "bubble" : "bar"}
-                      aria-label={`${page.label} — maintenir pour déplacer`}
+                      aria-label={`${page.label}, maintenir pour déplacer`}
                       className={cn(
                         "relative grid shrink-0 touch-none place-items-center text-muted-foreground",
                         GLASS,
@@ -112,7 +112,7 @@ function EditablePreview({
 
             <div
               data-key="other"
-              aria-label="Autre — toujours en dernier"
+              aria-label="Autre, toujours en dernier"
               className={cn(
                 "relative grid h-14 min-w-0 flex-1 place-items-center rounded-r-2xl border-y border-r text-muted-foreground/60",
                 GLASS,
@@ -145,27 +145,27 @@ export function MobileNavEditorView({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="rounded-2xl bg-surface/40 p-3">
         <EditablePreview layout={layout} onChange={onChange} />
-        <p className="mt-2 text-center text-[11px] text-muted-foreground">
+        <p className="mt-3 text-center text-xs text-muted-foreground">
           Maintenez et glissez pour réordonner · {NAV_MIN} à {NAV_MAX} sections
         </p>
       </div>
 
       <div className="space-y-3">
         <div className="flex items-baseline justify-between gap-2 px-1">
-          <h4 className="text-xs font-semibold">Ajouter une section</h4>
+          <h4 className="text-base font-semibold">Ajouter une section</h4>
           {full && (
-            <span className="text-[11px] text-muted-foreground">Barre complète (5 max)</span>
+            <span className="text-xs text-muted-foreground">Barre complète (5 max)</span>
           )}
         </div>
         {groups.map((g) => (
           <div key={g.label}>
-            <p className="mb-1.5 px-1 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/80">
+            <p className="mb-2 px-1 text-[13px] font-medium text-muted-foreground">
               {g.label}
             </p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {g.pages.map((p) => (
                 <button
                   key={p.key}
@@ -174,7 +174,7 @@ export function MobileNavEditorView({
                   disabled={full}
                   onClick={() => onChange(addKey(layout, p.key))}
                   className={cn(
-                    "inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs transition-colors",
+                    "inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-background px-3 text-[13px] transition-colors",
                     "active:bg-surface disabled:cursor-not-allowed disabled:opacity-40",
                   )}
                 >
@@ -192,7 +192,7 @@ export function MobileNavEditorView({
         <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-surface/30 p-4">
           <div className="min-w-0">
             <p className="text-sm font-medium">Mettre la 1ʳᵉ section dans une bulle ronde</p>
-            <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
+            <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
               {layout.keys[0] === "academy"
                 ? "Academy en 1ʳᵉ position est toujours dans la bulle."
                 : "Sinon, la barre occupe toute la largeur."}
@@ -211,7 +211,7 @@ export function MobileNavEditorView({
         type="button"
         disabled={JSON.stringify(layout) === JSON.stringify(DEFAULT_NAV_LAYOUT)}
         onClick={() => onChange(DEFAULT_NAV_LAYOUT)}
-        className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-xs font-medium transition-colors active:bg-surface disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 text-sm font-medium transition-colors active:bg-surface disabled:cursor-not-allowed disabled:opacity-40"
       >
         <RotateCcw className="size-3.5" />
         Rétablir la barre par défaut
@@ -229,7 +229,7 @@ export function MobileNavEditor() {
 /** Sous-page « Barre de navigation » de Paramètres › Affichage (mobile uniquement). */
 export function MobileNavDrilldown({ onBack }: { onBack: () => void }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-start gap-3">
         <button
           type="button"

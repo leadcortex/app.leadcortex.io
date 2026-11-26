@@ -20,7 +20,7 @@ export function ScoreStepper({
   min = 0,
   max = 10,
   step = 1,
-  placeholder = "—",
+  placeholder = "-",
   className,
   size = "md",
 }: ScoreStepperProps) {
@@ -48,7 +48,6 @@ export function ScoreStepper({
   const btnClass = cn(
     "grid shrink-0 place-items-center rounded-md text-muted-foreground transition-colors",
     "hover:bg-surface hover:text-foreground",
-    "active:translate-y-[1px]",
     "disabled:cursor-not-allowed disabled:opacity-30",
     "disabled:hover:bg-transparent disabled:hover:text-muted-foreground",
     btnSize,
@@ -59,7 +58,7 @@ export function ScoreStepper({
       className={cn(
         "flex items-center justify-between w-full",
         size === "md"
-          ? "h-[38px] rounded-lg border border-border bg-background px-1.5 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all shadow-[inset_0_1px_0_color-mix(in_oklab,white_35%,transparent)]"
+          ? "h-9 rounded-lg border border-border bg-background px-1 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-[border-color,box-shadow] duration-150"
           : "gap-0.5",
         className,
       )}

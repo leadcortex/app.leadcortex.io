@@ -96,7 +96,7 @@ import { useGmailEmails } from "@/hooks/use-gmail-emails";
 import { GmailThreadsSkeleton } from "@/components/mail/email-skeleton-gmail";
 
 export const Route = createFileRoute("/app/emails/")({
-  head: () => ({ meta: [{ title: "Emails — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Emails · LeadCortex" }] }),
   pendingComponent: () => <MailboxSkeleton />,
   component: EmailsPage,
 });
@@ -119,7 +119,7 @@ const INITIAL_ACCOUNTS: MailAccount[] = [
     email: "utilisateur@leadcortex.io",
     provider: "gmail",
     unread: 3,
-    signature: "—\nEnvoyé depuis LeadCortex",
+    signature: "Envoyé depuis LeadCortex",
     isDefault: true,
   },
   {
@@ -142,12 +142,10 @@ const LIST_MIN = 280;
 const LIST_MAX = 520;
 const LIST_DEFAULT = 360;
 
-const RESIZER_W = 8;
+const RESIZER_W = 1;
 const DETAIL_MIN = 320;
 
-type EmailSource =
-  | { kind: "demo" }
-  | { kind: "gmail"; account: GmailAccount };
+type EmailSource = { kind: "demo" } | { kind: "gmail"; account: GmailAccount };
 
 function clamp(v: number, min: number, max: number) {
   return Math.min(max, Math.max(min, v));
@@ -319,9 +317,9 @@ function Resizer({
       onPointerDown={onPointerDown}
       onDoubleClick={onDoubleClick}
       title="Glisser pour redimensionner · double-clic pour réinitialiser"
-      className="group relative z-30 hidden w-2 shrink-0 cursor-ew-resize md:block"
+      className="group relative z-30 hidden w-px shrink-0 cursor-ew-resize bg-border md:block"
     >
-      <span className="pointer-events-none absolute inset-y-2 left-1/2 w-px -translate-x-1/2 rounded-full bg-border/70 transition-colors group-hover:bg-primary" />
+      <span className="absolute inset-y-0 -left-1 -right-1 transition-colors group-hover:bg-primary/30" />
     </div>
   );
 }
@@ -372,7 +370,7 @@ function MailContextMenu({
       onClick={(e) => e.stopPropagation()}
       onContextMenu={(e) => e.preventDefault()}
       style={{ left: cx, top: cy, width: W }}
-      className="fixed z-[60] rounded-xl border border-border bg-popover py-1.5 text-xs shadow-2xl backdrop-blur-sm animate-in fade-in zoom-in-95"
+      className="fixed z-[60] rounded-lg border border-border bg-popover py-1 text-[13px] shadow-float animate-in fade-in"
     >
       {items.map((it, i) => (
         <Fragment key={i}>
@@ -383,16 +381,16 @@ function MailContextMenu({
               onClose();
             }}
             className={cn(
-              "flex w-full items-center gap-2.5 px-3 py-2 text-left transition-colors",
+              "flex h-8 w-full items-center gap-2.5 px-3 text-left transition-colors",
               it.tone === "danger"
                 ? "text-destructive hover:bg-destructive/10"
                 : "text-foreground hover:bg-secondary",
             )}
           >
-            <it.icon className="size-3.5 shrink-0" strokeWidth={1.75} />
+            <it.icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
             <span className="truncate flex-1">{it.label}</span>
             {it.shortcut && (
-              <kbd className="shrink-0 rounded border border-border bg-surface px-1 font-mono text-[9px] text-muted-foreground">
+              <kbd className="shrink-0 font-mono text-[11px] text-muted-foreground">
                 {it.shortcut}
               </kbd>
             )}
@@ -485,12 +483,12 @@ function AccountSwitcher({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2.5 rounded-xl border border-border/70 bg-background px-2.5 py-2 text-left transition-colors hover:bg-surface"
+        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-foreground/[0.03]"
       >
         <LetterAvatar name={current.name} size={28} shape="rounded" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-medium">{current.name}</p>
-          <p className="truncate text-[10px] text-muted-foreground">{current.email}</p>
+          <p className="truncate text-[13px] font-medium">{current.name}</p>
+          <p className="truncate text-xs text-muted-foreground">{current.email}</p>
         </div>
         <ChevronDown
           className={cn(
@@ -501,7 +499,7 @@ function AccountSwitcher({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-40 overflow-hidden rounded-xl border border-border bg-popover shadow-xl">
+        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-40 overflow-hidden rounded-xl border border-border bg-popover shadow-float">
           <div className="max-h-[280px] overflow-y-auto p-1">
             {accounts.map((a) => {
               const active = a.id === currentId;
@@ -520,7 +518,7 @@ function AccountSwitcher({
                   <LetterAvatar name={a.name} size={24} shape="rounded" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-medium">{a.name}</p>
-                    <p className="truncate text-[10px] text-muted-foreground">{a.email}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">{a.email}</p>
                   </div>
                   {active && <Check className="size-3.5 text-primary shrink-0" />}
                 </button>
@@ -599,7 +597,7 @@ function AddAccountDialog({
         name: name.trim(),
         email: email.trim(),
         provider,
-        signature: `—\nEnvoyé de ${email.trim()}`,
+        signature: `Envoyé de ${email.trim()}`,
       });
       toast.success(`Compte "${email.trim()}" ajouté`);
       reset();
@@ -614,14 +612,12 @@ function AddAccountDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg dialog-content">
         <DialogHeader>
-          <DialogTitle className="text-base md:text-lg">Ajouter un compte mail</DialogTitle>
+          <DialogTitle className="text-base font-semibold">Ajouter un compte mail</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Fournisseur
-            </p>
+            <p className="mb-2 text-[13px] font-medium">Fournisseur</p>
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {providers.map((p) => {
                 const active = provider === p;
@@ -631,59 +627,51 @@ function AddAccountDialog({
                     type="button"
                     onClick={() => setProvider(p)}
                     className={cn(
-                      "flex flex-col items-center gap-1.5 rounded-xl border p-2.5 transition-all",
-                      active
-                        ? "border-primary bg-primary/5 shadow-sm"
-                        : "border-border hover:border-primary/40 hover:bg-surface",
+                      "flex flex-col items-center gap-2 rounded-lg border p-3 transition-colors",
+                      active ? "border-primary bg-primary/5" : "border-border hover:bg-surface",
                     )}
                   >
                     <ProviderLogo provider={p} className="size-6" />
-                    <span className="text-[10px] font-medium truncate w-full text-center">
+                    <span className="w-full truncate text-center text-xs font-medium">
                       {PROVIDER_LABELS[p].split(" ")[0]}
                     </span>
                   </button>
                 );
               })}
             </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">{PROVIDER_HINTS[provider]}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{PROVIDER_HINTS[provider]}</p>
           </div>
 
           <label className="block">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Nom affiché
-            </span>
+            <span className="text-[13px] font-medium">Nom affiché</span>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Utilisateur"
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="mt-1 h-9 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </label>
 
           <label className="block">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Adresse email
-            </span>
+            <span className="text-[13px] font-medium">Adresse email</span>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="vous@exemple.com"
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="mt-1 h-9 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </label>
 
           <label className="block">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Mot de passe d'application
-            </span>
+            <span className="text-[13px] font-medium">Mot de passe d'application</span>
             <div className="relative mt-1">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full rounded-md border border-border bg-background px-3 py-1.5 pr-9 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="h-9 w-full rounded-lg border border-border bg-background px-3 pr-9 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
               <button
                 type="button"
@@ -699,24 +687,20 @@ function AddAccountDialog({
           {provider === "imap" && (
             <div className="grid grid-cols-3 gap-2">
               <label className="col-span-2 block">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Serveur IMAP
-                </span>
+                <span className="text-[13px] font-medium">Serveur IMAP</span>
                 <input
                   value={imapHost}
                   onChange={(e) => setImapHost(e.target.value)}
                   placeholder="imap.exemple.com"
-                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 h-9 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </label>
               <label className="block">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Port
-                </span>
+                <span className="text-[13px] font-medium">Port</span>
                 <input
                   value={imapPort}
                   onChange={(e) => setImapPort(e.target.value)}
-                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="mt-1 h-9 w-full rounded-lg border border-border bg-background px-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </label>
             </div>
@@ -726,14 +710,14 @@ function AddAccountDialog({
         <DialogFooter>
           <button
             onClick={() => onOpenChange(false)}
-            className="px-3 py-1.5 text-xs border border-border rounded-md hover:bg-surface"
+            className="h-9 rounded-lg border border-border px-4 text-sm hover:bg-surface"
           >
             Annuler
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-foreground text-background rounded-md hover:opacity-90 disabled:opacity-50"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-foreground px-4 text-sm font-medium text-background hover:opacity-90 disabled:opacity-50"
           >
             {loading ? (
               <>
@@ -761,11 +745,11 @@ function UndoBanner({
   onClose: () => void;
 }) {
   return (
-    <div className="pointer-events-auto fixed bottom-4 left-1/2 z-[100] flex -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-popover px-4 py-2 shadow-2xl backdrop-blur">
+    <div className="pointer-events-auto fixed bottom-4 left-1/2 z-[100] flex -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-popover px-4 py-2 shadow-float backdrop-blur">
       <span className="text-xs">{undo.label}</span>
       <button
         onClick={onUndo}
-        className="rounded-full bg-foreground px-3 py-1 text-[10.5px] font-semibold text-background transition-opacity hover:opacity-90"
+        className="rounded-full bg-foreground px-3 py-1 text-xs font-medium text-background transition-opacity hover:opacity-90"
       >
         Annuler
       </button>
@@ -799,7 +783,7 @@ function BulkBar({
 }) {
   if (count === 0) return null;
   return (
-    <div className="flex shrink-0 items-center gap-1 border-b border-border bg-primary/[0.06] px-2 py-1.5">
+    <div className="flex shrink-0 items-center gap-1 border-b border-border bg-primary/[0.06] px-3 py-2">
       <button
         onClick={onClear}
         aria-label="Annuler la sélection"
@@ -807,7 +791,7 @@ function BulkBar({
       >
         <X className="size-3.5" />
       </button>
-      <span className="text-xs font-medium">
+      <span className="text-[13px] font-medium tabular-nums">
         {count} sélectionné{count > 1 ? "s" : ""}
       </span>
       <div className="mx-1 h-4 w-px bg-border" />
@@ -901,15 +885,13 @@ function EmailsPage() {
 
   return (
     <div className="flex h-full min-h-[400px] items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-4 rounded-2xl border border-border bg-background p-6 text-center shadow-sm">
-        <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-red-500/10 text-red-600">
-          <Mail className="size-5" />
-        </div>
-        <div>
-          <h1 className="font-display text-2xl italic">Connectez votre Gmail</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Consultez votre boîte de réception en lecture seule. Les messages sont récupérés à la
-            demande et ne sont pas copiés dans LeadCortex.
+      <div className="w-full max-w-md space-y-6 rounded-xl border border-border bg-background p-6 text-center md:p-8">
+        <div className="space-y-2">
+          <ProviderLogo provider="gmail" className="mx-auto size-8" />
+          <h1 className="pt-2 text-xl font-semibold">Connectez votre Gmail</h1>
+          <p className="text-sm text-muted-foreground">
+            Vous lisez vos emails ici sans rien modifier. LeadCortex les charge à l'ouverture et
+            n'en garde aucune copie.
           </p>
         </div>
         {(oauthMessage || accountError || needsReauthorization) && (
@@ -921,7 +903,7 @@ function EmailsPage() {
         )}
         <a
           href="/auth/gmail"
-          className="inline-flex items-center justify-center rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+          className="inline-flex h-10 items-center justify-center rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
         >
           {needsReauthorization ? "Reconnecter Gmail" : "Connecter Gmail"}
         </a>
@@ -929,7 +911,7 @@ function EmailsPage() {
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="block w-full text-xs text-muted-foreground underline"
+            className="block w-full text-[13px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
           >
             Réessayer
           </button>
@@ -937,9 +919,9 @@ function EmailsPage() {
         <button
           type="button"
           onClick={() => setShowDemo(true)}
-          className="block w-full text-xs text-muted-foreground underline"
+          className="block w-full text-[13px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
         >
-          Ouvrir les données de démonstration
+          Voir la boîte de démonstration
         </button>
       </div>
     </div>
@@ -975,8 +957,8 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
 
   const guardWrite = (label: string): boolean => {
     if (!isGmail) return true;
-    toast.info(`Lecture seule — ${label} est désactivé sur Gmail.`, {
-      description: "Les emails Gmail ne sont jamais modifiés par LeadCortex.",
+    toast.info(`Gmail est en lecture seule : impossible de ${label}.`, {
+      description: "LeadCortex ne modifie jamais vos emails Gmail.",
     });
     return false;
   };
@@ -1169,8 +1151,14 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
   const counts: Record<FolderKey, number> = useMemo(() => {
     if (isGmail) {
       return {
-        inbox: 0, starred: 0, sent: 0, drafts: 0,
-        scheduled: 0, archive: 0, spam: 0, trash: 0,
+        inbox: 0,
+        starred: 0,
+        sent: 0,
+        drafts: 0,
+        scheduled: 0,
+        archive: 0,
+        spam: 0,
+        trash: 0,
       };
     }
     const pick = (predicate: (t: EmailRecord[]) => boolean) =>
@@ -1275,7 +1263,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
       label: "Message reporté",
       expiresAt: Date.now() + 8000,
       revert: () => {
-        toast.info("Report annulé — rechargement conseillé");
+        toast.info("Report annulé. Rechargez la page pour le voir.");
       },
     });
   };
@@ -1393,7 +1381,8 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
   const toggleSelect = (threadId: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      next.has(threadId) ? next.delete(threadId) : next.add(threadId);
+      if (next.has(threadId)) next.delete(threadId);
+      else next.add(threadId);
       return next;
     });
   };
@@ -1535,21 +1524,18 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
     onReply: !isGmail && currentThread ? handleReply : undefined,
     onReplyAll: !isGmail && currentThread ? handleReplyAll : undefined,
     onForward: !isGmail && currentThread ? handleForward : undefined,
-    onArchive: !isGmail && currentThread
-      ? () => applyArchive(currentThread[0]!.threadId!)
-      : undefined,
-    onDelete: !isGmail && currentThread
-      ? () => applyDelete(currentThread[0]!.threadId!)
-      : undefined,
-    onToggleStar: !isGmail && currentThread
-      ? () => applyStar(currentThread[0]!.threadId!)
-      : undefined,
-    onToggleRead: !isGmail && currentThread
-      ? () => applyToggleRead(currentThread[0]!.threadId!)
-      : undefined,
-    onSnooze: !isGmail && currentThread
-      ? () => applySnooze(currentThread[0]!.threadId!, new Date(Date.now() + 86_400_000))
-      : undefined,
+    onArchive:
+      !isGmail && currentThread ? () => applyArchive(currentThread[0]!.threadId!) : undefined,
+    onDelete:
+      !isGmail && currentThread ? () => applyDelete(currentThread[0]!.threadId!) : undefined,
+    onToggleStar:
+      !isGmail && currentThread ? () => applyStar(currentThread[0]!.threadId!) : undefined,
+    onToggleRead:
+      !isGmail && currentThread ? () => applyToggleRead(currentThread[0]!.threadId!) : undefined,
+    onSnooze:
+      !isGmail && currentThread
+        ? () => applySnooze(currentThread[0]!.threadId!, new Date(Date.now() + 86_400_000))
+        : undefined,
     onNext: () => {
       if (!filteredThreads.length) return;
       const idx = filteredThreads.findIndex((t) => t.some((m) => m.threadId === selectedThreadId));
@@ -1582,7 +1568,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
   return (
     <div
       ref={containerRef}
-      className="flex h-full min-h-0 w-full overflow-hidden bg-background md:gap-0 md:bg-muted/40 md:p-2"
+      className="flex h-full min-h-0 w-full overflow-hidden bg-background md:rounded-xl md:border md:border-border"
     >
       {foldersOpen && (
         <div
@@ -1594,13 +1580,13 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
       <aside
         className={cn(
           "flex flex-col bg-background",
-          "fixed inset-y-0 left-0 z-50 w-72 shadow-2xl transition-transform duration-200",
+          "fixed inset-y-0 left-0 z-50 w-72 shadow-float transition-transform duration-200",
           foldersOpen ? "translate-x-0" : "-translate-x-full",
-          "md:static md:z-auto md:h-full md:min-h-0 md:translate-x-0 md:shrink-0 md:overflow-hidden md:rounded-xl md:border md:border-border md:shadow-sm md:w-[var(--emails-sidebar-w)]",
+          "md:static md:z-auto md:h-full md:min-h-0 md:translate-x-0 md:shrink-0 md:overflow-hidden md:shadow-none md:w-[var(--emails-sidebar-w)]",
         )}
         style={{ ["--emails-sidebar-w" as string]: `${sidebarWidth}px` }}
       >
-        <div className="shrink-0 space-y-2 border-b border-border p-3">
+        <div className="shrink-0 space-y-3 p-3">
           <AccountSwitcher
             accounts={accounts}
             currentId={currentAccountId}
@@ -1611,18 +1597,15 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
           <button
             onClick={handleCompose}
             disabled={isGmail}
-            title={isGmail ? "Lecture seule — impossible de composer depuis Gmail" : "Nouveau message"}
-            className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-foreground px-3 py-2 text-xs font-medium text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            title={isGmail ? "Gmail est en lecture seule" : "Nouveau message"}
+            className="flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-foreground px-3 text-[13px] font-medium text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <PenSquare className="size-3.5" />
             Nouveau message
           </button>
         </div>
 
-        <nav className="min-h-0 flex-1 overflow-y-auto p-2">
-          <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Dossiers
-          </p>
+        <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
           {FOLDERS.map((f) => {
             const Icon = f.icon;
             const active = folder === f.key;
@@ -1635,19 +1618,19 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                   setFoldersOpen(false);
                 }}
                 className={cn(
-                  "flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-xs transition-colors",
+                  "flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px] transition-colors",
                   active
                     ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                    : "text-foreground/80 hover:bg-foreground/[0.04] hover:text-foreground",
                 )}
               >
-                <Icon className="size-3.5 shrink-0" strokeWidth={1.75} />
+                <Icon className="size-4 shrink-0" strokeWidth={1.75} />
                 <span className="flex-1 truncate text-left">{f.label}</span>
                 {count > 0 && (
                   <span
                     className={cn(
-                      "shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-mono",
-                      active ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground",
+                      "shrink-0 text-xs tabular-nums",
+                      active ? "text-primary" : "text-muted-foreground",
                     )}
                   >
                     {count}
@@ -1657,9 +1640,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
             );
           })}
 
-          <p className="mt-4 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Labels
-          </p>
+          <p className="mt-6 mb-1 px-2 text-xs font-medium text-muted-foreground">Labels</p>
           {labels.map((l) => (
             <button
               key={l.id}
@@ -1672,14 +1653,14 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                 }));
               }}
               className={cn(
-                "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs transition-colors",
+                "flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px] transition-colors",
                 filters.labels?.includes(l.id)
                   ? "bg-secondary text-foreground"
-                  : "text-muted-foreground hover:bg-secondary/60",
+                  : "text-foreground/80 hover:bg-foreground/[0.04] hover:text-foreground",
               )}
             >
               <span
-                className="size-2.5 shrink-0 rounded-full"
+                className="mx-1 size-2 shrink-0 rounded-full"
                 style={{ backgroundColor: l.color }}
               />
               <span className="flex-1 truncate text-left">{l.name}</span>
@@ -1687,22 +1668,17 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
           ))}
           <button
             onClick={() => setLabelManagerOpen(true)}
-            className="mt-1 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px] text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
           >
-            <Tag className="size-3.5" />
+            <Tag className="size-4" />
             <span>Gérer les labels</span>
           </button>
 
-          <p className="mt-4 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Comptes
-          </p>
+          <p className="mt-6 mb-1 px-2 text-xs font-medium text-muted-foreground">Comptes</p>
           {isGmail ? (
-            <div className="flex w-full items-center gap-2 rounded-lg bg-primary/[0.06] px-2 py-1.5 text-xs">
-              <ProviderLogo provider="gmail" className="size-3.5 shrink-0" />
+            <div className="flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px]">
+              <ProviderLogo provider="gmail" className="size-4 shrink-0" />
               <span className="flex-1 truncate text-left">{source.account.address}</span>
-              <span className="shrink-0 rounded-full bg-primary/15 px-1.5 py-0.5 text-[9px] font-mono text-primary">
-                RO
-              </span>
             </div>
           ) : (
             <>
@@ -1713,16 +1689,16 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                     key={a.id}
                     onClick={() => setCurrentAccountId(a.id)}
                     className={cn(
-                      "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs transition-colors",
+                      "flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px] transition-colors",
                       active
                         ? "bg-secondary text-foreground"
-                        : "text-muted-foreground hover:bg-secondary/60",
+                        : "text-foreground/80 hover:bg-foreground/[0.04] hover:text-foreground",
                     )}
                   >
-                    <ProviderLogo provider={a.provider} className="size-3.5 shrink-0" />
+                    <ProviderLogo provider={a.provider} className="size-4 shrink-0" />
                     <span className="flex-1 truncate text-left">{a.email}</span>
                     {typeof a.unread === "number" && a.unread > 0 && (
-                      <span className="shrink-0 rounded-full bg-primary/15 px-1.5 py-0.5 text-[9px] font-mono text-primary">
+                      <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                         {a.unread}
                       </span>
                     )}
@@ -1731,28 +1707,28 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
               })}
               <button
                 onClick={() => setAddAccountOpen(true)}
-                className="mt-1 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                className="flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px] text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
               >
-                <Plus className="size-3.5" />
+                <Plus className="size-4" />
                 <span>Ajouter un compte</span>
               </button>
             </>
           )}
         </nav>
 
-        <div className="shrink-0 border-t border-border p-2 space-y-0.5">
+        <div className="shrink-0 border-t border-border p-3">
           <button
             onClick={() => setShortcutsOpen(true)}
-            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px] text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
           >
-            <Keyboard className="size-3.5" />
+            <Keyboard className="size-4" />
             <span>Raccourcis clavier</span>
           </button>
           <button
             onClick={() => setManageOpen(true)}
-            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="flex h-8 w-full items-center gap-2.5 rounded-lg px-2 text-[13px] text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
           >
-            <Settings className="size-3.5" />
+            <Settings className="size-4" />
             <span>Paramètres des comptes</span>
           </button>
         </div>
@@ -1770,18 +1746,18 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
       <section
         className={cn(
           "flex h-full min-h-0 flex-col bg-background",
-          "w-full md:w-[var(--emails-list-w)] md:shrink-0 md:overflow-hidden md:rounded-xl md:border md:border-border md:shadow-sm",
+          "w-full md:w-[var(--emails-list-w)] md:shrink-0 md:overflow-hidden",
           mobileDetailOpen ? "hidden md:flex" : "flex",
         )}
         style={{ ["--emails-list-w" as string]: `${listWidth}px` }}
       >
-        <div className="flex shrink-0 items-center gap-2 border-b border-border p-2">
+        <div className="flex shrink-0 items-center gap-2 px-3 pt-3 md:px-4">
           <button
             onClick={() => setFoldersOpen((v) => !v)}
-            className="rounded-lg p-1.5 transition-colors hover:bg-secondary md:hidden"
+            className="grid size-11 shrink-0 place-items-center rounded-lg transition-colors hover:bg-secondary md:hidden"
             aria-label="Dossiers"
           >
-            <Inbox className="size-4" />
+            <Inbox className="size-5" />
           </button>
           <div data-email-search className="flex-1 min-w-0">
             <SearchBar
@@ -1800,17 +1776,12 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
               }
             }}
             disabled={isGmail && gmail.loading}
-            className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary disabled:opacity-50"
+            className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:opacity-50"
             aria-label="Actualiser"
+            title="Actualiser"
           >
-            <RefreshCw
-              className={cn("size-3.5", isGmail && gmail.loading && "animate-spin")}
-            />
+            <RefreshCw className={cn("size-4", isGmail && gmail.loading && "animate-spin")} />
           </button>
-        </div>
-
-        <div className="shrink-0 border-b border-border px-3 py-2">
-          <QuickFilterChips filters={filters} onChange={(f) => setFilters(f)} />
         </div>
 
         <BulkBar
@@ -1823,30 +1794,29 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
           onStar={bulkStar}
         />
 
-        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-3 py-2">
-          <div className="flex min-w-0 items-center gap-2">
-            <h2 className="truncate font-display text-base italic">{folderLabel}</h2>
-            {isGmail && (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[9.5px] font-medium text-primary">
-                <ShieldCheck className="size-2.5" />
-                Lecture seule
-              </span>
-            )}
+        <div className="shrink-0 space-y-3 border-b border-border px-3 pb-3 pt-4 md:px-4">
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="min-w-0 truncate text-base font-semibold">{folderLabel}</h2>
+            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+              {isGmail && (
+                <span className="mr-1 inline-flex items-center gap-1">
+                  <ShieldCheck className="size-3.5" />
+                  Lecture seule ·
+                </span>
+              )}
+              {filteredThreads.length} fil{filteredThreads.length > 1 ? "s" : ""}
+              {activeFilters && " filtrés"}
+              {isGmail && gmail.resultSizeEstimate > 0 && <> sur ~{gmail.resultSizeEstimate}</>}
+            </span>
           </div>
-          <span className="shrink-0 text-[10px] text-muted-foreground">
-            {filteredThreads.length} fil{filteredThreads.length > 1 ? "s" : ""}
-            {activeFilters && " · filtrés"}
-            {isGmail && gmail.resultSizeEstimate > 0 && (
-              <> · ~{gmail.resultSizeEstimate}</>
-            )}
-          </span>
+          <QuickFilterChips filters={filters} onChange={(f) => setFilters(f)} />
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {isGmail && gmail.error && (
             <div
               role="alert"
-              className="m-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-[11.5px] text-destructive"
+              className="m-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive"
             >
               {gmail.error}
             </div>
@@ -1854,26 +1824,11 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
           {isGmail && gmail.loading && filteredThreads.length === 0 ? (
             <GmailThreadsSkeleton rows={6} />
           ) : filteredThreads.length === 0 ? (
-            <div className="relative isolate m-3 overflow-hidden rounded-xl">
-              <img
-                src="/images/app/emails.webp"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-[0.18] md:opacity-25"
-              />
-              <div className="relative z-10 bg-background/45 backdrop-blur-[1px]">
-                <EmptyState
-                  icon={Mail}
-                  title="Aucun message"
-                  description={
-                    activeFilters
-                      ? "Aucun résultat pour ces filtres."
-                      : `Rien à afficher dans « ${folderLabel} ».`
-                  }
-                  size="sm"
-                />
-              </div>
-            </div>
+            <EmptyState
+              icon={Mail}
+              title={activeFilters ? "Aucun message ne correspond aux filtres" : "Aucun message"}
+              size="sm"
+            />
           ) : (
             filteredThreads.map((thread) => {
               const threadId = thread[0]!.threadId!;
@@ -1884,21 +1839,21 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                 triggerStoreRef.current,
               );
               return (
-                <div key={threadId} className="relative">
+                <div key={threadId} className="group relative">
                   <input
                     type="checkbox"
                     checked={selectedIds.has(threadId)}
                     onChange={() => toggleSelect(threadId)}
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
-                      "absolute left-2 top-3 z-10 size-3.5 cursor-pointer rounded border-border accent-primary",
+                      "absolute left-2.5 top-4 z-10 size-3.5 cursor-pointer rounded border-border accent-primary",
                       !selectedIds.has(threadId) &&
                         "opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100",
                     )}
                     aria-label="Sélectionner"
                   />
                   <div
-                    className="group relative"
+                    className="relative"
                     onContextMenu={triggers.onContextMenu}
                     onTouchStart={triggers.onTouchStart}
                     onTouchEnd={triggers.onTouchEnd}
@@ -1931,43 +1886,29 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
       <section
         className={cn(
           "flex h-full min-h-0 min-w-0 flex-1 flex-col bg-background",
-          "md:overflow-hidden md:rounded-xl md:border md:border-border md:shadow-sm",
+          "md:overflow-hidden",
           mobileDetailOpen ? "flex" : "hidden md:flex",
         )}
       >
         {!currentThread ? (
-          <div className="relative isolate h-full w-full overflow-hidden">
-            <img
-              src="/images/app/emails-select.webp"
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-[0.18] md:opacity-25"
-            />
-            <div className="relative z-10 grid h-full place-items-center bg-background/45 p-6 backdrop-blur-[1px]">
-              <div className="text-center">
-                <Mail className="mx-auto size-10 text-muted-foreground/30" />
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Sélectionnez un message pour le lire.
-                </p>
-                <p className="mt-1 text-[11px] text-muted-foreground/70">
-                  Appuyez sur{" "}
-                  <kbd className="rounded border border-border bg-surface px-1 font-mono text-[10px]">
-                    ?
-                  </kbd>{" "}
-                  pour voir les raccourcis.
-                </p>
-              </div>
+          <div className="grid h-full place-items-center p-6 text-center">
+            <div>
+              <p className="text-sm text-muted-foreground">Sélectionnez un message pour le lire.</p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                <kbd className="rounded border border-border px-1 font-mono">?</kbd> affiche les
+                raccourcis clavier
+              </p>
             </div>
           </div>
         ) : (
           <>
-            <div className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-1.5 md:px-3 md:py-2">
+            <div className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2 md:px-4">
               <button
                 onClick={() => {
                   setMobileDetailOpen(false);
                   setSelectedThreadId(null);
                 }}
-                className="rounded-lg p-1.5 transition-colors hover:bg-secondary md:hidden"
+                className="grid size-11 shrink-0 place-items-center rounded-lg transition-colors hover:bg-secondary md:hidden"
                 aria-label="Retour"
               >
                 <ArrowLeft className="size-4" />
@@ -1976,7 +1917,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
               <div className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto">
                 <button
                   onClick={() => applyStar(currentThread[0]!.threadId!)}
-                  className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                  className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   title="Favori (s)"
                 >
                   <Star
@@ -1988,14 +1929,14 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                 </button>
                 <button
                   onClick={() => applyArchive(currentThread[0]!.threadId!)}
-                  className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                  className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   title="Archiver (e)"
                 >
                   <Archive className="size-4" />
                 </button>
                 <button
                   onClick={() => applyDelete(currentThread[0]!.threadId!)}
-                  className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                  className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   title="Supprimer (#)"
                 >
                   <Trash2 className="size-4" />
@@ -2005,7 +1946,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                   onSnooze={(date) => applySnooze(currentThread[0]!.threadId!, date)}
                   trigger={
                     <button
-                      className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                      className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                       title="Reporter (b)"
                     >
                       <Clock className="size-4" />
@@ -2029,7 +1970,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                   onManage={() => setLabelManagerOpen(true)}
                   trigger={
                     <button
-                      className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                      className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                       title="Labels"
                     >
                       <Tag className="size-4" />
@@ -2037,24 +1978,24 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                   }
                 />
 
-                <span className="mx-1 h-4 w-px shrink-0 bg-border" />
+                <span className="mx-2 h-4 w-px shrink-0 bg-border" />
                 <button
                   onClick={handleReply}
-                  className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                  className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   title="Répondre (r)"
                 >
                   <Reply className="size-4" />
                 </button>
                 <button
                   onClick={handleReplyAll}
-                  className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                  className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   title="Répondre à tous (a)"
                 >
                   <ReplyAll className="size-4" />
                 </button>
                 <button
                   onClick={handleForward}
-                  className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                  className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   title="Transférer (f)"
                 >
                   <Forward className="size-4" />
@@ -2063,7 +2004,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
 
               <button
                 onClick={() => toast("Plus d'options…")}
-                className="shrink-0 rounded-lg p-1.5 transition-colors hover:bg-secondary"
+                className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 title="Plus"
               >
                 <MoreVertical className="size-4" />
@@ -2071,7 +2012,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
             </div>
 
             {currentThread.some((m) => m.snoozedUntil) && (
-              <div className="flex items-center gap-2 border-b border-warning/40 bg-warning/10 px-3 py-1.5 text-[11px]">
+              <div className="flex items-center gap-2 border-b border-warning/40 bg-warning/10 px-4 py-2 text-xs md:px-6">
                 <Clock className="size-3.5 shrink-0 text-warning" />
                 <span>
                   Reporté ·{" "}
@@ -2082,15 +2023,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
               </div>
             )}
 
-            <ThreadHeader
-              messages={currentThread}
-              labels={labels}
-              onReply={handleReply}
-              onReplyAll={handleReplyAll}
-              onForward={handleForward}
-              onToggleStar={() => applyStar(currentThread[0]!.threadId!)}
-              isStarred={currentThread.some((m) => m.starred)}
-            />
+            <ThreadHeader messages={currentThread} labels={labels} />
 
             <ThreadMessageList
               messages={currentThread}
@@ -2100,12 +2033,12 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
 
             <ThreadAttachmentsSummary messages={currentThread} />
 
-            <div className="shrink-0 border-t border-border bg-surface/30 p-3 md:p-4">
+            <div className="shrink-0 border-t border-border p-3 md:px-6 md:py-4">
               <button
                 onClick={handleReply}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-left text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:bg-surface md:text-sm"
+                className="flex h-11 w-full items-center gap-2 rounded-lg border border-border bg-background px-3 text-left text-sm text-muted-foreground transition-colors hover:bg-foreground/[0.03] md:h-10"
               >
-                <Reply className="mr-2 inline size-3.5" />
+                <Reply className="size-4 shrink-0" />
                 Répondre à {currentThread[currentThread.length - 1]?.from.name ?? "l'expéditeur"}…
               </button>
             </div>
@@ -2177,21 +2110,18 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
       <Dialog open={manageOpen} onOpenChange={setManageOpen}>
         <DialogContent className="sm:max-w-md dialog-content">
           <DialogHeader>
-            <DialogTitle className="text-base md:text-lg">Comptes connectés</DialogTitle>
+            <DialogTitle className="text-base font-semibold">Comptes connectés</DialogTitle>
           </DialogHeader>
-          <div className="space-y-2">
+          <div className="divide-y divide-border">
             {accounts.map((a) => (
-              <div
-                key={a.id}
-                className="flex items-center gap-3 rounded-lg border border-border p-3"
-              >
+              <div key={a.id} className="flex items-center gap-3 py-3">
                 <LetterAvatar name={a.name} size={32} shape="rounded" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-medium">{a.name}</p>
-                  <p className="truncate text-[10px] text-muted-foreground">{a.email}</p>
+                  <p className="truncate text-[13px] font-medium">{a.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">{a.email}</p>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-md border border-border px-1.5 py-0.5 text-[9px] text-muted-foreground">
-                  <ProviderLogo provider={a.provider} className="size-2.5" />
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <ProviderLogo provider={a.provider} className="size-3.5" />
                   {PROVIDER_LABELS[a.provider]}
                 </span>
                 {accounts.length > 1 && (
@@ -2219,7 +2149,7 @@ function EmailWorkspace({ source }: { source: EmailSource }) {
                 setManageOpen(false);
                 setAddAccountOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs text-background transition-opacity hover:opacity-90"
+              className="inline-flex h-9 items-center gap-2 rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
             >
               <Plus className="size-3.5" /> Ajouter un compte
             </button>

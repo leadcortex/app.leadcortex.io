@@ -11,9 +11,9 @@ function WorkflowDetailPage() {
 export const Route = createFileRoute("/app/workflows/$workflowId")({
   head: ({ params }) => ({
     meta: [
-      { title: `Workflow ${params.workflowId} — LeadCortex` },
+      { title: `Workflow ${params.workflowId} · LeadCortex` },
       { name: "description", content: `Modifier et visualiser le workflow ${params.workflowId}.` },
-      { property: "og:title", content: `Workflow ${params.workflowId} — LeadCortex` },
+      { property: "og:title", content: `Workflow ${params.workflowId} · LeadCortex` },
       {
         property: "og:description",
         content: `Modifier et visualiser le workflow ${params.workflowId}.`,

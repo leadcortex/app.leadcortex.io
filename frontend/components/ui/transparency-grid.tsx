@@ -2,13 +2,7 @@
 
 import { cn } from "@/lib/core/utils";
 
-export function TransparencyGrid({
-  className,
-  size = 12,
-}: {
-  className?: string;
-  size?: number;
-}) {
+export function TransparencyGrid({ className, size = 12 }: { className?: string; size?: number }) {
   return (
     <div
       aria-hidden

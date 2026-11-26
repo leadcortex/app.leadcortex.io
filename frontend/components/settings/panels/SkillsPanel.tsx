@@ -66,7 +66,7 @@ function SkillCard({
   const CategoryIcon = meta.icon;
 
   return (
-    <article className="group relative flex flex-col gap-3 rounded-xl border border-border bg-background p-4 transition-colors hover:border-primary/30">
+    <article className="group relative flex flex-col gap-3 rounded-xl border border-border bg-background p-4 transition-colors">
       <div className="flex items-start gap-3">
         <span
           className={cn(
@@ -83,11 +83,11 @@ function SkillCard({
           <div className="flex flex-wrap items-center gap-2">
             <p className="truncate text-sm font-medium">{skill.name}</p>
             {skill.builtin ? (
-              <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-muted-foreground">
+              <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
                 Intégrée
               </span>
             ) : (
-              <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-primary">
+              <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[11px] font-medium text-primary">
                 Personnalisée
               </span>
             )}
@@ -105,7 +105,7 @@ function SkillCard({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1 rounded-full bg-surface/60 px-2 py-0.5">
           <CategoryIcon className="size-2.5" />
           {meta.label}
@@ -210,29 +210,28 @@ export function SkillsPanel() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Wrench}
         title="Compétences"
-        description="Capacités réutilisables que LeadCortex peut mobiliser dans ses tâches. Ajoutez vos propres prompts et fichiers de référence."
+        description="Des prompts et fichiers que LeadCortex réutilise dans ses tâches."
       />
 
       <PanelGroup label="Vue d'ensemble">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-xl border border-border bg-background p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Total</p>
+            <p className="text-xs text-muted-foreground">Total</p>
             <p className="mt-1 font-display text-xl">{skills.length}</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Actives</p>
+            <p className="text-xs text-muted-foreground">Actives</p>
             <p className="mt-1 font-display text-xl text-primary">{enabledCount}</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Intégrées</p>
+            <p className="text-xs text-muted-foreground">Intégrées</p>
             <p className="mt-1 font-display text-xl">{skills.filter((s) => s.builtin).length}</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Personnalisées
             </p>
             <p className="mt-1 font-display text-xl">{skills.filter((s) => !s.builtin).length}</p>

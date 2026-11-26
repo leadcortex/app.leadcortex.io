@@ -1,12 +1,6 @@
 // frontend/components/mail/email-attachments.tsx
 
-import {
-  useCallback,
-  useRef,
-  useState,
-  type DragEvent,
-  type ReactNode,
-} from "react";
+import { useCallback, useRef, useState, type DragEvent, type ReactNode } from "react";
 import {
   Archive,
   Download,
@@ -86,7 +80,7 @@ export function AttachmentPill({
         <Icon className={cn("size-3.5", variant === "compact" && "size-3")} strokeWidth={1.8} />
       </span>
       <span className="min-w-0 flex-1 truncate font-medium">{attachment.name}</span>
-      <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+      <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
         {formatBytes(attachment.size)}
       </span>
       {removable && (
@@ -127,12 +121,8 @@ export function AttachmentPillRow({
 export function AttachmentGrid({ attachments }: { attachments: EmailAttachment[] }) {
   if (attachments.length === 0) return null;
 
-  const images = attachments.filter(
-    (a) => (a.kind ?? classifyMime(a.mime)) === "image" && a.url,
-  );
-  const others = attachments.filter(
-    (a) => (a.kind ?? classifyMime(a.mime)) !== "image" || !a.url,
-  );
+  const images = attachments.filter((a) => (a.kind ?? classifyMime(a.mime)) === "image" && a.url);
+  const others = attachments.filter((a) => (a.kind ?? classifyMime(a.mime)) !== "image" || !a.url);
 
   return (
     <div className="space-y-3">
@@ -146,14 +136,9 @@ export function AttachmentGrid({ attachments }: { attachments: EmailAttachment[]
               rel="noreferrer noopener"
               className="group relative aspect-video overflow-hidden rounded-xl border border-border bg-surface/50"
             >
-              <img
-                src={a.url}
-                alt={a.name}
-                className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
+              <img src={a.url} alt={a.name} className="h-full w-full object-cover" loading="lazy" />
               <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-              <span className="pointer-events-none absolute bottom-1.5 left-1.5 right-1.5 truncate text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+              <span className="pointer-events-none absolute bottom-1.5 left-1.5 right-1.5 truncate text-[11px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
                 {a.name}
               </span>
             </a>
@@ -173,7 +158,7 @@ export function AttachmentGrid({ attachments }: { attachments: EmailAttachment[]
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium">{a.name}</p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground">
                     {formatBytes(a.size)} · {a.mime}
                   </p>
                 </div>
@@ -282,7 +267,7 @@ export function AttachmentDropOverlay({
           <Paperclip className="size-5" strokeWidth={1.8} />
         </span>
         <p className="text-[12.5px] font-medium">{label}</p>
-        <p className="text-[10.5px] opacity-75">{hint}</p>
+        <p className="text-[11px] opacity-75">{hint}</p>
       </div>
     </div>
   );

@@ -129,7 +129,7 @@ export function MobileGearMenu({ sections }: { sections: MenuSection[] }) {
                   return (
                     <p
                       key={index}
-                      className="px-3 pb-1 pt-2 text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground"
+                      className="px-3 pb-1 pt-2 text-[11px] font-semibold text-muted-foreground"
                     >
                       {entry.label}
                     </p>

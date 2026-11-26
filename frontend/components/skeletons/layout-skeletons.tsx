@@ -109,7 +109,7 @@ export function TableSkeleton({
         </div>
       )}
 
-      <div className="rounded-xl border border-border bg-background shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-border bg-background overflow-hidden">
         <div className="overflow-x-auto scrollbar-hide">
           <table className="w-full text-left text-sm min-w-[640px] border-separate border-spacing-0">
             <thead className="bg-surface/90">

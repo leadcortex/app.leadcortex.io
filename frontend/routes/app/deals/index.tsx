@@ -1,8 +1,9 @@
 // frontend/routes/app/deals/index.tsx
 
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { PageHeader, Badge, Kpi } from "@/components/common/ui-primitives";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { PageHeader, Badge } from "@/components/common/ui-primitives";
 import DataTable, { type Column } from "@/components/common/data-table";
+import { Button } from "@/components/ui/button";
 import { Plus, ArrowRight, Target } from "@/components/icons";
 import { toast } from "sonner";
 import { useAppStore } from "@/lib/state/store";
@@ -12,7 +13,7 @@ import { DealsPageSkeleton } from "@/components/skeletons";
 import { ProgressCapsule } from "@/components/ui/capsule-progress";
 
 export const Route = createFileRoute("/app/deals/")({
-  head: () => ({ meta: [{ title: "Opportunités — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Opportunités · LeadCortex" }] }),
   pendingComponent: () => <DealsPageSkeleton />,
   component: DealsPage,
 });
@@ -25,12 +26,23 @@ const stages = [
   { key: "lost", label: "Perdus" },
 ] as const;
 
+const STAGE_LABELS: Record<string, string> = {
+  qualified: "Qualifié",
+  proposal: "Proposition",
+  negotiation: "Négociation",
+  won: "Gagné",
+  lost: "Perdu",
+};
+
+const euros = (n: number) => `${Math.round(n).toLocaleString("fr-FR")} €`;
+const hasValue = (v?: string) => Boolean(v && v !== "—");
+
 function DealsPage() {
-  const navigate = useNavigate();
   const { deals, advanceDealStage, addDeal, addActivity } = useAppStore();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const total = deals.reduce((n, d) => n + d.amount * (d.probability / 100), 0);
+  const open = deals.filter((d) => d.stage !== "won" && d.stage !== "lost");
+  const openSum = open.reduce((n, d) => n + d.amount, 0);
   const won = deals.filter((d) => d.stage === "won").reduce((n, d) => n + d.amount, 0);
 
   const columns: Column<(typeof deals)[number]>[] = [
@@ -40,17 +52,19 @@ function DealsPage() {
       sortable: true,
       accessor: (row) => (
         <div>
-          <div className="font-medium text-xs md:text-sm">{row.name}</div>
-          <div className="text-[9px] md:text-xs text-muted-foreground">{row.company}</div>
+          <div className="text-[13px] font-medium md:text-sm">{row.name}</div>
+          {hasValue(row.company) && (
+            <div className="text-xs text-muted-foreground">{row.company}</div>
+          )}
         </div>
       ),
-      cellClassName: "min-w-[120px] md:min-w-[180px]",
+      cellClassName: "min-w-[140px] md:min-w-[180px]",
     },
     {
       key: "contact",
       header: "Contact",
       sortable: true,
-      accessor: (row) => row.contact,
+      accessor: (row) => (hasValue(row.contact) ? row.contact : ""),
       hideOnMobile: true,
     },
     {
@@ -69,7 +83,7 @@ function DealsPage() {
                   : "muted"
           }
         >
-          {row.stage}
+          {STAGE_LABELS[row.stage] ?? row.stage}
         </Badge>
       ),
     },
@@ -77,9 +91,7 @@ function DealsPage() {
       key: "amount",
       header: "Montant",
       sortable: true,
-      accessor: (row) => (
-        <span className="font-mono text-xs md:text-sm">{row.amount.toLocaleString("fr-FR")} €</span>
-      ),
+      accessor: (row) => <span className="text-[13px] tabular-nums">{euros(row.amount)}</span>,
       className: "text-right",
       cellClassName: "text-right",
     },
@@ -88,22 +100,20 @@ function DealsPage() {
       header: "Probabilité",
       sortable: true,
       accessor: (row) => (
-        <div className="flex items-center gap-1 md:gap-2">
-          <span className="font-mono text-[10px] md:text-sm">{row.probability}%</span>
-          <div className="flex-1 max-w-[40px] md:max-w-[80px]">
+        <div className="flex items-center gap-2">
+          <span className="text-xs tabular-nums">{row.probability} %</span>
+          <div className="max-w-[48px] flex-1 md:max-w-[80px]">
             <ProgressCapsule value={row.probability} max={100} size="sm" />
           </div>
         </div>
       ),
-      cellClassName: "min-w-[80px] md:min-w-[120px]",
+      cellClassName: "min-w-[96px] md:min-w-[120px]",
     },
     {
       key: "close",
       header: "Clôture",
       sortable: true,
-      accessor: (row) => (
-        <span className="text-[10px] md:text-xs text-muted-foreground">{row.close}</span>
-      ),
+      accessor: (row) => <span className="text-xs text-muted-foreground">{row.close}</span>,
       hideOnMobile: true,
     },
     {
@@ -115,20 +125,21 @@ function DealsPage() {
           return null;
         }
         return (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={(e) => {
               e.stopPropagation();
               advanceDealStage(row.id);
               addActivity("Étape avancée", row.name);
-              toast.success(`${row.name} → étape suivante`);
+              toast.success(`${row.name} passe à l'étape suivante`);
             }}
-            className="inline-flex items-center gap-0.5 md:gap-1 text-[9px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded border border-border hover:bg-surface transition-colors"
           >
-            Avancer <ArrowRight className="size-2.5 md:size-3" />
-          </button>
+            Avancer <ArrowRight />
+          </Button>
         );
       },
-      className: "w-16 md:w-24",
+      className: "w-20 md:w-28",
     },
   ];
 
@@ -141,43 +152,35 @@ function DealsPage() {
   const handleCreateDeal = () => {
     addDeal({
       name: "Nouvelle opportunité",
-      company: "—",
-      contact: "—",
+      company: "",
+      contact: "",
       amount: 10000,
       stage: "qualified",
       probability: 20,
       close: "à définir",
     });
-    addActivity("Opportunité créée", "Nouvelle entrée dans le pipeline");
+    addActivity("Opportunité créée", "Ajoutée au pipeline");
     toast.success("Opportunité créée");
   };
+
+  const createButton = (
+    <Button onClick={handleCreateDeal}>
+      <Plus /> Nouvelle opportunité
+    </Button>
+  );
 
   if (deals.length === 0) {
     return (
       <div className="max-w-full">
-        <PageHeader
-          eyebrow="Opportunités"
-          title="Le pipeline."
-          description="Aucune opportunité pour le moment."
-          actions={
-            <button
-              onClick={handleCreateDeal}
-              className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all"
-            >
-              <Plus className="size-3 md:size-3.5" /> Nouvelle opportunité
-            </button>
-          }
-        />
+        <PageHeader eyebrow="Opportunités" title="Le pipeline." actions={createButton} />
         <EmptyState
           icon={Target}
-          title="Pipeline vide"
-          description="Créez votre première opportunité pour suivre vos deals."
+          title="Aucune opportunité pour l'instant"
           action={{
             label: "Créer une opportunité",
             onClick: handleCreateDeal,
             icon: Plus,
           }}
-          size="lg"
         />
       </div>
     );
@@ -188,82 +191,58 @@ function DealsPage() {
       <PageHeader
         eyebrow="Opportunités"
         title="Le pipeline."
-        description={`${deals.length} opportunités · Pipeline pondéré ${Math.round(total).toLocaleString("fr-FR")} €`}
-        actions={
-          <button
-            onClick={handleCreateDeal}
-            className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all"
-          >
-            <Plus className="size-3 md:size-3.5" /> Nouvelle opportunité
-          </button>
-        }
+        description={`${open.length} en cours pour ${euros(openSum)} · ${euros(won)} gagnés`}
+        actions={createButton}
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-8">
-        <Kpi
-          label="Pipeline total"
-          value={`${deals.reduce((n, d) => n + d.amount, 0).toLocaleString("fr-FR")} €`}
-        />
-        <Kpi label="Gagnés" value={`${(won / 1000).toFixed(0)}K€`} delta="+42%" up />
-        <Kpi label="Taux conversion" value="24%" delta="+3%" up />
-        <Kpi label="Cycle moyen" value="28j" sub="qualif → closing" />
-      </div>
-
-      <div className="overflow-x-auto scrollbar-hide table-scroll mb-4 md:mb-8">
-        <div className="grid grid-cols-5 gap-2 md:gap-3 min-w-[600px]">
+      <div className="table-scroll scrollbar-hide -mx-4 overflow-x-auto px-4 md:mx-0 md:px-0">
+        <div className="grid min-w-[880px] grid-cols-5 gap-3 md:min-w-0">
           {stageCounts.map((s) => (
-            <div
+            <section
               key={s.key}
-              className="rounded-xl bg-surface/40 border border-border flex flex-col min-h-[200px] md:min-h-[300px]"
+              className="flex min-h-[200px] flex-col rounded-xl bg-surface/40 md:min-h-[320px]"
             >
-              <div className="p-2 md:p-3 border-b border-border">
-                <div className="flex items-center justify-between">
-                  <p className="text-[9px] md:text-xs font-semibold uppercase tracking-[0.12em]">
-                    {s.label}
-                  </p>
-                  <span className="text-[8px] md:text-[10px] text-muted-foreground font-mono">
+              <header className="flex items-baseline justify-between gap-2 px-3 pb-2 pt-3">
+                <h2 className="text-[13px] font-semibold">
+                  {s.label}
+                  <span className="ml-2 font-normal tabular-nums text-muted-foreground">
                     {s.items.length}
                   </span>
-                </div>
-                <p className="text-[9px] md:text-[11px] text-muted-foreground font-mono mt-0.5">
-                  {s.sum.toLocaleString("fr-FR")} €
-                </p>
-              </div>
-              <div className="p-1.5 md:p-2 space-y-1.5 md:space-y-2 flex-1 overflow-y-auto">
+                </h2>
+                <span className="text-xs tabular-nums text-muted-foreground">
+                  {euros(s.sum)}
+                </span>
+              </header>
+              <div className="flex-1 space-y-2 overflow-y-auto px-2 pb-2">
                 {s.items.map((d) => (
-                  <div
+                  <Link
                     key={d.id}
-                    className="p-2 md:p-3 rounded-lg bg-background border border-border hover:shadow-[var(--shadow-card)] transition-all group"
+                    to="/app/deals/$id"
+                    params={{ id: d.id }}
+                    className="block rounded-lg border border-border bg-background p-3 transition-colors duration-150 ease-out hover:bg-surface/70"
                   >
-                    <p className="text-[10px] md:text-xs font-medium leading-tight">{d.name}</p>
-                    <p className="text-[8px] md:text-[10px] text-muted-foreground mt-0.5 md:mt-1">
-                      {d.contact}
-                    </p>
-                    <div className="mt-2 md:mt-3 flex items-center justify-between">
-                      <p className="font-mono text-[10px] md:text-sm">
-                        {(d.amount / 1000).toFixed(0)}K€
-                      </p>
-                      <span className="text-[8px] md:text-[10px] text-muted-foreground">
-                        {d.probability}% · {d.close}
+                    <p className="text-[13px] font-medium leading-snug">{d.name}</p>
+                    {hasValue(d.contact) && (
+                      <p className="mt-1 truncate text-xs text-muted-foreground">{d.contact}</p>
+                    )}
+                    <div className="mt-3 flex items-baseline justify-between gap-2">
+                      <p className="text-[13px] font-medium tabular-nums">{euros(d.amount)}</p>
+                      <span className="text-[11px] tabular-nums text-muted-foreground">
+                        {d.probability} % · {d.close}
                       </span>
                     </div>
-                    <div className="mt-1.5 md:mt-2">
-                      <ProgressCapsule value={d.probability} max={100} size="sm" />
-                    </div>
-                  </div>
+                  </Link>
                 ))}
                 {s.items.length === 0 && (
-                  <div className="text-[8px] md:text-[10px] text-muted-foreground text-center py-3 md:py-4">
-                    Vide
-                  </div>
+                  <p className="py-4 text-center text-xs text-muted-foreground">Aucune</p>
                 )}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       </div>
 
-      <h2 className="font-semibold text-sm md:text-base mb-2 md:mb-4">Toutes les opportunités</h2>
+      <h2 className="mb-4 mt-8 text-base font-semibold md:mt-12">Toutes les opportunités</h2>
       <DataTable
         data={deals}
         columns={columns}

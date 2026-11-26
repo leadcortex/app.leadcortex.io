@@ -79,8 +79,6 @@ type Suggestion = {
   icon: IconType;
   title: string;
   desc: string;
-  tag: string;
-  accent: string;
 };
 
 const SUGGESTIONS: Suggestion[] = [
@@ -88,71 +86,51 @@ const SUGGESTIONS: Suggestion[] = [
     icon: Sparkles,
     title: "Rédiger un email de relance",
     desc: "Ton chaleureux, orienté bénéfice client.",
-    tag: "Email",
-    accent: "#8b5cf6",
   },
   {
     icon: TrendingUp,
     title: "Repérer les signaux d'achat",
     desc: "3 prospects montrent une intention forte cette semaine.",
-    tag: "Signaux",
-    accent: "#10b981",
   },
   {
     icon: Zap,
     title: "Enrichir 12 nouveaux prospects",
-    desc: "Emails, postes et téléphones manquants détectés.",
-    tag: "Enrichir",
-    accent: "#f59e0b",
+    desc: "Il leur manque un e-mail, un poste ou un téléphone.",
   },
   {
     icon: Lightbulb,
     title: "Proposer un script d'appel",
-    desc: "Adapté au segment SaaS B2B — 4 objections couvertes.",
-    tag: "Appels",
-    accent: "#0ea5e9",
+    desc: "Pour le segment SaaS B2B, avec 4 objections.",
   },
   {
     icon: Flame,
-    title: "Prioriser les leads chauds",
-    desc: "5 leads avec score > 80 à traiter aujourd'hui.",
-    tag: "Priorité",
-    accent: "#ef4444",
+    title: "Prioriser les prospects chauds",
+    desc: "5 prospects chauds à traiter aujourd'hui.",
   },
   {
     icon: Clock,
     title: "Planifier les relances",
     desc: "8 conversations sans réponse depuis plus de 5 jours.",
-    tag: "Relances",
-    accent: "#6366f1",
   },
   {
     icon: PenLine,
     title: "Personnaliser une séquence",
-    desc: "Variantes générées selon l'industrie et le poste.",
-    tag: "Séquences",
-    accent: "#ec4899",
+    desc: "Des variantes selon le secteur et le poste.",
   },
   {
     icon: Search,
     title: "Trouver des prospects similaires",
-    desc: "Lookalike basé sur tes 10 meilleurs clients.",
-    tag: "Prospection",
-    accent: "#14b8a6",
+    desc: "Des profils proches de vos 10 meilleurs clients.",
   },
   {
     icon: Target,
     title: "Analyser le pipeline",
-    desc: "Points de friction et deals à risque cette semaine.",
-    tag: "Pipeline",
-    accent: "#a855f7",
+    desc: "Les blocages et les affaires à risque cette semaine.",
   },
   {
     icon: MessageSquare,
     title: "Résumer les conversations",
-    desc: "Synthèse des échanges et prochaines actions.",
-    tag: "Résumé",
-    accent: "#06b6d4",
+    desc: "Les échanges et les prochaines actions.",
   },
 ];
 
@@ -315,17 +293,14 @@ export function SuggestionCortex() {
 
   const panel = (
     <aside className="flex min-w-0 flex-1 flex-col">
-      <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border/70 bg-background shadow-sm">
-        <header className="flex shrink-0 items-center gap-2 border-b border-border/60 px-2 py-2 md:px-3 md:py-2.5">
-          <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary md:size-7">
-            <Sparkles className="size-3.5" strokeWidth={1.8} />
-          </span>
+      <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-border/70 bg-background">
+        <header className="flex shrink-0 items-center gap-2 border-b border-border/60 px-3 py-3">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[12px] font-medium md:text-[12.5px]">
+            <p className="truncate text-[13px] font-medium">
               {isFirstRun ? "Guide de démarrage" : "Suggestion Cortex"}
             </p>
-            <p className="truncate text-[10px] text-muted-foreground">
-              {isFirstRun ? "4 étapes pour commencer" : "Idées & raccourcis"}
+            <p className="truncate text-xs text-muted-foreground">
+              {isFirstRun ? "4 étapes pour commencer" : "Idées et raccourcis"}
             </p>
           </div>
           <button
@@ -351,7 +326,7 @@ export function SuggestionCortex() {
             onClick={() =>
               openAssistant({ prompt: isFirstRun ? "Comment démarrer ?" : "Que me suggères-tu ?" })
             }
-            className="flex w-full min-w-0 items-center justify-center gap-1.5 rounded-lg bg-foreground px-2 py-2 text-[11px] font-medium text-background transition-opacity hover:opacity-90 md:px-3 md:text-[11.5px]"
+            className="flex h-9 w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-foreground px-3 text-[13px] font-medium text-background transition-opacity hover:opacity-90"
           >
             <BrandLogoMark size={14} />
             <span className="truncate">Demander à Cortex</span>
@@ -376,18 +351,18 @@ function OnboardingChecklist({ snapshot }: { snapshot: OnboardingSnapshot }) {
   const { steps, completedCount, nextStep } = snapshot;
 
   return (
-    <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-2.5">
+    <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3">
       <div className="mb-3 flex min-w-0 items-center gap-2.5 rounded-xl bg-primary/[0.07] p-2.5">
         <LeadMascot
           pose={completedCount === 0 ? "curious" : "happy"}
           className="h-14 w-auto shrink-0"
         />
         <div className="min-w-0">
-          <p className="text-pretty break-words text-[12px] font-semibold leading-snug">
-            {nextStep ? "Prêt à démarrer ?" : "Tout est prêt !"}
+          <p className="text-pretty break-words text-[13px] font-semibold leading-snug">
+            {nextStep ? "Prêt à démarrer ?" : "Tout est prêt."}
           </p>
           {nextStep && (
-            <p className="mt-0.5 text-pretty break-words text-[10.5px] leading-snug text-muted-foreground">
+            <p className="mt-1 text-pretty break-words text-xs leading-snug text-muted-foreground">
               Commencez par : {nextStep.label.toLowerCase()}.
             </p>
           )}
@@ -395,10 +370,8 @@ function OnboardingChecklist({ snapshot }: { snapshot: OnboardingSnapshot }) {
       </div>
 
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Progression
-        </p>
-        <p className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground">
+        <p className="text-xs font-medium text-muted-foreground">Progression</p>
+        <p className="shrink-0 text-xs tabular-nums text-muted-foreground">
           {completedCount} / {steps.length}
         </p>
       </div>
@@ -411,16 +384,13 @@ function OnboardingChecklist({ snapshot }: { snapshot: OnboardingSnapshot }) {
         ))}
       </div>
 
-      <ol className="space-y-1.5">
+      <ol className="-mx-2 space-y-1">
         {steps.map((step) => (
           <li key={step.id}>
             <Link
               to={step.href}
               className={cn(
-                "group flex min-w-0 items-start gap-2 rounded-lg border p-2 transition-colors",
-                step.done
-                  ? "border-success/25 bg-success/[0.04] hover:bg-success/[0.07]"
-                  : "border-border/70 bg-background hover:border-primary/30 hover:bg-surface/60",
+                "flex min-w-0 items-start gap-2 rounded-lg p-2 transition-colors hover:bg-foreground/[0.04]",
               )}
             >
               <span className="mt-0.5 shrink-0">
@@ -433,19 +403,16 @@ function OnboardingChecklist({ snapshot }: { snapshot: OnboardingSnapshot }) {
               <span className="min-w-0 flex-1">
                 <span
                   className={cn(
-                    "block text-balance break-words text-[11.5px] font-medium leading-snug",
+                    "block text-balance break-words text-[13px] font-medium leading-snug",
                     step.done && "text-muted-foreground line-through",
                   )}
                 >
                   {step.index}. {step.label}
                 </span>
-                <span className="mt-0.5 block text-pretty break-words text-[10.5px] leading-relaxed text-muted-foreground">
+                <span className="mt-1 block text-pretty break-words text-xs leading-snug text-muted-foreground">
                   {step.overview}
                 </span>
               </span>
-              {!step.done && (
-                <ArrowRight className="mt-0.5 size-3 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
-              )}
             </Link>
           </li>
         ))}
@@ -458,20 +425,20 @@ function DefaultSuggestionsPanel() {
   return (
     <>
       <section className="flex min-h-0 min-w-0 flex-[2] flex-col border-b border-border/60">
-        <p className="shrink-0 px-2 pb-1.5 pt-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:px-3">
+        <p className="shrink-0 px-3 pb-2 pt-3 text-xs font-medium text-muted-foreground">
           Raccourcis
         </p>
-        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-2 pb-2.5 md:px-2.5">
-          <div className="flex min-w-0 flex-col gap-1">
+        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-1.5 pb-3">
+          <div className="flex min-w-0 flex-col">
             {SHORTCUTS.map((s) => {
               const Icon = s.icon;
               return (
                 <Link
                   key={s.to}
                   to={s.to}
-                  className="flex min-w-0 items-center gap-1.5 rounded-lg border border-border/70 bg-background px-2 py-1.5 text-[11px] transition-colors hover:border-primary/30 hover:bg-surface/60"
+                  className="flex h-8 min-w-0 items-center gap-2 rounded-lg px-1.5 text-[13px] transition-colors hover:bg-foreground/[0.04]"
                 >
-                  <Icon className="size-3.5 shrink-0 text-muted-foreground" strokeWidth={1.8} />
+                  <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
                   <span className="truncate">{s.label}</span>
                 </Link>
               );
@@ -481,11 +448,11 @@ function DefaultSuggestionsPanel() {
       </section>
 
       <section className="flex min-h-0 min-w-0 flex-[3] flex-col">
-        <p className="shrink-0 px-2 pb-1.5 pt-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground md:px-3">
+        <p className="shrink-0 px-3 pb-2 pt-3 text-xs font-medium text-muted-foreground">
           Suggestions
         </p>
-        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-2 pb-2.5 md:px-2.5">
-          <div className="flex min-w-0 flex-col gap-1.5">
+        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-1.5 pb-3">
+          <div className="flex min-w-0 flex-col gap-1">
             {SUGGESTIONS.map((s, i) => {
               const Icon = s.icon;
               return (
@@ -493,33 +460,12 @@ function DefaultSuggestionsPanel() {
                   key={i}
                   type="button"
                   onClick={() => openAssistant({ prompt: s.title })}
-                  className="group flex w-full min-w-0 items-start gap-2 overflow-hidden rounded-lg border border-border/70 bg-background p-2 text-left transition-colors hover:bg-surface/60 md:rounded-xl md:p-2.5"
+                  className="flex w-full min-w-0 items-start gap-2 rounded-lg p-1.5 text-left transition-colors hover:bg-foreground/[0.04]"
                 >
-                  <span
-                    className="grid size-6 shrink-0 place-items-center rounded-lg md:size-7"
-                    style={{
-                      color: s.accent,
-                      backgroundColor: `color-mix(in oklab, ${s.accent} 14%, transparent)`,
-                    }}
-                  >
-                    <Icon className="size-3.5" strokeWidth={1.9} />
-                  </span>
-                  <span className="min-w-0 flex-1 overflow-hidden">
-                    <span className="flex min-w-0 items-center gap-1.5">
-                      <span className="min-w-0 flex-1 truncate text-[11.5px] font-medium md:text-[12px]">
-                        {s.title}
-                      </span>
-                      <span
-                        className="shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-medium"
-                        style={{
-                          color: s.accent,
-                          backgroundColor: `color-mix(in oklab, ${s.accent} 12%, transparent)`,
-                        }}
-                      >
-                        {s.tag}
-                      </span>
-                    </span>
-                    <span className="mt-0.5 block line-clamp-2 text-[10.5px] leading-relaxed text-muted-foreground">
+                  <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[13px] font-medium">{s.title}</span>
+                    <span className="mt-0.5 block line-clamp-2 text-xs leading-snug text-muted-foreground">
                       {s.desc}
                     </span>
                   </span>

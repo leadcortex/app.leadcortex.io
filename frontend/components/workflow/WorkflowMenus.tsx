@@ -81,7 +81,7 @@ function renderDesktopEntries(entries: MenuEntry[]): React.ReactNode {
         return <MenubarSeparator key={index} />;
       case "label":
         return (
-          <MenubarLabel key={index} className="text-[10px] uppercase text-muted-foreground">
+          <MenubarLabel key={index} className="text-xs font-medium text-muted-foreground">
             {entry.label}
           </MenubarLabel>
         );
@@ -450,7 +450,7 @@ export function WorkflowMenus({
         <Menubar className="h-7 border-0 bg-transparent p-0 shadow-none">
           {sections.map((section) => (
             <MenubarMenu key={section.key}>
-              <MenubarTrigger className="h-7 px-2 text-[11.5px]">{section.label}</MenubarTrigger>
+              <MenubarTrigger className="h-7 px-2 text-xs">{section.label}</MenubarTrigger>
               <MenubarContent className={section.contentClassName}>
                 {renderDesktopEntries(section.entries)}
               </MenubarContent>
@@ -628,9 +628,7 @@ export function WorkflowMenus({
           <div className="grid gap-4 sm:grid-cols-3">
             {shortcutGroups.map((group) => (
               <section key={group.title}>
-                <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
-                  {group.title}
-                </h3>
+                <h3 className="mb-2 text-[13px] font-semibold">{group.title}</h3>
                 <div className="space-y-1">
                   {group.rows.map(([label, shortcut]) => (
                     <div
@@ -638,7 +636,7 @@ export function WorkflowMenus({
                       className="flex items-center justify-between gap-3 rounded px-2 py-1.5 hover:bg-accent"
                     >
                       <span className="text-xs">{label}</span>
-                      <kbd className="shrink-0 rounded border border-border bg-panel px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                      <kbd className="shrink-0 rounded border border-border bg-panel px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">
                         {shortcut}
                       </kbd>
                     </div>

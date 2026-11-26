@@ -105,8 +105,7 @@ export function AppSidebar({ badges = {} }: { badges?: Record<string, string> })
   useEffect(() => {
     try {
       setCollapsed(window.localStorage.getItem(COLLAPSE_STORAGE_KEY) === "1");
-    } catch {
-    }
+    } catch {}
   }, []);
 
   const toggle = () => {
@@ -114,8 +113,7 @@ export function AppSidebar({ badges = {} }: { badges?: Record<string, string> })
       const next = !prev;
       try {
         window.localStorage.setItem(COLLAPSE_STORAGE_KEY, next ? "1" : "0");
-      } catch {
-      }
+      } catch {}
       return next;
     });
   };
@@ -132,21 +130,15 @@ export function AppSidebar({ badges = {} }: { badges?: Record<string, string> })
       <Link
         to={item.to}
         className={cn(
-          "group/link relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors",
+          "relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm transition-colors duration-150 ease-out",
           collapsed && "justify-center px-0",
           active
             ? "bg-primary/[0.08] text-primary font-medium"
             : "text-muted-foreground hover:text-foreground hover:bg-surface/80",
         )}
       >
-        {active && !collapsed && (
-          <span
-            aria-hidden
-            className="pointer-events-none absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary"
-          />
-        )}
         <Icon
-          className="size-[18px] shrink-0"
+          className="size-5 shrink-0"
           tone={active ? "strong" : "soft"}
           accent={active ? "primary" : undefined}
         />
@@ -155,7 +147,7 @@ export function AppSidebar({ badges = {} }: { badges?: Record<string, string> })
           <span className="counter-pill counter-pill--sm ml-auto">{badge}</span>
         )}
         {collapsed && badge && (
-          <span className="absolute right-2 size-1.5 rounded-full bg-primary" aria-hidden />
+          <span className="absolute right-3 top-2 size-1.5 rounded-full bg-primary" aria-hidden />
         )}
       </Link>
     );
@@ -180,8 +172,8 @@ export function AppSidebar({ badges = {} }: { badges?: Record<string, string> })
       onClick={toggle}
       aria-label={collapsed ? "Déplier la barre latérale" : "Replier la barre latérale"}
       className={cn(
-        "inline-flex size-7 items-center justify-center rounded-lg",
-        "text-muted-foreground hover:text-foreground hover:bg-background/60 transition-colors",
+        "inline-flex size-8 items-center justify-center rounded-lg",
+        "text-muted-foreground hover:text-foreground hover:bg-surface/80 transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
       )}
     >
@@ -200,17 +192,17 @@ export function AppSidebar({ badges = {} }: { badges?: Record<string, string> })
         className={cn(
           "hidden md:flex h-full shrink-0 flex-col overflow-hidden",
           "rounded-2xl border border-border/70 bg-background shadow-sm",
-          "p-2 gap-2",
+          "p-3 gap-3",
           "transition-[width] duration-200 ease-out",
           collapsed ? "w-[76px]" : "w-64",
         )}
       >
         <div
           className={cn(
-            "flex shrink-0 rounded-xl bg-surface/40",
+            "flex shrink-0",
             collapsed
-              ? "flex-col items-center gap-1.5 py-2 px-0"
-              : "items-center justify-between pl-2.5 pr-1 py-1.5",
+              ? "flex-col items-center gap-2 py-1"
+              : "h-10 items-center justify-between pl-3",
           )}
         >
           {collapsed ? (
@@ -223,21 +215,21 @@ export function AppSidebar({ badges = {} }: { badges?: Record<string, string> })
           {collapseButton}
         </div>
 
-        <nav className="min-h-0 flex-1 overflow-y-auto scrollbar-hide rounded-xl bg-surface/30 p-1.5">
-          {GROUPS.map((group) => (
-            <div key={group.label} className="mb-2 last:mb-0">
-              {!collapsed && (
-                <p className="px-2 pb-1 pt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
-                  {group.label}
-                </p>
+        <nav className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
+          {GROUPS.map((group, index) => (
+            <div key={group.label} className={cn(index > 0 && (collapsed ? "mt-2" : "mt-4"))}>
+              {!collapsed && index > 0 && (
+                <p className="px-3 pb-1 text-xs font-medium text-muted-foreground">{group.label}</p>
+              )}
+              {collapsed && index > 0 && (
+                <div aria-hidden className="mx-3 mb-2 h-px bg-border/60" />
               )}
               <ul className="space-y-0.5">{group.items.map(renderItem)}</ul>
-              {collapsed && <div className="mx-2 my-1.5 h-px bg-border/60 last:hidden" />}
             </div>
           ))}
         </nav>
 
-        <div className="shrink-0 rounded-xl bg-surface/40 p-1.5">
+        <div className="shrink-0 border-t border-border/60 pt-3">
           <UserMenu collapsed={collapsed} onOpenSettings={openSettings} />
         </div>
       </aside>
@@ -321,15 +313,17 @@ function UserMenu({
     <>
       <UserMenuAvatar name={user.fullName} src={user.avatarUrl} size={32} />
       <span className="min-w-0 flex-1 text-left">
-        <span className="block truncate text-xs font-medium text-foreground">{user.fullName}</span>
-        <span className="block truncate text-[10px] text-muted-foreground">· {user.plan}</span>
+        <span className="block truncate text-[13px] font-medium text-foreground">
+          {user.fullName}
+        </span>
+        <span className="block truncate text-xs text-muted-foreground">{user.plan}</span>
       </span>
-      <ChevronsUpDown className="size-3.5 shrink-0 text-muted-foreground" strokeWidth={1.75} />
+      <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
     </>
   );
 
   const chipClass = cn(
-    "group flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition-colors",
+    "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-sm transition-colors",
     "hover:bg-surface/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     "data-[state=open]:bg-surface/80",
     collapsed && "justify-center px-0",
@@ -363,9 +357,11 @@ function UserMenu({
           collisionPadding={{ top: 8, right: 12, bottom: 12, left: 12 }}
           className="w-[280px] overflow-hidden rounded-xl border border-border bg-popover p-0 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)]"
         >
-          <div className="border-b border-border/70 px-3 py-2.5">
-            <p className="truncate text-xs text-muted-foreground">{user.email || "—"}</p>
-          </div>
+          {user.email && (
+            <div className="border-b border-border/70 px-3 py-3">
+              <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+            </div>
+          )}
 
           <div className="p-1">
             <MenuButton icon={Settings} label="Paramètres" onClick={handleSettings} />
@@ -457,7 +453,7 @@ function MenuButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm transition-colors",
+        "flex h-9 w-full items-center gap-3 rounded-lg px-2 text-left text-sm transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         variant === "destructive"
           ? "text-foreground hover:bg-destructive/10 hover:text-destructive"
@@ -467,7 +463,7 @@ function MenuButton({
       <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
       <span className={cn("min-w-0 flex-1", truncate ? "truncate" : "")}>{label}</span>
       {trailing === "chevron" && (
-        <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" strokeWidth={1.75} />
+        <ChevronRight className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
       )}
     </button>
   );

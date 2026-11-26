@@ -6,10 +6,7 @@ export function GmailThreadsSkeleton({ rows = 6 }: { rows?: number }) {
   return (
     <div className="space-y-0">
       {Array.from({ length: rows }).map((_, i) => (
-        <div
-          key={i}
-          className="flex items-start gap-2 border-b border-border/60 px-3 py-3"
-        >
+        <div key={i} className="flex items-start gap-2 border-b border-border/60 px-3 py-3">
           <Skeleton variant="circle" className="size-8 shrink-0" />
           <div className="min-w-0 flex-1 space-y-1.5">
             <div className="flex items-center gap-2">

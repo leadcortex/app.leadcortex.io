@@ -3,20 +3,19 @@
 import { useState } from "react";
 import { Button } from "./landing-button";
 import { Minus, Plus } from "./landing-icons";
-import { eyebrow } from "./landing-styles";
 
 const faqs = [
   [
     "En quoi LeadCortex diffère d'Apollo ou Clay ?",
-    "Eux vendent des données. LeadCortex les utilise pour vous : une IA cherche, l'autre écrit.",
+    "Apollo et Clay vendent surtout de la donnée. Dans LeadCortex, une IA cherche les prospects et l'autre leur écrit, dans le même outil.",
   ],
   [
     "Le prix baisse vraiment ?",
-    "Oui, chaque mois où vous restez, automatiquement. Le détail est sur la page Tarifs.",
+    "Oui, un peu chaque mois où vous restez, sans rien demander. Le calcul est sur la page Tarifs.",
   ],
   [
     "Dois-je fournir mes propres clés IA ?",
-    "Non. Les modèles sont inclus. Vos clés sont une option, sur tous les plans.",
+    "Non, les modèles sont inclus. Vous pouvez brancher vos clés si vous préférez, sur tous les plans.",
   ],
   [
     "Y a-t-il un essai gratuit ?",
@@ -28,9 +27,8 @@ export function LandingFaq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section id="faq" className="mx-auto max-w-3xl px-6 py-24">
-      <p className={`${eyebrow} text-center`}>FAQ</p>
-      <h2 className="mt-3 text-center">
-        Les questions <em>qu'on nous pose</em>.
+      <h2 className="text-center">
+        Questions <em>fréquentes</em>.
       </h2>
       <div className="mt-12 divide-y divide-border border-y border-border">
         {faqs.map(([q, a], i) => (

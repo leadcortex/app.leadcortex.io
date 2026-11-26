@@ -11,13 +11,8 @@ import {
   Star,
 } from "@/components/icons";
 import { LetterAvatar } from "@/components/ui/letter-avatar";
-import { Badge } from "@/components/common/ui-primitives";
 import { cn } from "@/lib/core/utils";
-import {
-  formatRelativeDate,
-  type EmailLabel,
-  type EmailRecord,
-} from "@shared/types/email-types";
+import { formatRelativeDate, type EmailLabel, type EmailRecord } from "@shared/types/email-types";
 import { useGmailMessage } from "@/hooks/use-gmail-message";
 import { AttachmentGrid, AttachmentPillRow } from "./email-attachments";
 import { EmailMessageBody } from "./email-message-body";
@@ -33,7 +28,7 @@ export function groupEmailsByThread(list: EmailRecord[]): EmailRecord[][] {
   }
   return Array.from(map.values())
     .map((arr) => arr.slice().sort((a, b) => a.date.localeCompare(b.date)))
-    .sort((a, b) => (b[b.length - 1]!.date).localeCompare(a[a.length - 1]!.date));
+    .sort((a, b) => b[b.length - 1]!.date.localeCompare(a[a.length - 1]!.date));
 }
 
 export function getThreadPreview(list: EmailRecord[]): EmailRecord {
@@ -64,9 +59,9 @@ export function ThreadHeader({
   const activeLabels = labels.filter((l) => labelIds.includes(l.id));
 
   return (
-    <div className="border-b border-border bg-background px-3 pt-3 md:px-4 md:pt-4">
+    <div className="border-b border-border bg-background px-4 pt-4 md:px-6 md:pt-6">
       <div className="flex flex-wrap items-center gap-2">
-        <h1 className="min-w-0 flex-1 font-display text-lg italic leading-tight break-words md:text-2xl">
+        <h1 className="min-w-0 flex-1 text-lg font-semibold leading-snug break-words md:text-xl">
           {root.subject}
         </h1>
 
@@ -78,9 +73,7 @@ export function ThreadHeader({
               aria-label="Favori"
               className="grid size-7 place-items-center rounded-lg transition-colors hover:bg-secondary"
             >
-              <Star
-                className={cn("size-4", isStarred && "fill-amber-400 text-amber-400")}
-              />
+              <Star className={cn("size-4", isStarred && "fill-amber-400 text-amber-400")} />
             </button>
           )}
           {onReply && (
@@ -119,14 +112,12 @@ export function ThreadHeader({
         </div>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2 pb-3">
+      <div className="mt-2 flex flex-wrap items-center gap-2 pb-4 text-xs text-muted-foreground">
         {activeLabels.length > 0 && <LabelChipRow labels={activeLabels} size="sm" />}
-        <Badge tone="muted">
-          {total === 1 ? "1 message" : `${total} messages`}
-        </Badge>
+        <span className="tabular-nums">{total === 1 ? "1 message" : `${total} messages`}</span>
         {hasAttachments && (
-          <span className="inline-flex items-center gap-1 text-[10.5px] text-muted-foreground">
-            <Paperclip className="size-3" strokeWidth={1.8} />
+          <span className="inline-flex items-center gap-1">
+            <Paperclip className="size-3.5" strokeWidth={1.8} />
             Pièces jointes
           </span>
         )}
@@ -161,8 +152,7 @@ function ThreadMessage({
     enabled: expanded && source === "gmail",
   });
 
-  const displayBody =
-    source === "gmail" ? (gmail.body ?? message.body) : message.body;
+  const displayBody = source === "gmail" ? (gmail.body ?? message.body) : message.body;
   const isLoadingBody = source === "gmail" && gmail.loading;
 
   if (!expanded) {
@@ -170,54 +160,40 @@ function ThreadMessage({
       <button
         type="button"
         onClick={() => setExpanded(true)}
-        className="group flex w-full items-center gap-3 border-b border-border px-3 py-2.5 text-left transition-colors hover:bg-surface/40 md:px-4"
+        className="flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors hover:bg-foreground/[0.03] md:px-6"
       >
-        <LetterAvatar
-          name={message.from.name ?? message.from.email}
-          size={28}
-          shape="circle"
-        />
+        <LetterAvatar name={message.from.name ?? message.from.email} size={28} shape="circle" />
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <span className="truncate text-xs font-medium">
+          <span className="truncate text-sm font-medium">
             {message.from.name ?? message.from.email}
           </span>
           {activeLabels.length > 0 && <LabelChipRow labels={activeLabels} size="sm" />}
-          <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
+          <span className="ml-auto shrink-0 text-xs tabular-nums text-muted-foreground">
             {formatRelativeDate(message.date)}
           </span>
         </div>
-        <ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-y-0.5" />
+        <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
       </button>
     );
   }
 
   return (
-    <article
-      className={cn(
-        "border-b border-border px-3 py-4 md:px-4 md:py-5",
-        !isLast && "bg-background",
-      )}
-    >
+    <article className={cn("border-b border-border px-4 py-6 md:px-6", !isLast && "bg-background")}>
       <header className="mb-4 flex items-start gap-3">
-        <LetterAvatar
-          name={message.from.name ?? message.from.email}
-          size={36}
-          shape="circle"
-        />
+        <LetterAvatar name={message.from.name ?? message.from.email} size={36} shape="circle" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate text-sm font-medium">
+            <p className="truncate text-sm font-semibold">
               {message.from.name ?? message.from.email}
             </p>
             {activeLabels.length > 0 && <LabelChipRow labels={activeLabels} size="sm" />}
           </div>
-          <p className="mt-0.5 truncate text-[10.5px] text-muted-foreground">
-            &lt;{message.from.email}&gt; · à{" "}
-            {message.to.map((t) => t.name ?? t.email).join(", ")}
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            &lt;{message.from.email}&gt; · à {message.to.map((t) => t.name ?? t.email).join(", ")}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <span className="text-[10.5px] text-muted-foreground">
+          <span className="text-xs tabular-nums text-muted-foreground">
             {formatRelativeDate(message.date)}
           </span>
           {!isLast && (
@@ -235,12 +211,12 @@ function ThreadMessage({
 
       <div className="pl-0 md:pl-12">
         {isLoadingBody ? (
-          <div className="flex items-center gap-2 py-2 text-[11.5px] text-muted-foreground">
+          <div className="flex items-center gap-2 py-2 text-xs text-muted-foreground">
             <Loader2 className="size-3.5 animate-spin" />
             Chargement du message…
           </div>
         ) : gmail.error ? (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-[11.5px] text-destructive">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
             {gmail.error}
           </div>
         ) : (
@@ -301,67 +277,52 @@ export function ThreadPreviewRow({
   const isUnread = messages.some((m) => m.unread);
   const hasAttachments = messages.some((m) => (m.attachments?.length ?? 0) > 0);
   const count = messages.length;
-  const activeLabels = labels.filter((l) =>
-    messages.some((m) => (m.labels ?? []).includes(l.id)),
-  );
+  const activeLabels = labels.filter((l) => messages.some((m) => (m.labels ?? []).includes(l.id)));
+
+  const sender = root.from.name ?? root.from.email;
 
   return (
     <button
+      data-thread-row
       onClick={onClick}
       onContextMenu={onContext}
       className={cn(
-        "group relative flex w-full flex-col gap-1 border-b border-border/60 px-3 py-3 text-left transition-colors",
-        active ? "bg-primary/[0.06]" : "hover:bg-surface/60",
+        "relative flex w-full flex-col gap-0.5 border-b border-border/60 py-3 pl-8 pr-4 text-left transition-colors",
+        active ? "bg-primary/[0.07]" : "hover:bg-foreground/[0.03]",
       )}
     >
-      <div className="flex items-start gap-2">
-        <LetterAvatar
-          name={root.from.name ?? root.from.email}
-          size={32}
-          shape="circle"
-          className="mt-0.5"
-        />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
-            <span
-              className={cn(
-                "truncate text-xs",
-                isUnread ? "font-semibold text-foreground" : "font-medium",
-              )}
-            >
-              {root.from.name ?? root.from.email}
-            </span>
-            {count > 1 && (
-              <span className="shrink-0 rounded-full bg-secondary px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
-                {count}
-              </span>
-            )}
-            {hasAttachments && (
-              <Paperclip
-                className="size-2.5 shrink-0 text-muted-foreground"
-                strokeWidth={2}
-              />
-            )}
-            <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
-              {formatRelativeDate(last.date)}
-            </span>
-          </div>
-          <p
-            className={cn(
-              "mt-0.5 truncate text-[12.5px]",
-              isUnread ? "text-foreground font-medium" : "text-foreground/80",
-            )}
-          >
-            {root.subject}
-          </p>
-          <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-            {last.preview}
-          </p>
-          {activeLabels.length > 0 && (
-            <LabelChipRow labels={activeLabels} size="sm" className="mt-1" />
+      {isUnread && (
+        <span className="absolute left-3 top-[19px] size-2 rounded-full bg-primary">
+          <span className="sr-only">Non lu</span>
+        </span>
+      )}
+      <div className="flex items-baseline gap-2">
+        <span
+          className={cn(
+            "min-w-0 flex-1 truncate text-sm text-foreground",
+            isUnread ? "font-semibold" : "font-medium",
           )}
-        </div>
+        >
+          {sender}
+          {count > 1 && (
+            <span className="ml-1.5 font-normal tabular-nums text-muted-foreground">{count}</span>
+          )}
+        </span>
+        {hasAttachments && (
+          <Paperclip
+            className="size-3.5 shrink-0 self-center text-muted-foreground"
+            strokeWidth={1.8}
+          />
+        )}
+        <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+          {formatRelativeDate(last.date)}
+        </span>
       </div>
+      <p className={cn("truncate text-[13px] text-foreground", isUnread && "font-medium")}>
+        {root.subject}
+      </p>
+      <p className="line-clamp-2 text-[13px] leading-snug text-muted-foreground">{last.preview}</p>
+      {activeLabels.length > 0 && <LabelChipRow labels={activeLabels} size="sm" className="mt-1" />}
     </button>
   );
 }
@@ -370,8 +331,8 @@ export function ThreadAttachmentsSummary({ messages }: { messages: EmailRecord[]
   const all = messages.flatMap((m) => m.attachments ?? []);
   if (all.length === 0) return null;
   return (
-    <div className="border-t border-border bg-surface/40 px-3 py-2 md:px-4">
-      <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="border-t border-border px-4 py-3 md:px-6">
+      <p className="mb-2 text-xs font-medium text-muted-foreground">
         {all.length} pièce{all.length > 1 ? "s" : ""} jointe{all.length > 1 ? "s" : ""}
       </p>
       <AttachmentPillRow attachments={all} variant="compact" />

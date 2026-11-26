@@ -12,7 +12,6 @@ import {
   type ChatMessage,
   type ProspectThread,
 } from "@/lib/conversations-mock";
-import { BrandLogoMark } from "@/components/brand/brand-logo-mark";
 import { LetterAvatar } from "@/components/ui/letter-avatar";
 import { MessageComposer } from "./message-composer";
 
@@ -58,13 +57,13 @@ export function ConversationThread({
           <Link
             to="/app/people/$id"
             params={{ id: thread.id }}
-            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-1 py-1 transition-opacity hover:opacity-80 active:opacity-70"
+            className="flex min-w-0 flex-1 items-center gap-3 rounded-lg px-1 py-1 transition-colors hover:bg-foreground/[0.03]"
           >
             <LetterAvatar name={thread.contact} size={36} shape="circle" />
             <span className="min-w-0">
-              <span className="block truncate text-[13px] font-medium">{thread.contact}</span>
-              <span className="block truncate text-[10.5px] text-muted-foreground">
-                {thread.role} · {thread.company}
+              <span className="block truncate text-sm font-medium">{thread.contact}</span>
+              <span className="block truncate text-xs text-muted-foreground">
+                {[thread.role, thread.company].filter((v) => v && v !== "—").join(" · ")}
               </span>
             </span>
           </Link>
@@ -90,7 +89,7 @@ export function ConversationThread({
           </div>
         </div>
 
-        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {CHANNEL_ORDER.filter((c) => thread.channels.includes(c)).map((c) => {
             const t = CHANNELS[c];
             const Icon = t.icon;
@@ -99,7 +98,7 @@ export function ConversationThread({
               <button
                 key={c}
                 onClick={() => onChannelChange(c)}
-                className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[11px] font-medium transition-colors active:opacity-80"
+                className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors active:opacity-80"
                 style={{
                   borderColor: active ? t.accent : "var(--border)",
                   color: active ? t.accent : "var(--muted-foreground)",
@@ -108,7 +107,7 @@ export function ConversationThread({
                     : "transparent",
                 }}
               >
-                <Icon className="size-3" /> {t.label}
+                <Icon className="size-3.5" /> {t.label}
               </button>
             );
           })}
@@ -120,31 +119,23 @@ export function ConversationThread({
           className="relative grid min-h-0 flex-1 place-items-center overflow-hidden p-6"
           style={{ backgroundColor: `color-mix(in oklab, ${theme.accent} 3%, transparent)` }}
         >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 flex items-center justify-center"
-            style={{ color: theme.accent, opacity: 0.09 }}
-          >
-            <BrandLogoMark size={460} />
-          </div>
-
-          <div className="relative z-10 max-w-sm text-center">
+          <div className="max-w-sm text-center">
             <span
-              className="mx-auto grid size-14 place-items-center rounded-2xl text-background shadow-lg"
+              className="mx-auto grid size-12 place-items-center rounded-xl text-background"
               style={{ backgroundColor: theme.accent }}
             >
-              <theme.icon className="size-7" strokeWidth={1.8} />
+              <theme.icon className="size-6" strokeWidth={1.8} />
             </span>
-            <p className="mt-4 text-[14px] font-medium">Aucun message sur {theme.label}</p>
-            <p className="mt-1 text-[11.5px] text-muted-foreground">
-              Démarrez la conversation avec <b>{thread.contact}</b> depuis le champ ci-dessous.
+            <p className="mt-4 text-sm font-medium">Aucun message sur {theme.label}</p>
+            <p className="mt-1 text-[13px] text-muted-foreground">
+              Écrivez à {thread.contact} dans le champ ci-dessous.
             </p>
           </div>
         </div>
       ) : (
         <div
           ref={listRef}
-          className="min-h-0 flex-1 space-y-2.5 overflow-y-auto overscroll-contain p-3 md:p-5"
+          className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-4 md:p-6"
           style={{ backgroundColor: `color-mix(in oklab, ${theme.accent} 3%, transparent)` }}
         >
           {messages.map((m) => (
@@ -163,7 +154,7 @@ function Bubble({ m, accent }: { m: ChatMessage; accent: string }) {
     <div className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
       <div className="min-w-0 max-w-[88%] md:max-w-[68%]">
         <div
-          className="rounded-2xl px-3 py-2 text-[12.5px] leading-relaxed whitespace-pre-line break-words"
+          className="rounded-2xl px-3 py-2 text-[13px] leading-relaxed whitespace-pre-line break-words md:text-sm"
           style={
             m.me
               ? { backgroundColor: accent, color: "var(--background)" }
@@ -188,8 +179,8 @@ function Bubble({ m, accent }: { m: ChatMessage; accent: string }) {
                   >
                     <FileText className="size-4 shrink-0" strokeWidth={1.6} />
                     <span className="min-w-0">
-                      <span className="block truncate text-[11.5px]">{a.name}</span>
-                      <span className="block text-[10px] opacity-70">{formatSize(a.size)}</span>
+                      <span className="block truncate text-xs">{a.name}</span>
+                      <span className="block text-[11px] opacity-70">{formatSize(a.size)}</span>
                     </span>
                   </span>
                 ),
@@ -198,7 +189,7 @@ function Bubble({ m, accent }: { m: ChatMessage; accent: string }) {
           )}
         </div>
         <div
-          className={`mt-0.5 flex items-center gap-1 px-1 text-[10px] text-muted-foreground ${m.me ? "justify-end" : ""}`}
+          className={`mt-1 flex items-center gap-1 px-1 text-[11px] text-muted-foreground ${m.me ? "justify-end" : ""}`}
         >
           <span>{m.time}</span>
           {m.me && m.status && (

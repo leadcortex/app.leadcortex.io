@@ -31,7 +31,7 @@ import {
 import { cn } from "@/lib/core/utils";
 
 const inputCls =
-  "w-full px-3 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-[0_2px_0_var(--border)] focus:shadow-none focus:translate-y-[2px] active:translate-y-[2px] active:shadow-none";
+  "w-full px-3 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors";
 
 function Field({
   label,
@@ -118,10 +118,10 @@ export function EditCompanyDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl border-2 border-border shadow-[0_4px_0_var(--border)]">
+      <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
         <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
-          <header className="flex shrink-0 flex-col gap-1 border-b border-border py-4 pl-5 pr-14 bg-surface/10">
-            <DialogTitle className="font-display text-xl italic flex items-center gap-2">
+          <header className="flex shrink-0 flex-col gap-1 border-b border-border py-4 pl-5 pr-14">
+            <DialogTitle className="text-lg font-semibold flex items-center gap-2">
               <Edit className="size-4 text-primary" />
               Modifier l'entreprise
             </DialogTitle>
@@ -132,8 +132,8 @@ export function EditCompanyDialog({
 
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5 bg-background">
             <div className="space-y-6">
-              <fieldset className="rounded-xl border-2 border-border bg-surface/10 p-4 shadow-[0_3px_0_var(--border)]">
-                <legend className="px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              <fieldset className="rounded-xl border border-border p-4">
+                <legend className="px-2 text-[13px] font-medium text-muted-foreground">
                   <ImageIcon className="size-3 text-primary inline mr-1.5" />
                   Identité visuelle
                 </legend>
@@ -148,8 +148,8 @@ export function EditCompanyDialog({
                 </div>
               </fieldset>
 
-              <fieldset className="rounded-xl border-2 border-border bg-surface/10 p-4 shadow-[0_3px_0_var(--border)]">
-                <legend className="px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              <fieldset className="rounded-xl border border-border p-4">
+                <legend className="px-2 text-[13px] font-medium text-muted-foreground">
                   <Building2 className="size-3 text-primary inline mr-1.5" />
                   Informations générales
                 </legend>
@@ -235,8 +235,8 @@ export function EditCompanyDialog({
                 </div>
               </fieldset>
 
-              <fieldset className="rounded-xl border-2 border-border bg-surface/10 p-4 shadow-[0_3px_0_var(--border)]">
-                <legend className="px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              <fieldset className="rounded-xl border border-border p-4">
+                <legend className="px-2 text-[13px] font-medium text-muted-foreground">
                   <Globe className="size-3 text-primary inline mr-1.5" />
                   Liens & contexte
                 </legend>
@@ -279,13 +279,13 @@ export function EditCompanyDialog({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2 text-sm border border-border rounded-lg bg-background hover:bg-surface shadow-[0_2px_0_var(--border)] active:translate-y-[2px] active:shadow-none transition-all"
+              className="px-4 py-2 text-sm border border-border rounded-lg bg-background hover:bg-surface/70 transition-colors"
             >
               Annuler
             </button>
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-foreground text-background rounded-lg hover:opacity-90 shadow-[0_2px_0_color-mix(in_oklab,var(--foreground)_70%,black)] active:translate-y-[2px] active:shadow-none transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               <Check className="size-3.5" /> Enregistrer
             </button>

@@ -147,7 +147,7 @@ export function BookingLinkModal({
             <CalendarDays className="size-4.5" strokeWidth={1.6} />
           </span>
           <div className="min-w-0 flex-1">
-            <h2 className="font-display text-lg italic md:text-2xl">
+            <h2 className="text-lg font-semibold md:text-xl">
               {view === "list"
                 ? "Vos liens de booking"
                 : view === "success"
@@ -183,7 +183,7 @@ export function BookingLinkModal({
                 }`}
               >
                 <span
-                  className={`grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-semibold ${
+                  className={`grid size-5 shrink-0 place-items-center rounded-full text-[11px] font-semibold ${
                     i < step
                       ? "bg-primary text-primary-foreground"
                       : i === step
@@ -392,7 +392,7 @@ export function BookingLinkModal({
                             qs.map((x) => (x.id === q.id ? { ...x, required: !x.required } : x)),
                           )
                         }
-                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${
                           q.required
                             ? "bg-primary/10 text-primary"
                             : "bg-secondary text-muted-foreground"
@@ -459,19 +459,23 @@ export function BookingLinkModal({
           {view === "wizard" && step === 3 && (
             <div className="grid gap-4 md:grid-cols-2">
               <div className="rounded-xl border border-border bg-surface/40 p-4">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[13px] font-medium text-muted-foreground">
                   Récapitulatif
                 </p>
-                <h3 className="mt-1 font-display text-xl italic">{name}</h3>
+                <h3 className="mt-1 text-lg font-semibold">{name}</h3>
                 <p className="mt-1 text-[11px] text-muted-foreground">{description}</p>
                 <dl className="mt-3 space-y-1.5 text-[11px]">
                   <Row label="Durée" value={`${duration} minutes`} />
                   <Row label="Lieu" value={LOCATION_LABELS[location]} />
                   <Row
                     label="Jours"
-                    value={availability.days.map((d) => d.toUpperCase()).join(" · ") || "—"}
+                    value={
+                      availability.days
+                        .map((d) => WEEKDAYS.find((w) => w.key === d)?.label ?? d)
+                        .join(" · ") || "Aucun jour"
+                    }
                   />
-                  <Row label="Horaires" value={`${availability.start} – ${availability.end}`} />
+                  <Row label="Horaires" value={`${availability.start} à ${availability.end}`} />
                   <Row label="Fuseau" value={availability.timezone} />
                   <Row label="Questions" value={`${questions.length}`} />
                   <Row label="Notifications" value={notifyEmail ? "Email activé" : "Désactivées"} />
@@ -479,7 +483,7 @@ export function BookingLinkModal({
                 </dl>
               </div>
               <div className="rounded-xl border border-border p-4">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[13px] font-medium text-muted-foreground">
                   Aperçu de la page publique
                 </p>
                 <div className="mt-2 rounded-lg border border-border bg-background p-3">
@@ -499,7 +503,7 @@ export function BookingLinkModal({
                     ))}
                   </div>
                 </div>
-                <p className="mt-2 inline-flex items-center gap-1 text-[10.5px] text-muted-foreground">
+                <p className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground">
                   <Sparkles className="size-3" /> Données simulées pour la démo.
                 </p>
               </div>
@@ -538,7 +542,7 @@ export function BookingLinkModal({
                 ].map((s) => (
                   <div key={s.label} className="rounded-xl border border-border p-3">
                     <s.icon className="size-4 text-primary" strokeWidth={1.6} />
-                    <p className="mt-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <p className="mt-1.5 text-xs text-muted-foreground">
                       {s.label}
                     </p>
                     <p className="text-sm font-medium">{s.value}</p>
@@ -553,7 +557,7 @@ export function BookingLinkModal({
                       key={r.id}
                       className="flex items-center gap-2 rounded-lg bg-surface/40 px-2.5 py-2"
                     >
-                      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
                         {r.name
                           .split(" ")
                           .map((n) => n[0])
@@ -562,13 +566,13 @@ export function BookingLinkModal({
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[12px]">{r.name}</span>
-                        <span className="block truncate text-[10.5px] text-muted-foreground">
+                        <span className="block truncate text-xs text-muted-foreground">
                           {r.company}
                         </span>
                       </span>
                       <span className="shrink-0 text-[11px]">{r.slot}</span>
                       <span
-                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${
                           r.status === "confirmé"
                             ? "bg-emerald-50 text-emerald-700"
                             : "bg-amber-50 text-amber-700"
@@ -655,7 +659,7 @@ const inputCls =
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <span className="mb-1.5 block text-[13px] font-medium text-muted-foreground">
         {label}
       </span>
       {children}
@@ -770,7 +774,7 @@ function LinksList({
               <div className="flex flex-wrap items-center gap-1.5">
                 <p className="truncate text-[13px] font-medium">{l.name}</p>
                 <span
-                  className={`rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${
+                  className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
                     l.active
                       ? "bg-emerald-50 text-emerald-700"
                       : "bg-secondary text-muted-foreground"
@@ -779,10 +783,10 @@ function LinksList({
                   {l.active ? "Actif" : "En pause"}
                 </span>
               </div>
-              <p className="mt-0.5 truncate font-mono text-[10.5px] text-muted-foreground">
+              <p className="mt-0.5 truncate font-mono text-xs text-muted-foreground">
                 {bookingUrl(l.slug)}
               </p>
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] text-muted-foreground">
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
                   <Clock className="size-3" /> {l.duration} min
                 </span>
@@ -801,25 +805,25 @@ function LinksList({
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             <button
               onClick={() => onCopy(bookingUrl(l.slug))}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[10.5px] hover:bg-surface"
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs hover:bg-surface"
             >
               <Copy className="size-3" /> Copier
             </button>
             <button
               onClick={() => toast.info("Aperçu de la page publique (démo)")}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[10.5px] hover:bg-surface"
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs hover:bg-surface"
             >
               <ExternalLink className="size-3" /> Aperçu
             </button>
             <button
               onClick={() => onToggle(l.id)}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[10.5px] hover:bg-surface"
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs hover:bg-surface"
             >
               {l.active ? "Mettre en pause" : "Activer"}
             </button>
             <button
               onClick={() => onDelete(l.id)}
-              className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[10.5px] text-red-600 hover:bg-red-50"
+              className="ml-auto inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-red-600 hover:bg-red-50"
             >
               <Trash2 className="size-3" /> Supprimer
             </button>

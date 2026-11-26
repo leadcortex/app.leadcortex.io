@@ -42,7 +42,7 @@ export function AttachmentDownloadCard({
       toast.success(`« ${fileName} » téléchargé`);
       return;
     }
-    toast.info("Restitution du fichier — bientôt disponible");
+    toast.info("Restitution du fichier : bientôt disponible");
   };
 
   return (

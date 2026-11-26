@@ -34,11 +34,10 @@ export function SecurityPanel() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={ShieldCheck}
         title="Sécurité"
-        description="Contrôlez les accès à votre espace et l'usage de vos données."
+        description="Qui peut accéder à votre compte, et ce que LeadCortex fait de vos données."
       />
 
       <PanelGroup label="Authentification">
@@ -113,11 +112,11 @@ export function SecurityPanel() {
                   </span>
                   <div className="min-w-0">
                     <p className="text-sm font-medium">{s.device}</p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">{s.meta}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{s.meta}</p>
                   </div>
                 </div>
                 {s.current ? (
-                  <span className="shrink-0 text-[10px] font-medium text-success">Active</span>
+                  <span className="shrink-0 text-xs font-medium text-success">Active</span>
                 ) : (
                   <Button
                     variant="ghost"

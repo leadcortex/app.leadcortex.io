@@ -200,3 +200,20 @@ N'installe pas trop de plugins : chacun ajoute du texte à chaque conversation e
 3. **Je reviens sur mon PC → `claude -c`** pour reprendre là où j'en étais.
 4. **Claude part dans la mauvaise direction → `Échap`**, puis je corrige.
 5. **J'ai oublié une commande → `/`** et je lis la liste.
+
+---
+
+## 8. Mon équipe de modèles (économie de tokens)
+
+Réglé le 26/11/2026 : la session et les sous-agents tournent sur **Sonnet** par défaut.
+
+| Agent | Modèle | Pour quoi |
+| --- | --- | --- |
+| `executant-rapide` | Haiku | chercher, renommer, petit texte, une couleur |
+| `developpeur` | Sonnet | composants, pages, styles, animations (la majorité du travail) |
+| `architecte-securite` | Opus | backend, base de données, connexion, paiements, sécurité |
+
+- Le skill `equipe-modeles` dit à Claude lequel choisir. Tu peux aussi le demander : « utilise l'agent developpeur pour… ».
+- Besoin de réfléchir toi-même avec Opus : `/model opus`, puis `/model sonnet` pour revenir.
+- **Avant de lancer des sous-agents : fais un commit.** Si un élément disparaît, on le récupère en une commande.
+- Fichiers : `~/.claude/agents/` (les 3 agents), `~/.claude/skills/equipe-modeles/`.

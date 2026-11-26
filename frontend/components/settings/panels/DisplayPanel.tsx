@@ -1,15 +1,8 @@
 // frontend/components/settings/panels/DisplayPanel.tsx
 
 import { useState } from "react";
-import {
-  AlertCircle,
-  ChevronLeft,
-  LayoutPanelLeft,
-  Monitor,
-  Smartphone,
-} from "@/components/icons";
+import { ChevronLeft } from "@/components/icons";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/core/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -34,7 +27,7 @@ import {
   getSectionDisplayMeta,
   type SectionDisplayKey,
 } from "@/lib/section-display/registry";
-import { SectionCard } from "../primitives/section-card";
+import { SectionCard, SectionList } from "../primitives/section-card";
 import { SectionConfigDispatcher } from "./section-configs";
 import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
 import { MobileNavDrilldown } from "./mobile-nav-editor";
@@ -51,17 +44,17 @@ const SIDEBAR_SIDES: { value: SidebarSide; label: string; hint: string }[] = [
   {
     value: "left",
     label: "Barre à gauche",
-    hint: " ",
+    hint: "Assistant IA à droite",
   },
   {
     value: "right",
     label: "Barre à droite",
-    hint: " ",
+    hint: "Assistant IA à gauche",
   },
 ];
 
 const MOBILE_NAV_SIDES: { value: MobileNavSide; label: string; hint: string }[] = [
-  { value: "bottom", label: "Barre en bas", hint: "Valeur par défaut · accessible au pouce" },
+  { value: "bottom", label: "Barre en bas", hint: "Par défaut, à portée de pouce" },
   { value: "top", label: "Barre en haut", hint: "Sous la barre d'état du téléphone" },
 ];
 
@@ -197,13 +190,13 @@ function SelectorCard({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      aria-label={`${label} — ${hint}`}
+      aria-label={`${label}, ${hint}`}
       className={cn(
-        "group relative flex flex-col gap-2 rounded-xl border p-3 text-left transition-all",
+        "group relative flex flex-col gap-2 rounded-xl border p-3 text-left transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active
-          ? "border-primary bg-primary/[0.04] shadow-sm"
-          : "border-border hover:border-primary/40 hover:bg-surface/50",
+          ? "border-primary bg-primary/[0.04]"
+          : "border-border hover:bg-foreground/[0.03]",
       )}
     >
       {children}
@@ -211,17 +204,17 @@ function SelectorCard({
         <div className="min-w-0">
           <p
             className={cn(
-              "truncate text-xs font-medium transition-colors",
+              "truncate text-[13px] font-medium transition-colors",
               active ? "text-primary" : "text-foreground",
             )}
           >
             {label}
           </p>
-          <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{hint}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">{hint}</p>
         </div>
         <span
           className={cn(
-            "grid size-4 shrink-0 place-items-center rounded-full border transition-all",
+            "grid size-4 shrink-0 place-items-center rounded-full border transition-colors",
             active ? "border-primary bg-primary text-primary-foreground" : "border-border",
           )}
           aria-hidden
@@ -271,12 +264,18 @@ function GlobalDisplayBlock({ onOpenMobileNav }: { onOpenMobileNav: () => void }
   return (
     <>
       {isMobile && (
-        <PanelGroup label="Mobile" description="Réglages de disposition pour les petits écrans.">
-          <SettingsCard
-            title="Position de la barre de navigation"
-            description="Sur mobile, la barre de navigation est normalement en bas, à portée de pouce."
-            icon={Smartphone}
-          >
+        <PanelGroup label="Barre de navigation">
+          <SectionList>
+            <SectionCard
+              title="Sections de la barre"
+              summary={mobileNavLayout.keys
+                .map((k) => NAV_CATALOG.find((p) => p.key === k)?.label ?? k)
+                .join(" · ")}
+              onDrilldown={onOpenMobileNav}
+            />
+          </SectionList>
+
+          <SettingsCard title="Position">
             <div className="grid grid-cols-2 gap-3">
               {MOBILE_NAV_SIDES.map((s) => (
                 <SelectorCard
@@ -293,26 +292,18 @@ function GlobalDisplayBlock({ onOpenMobileNav }: { onOpenMobileNav: () => void }
               ))}
             </div>
           </SettingsCard>
-
-          <SectionCard
-            title="BARRE DE NAVIGATION"
-            description="Choisissez 4 à 5 sections et leur ordre."
-            summary={mobileNavLayout.keys
-              .map((k) => NAV_CATALOG.find((p) => p.key === k)?.label ?? k)
-              .join(" · ")}
-            icon={Smartphone}
-            onDrilldown={onOpenMobileNav}
-          />
         </PanelGroup>
       )}
 
       {!isMobile && (
-        <PanelGroup
-          label="Ordinateur"
-        >
+        <PanelGroup label="Barre latérale">
           <SettingsCard
-            title="Position de la barre principale"
-            icon={Monitor}
+            title="Position"
+            description={
+              sidebarSide === "left"
+                ? "L'assistant IA s'affiche à droite."
+                : "L'assistant IA s'affiche à gauche."
+            }
           >
             <div className="grid grid-cols-2 gap-3">
               {SIDEBAR_SIDES.map((s) => (
@@ -326,15 +317,6 @@ function GlobalDisplayBlock({ onOpenMobileNav }: { onOpenMobileNav: () => void }
                   <DesktopSidebarPreview side={s.value} />
                 </SelectorCard>
               ))}
-            </div>
-            <div className="mt-4 flex items-start gap-2 rounded-lg bg-surface/40 p-3 text-[11px] text-muted-foreground">
-              <AlertCircle className="mt-px size-3.5 shrink-0 text-primary" />
-              <span>
-                {sidebarSide === "left"
-                  ? "L'assistant IA s'affiche à droite."
-                  : "L'assistant IA s'affiche à gauche."}{" "}
-                Le réglage est conservé sur cet appareil.
-              </span>
             </div>
           </SettingsCard>
         </PanelGroup>
@@ -358,24 +340,19 @@ function summariesFor(key: SectionDisplayKey): string {
 
 function SectionsDisplayBlock({ onOpen }: { onOpen: (key: SectionDisplayKey) => void }) {
   return (
-    <PanelGroup
-      label="Par section"
-    >
-      <div className="space-y-4">
-        {SECTION_DISPLAY_REGISTRY.map((meta) => {
-          const Icon = meta.icon;
-          return (
-            <SectionCard
-              key={meta.key}
-              title={meta.label.toUpperCase()}
-              description={meta.description}
-              summary={summariesFor(meta.key)}
-              icon={Icon}
-              onDrilldown={() => onOpen(meta.key)}
-            />
-          );
-        })}
-      </div>
+    <PanelGroup label="Pages">
+      <SectionList>
+        {SECTION_DISPLAY_REGISTRY.map((meta) => (
+          <SectionCard
+            key={meta.key}
+            title={meta.label}
+            description={meta.description}
+            summary={summariesFor(meta.key)}
+            icon={meta.icon}
+            onDrilldown={() => onOpen(meta.key)}
+          />
+        ))}
+      </SectionList>
     </PanelGroup>
   );
 }
@@ -388,29 +365,21 @@ function DrilldownView({
   onBack: () => void;
 }) {
   const meta = getSectionDisplayMeta(section);
-  const Icon = meta.icon;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-8">
       <div className="flex items-start gap-3">
         <button
           type="button"
           onClick={onBack}
           aria-label="Retour aux sections"
-          className="grid size-8 shrink-0 place-items-center rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-surface"
+          className="grid size-9 shrink-0 place-items-center rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-surface/70"
         >
           <ChevronLeft className="size-4" strokeWidth={2} />
         </button>
-        <div className="flex items-start gap-2.5 min-w-0 flex-1">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-            <Icon className="size-4.5" strokeWidth={1.8} />
-          </span>
-          <div className="min-w-0">
-            <h2 className="text-base font-semibold leading-tight">{meta.label}</h2>
-            <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
-              {meta.description}
-            </p>
-          </div>
+        <div className="min-w-0 flex-1">
+          <h2 className="text-base font-semibold leading-tight">{meta.label}</h2>
+          <p className="mt-1 text-xs leading-snug text-muted-foreground">{meta.description}</p>
         </div>
       </div>
 
@@ -433,10 +402,10 @@ export function DisplayPanel({ initialView }: { initialView?: "mobile-nav" } = {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={isMobile ? Smartphone : LayoutPanelLeft}
         title="Affichage"
+        description="Ces réglages sont enregistrés sur cet appareil."
       />
 
       <GlobalDisplayBlock onOpenMobileNav={() => setMobileNavOpen(true)} />

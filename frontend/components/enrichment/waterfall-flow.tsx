@@ -19,7 +19,7 @@ export function WaterfallFlow({
   return (
     <div className={cn("overflow-x-auto overscroll-x-contain scrollbar-hide", className)}>
       <div className="flex min-w-max items-center gap-2 px-1 py-1">
-        <Endpoint icon={Sparkles} label="Lead" tone="start" />
+        <Endpoint icon={Sparkles} label="Prospect" tone="start" />
 
         {ordered.map((p) => (
           <div key={p.id} className="flex items-center gap-2">
@@ -47,14 +47,14 @@ function Endpoint({
   return (
     <div
       className={cn(
-        "flex h-16 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border px-3.5",
+        "flex h-16 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border px-4",
         tone === "start"
           ? "border-primary/30 bg-primary/5 text-primary"
           : "border-emerald-500/30 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400",
       )}
     >
       <Icon className="size-4" strokeWidth={2} />
-      <span className="text-[10px] font-medium uppercase tracking-wider">{label}</span>
+      <span className="text-xs font-medium">{label}</span>
     </div>
   );
 }
@@ -62,7 +62,7 @@ function Endpoint({
 function StepArrow({ label }: { label: string }) {
   return (
     <div className="flex shrink-0 flex-col items-center gap-0.5">
-      <span className="text-[9px] uppercase tracking-wider text-muted-foreground/70">{label}</span>
+      <span className="text-[11px] text-muted-foreground">{label}</span>
       <ArrowRight className="size-3.5 text-muted-foreground/50" strokeWidth={1.75} />
     </div>
   );
@@ -91,14 +91,14 @@ function ProviderStep({
             : `Activer ${provider.name}`
       }
       className={cn(
-        "group relative flex h-16 w-16 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border transition-all",
+        "relative flex h-16 w-16 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border transition-colors",
         isOn
-          ? "border-primary/40 bg-primary/5 hover:border-primary"
+          ? "border-primary/40 bg-primary/5 hover:bg-primary/10"
           : isPaused
             ? "border-amber-500/40 bg-amber-500/5"
             : isError
               ? "border-destructive/40 bg-destructive/5"
-              : "border-border bg-surface/40 hover:border-primary/30",
+              : "border-border bg-surface/40 hover:bg-surface/70",
       )}
     >
       <ProviderBadge slug={provider.slug} size={30} />
@@ -123,7 +123,10 @@ function ProviderStep({
         )}
       </span>
 
-      <span className="text-[9px] font-mono text-muted-foreground">{provider.costPerLead}c</span>
+      <span className="text-[11px] tabular-nums text-muted-foreground">
+        {provider.costPerLead} cr.
+      </span>
+
     </button>
   );
 }

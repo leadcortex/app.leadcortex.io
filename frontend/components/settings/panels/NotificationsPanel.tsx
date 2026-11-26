@@ -195,11 +195,11 @@ function SelectorCard({
       aria-pressed={active}
       aria-label={ariaLabel}
       className={cn(
-        "group relative flex flex-col gap-2 rounded-xl border p-3 text-left transition-all",
+        "group relative flex flex-col gap-2 rounded-xl border p-3 text-left transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active
-          ? "border-primary bg-primary/[0.04] shadow-sm"
-          : "border-border hover:border-primary/40 hover:bg-surface/50",
+          ? "border-primary bg-primary/[0.04]"
+          : "border-border hover:bg-surface/50",
       )}
     >
       {children}
@@ -213,11 +213,11 @@ function SelectorCard({
           >
             {label}
           </p>
-          <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{hint}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">{hint}</p>
         </div>
         <span
           className={cn(
-            "grid size-4 shrink-0 place-items-center rounded-full border transition-all",
+            "grid size-4 shrink-0 place-items-center rounded-full border transition-colors",
             active ? "border-primary bg-primary text-primary-foreground" : "border-border",
           )}
           aria-hidden
@@ -282,10 +282,10 @@ export function NotificationsPanel() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Bell}
         title="Notifications"
+        description="Choisissez ce qui vous est signalé et où les notifications apparaissent."
       />
 
       {isMobile ? (

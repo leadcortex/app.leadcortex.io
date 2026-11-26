@@ -1,13 +1,7 @@
 // frontend/components/mail/email-search-filters.tsx
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  CircleDot,
-  Filter,
-  Paperclip,
-  Star,
-  X,
-} from "@/components/icons";
+import { CircleDot, Filter, Paperclip, Star, X } from "@/components/icons";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { cn } from "@/lib/core/utils";
 import {
@@ -53,7 +47,7 @@ export function SearchBar({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Rechercher…"
-          className="w-full rounded-lg border border-border bg-background py-1.5 pl-8 pr-8 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="h-9 w-full rounded-lg border border-border bg-background pl-8 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <svg
           aria-hidden
@@ -83,7 +77,7 @@ export function SearchBar({
         onClick={onOpenAdvanced}
         aria-label="Filtres avancés"
         className={cn(
-          "relative grid size-8 shrink-0 place-items-center rounded-lg border text-muted-foreground transition-colors",
+          "relative grid size-9 shrink-0 place-items-center rounded-lg border text-muted-foreground transition-colors",
           hasAdvanced
             ? "border-primary/50 bg-primary/10 text-primary"
             : "border-border hover:bg-secondary hover:text-foreground",
@@ -114,7 +108,7 @@ function ToggleChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10.5px] font-medium transition-colors",
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
         active
           ? "border-primary/50 bg-primary/10 text-primary"
           : "border-border text-muted-foreground hover:bg-secondary hover:text-foreground",
@@ -162,7 +156,7 @@ export function QuickFilterChips({
         <button
           type="button"
           onClick={() => onChange({ query: filters.query })}
-          className="ml-1 inline-flex items-center gap-1 text-[10.5px] text-muted-foreground transition-colors hover:text-foreground"
+          className="ml-1 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           <X className="size-3" strokeWidth={2} />
           Réinitialiser
@@ -211,9 +205,7 @@ export function AdvancedFiltersPopover({
       <span className="sr-only" aria-hidden />
       <PopoverContent align="end" sideOffset={6} className="w-[340px] p-0">
         <div className="border-b border-border px-3 py-2">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Filtres avancés
-          </p>
+          <p className="text-[13px] font-semibold">Filtres avancés</p>
         </div>
 
         <div className="max-h-[70vh] space-y-4 overflow-y-auto p-3">
@@ -283,7 +275,7 @@ export function AdvancedFiltersPopover({
           <Field label="Labels">
             <div className="flex flex-wrap gap-1">
               {labels.length === 0 && (
-                <span className="text-[10.5px] text-muted-foreground">Aucun label disponible</span>
+                <span className="text-[11px] text-muted-foreground">Aucun label disponible</span>
               )}
               {labels.map((l) => {
                 const active = local.labels?.includes(l.id) ?? false;
@@ -293,7 +285,8 @@ export function AdvancedFiltersPopover({
                     type="button"
                     onClick={() => {
                       const set_ = new Set(local.labels ?? []);
-                      active ? set_.delete(l.id) : set_.add(l.id);
+                      if (active) set_.delete(l.id);
+                      else set_.add(l.id);
                       const next = Array.from(set_);
                       set("labels", next.length === 0 ? undefined : next);
                     }}
@@ -356,9 +349,7 @@ export function AdvancedFiltersPopover({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-1">
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
       {children}
     </label>
   );

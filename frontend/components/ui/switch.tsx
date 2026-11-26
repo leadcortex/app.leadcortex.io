@@ -11,11 +11,10 @@ const Switch = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SwitchPrimitives.Root
     className={cn(
-      "peer inline-flex h-[22px] w-10 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-all",
+      "peer inline-flex h-[22px] w-10 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-150 ease-out",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
       "disabled:cursor-not-allowed disabled:opacity-50",
       "data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
-      "data-[state=checked]:shadow-[inset_0_-1px_0_0_color-mix(in_oklab,var(--primary)_70%,black)]",
       className,
     )}
     {...props}
@@ -23,8 +22,8 @@ const Switch = React.forwardRef<
   >
     <SwitchPrimitives.Thumb
       className={cn(
-        "pointer-events-none block size-[18px] rounded-full bg-background shadow-md ring-0",
-        "transition-transform duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
+        "pointer-events-none block size-[18px] rounded-full bg-background shadow-sm ring-0",
+        "transition-transform duration-150 ease-out",
         "data-[state=checked]:translate-x-[18px] data-[state=unchecked]:translate-x-0",
       )}
     />

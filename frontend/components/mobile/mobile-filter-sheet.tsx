@@ -102,7 +102,7 @@ export function MobileFilterSheet({
                 key={section.key}
                 className="overflow-hidden rounded-2xl border border-border/70 bg-surface/30"
               >
-                <h3 className="border-b border-border/60 px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                <h3 className="border-b border-border/60 px-4 py-2 text-xs font-medium text-muted-foreground">
                   {section.label}
                 </h3>
                 <ul

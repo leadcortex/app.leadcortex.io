@@ -103,7 +103,7 @@ export function MobileSheet({
       className="fixed inset-0 z-[80] flex flex-col justify-end"
     >
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-md animate-in fade-in duration-200"
+        className="absolute inset-0 bg-foreground/40 animate-in fade-in duration-200"
         onClick={() => onOpenChange(false)}
         aria-hidden
       />
@@ -112,7 +112,7 @@ export function MobileSheet({
         className={cn(
           "relative z-10 flex w-full flex-col overflow-hidden",
           "rounded-t-3xl border-x border-t border-border bg-background",
-          "shadow-[0_-24px_60px_-20px_rgba(0,0,0,0.35)]",
+          "shadow-float",
           "animate-in slide-in-from-bottom-full duration-300 ease-out",
           compact ? "max-h-[80dvh]" : "h-[92dvh] max-h-[92dvh]",
           className,
@@ -170,11 +170,7 @@ export function MobileSheet({
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide">
-          <div
-            className="pb-[max(1rem,env(safe-area-inset-bottom))]"
-          >
-            {children}
-          </div>
+          <div className="pb-[max(1rem,env(safe-area-inset-bottom))]">{children}</div>
         </div>
       </div>
     </div>,

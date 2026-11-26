@@ -63,7 +63,7 @@ export function CardsView({
   };
 
   return (
-    <div ref={rangeRootRef} {...rangeHandlers} className="space-y-5">
+    <div ref={rangeRootRef} {...rangeHandlers} className="space-y-4">
       {rows.map((row, idx) => (
         <CardRow
           key={idx}
@@ -148,10 +148,8 @@ function CardRow({
         aria-label="Précédent"
         className={cn(
           "absolute left-1 top-1/2 -translate-y-1/2 z-20 size-9 rounded-full",
-          "bg-background/95 backdrop-blur-sm border border-border shadow-md grid place-items-center transition-all",
-          canScrollLeft
-            ? "opacity-100 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-105"
-            : "opacity-0 pointer-events-none",
+          "bg-background border border-border shadow-float grid place-items-center transition-colors",
+          canScrollLeft ? "opacity-100 hover:bg-surface" : "opacity-0 pointer-events-none",
         )}
       >
         <ChevronLeft className="size-4" strokeWidth={2.2} />
@@ -192,22 +190,16 @@ function CardRow({
               }}
               {...ctxBind}
               className={cn(
-                "relative group snap-start shrink-0 w-[calc(48%-0.5rem)] sm:w-[220px] md:w-[240px] lg:w-[260px] rounded-xl border bg-background p-3.5",
-                "hover:shadow-md hover:border-primary/40 transition-all flex flex-col",
-                isSelected
-                  ? "border-primary ring-2 ring-primary/30 bg-primary/[0.03]"
-                  : "border-border",
+                "relative snap-start shrink-0 w-[calc(48%-0.5rem)] sm:w-[220px] md:w-[240px] lg:w-[260px] rounded-xl border bg-background p-4",
+                "hover:bg-surface/40 transition-colors flex flex-col",
+                isSelected ? "border-primary bg-primary/[0.03]" : "border-border",
                 isDragging && "opacity-40 cursor-grabbing",
               )}
             >
               <label
                 data-range-select
                 className={cn(
-                  "absolute top-2 right-2 z-10 flex size-8 cursor-pointer items-center justify-center rounded-lg transition-all",
-                  "border-2 active:translate-y-[1px] active:shadow-none",
-                  isSelected
-                    ? "border-primary bg-primary text-primary-foreground shadow-[0_2px_0_color-mix(in_oklab,var(--primary)_60%,black)]"
-                    : "border-border bg-surface text-muted-foreground shadow-[0_2px_0_var(--border)] hover:bg-surface/80",
+                  "absolute top-3 right-3 z-10 flex size-8 cursor-pointer items-center justify-center rounded-lg",
                 )}
                 onClick={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
@@ -221,14 +213,19 @@ function CardRow({
                   }}
                   className="sr-only"
                 />
-                {isSelected ? (
-                  <Check className="size-4" strokeWidth={3} />
-                ) : (
-                  <span className="size-3 rounded border-2 border-muted-foreground/30" />
-                )}
+                <span
+                  className={cn(
+                    "grid size-5 place-items-center rounded-md border-2 transition-colors",
+                    isSelected
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/40 bg-background",
+                  )}
+                >
+                  {isSelected && <Check className="size-3.5" strokeWidth={3} />}
+                </span>
               </label>
 
-              <div className="flex items-start gap-2.5 pr-10">
+              <div className="flex items-start gap-3 pr-10">
                 <CompanyAvatar
                   name={company.name}
                   domain={company.domain}
@@ -237,36 +234,33 @@ function CardRow({
                   shape="rounded"
                 />
                 <div className="min-w-0 flex-1">
-                  <div className="font-medium text-sm truncate group-hover:text-primary transition-colors">
-                    {company.name}
-                  </div>
-                  <div className="text-[10px] text-muted-foreground font-mono truncate">
-                    {company.domain || "—"}
-                  </div>
+                  <div className="font-medium text-sm truncate">{company.name}</div>
+                  {company.domain && (
+                    <div className="text-xs text-muted-foreground truncate">{company.domain}</div>
+                  )}
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-1">
-                <Badge tone="muted">{company.industry || "—"}</Badge>
-                <Badge tone="muted">{company.size || "—"}</Badge>
-              </div>
+              {company.industry && (
+                <div className="mt-3 truncate text-[13px]">{company.industry}</div>
+              )}
 
-              <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground">
+              <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                 {company.location && (
                   <span className="inline-flex items-center gap-1">
-                    <MapPin className="size-2.5" />
+                    <MapPin className="size-3" />
                     {company.location}
                   </span>
                 )}
                 {company.employees > 0 && (
                   <span className="inline-flex items-center gap-1">
-                    <Users className="size-2.5" />
-                    {company.employees.toLocaleString("fr-FR")}
+                    <Users className="size-3" />
+                    <span className="tabular-nums">{company.employees.toLocaleString("fr-FR")}</span>
                   </span>
                 )}
               </div>
 
-              <div className="mt-3 flex items-center gap-1.5">
+              <div className="mt-auto flex items-center gap-2 pt-4">
                 <Badge
                   tone={
                     company.intent === "hot"
@@ -278,7 +272,10 @@ function CardRow({
                 >
                   {intentLabels[company.intent] ?? company.intent}
                 </Badge>
-                {company.saved && <Bookmark className="size-3 fill-primary text-primary ml-auto" />}
+                {company.saved && (
+                  <Bookmark className="size-3.5 fill-primary text-primary ml-auto" />
+                )}
+
               </div>
             </Link>
           );
@@ -292,10 +289,8 @@ function CardRow({
         aria-label="Suivant"
         className={cn(
           "absolute right-1 top-1/2 -translate-y-1/2 z-20 size-9 rounded-full",
-          "bg-background/95 backdrop-blur-sm border border-border shadow-md grid place-items-center transition-all",
-          canScrollRight
-            ? "opacity-100 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-105"
-            : "opacity-0 pointer-events-none",
+          "bg-background border border-border shadow-float grid place-items-center transition-colors",
+          canScrollRight ? "opacity-100 hover:bg-surface" : "opacity-0 pointer-events-none",
         )}
       >
         <ChevronRight className="size-4" strokeWidth={2.2} />

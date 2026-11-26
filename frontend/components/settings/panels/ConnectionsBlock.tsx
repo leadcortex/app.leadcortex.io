@@ -174,7 +174,7 @@ export function ConnectionsContent() {
           return (
             <li
               key={c.id}
-              className="flex flex-col gap-3 rounded-xl border border-border p-3.5 transition-colors hover:border-primary/20 sm:flex-row sm:items-center"
+              className="flex flex-col gap-3 rounded-xl border border-border p-3.5 transition-colors sm:flex-row sm:items-center"
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
                 <ProviderBadge id={c.id} />
@@ -182,7 +182,7 @@ export function ConnectionsContent() {
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-medium">{c.name}</p>
                     {connected && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2 py-0.5 text-[9px] font-medium text-success">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2 py-0.5 text-[11px] font-medium text-success">
                         <CheckCircle2 className="size-2.5" /> Connecté
                       </span>
                     )}
@@ -191,7 +191,7 @@ export function ConnectionsContent() {
                     {connected && c.accountEmail ? c.accountEmail : c.description}
                   </p>
                   {connected && c.scopes && (
-                    <p className="mt-0.5 truncate font-mono text-[10px] text-muted-foreground/70">
+                    <p className="mt-0.5 truncate font-mono text-xs text-muted-foreground/70">
                       {c.scopes}
                     </p>
                   )}
@@ -266,7 +266,6 @@ export function ConnectionsBlock() {
   return (
     <SettingsCard
       title="Comptes externes"
-      icon={Link2}
     >
       <ConnectionsContent />
     </SettingsCard>

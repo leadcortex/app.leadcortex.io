@@ -29,7 +29,8 @@ import {
 } from "@/components/skeletons";
 
 const AUTH_CACHE_MS = 60_000;
-let authCache: { at: number; value: Awaited<ReturnType<typeof requireWorkspaceUser>> } | null = null;
+let authCache: { at: number; value: Awaited<ReturnType<typeof requireWorkspaceUser>> } | null =
+  null;
 
 async function cachedRequireWorkspaceUser() {
   if (typeof window === "undefined") return requireWorkspaceUser();
@@ -43,7 +44,7 @@ async function cachedRequireWorkspaceUser() {
 export const Route = createFileRoute("/app")({
   beforeLoad: () => cachedRequireWorkspaceUser(),
   head: () => ({
-    meta: [{ title: "Workspace — LeadCortex" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Espace de travail · LeadCortex" }, { name: "robots", content: "noindex" }],
   }),
   pendingComponent: AppRouteSkeleton,
   pendingMinMs: 0,

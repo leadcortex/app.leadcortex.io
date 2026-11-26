@@ -55,7 +55,7 @@ export function LoyaltyStairs({ basePrice, months, planName }: Props) {
         </p>
       </div>
 
-      <div>
+      <div className="pt-9 md:pt-8">
         <div
           className="flex items-end gap-1 md:gap-1.5"
           style={{ height: STAIR_H }}

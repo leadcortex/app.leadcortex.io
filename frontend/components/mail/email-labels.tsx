@@ -46,7 +46,7 @@ export function LabelChip({
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full border font-medium",
-        size === "sm" ? "px-1.5 py-0.5 text-[9.5px]" : "px-2 py-0.5 text-[10.5px]",
+        size === "sm" ? "px-1.5 py-0.5 text-[11px]" : "px-2 py-0.5 text-[11px]",
       )}
       style={{
         backgroundColor: `color-mix(in oklab, ${label.color} 15%, transparent)`,
@@ -143,9 +143,7 @@ export function LabelPicker({
 
         <ul className="max-h-64 overflow-y-auto p-1">
           {filtered.length === 0 && !canCreate && (
-            <li className="px-3 py-4 text-center text-[11px] text-muted-foreground">
-              Aucun label
-            </li>
+            <li className="px-3 py-4 text-center text-[11px] text-muted-foreground">Aucun label</li>
           )}
           {filtered.map((l) => {
             const active = selectedIds.includes(l.id);
@@ -178,7 +176,8 @@ export function LabelPicker({
                 type="button"
                 onClick={() => {
                   const name = q.trim();
-                  const color = LABEL_COLORS[Math.floor(Math.random() * LABEL_COLORS.length)]!.value;
+                  const color =
+                    LABEL_COLORS[Math.floor(Math.random() * LABEL_COLORS.length)]!.value;
                   onCreate?.(name, color);
                   setQ("");
                 }}
@@ -253,9 +252,7 @@ export function LabelManagerDialog({
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Nouveau label
-            </span>
+            <span className="text-xs font-medium text-muted-foreground">Nouveau label</span>
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
@@ -295,7 +292,7 @@ export function LabelManagerDialog({
           </div>
 
           <div className="space-y-2">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground">
               Labels existants ({labels.length})
             </span>
             <ul className="max-h-64 divide-y divide-border overflow-y-auto rounded-lg border border-border">

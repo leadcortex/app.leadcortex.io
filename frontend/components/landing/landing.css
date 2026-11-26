@@ -116,8 +116,8 @@ body:has(.lc-page) {
   max-width: 100%;
 }
 .lc-page h2 {
-  font-size: 56px;
-  line-height: 1.02;
+  font-size: 48px;
+  line-height: 1.05;
 }
 .lc-container {
   max-width: 1200px;
@@ -179,18 +179,13 @@ body:has(.lc-page) {
   border-radius: 7px;
   font-weight: 600;
   gap: 10px;
-  transition:
-    transform 0.2s,
-    background 0.2s;
+  transition: background 0.15s ease-out;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   white-space: normal;
   line-height: 1.4;
-}
-.lc-button:hover {
-  transform: translateY(-2px);
 }
 .lc-button-dark {
   background: var(--ink);
@@ -416,35 +411,23 @@ body:has(.lc-page) {
 .lc-reveal {
   opacity: 1;
 }
-.lc-reveal.is-visible {
-  animation: lc-reveal 0.7s ease both;
-}
 .lc-features {
-  padding-block: 80px;
+  padding-block: 96px;
 }
 .lc-feature-stack {
-  margin-top: 56px;
-}
-.lc-feature-card {
-  margin-bottom: 80px;
+  margin-top: 48px;
+  display: grid;
+  gap: 24px;
 }
 .lc-feature-inner {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   align-items: stretch;
-  gap: 60px;
-  padding: 60px;
+  gap: 48px;
+  padding: 48px;
   background: var(--background);
   border: 1px solid var(--border);
-  border-radius: 32px;
-  min-height: 75vh;
-  transform: translateY(var(--stack-y, 0)) scale(var(--stack-scale, 1)) rotate(var(--stack-rotate, 0deg));
-  transform-origin: center top;
-  box-shadow: 
-    0 10px 30px -10px oklch(0.22 0.02 70 / 0.1),
-    0 calc(30px + var(--stack-progress, 0) * 60px) calc(80px + var(--stack-progress, 0) * 80px) oklch(0.22 0.02 70 / calc(0.1 + var(--stack-progress, 0) * 0.2));
-  transition: box-shadow 0.1s linear;
-  will-change: transform, box-shadow;
+  border-radius: 16px;
 }
 .lc-feature-copy {
   display: flex;
@@ -453,15 +436,24 @@ body:has(.lc-page) {
   height: 100%;
 }
 .lc-feature-copy h3 {
-  font-size: 38px;
-  line-height: 1.08;
-  margin-block: 16px;
+  font-size: 32px;
+  line-height: 1.1;
+  margin: 12px 0 0;
 }
 .lc-feature-copy p {
-  font-size: 15px;
-  line-height: 1.7;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.6;
   color: var(--muted-foreground);
-  margin-block: 16px;
+  margin: 12px 0 0;
+}
+.lc-feature-copy .lc-feature-link {
+  margin-top: 12px;
+}
+.lc-feature-index {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
 }
 .lc-feature-link {
   display: inline-flex;
@@ -476,8 +468,8 @@ body:has(.lc-page) {
   position: relative;
   min-width: 0;
   overflow: hidden;
-  border-radius: 24px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 24px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -493,12 +485,7 @@ body:has(.lc-page) {
   position: relative;
   width: 100%;
   height: auto;
-  border-radius: 16px;
-  box-shadow: var(--shadow-panel);
-  transition: transform 0.5s ease;
-}
-.lc-feature-media:hover .lc-feature-screen {
-  transform: translateY(-5px);
+  border-radius: 12px;
 }
 .lc-feature-badge {
   position: relative;
@@ -539,9 +526,6 @@ body:has(.lc-page) {
   .lc-feature-card:nth-child(even) .lc-feature-copy,
 .lc-feature-card:nth-child(even) .lc-feature-media {
     order: initial;
-  }
-  .lc-feature-inner {
-    border-radius: 16px;
   }
     .lc-browser-url-bar {
     display: none;
@@ -674,15 +658,6 @@ body:has(.lc-page) {
   z-index: 1;
 }
 
-@media (min-width: 1024px) and (min-height: 760px) {
-  .lc-feature-card {
-    position: sticky;
-    top: 112px;
-  }
-  .lc-feature-stack {
-    padding-bottom: 40px;
-  }
-}
 @media (max-width: 1199px) {
   .lc-desktop-links {
     gap: 0;
@@ -710,23 +685,17 @@ body:has(.lc-page) {
   .lc-feature-inner {
     display: flex;
     flex-direction: column;
-    padding: 30px;
-    gap: 30px;
-    transform: none !important;
-    min-height: auto;
-    border-radius: 24px;
+    padding: 32px;
+    gap: 32px;
   }
   .lc-feature-media {
     height: 300px;
   }
-  .lc-feature-card {
-    margin-bottom: 40px;
-  }
   .lc-feature-copy h3 {
-    font-size: 32px;
+    font-size: 28px;
   }
   .lc-page h2 {
-    font-size: 46px;
+    font-size: 40px;
   }
 }
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -796,34 +765,32 @@ body:has(.lc-page) {
     padding-bottom: 40px;
   }
   .lc-page h2 {
-    font-size: 38px;
+    font-size: 36px;
   }
   .lc-features {
-    padding-block: 55px;
+    padding-block: 64px;
   }
   .lc-feature-stack {
     margin-top: 32px;
+    gap: 16px;
   }
   .lc-feature-inner {
     grid-template-columns: 1fr;
     padding: 24px;
-    gap: 20px;
-    box-shadow: none;
+    gap: 24px;
   }
   .lc-feature-media {
     aspect-ratio: 1.6;
-  }
-  .lc-feature-card {
-    margin-bottom: 24px;
+    padding: 16px;
   }
   .lc-page section.py-24 {
-    padding-block: 56px;
+    padding-block: 64px;
+  }
+  .lc-page section .mt-12 {
+    margin-top: 32px;
   }
   .lc-page footer .grid {
-    gap: 28px;
-  }
-  .lc-page .rounded-2xl {
-    border-radius: 8px;
+    gap: 32px;
   }
   .lc-page .py-32 {
     padding-block: 80px;
@@ -847,7 +814,7 @@ body:has(.lc-page) {
     padding: 20px;
   }
   .lc-feature-copy h3 {
-    font-size: 29px;
+    font-size: 26px;
   }
   .lc-page h2 {
     font-size: 34px;
@@ -889,12 +856,6 @@ body:has(.lc-page) {
 @media (prefers-reduced-motion: reduce) {
   .lc-page html {
     scroll-behavior: auto;
-  }
-  .lc-feature-card {
-    position: static;
-  }
-  .lc-feature-inner {
-    transform: none;
   }
 }
 .lc-marquee {
@@ -968,14 +929,6 @@ body:has(.lc-page) {
   font-family: "Inter", sans-serif !important;
   font-weight: 450 !important;
 }
-.lc-page .text-xs,
-.lc-page .text-\[10px\],
-.lc-page .font-mono {
-  font-family: "Space Grotesk", sans-serif !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-}
 
 .lc-page .group:hover .lc-swap-full,
 .lc-page .group:focus-visible .lc-swap-full {
@@ -1006,9 +959,7 @@ html:has(.lc-page) body {
   flex-shrink: 0;
   margin: 0;
   text-align: center;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 13px;
   color: var(--muted-foreground);
 }
 .lc-competitors-marquee {
@@ -1040,9 +991,6 @@ html:has(.lc-page) body {
     flex-direction: row;
     justify-content: space-between;
     padding: 48px 24px;
-  }
-  .lc-competitors-label {
-    font-size: 12px;
   }
   .lc-competitors-marquee {
     max-width: 672px;

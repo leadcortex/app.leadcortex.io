@@ -131,7 +131,7 @@ export function FilterDropdown({
             style={style}
             className="overflow-y-auto rounded-xl border border-border bg-popover shadow-2xl animate-in fade-in-0 zoom-in-95 p-1"
           >
-            <p className="px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="px-2 py-1 text-xs font-medium text-muted-foreground">
               {label}
             </p>
             {options.map((o) => {

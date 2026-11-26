@@ -2,6 +2,9 @@
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PageHeader, Badge } from "@/components/common/ui-primitives";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/core/utils";
 import DataTable, { type Column } from "@/components/common/data-table";
 import { Plus, Users, Building2, Trash2, Share2, ListChecks } from "@/components/icons";
 import { useState } from "react";
@@ -19,7 +22,7 @@ import { EmptyState } from "@/components/common/empty-state";
 import { CardViewSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/app/lists/")({
-  head: () => ({ meta: [{ title: "Listes — LeadCortex" }] }),
+  head: () => ({ meta: [{ title: "Listes · LeadCortex" }] }),
   pendingComponent: () => <CardViewSkeleton label="Chargement des listes" cards={6} />,
   component: ListsPage,
 });
@@ -51,22 +54,21 @@ function ListsPage() {
       accessor: (row) => {
         const Icon = row.type === "people" ? Users : Building2;
         return (
-          <div className="flex items-center gap-2 md:gap-3">
-            <div className="size-7 md:size-9 rounded-lg bg-primary/8 text-primary grid place-items-center shrink-0">
-              <Icon className="size-3.5 md:size-4" strokeWidth={1.75} />
-            </div>
+          <div className="flex items-center gap-2">
+            <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <p className="font-medium text-xs md:text-sm truncate">{row.name}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="truncate text-[13px] font-medium">{row.name}</p>
                 {row.shared && (
-                  <Share2 className="size-2.5 md:size-3 text-muted-foreground shrink-0" />
+                  <Share2
+                    className="size-3 shrink-0 text-muted-foreground"
+                    aria-label="Partagée"
+                  />
                 )}
               </div>
-              <div className="flex flex-wrap items-center gap-1.5 md:gap-3 text-[9px] md:text-xs text-muted-foreground mt-0.5">
-                <span>{row.count} contacts</span>
-                <span>·</span>
-                <span>Mise à jour {row.updated}</span>
-              </div>
+              <p className="text-xs text-muted-foreground md:hidden">
+                {row.count} contacts · mise à jour {row.updated}
+              </p>
             </div>
           </div>
         );
@@ -85,7 +87,7 @@ function ListsPage() {
       key: "count",
       header: "Contacts",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.count}</span>,
+      accessor: (row) => <span className="text-[13px] tabular-nums">{row.count}</span>,
       className: "text-center",
       cellClassName: "text-center",
     },
@@ -94,7 +96,7 @@ function ListsPage() {
       header: "Dernière mise à jour",
       sortable: true,
       accessor: (row) => (
-        <span className="text-[9px] md:text-xs text-muted-foreground">{row.updated}</span>
+        <span className="text-xs text-muted-foreground">{row.updated}</span>
       ),
       hideOnMobile: true,
     },
@@ -103,15 +105,15 @@ function ListsPage() {
       header: "",
       sortable: false,
       accessor: (row) => (
-        <div className="flex items-center justify-end gap-1 md:gap-2">
+        <div className="flex items-center justify-end gap-1">
           <button
             onClick={(e) => {
               e.stopPropagation();
               toast.info(`Ouverture de "${row.name}"`);
             }}
-            className="text-[10px] md:text-xs text-primary hover:underline"
+            className="h-8 rounded-lg px-2 text-xs font-medium text-primary hover:bg-surface/70"
           >
-            Ouvrir →
+            Ouvrir
           </button>
           <button
             onClick={(e) => {
@@ -119,14 +121,15 @@ function ListsPage() {
               deleteList(row.id);
               toast("Liste supprimée");
             }}
-            className="p-0.5 md:p-1 rounded hover:bg-secondary transition-colors"
+            className="grid size-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface/70 hover:text-destructive"
             title="Supprimer"
+            aria-label={`Supprimer ${row.name}`}
           >
-            <Trash2 className="size-3 md:size-3.5 text-muted-foreground" />
+            <Trash2 className="size-4" />
           </button>
         </div>
       ),
-      className: "w-20 md:w-32",
+      className: "w-28 md:w-32",
     },
   ];
 
@@ -135,46 +138,47 @@ function ListsPage() {
       <div className="max-w-5xl">
         <PageHeader
           eyebrow="Listes"
-          title="Vos listes de travail."
-          description="0 liste · 0 contacts"
+          title="Vos listes."
+          description="Aucune liste pour l'instant"
           actions={
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <button className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all">
-                  <Plus className="size-3 md:size-3.5" /> Nouvelle liste
-                </button>
+                <Button>
+                  <Plus /> Nouvelle liste
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md dialog-content">
                 <DialogHeader>
-                  <DialogTitle className="text-base md:text-lg">Nouvelle liste</DialogTitle>
+                  <DialogTitle className="text-base font-semibold">Nouvelle liste</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-3">
                   <label className="block">
-                    <span className="text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    <span className="text-[13px] font-medium">
                       Nom
                     </span>
-                    <input
+                    <Input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="CTO industrie..."
-                      className="mt-1 w-full rounded-md border border-border bg-background px-2 md:px-3 py-1.5 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      placeholder="Ex. CTO industrie"
+                      className="mt-1"
                     />
                   </label>
-                  <div className="flex gap-1.5 md:gap-2">
+                  <div className="flex gap-2">
                     {(["people", "company"] as const).map((t) => (
                       <button
                         key={t}
                         onClick={() => setType(t)}
-                        className={`flex-1 inline-flex items-center justify-center gap-1.5 md:gap-2 py-1.5 md:py-2 rounded-md border text-[10px] md:text-xs ${
+                        className={cn(
+                          "inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border text-[13px] transition-colors",
                           type === t
                             ? "border-primary bg-primary/5 text-primary"
-                            : "border-border text-muted-foreground"
-                        }`}
+                            : "border-border text-muted-foreground hover:bg-surface/70",
+                        )}
                       >
                         {t === "people" ? (
-                          <Users className="size-3 md:size-3.5" />
+                          <Users className="size-4" />
                         ) : (
-                          <Building2 className="size-3 md:size-3.5" />
+                          <Building2 className="size-4" />
                         )}
                         {t === "people" ? "Prospects" : "Entreprises"}
                       </button>
@@ -182,18 +186,12 @@ function ListsPage() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <button
-                    onClick={() => setOpen(false)}
-                    className="px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-xs border border-border rounded-md hover:bg-surface"
-                  >
+                  <Button variant="outline" onClick={() => setOpen(false)}>
                     Annuler
-                  </button>
-                  <button
-                    onClick={submit}
-                    className="px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90"
-                  >
+                  </Button>
+                  <Button onClick={submit} disabled={!name.trim()}>
                     Créer
-                  </button>
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -211,7 +209,7 @@ function ListsPage() {
             <EmptyState
               icon={ListChecks}
               title="Aucune liste"
-              description="Créez des listes pour organiser vos prospects et entreprises."
+              description="Regroupez des prospects ou des entreprises pour les traiter ensemble."
               action={{
                 label: "Créer une liste",
                 onClick: () => setOpen(true),
@@ -229,46 +227,47 @@ function ListsPage() {
     <div className="max-w-5xl">
       <PageHeader
         eyebrow="Listes"
-        title="Vos listes de travail."
-        description={`${lists.length} listes · ${lists.reduce((n, l) => n + l.count, 0)} contacts au total`}
+        title="Vos listes."
+        description={`${lists.length} listes · ${lists.reduce((n, l) => n + l.count, 0)} contacts`}
         actions={
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <button className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all">
-                <Plus className="size-3 md:size-3.5" /> Nouvelle liste
-              </button>
+              <Button>
+                <Plus /> Nouvelle liste
+              </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md dialog-content">
               <DialogHeader>
-                <DialogTitle className="text-base md:text-lg">Nouvelle liste</DialogTitle>
+                <DialogTitle className="text-base font-semibold">Nouvelle liste</DialogTitle>
               </DialogHeader>
               <div className="space-y-3">
                 <label className="block">
-                  <span className="text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="text-[13px] font-medium">
                     Nom
                   </span>
-                  <input
+                  <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="CTO industrie..."
-                    className="mt-1 w-full rounded-md border border-border bg-background px-2 md:px-3 py-1.5 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    placeholder="Ex. CTO industrie"
+                    className="mt-1"
                   />
                 </label>
-                <div className="flex gap-1.5 md:gap-2">
+                <div className="flex gap-2">
                   {(["people", "company"] as const).map((t) => (
                     <button
                       key={t}
                       onClick={() => setType(t)}
-                      className={`flex-1 inline-flex items-center justify-center gap-1.5 md:gap-2 py-1.5 md:py-2 rounded-md border text-[10px] md:text-xs ${
+                      className={cn(
+                        "inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border text-[13px] transition-colors",
                         type === t
                           ? "border-primary bg-primary/5 text-primary"
-                          : "border-border text-muted-foreground"
-                      }`}
+                          : "border-border text-muted-foreground hover:bg-surface/70",
+                      )}
                     >
                       {t === "people" ? (
-                        <Users className="size-3 md:size-3.5" />
+                        <Users className="size-4" />
                       ) : (
-                        <Building2 className="size-3 md:size-3.5" />
+                        <Building2 className="size-4" />
                       )}
                       {t === "people" ? "Prospects" : "Entreprises"}
                     </button>
@@ -276,18 +275,12 @@ function ListsPage() {
                 </div>
               </div>
               <DialogFooter>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-xs border border-border rounded-md hover:bg-surface"
-                >
+                <Button variant="outline" onClick={() => setOpen(false)}>
                   Annuler
-                </button>
-                <button
-                  onClick={submit}
-                  className="px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90"
-                >
+                </Button>
+                <Button onClick={submit} disabled={!name.trim()}>
                   Créer
-                </button>
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

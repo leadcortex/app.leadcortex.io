@@ -2,6 +2,7 @@
 
 import { type LucideIcon } from "@/components/icons";
 import { cn } from "@/lib/core/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 export interface EmptyStateProps {
   icon?: LucideIcon;
@@ -20,19 +21,19 @@ export interface EmptyStateProps {
 
 const sizeMap = {
   sm: {
-    icon: "w-10 h-10",
-    title: "text-lg",
+    icon: "size-10",
+    title: "text-base",
     description: "text-sm",
   },
   md: {
-    icon: "w-14 h-14",
-    title: "text-2xl",
-    description: "text-base",
+    icon: "size-12",
+    title: "text-lg",
+    description: "text-sm",
   },
   lg: {
-    icon: "w-20 h-20",
-    title: "text-4xl",
-    description: "text-lg",
+    icon: "size-14",
+    title: "text-xl",
+    description: "text-base",
   },
 };
 
@@ -51,47 +52,33 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center p-8 rounded-2xl border border-dashed border-border bg-surface/30",
+        "flex flex-col items-center justify-center text-center p-8 rounded-xl border border-dashed border-border",
         className,
       )}
     >
       {Icon && (
         <div
           className={cn(
-            "relative mb-4 grid place-items-center rounded-2xl bg-primary/[0.06] text-primary/70",
+            "mb-4 grid place-items-center rounded-xl bg-secondary text-muted-foreground",
             sizes.icon,
           )}
         >
           <Icon className="w-1/2 h-1/2" strokeWidth={1.5} />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-2xl"
-            style={{
-              background:
-                "radial-gradient(circle at 30% 25%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%)",
-            }}
-          />
         </div>
       )}
-      <h3 className={cn("font-medium text-foreground", sizes.title)}>{title}</h3>
+      <h3 className={cn("font-semibold text-foreground", sizes.title)}>{title}</h3>
       {description && (
-        <p className={cn("text-muted-foreground mt-2 max-w-md", sizes.description)}>
+        <p className={cn("text-muted-foreground mt-1 max-w-md", sizes.description)}>
           {description}
         </p>
       )}
       {!action && actionLabel && onAction && (
-        <button
-          onClick={onAction}
-          className="mt-6 inline-flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl btn-tactile"
-        >
+        <button onClick={onAction} className={cn(buttonVariants(), "mt-6")}>
           {actionLabel}
         </button>
       )}
       {action && (
-        <button
-          onClick={action.onClick}
-          className="mt-6 inline-flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl btn-tactile"
-        >
+        <button onClick={action.onClick} className={cn(buttonVariants(), "mt-6")}>
           {action.icon && <action.icon className="size-4" />}
           {action.label}
         </button>

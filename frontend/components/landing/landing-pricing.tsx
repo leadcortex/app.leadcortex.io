@@ -2,7 +2,7 @@
 
 import { ArrowRight, Check } from "./landing-icons";
 import { SiteLink, routes } from "./landing-link";
-import { btnDark, btnLight, eyebrow } from "./landing-styles";
+import { btnDark, btnLight } from "./landing-styles";
 
 const plans = [
   {
@@ -31,28 +31,27 @@ const plans = [
 export function LandingPricing() {
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-6 py-24">
-      <p className={eyebrow}>Tarifs</p>
-      <h2 className="mt-3 max-w-3xl">
+      <h2 className="max-w-3xl">
         Un prix qui <em>baisse</em> quand vous restez.
       </h2>
-      <p className="mt-5 max-w-[60ch] leading-relaxed text-muted-foreground">
-        Sans engagement. Moins cher à l'année.
+      <p className="mt-4 max-w-[60ch] leading-relaxed text-muted-foreground">
+        Sans engagement, et moins cher si vous payez à l'année.
       </p>
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
+      <div className="mt-12 grid gap-6 md:grid-cols-3">
         {plans.map((p) => (
           <div
             key={p.name}
-            className={`flex flex-col rounded-2xl border bg-background p-7 ${p.featured ? "border-primary/40 shadow-xl" : "border-border"}`}
+            className={`flex flex-col rounded-xl border bg-background p-6 ${p.featured ? "border-primary/40" : "border-border"}`}
           >
-            <h3 className="text-3xl">{p.name}</h3>
+            <h3 className="text-2xl">{p.name}</h3>
             <p className="mt-2 min-h-10 text-sm leading-relaxed text-muted-foreground">
               {p.tagline}
             </p>
             <p className="mt-6 flex items-baseline gap-1.5">
-              <span className="font-display text-5xl">{p.price} €</span>
+              <span className="font-display text-5xl tabular-nums">{p.price} €</span>
               <span className="text-sm text-muted-foreground">/mois</span>
             </p>
-            <ul className="mt-6 flex-1 space-y-2.5">
+            <ul className="mt-6 flex-1 space-y-2">
               {p.points.map((x) => (
                 <li key={x} className="flex items-start gap-2 text-sm">
                   <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={2.5} />
@@ -66,7 +65,7 @@ export function LandingPricing() {
           </div>
         ))}
       </div>
-      <div className="mt-10">
+      <div className="mt-8">
         <SiteLink to={routes.pricing} className="lc-feature-link">
           Voir tous les tarifs
           <ArrowRight size={17} />

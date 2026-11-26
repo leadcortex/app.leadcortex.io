@@ -135,7 +135,7 @@ export function KnowledgeLibraryDialog({
                     <p className="truncate text-xs font-medium" title={file.name}>
                       {file.name}
                     </p>
-                    <p className="text-[10px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {formatSize(file.size)} · ajouté le{" "}
                       {new Date(file.updatedAt).toLocaleDateString("fr-FR")}
                     </p>

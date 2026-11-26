@@ -19,17 +19,17 @@ import { cn } from "@/lib/core/utils";
 export const Route = createFileRoute("/app/conversations/")({
   head: () => ({
     meta: [
-      { title: "Conversations multicanal — LeadCortex" },
+      { title: "Conversations · LeadCortex" },
       {
         name: "description",
         content:
-          "Échangez avec vos prospects sur LinkedIn, WhatsApp, Email, SMS et Instagram depuis une messagerie unifiée.",
+          "Vos échanges LinkedIn, WhatsApp, e-mail, SMS et Instagram au même endroit.",
       },
-      { property: "og:title", content: "Conversations multicanal — LeadCortex" },
+      { property: "og:title", content: "Conversations · LeadCortex" },
       {
         property: "og:description",
         content:
-          "Messagerie unifiée B2B : pièces jointes, thématisation par réseau et paramètres prospect.",
+          "Tous vos échanges avec un prospect, canal par canal.",
       },
     ],
   }),
@@ -181,7 +181,7 @@ function ConversationsPage() {
       <div
         className={cn(
           "h-full min-h-0 w-full shrink-0 overflow-hidden bg-background",
-          "md:w-[var(--conv-list-w)] md:rounded-xl md:border md:border-border md:shadow-sm",
+          "md:w-[var(--conv-list-w)] md:rounded-xl md:border md:border-border",
           mobileView === "list" ? "block" : "hidden md:block",
         )}
         style={{ ["--conv-list-w" as string]: `${listWidth}px` }}
@@ -216,7 +216,7 @@ function ConversationsPage() {
       <div
         className={cn(
           "h-full min-h-0 min-w-0 flex-1 overflow-hidden bg-background",
-          "md:rounded-xl md:border md:border-border md:shadow-sm",
+          "md:rounded-xl md:border md:border-border",
           mobileView === "thread" ? "block" : "hidden md:block",
         )}
       >

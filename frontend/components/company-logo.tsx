@@ -159,8 +159,6 @@ export function CompanyLogo({
       title={name}
       className={cn(
         "grid shrink-0 place-items-center overflow-hidden bg-white ring-1 ring-inset ring-black/5",
-        "transition-[box-shadow] duration-150",
-        "hover:ring-primary/30 hover:shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_12%,transparent)]",
         radiusClass,
         className,
       )}

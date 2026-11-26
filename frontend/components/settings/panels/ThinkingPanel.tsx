@@ -12,11 +12,10 @@ export function ThinkingPanel() {
   const [extended, setExtended] = useState(false);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Lightbulb}
         title="Réfléchir"
-        description="Contrôlez la profondeur d'analyse et la façon dont LeadCortex raisonne."
+        description="Plus LeadCortex réfléchit, plus la réponse est précise et longue à venir."
       />
 
       <PanelGroup label="Profondeur d'analyse">
@@ -35,14 +34,14 @@ export function ThinkingPanel() {
                   onClick={() => setDepth(opt.value)}
                   aria-pressed={active}
                   className={cn(
-                    "rounded-xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "rounded-xl border p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     active
                       ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/30 hover:bg-surface/50",
+                      : "border-border hover:bg-surface/50",
                   )}
                 >
                   <p className="text-sm font-medium">{opt.label}</p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground">{opt.desc}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{opt.desc}</p>
                 </button>
               );
             })}

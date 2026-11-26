@@ -52,8 +52,7 @@ async function writeClipboard(text: string): Promise<boolean> {
       await navigator.clipboard.writeText(text);
       return true;
     }
-  } catch {
-  }
+  } catch {}
   try {
     const ta = document.createElement("textarea");
     ta.value = text;

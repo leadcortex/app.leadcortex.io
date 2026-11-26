@@ -98,7 +98,7 @@ function AvatarUploader({
           type="button"
           onClick={() => inputRef.current?.click()}
           aria-label="Changer la photo de profil"
-          className="absolute -bottom-1.5 -right-1.5 grid size-7 place-items-center rounded-full border border-border bg-background text-foreground shadow-sm transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="absolute -bottom-1.5 -right-1.5 grid size-7 place-items-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Camera className="size-3.5" strokeWidth={1.8} />
         </button>
@@ -146,7 +146,6 @@ function LogoutBlock() {
     <>
       <SettingsCard
         title="Déconnexion"
-        icon={LogOut}
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
@@ -256,7 +255,7 @@ function DangerZoneBlock() {
         <div className="flex items-center gap-2 px-1">
           <AlertTriangle className="size-3.5 shrink-0 text-destructive" strokeWidth={1.9} />
           <h4 className="text-xs font-semibold text-destructive">Zone de danger</h4>
-          <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-destructive">
+          <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[11px] font-medium text-destructive">
             Irréversible
           </span>
         </div>
@@ -284,7 +283,7 @@ function DangerZoneBlock() {
           </ul>
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               Aucune copie de sauvegarde n'est conservée.
             </span>
             <button
@@ -336,7 +335,7 @@ function DangerZoneBlock() {
                 </div>
 
                 <label className="block">
-                  <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  <span className="text-xs font-medium text-muted-foreground">
                     Confirmation
                   </span>
                   <input
@@ -347,7 +346,7 @@ function DangerZoneBlock() {
                     autoFocus
                     disabled={deleting}
                     className={cn(
-                      "mt-1.5 h-10 w-full rounded-lg border bg-background px-3 font-mono text-sm uppercase tracking-wider outline-none transition-all",
+                      "mt-1.5 h-10 w-full rounded-lg border bg-background px-3 font-mono text-sm outline-none transition-colors",
                       canConfirm
                         ? "border-destructive/50 focus:border-destructive focus:ring-2 focus:ring-destructive/20"
                         : "border-input focus:border-primary focus:ring-2 focus:ring-primary/20",
@@ -426,16 +425,15 @@ export function AccountPanel() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={UsersRound}
         title="Compte"
+        description="Votre nom et votre photo apparaissent dans l'app et dans les e-mails envoyés à vos prospects."
       />
 
       <PanelGroup label="Profil">
         <SettingsCard
           title="Identité"
-          icon={UserRound}
         >
           <AvatarUploader name={fullName} src={avatar} onChange={setAvatar} />
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -459,7 +457,6 @@ export function AccountPanel() {
             </Field>
             <Field
               label="Email professionnel"
-              icon={Mail}
               hint={currentUser.email ? "Compte Google vérifié" : undefined}
             >
               <div className="relative">
@@ -476,7 +473,7 @@ export function AccountPanel() {
                 )}
               </div>
             </Field>
-            <Field label="Téléphone" icon={UserRound}>
+            <Field label="Téléphone">
               <input
                 type="tel"
                 value={phone}

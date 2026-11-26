@@ -54,7 +54,7 @@ const KIND_CLASS: Record<TerminalLine["kind"], string> = {
 };
 
 const BANNER: TerminalLine[] = [
-  makeLine("muted", "workflow-console · autonome, 100 % local — aucune dépendance externe"),
+  makeLine("muted", "workflow-console · fonctionne en local, sans service externe"),
   makeLine("muted", "Tape `help` pour les commandes, `book` pour le livre, `Tab` pour compléter."),
 ];
 
@@ -358,7 +358,7 @@ export function Terminal({
                   setChannel(c.key);
                 }}
                 className={cn(
-                  "flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[10.5px] transition-colors",
+                  "flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] transition-colors",
                   channel === c.key
                     ? "bg-term-hover text-term-fg"
                     : "text-term-muted hover:bg-term-hover/60 hover:text-term-fg",
@@ -366,7 +366,7 @@ export function Terminal({
               >
                 {c.short}
                 {c.key === "errors" && errorCount > 0 && (
-                  <span className="rounded bg-term-error/20 px-1 text-[9.5px] text-term-error">
+                  <span className="rounded bg-term-error/20 px-1 text-[11px] text-term-error">
                     {errorCount}
                   </span>
                 )}
@@ -375,13 +375,13 @@ export function Terminal({
                 )}
               </button>
             ))}
-            <span className="ml-auto shrink-0 truncate pl-2 font-mono text-[10.5px] text-term-muted">
+            <span className="ml-auto shrink-0 truncate pl-2 font-mono text-[11px] text-term-muted">
               {status}
             </span>
           </div>
         ) : (
-          <span className="min-w-0 flex-1 truncate font-mono text-[10.5px] text-term-muted">
-            {`· rétractée — clic pour ouvrir (Ctrl+\`)${errorCount > 0 ? ` · ${errorCount} à traiter` : ""}`}
+          <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-term-muted">
+            {`· réduite, cliquez pour ouvrir (Ctrl+\`)${errorCount > 0 ? ` · ${errorCount} à traiter` : ""}`}
           </span>
         )}
 

@@ -26,8 +26,8 @@ export function VoiceInputButton({
       return;
     }
     setRecording(true);
-    toast.info("Envoi vocal — bientôt disponible", {
-      description: "La dictée complète sera branchée prochainement.",
+    toast.info("Dictée vocale : bientôt disponible", {
+      description: "Elle arrive dans une prochaine version.",
     });
     window.setTimeout(() => {
       setRecording(false);

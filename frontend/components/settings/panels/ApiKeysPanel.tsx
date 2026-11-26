@@ -99,7 +99,7 @@ function StatusBadge({ status }: { status: "active" | "paused" }) {
   return (
     <span
       className={cn(
-        "rounded-full px-2 py-0.5 text-[9px] font-medium",
+        "rounded-full px-2 py-0.5 text-[11px] font-medium",
         status === "active" ? "bg-success/10 text-success" : "bg-warning/15 text-warning",
       )}
     >
@@ -128,7 +128,7 @@ function KeyCard({
     <li
       className={cn(
         glassCard,
-        "flex flex-col gap-3 p-3.5 transition-colors hover:border-primary/25 sm:flex-row sm:items-center",
+        "flex flex-col gap-3 p-3.5 transition-colors sm:flex-row sm:items-center",
         status === "paused" && "opacity-80",
       )}
     >
@@ -141,10 +141,10 @@ function KeyCard({
             <p className="truncate text-sm font-medium">{keyTitle(apiKey)}</p>
             <StatusBadge status={status} />
           </div>
-          <p className="mt-0.5 font-mono text-[10.5px] text-muted-foreground">
+          <p className="mt-0.5 font-mono text-xs text-muted-foreground">
             {getProviderLabel(apiKey.provider)} · •••• {keyLast4(apiKey)}
           </p>
-          <p className="mt-1 text-[10.5px] leading-snug text-muted-foreground">
+          <p className="mt-1 text-xs leading-snug text-muted-foreground">
             Débloque {unlocked.map((b) => b.name).join(", ")}
             {added && <> · Ajoutée le {added}</>}
             {lastUsed && <> · Utilisée le {lastUsed}</>}
@@ -260,8 +260,8 @@ export function ApiKeysPanel({ onBack }: { onBack: () => void }) {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               <PanelIntro
-                icon={KeyRound}
                 title="Mes clés API"
+                description="Vos clés restent chiffrées. Vous pouvez les mettre en pause ou les révoquer à tout moment."
               />
             </div>
             {!isEmpty && (
@@ -284,7 +284,7 @@ export function ApiKeysPanel({ onBack }: { onBack: () => void }) {
               ].map((s) => (
                 <div key={s.label} className={cn(glassCard, "px-3.5 py-3")}>
                   <p className={cn("text-xl font-semibold tabular-nums", s.tone)}>{s.value}</p>
-                  <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  <p className="mt-0.5 text-xs font-medium text-muted-foreground">
                     {s.label}
                   </p>
                 </div>
@@ -293,7 +293,7 @@ export function ApiKeysPanel({ onBack }: { onBack: () => void }) {
 
             <section className="space-y-3">
               <div className="border-b border-border/50 pb-2">
-                <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                <h3 className="text-[11px] font-semibold">
                   Clés enregistrées
                 </h3>
               </div>
@@ -312,7 +312,7 @@ export function ApiKeysPanel({ onBack }: { onBack: () => void }) {
 
             <section className="space-y-3">
               <div className="border-b border-border/50 pb-2">
-                <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                <h3 className="text-[11px] font-semibold">
                   Révocation & sécurité
                 </h3>
               </div>
@@ -333,7 +333,7 @@ export function ApiKeysPanel({ onBack }: { onBack: () => void }) {
                         href={PROVIDER_CONSOLES[p].url}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/80 px-2.5 py-1.5 text-[11px] font-medium transition-colors hover:border-primary/40 hover:text-primary"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/80 px-2.5 py-1.5 text-[11px] font-medium transition-colors hover:text-primary"
                       >
                         <ProviderLogo provider={p} size={14} />
                         {PROVIDER_CONSOLES[p].label}
@@ -370,10 +370,10 @@ export function ApiKeysPanel({ onBack }: { onBack: () => void }) {
               aria-expanded={historyOpen}
               className="flex w-full items-center justify-between gap-2 border-b border-border/50 pb-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em]">
+              <span className="inline-flex items-center gap-2 text-[11px] font-semibold">
                 <History className="size-3.5 text-muted-foreground" />
                 Historique des révocations
-                <span className="rounded-full bg-surface px-1.5 py-0.5 text-[9px] font-medium normal-case tracking-normal text-muted-foreground">
+                <span className="rounded-full bg-surface px-1.5 py-0.5 text-[11px] font-medium normal-case tracking-normal text-muted-foreground">
                   {revokedKeys.length}
                 </span>
               </span>
@@ -395,7 +395,7 @@ export function ApiKeysPanel({ onBack }: { onBack: () => void }) {
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{keyTitle(k)}</p>
-                        <p className="mt-0.5 font-mono text-[10.5px] text-muted-foreground">
+                        <p className="mt-0.5 font-mono text-xs text-muted-foreground">
                           •••• {keyLast4(k)}
                           {formatDate(k.revokedAt) && <> · Révoquée le {formatDate(k.revokedAt)}</>}
                         </p>

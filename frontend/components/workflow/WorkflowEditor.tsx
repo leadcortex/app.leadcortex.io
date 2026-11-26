@@ -337,7 +337,7 @@ function Shell({ returnTo }: { returnTo?: string }) {
           onOpenPalette={() => openPalette()}
         />
 
-        <span className="hidden min-w-0 flex-1 truncate text-right text-[10px] text-muted-foreground md:block">
+        <span className="hidden min-w-0 flex-1 truncate text-right text-[11px] text-muted-foreground md:block">
           {doc.nodes.length} blocs · {doc.edges.length} connexions · {doc.comments.length} notes ·{" "}
           {totalBlocksCount} blocs disponibles
         </span>

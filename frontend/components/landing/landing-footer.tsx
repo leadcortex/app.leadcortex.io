@@ -41,11 +41,11 @@ export function LandingFooter() {
         />
         <div className="relative mx-auto max-w-4xl px-6 py-32 text-center">
           <h2>
-            Votre prochaine réponse
+            Lancez votre première
             <br />
-            <em>commence maintenant.</em>
+            <em>recherche aujourd'hui.</em>
           </h2>
-          <p className="mx-auto mt-5 max-w-[46ch] text-base text-ink-foreground/80">
+          <p className="mx-auto mt-4 max-w-[46ch] text-base text-ink-foreground/80">
             Essai gratuit. Sans carte bancaire.
           </p>
           <div className="lc-cta-row mt-8 justify-center">
@@ -64,15 +64,15 @@ export function LandingFooter() {
             <div className="space-y-4 sm:col-span-2">
               <BrandLogo />
               <p className="max-w-[28ch] text-sm text-muted-foreground">
-                L'équipe d'agents IA de prospection B2B.
+                Agents IA de prospection B2B.
               </p>
             </div>
             {footerCols.map((col) => (
               <div key={col.title} className="space-y-4">
-                <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                <h4 className="text-sm font-medium text-muted-foreground">
                   {col.title}
                 </h4>
-                <ul className="space-y-2.5">
+                <ul className="space-y-2">
                   {col.links.map(([label, to]) => (
                     <li key={label}>
                       <SiteLink

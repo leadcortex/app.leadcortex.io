@@ -17,10 +17,7 @@ import {
   readDensity,
   type ChatDensity,
 } from "@/components/ai-assistant/density-toggle";
-import {
-  SelectionQuoteButton,
-  useTextSelection,
-} from "@/components/ai-assistant/selection-quote";
+import { SelectionQuoteButton, useTextSelection } from "@/components/ai-assistant/selection-quote";
 import {
   getFeedbackValue,
   hashMessage,
@@ -165,7 +162,6 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
       window.clearInterval(timer);
       setThinking(false);
     }, 5000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input, sendChat, chat]);
 
   const jumpToMessage = useCallback((id: string) => {
@@ -200,9 +196,9 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
   const { isDragging, bind: dropBind } = useFileDrop({
     onDrop: (files) => {
       void files;
-      // eslint-disable-next-line no-console
+
       console.info(
-        "[workflow-chat] Drop de fichiers ignoré — ce chat traite des blocs, pas des fichiers.",
+        "[workflow-chat] Drop de fichiers ignoré : ce chat traite des blocs, pas des fichiers.",
       );
     },
   });
@@ -215,7 +211,7 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
   }, [messages]);
 
   const spacing = density === "compact" ? "space-y-1.5 py-2" : "space-y-3 py-3";
-  const bubbleText = density === "compact" ? "text-[12px] leading-snug" : "text-[12.5px] leading-relaxed";
+  const bubbleText = density === "compact" ? "text-xs leading-snug" : "text-[13px] leading-relaxed";
 
   return (
     <div className={cn("flex h-full min-w-0 flex-col overflow-hidden bg-panel", className)}>
@@ -224,11 +220,9 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
           <Sparkles className="size-3.5" strokeWidth={1.8} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[12.5px] font-semibold leading-tight">
-            Assistant du canevas
-          </p>
-          <p className="truncate text-[10.5px] text-muted-foreground">
-            Simulé localement · glisse un bloc pour l'analyser
+          <p className="truncate text-[13px] font-semibold leading-tight">Assistant du canevas</p>
+          <p className="truncate text-[11px] text-muted-foreground">
+            Glissez un bloc ici pour l'analyser
           </p>
         </div>
         <button
@@ -303,9 +297,7 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
                   onRegenerate={
                     m.id === lastAgentId
                       ? () => {
-                          const lastUser = [...messages]
-                            .reverse()
-                            .find((x) => x.role === "user");
+                          const lastUser = [...messages].reverse().find((x) => x.role === "user");
                           if (lastUser) {
                             setInput(lastUser.text);
                             textareaRef.current?.focus();
@@ -319,7 +311,7 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
           ))}
 
           {thinking && (
-            <div className="flex items-center gap-2 text-[11.5px] text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Loader2 className="size-3.5 animate-spin" />
               <span>L'assistant analyse le canevas…</span>
             </div>
@@ -337,8 +329,8 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
               <span className="grid size-10 place-items-center rounded-2xl bg-primary/15">
                 <Paperclip className="size-5" strokeWidth={1.8} />
               </span>
-              <p className="text-[12.5px] font-medium">Déposez vos fichiers ici</p>
-              <p className="text-[10.5px] opacity-75">(côté canevas : glisse plutôt un bloc)</p>
+              <p className="text-[13px] font-medium">Déposez vos fichiers ici</p>
+              <p className="text-[11px] opacity-75">(sur le canevas, glissez plutôt un bloc)</p>
             </div>
           </div>
         )}
@@ -346,7 +338,7 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
 
       {attachments.length > 0 && (
         <div className="border-t border-border bg-secondary/20 p-2">
-          <p className="mb-1.5 px-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+          <p className="mb-1.5 px-1 text-[11px] text-muted-foreground">
             Blocs joints ({attachments.length})
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -386,9 +378,9 @@ export function WorkflowChatPanel({ className }: { className?: string }) {
                 send();
               }
             }}
-            placeholder="Décris la branche à optimiser…"
+            placeholder="Décrivez ce que vous voulez changer…"
             rows={2}
-            className="block w-full resize-none bg-transparent px-3 pt-2.5 text-[12.5px] leading-relaxed outline-none placeholder:text-muted-foreground"
+            className="block w-full resize-none bg-transparent px-3 pt-2.5 text-[13px] leading-relaxed outline-none placeholder:text-muted-foreground"
           />
           <div className="flex items-center gap-1 px-2 pb-2">
             <button

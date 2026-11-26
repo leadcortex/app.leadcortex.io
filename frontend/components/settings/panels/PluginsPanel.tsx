@@ -6,11 +6,10 @@ import { PanelIntro, PanelGroup, SettingsCard } from "./primitives";
 
 export function PluginsPanel() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Boxes}
         title="Plugins"
-        description="Étendez les fonctionnalités de LeadCortex avec des modules tiers."
+        description="Ajoutez des modules créés par d'autres développeurs."
       />
 
       <PanelGroup label="Bibliothèque">

@@ -37,7 +37,7 @@ export function StatTile({
         {Icon && (
           <span className="stat-tile__icon">
             <Icon
-              className={iconProps?.className ?? "size-3.5"}
+              className={iconProps?.className ?? "size-4"}
               strokeWidth={iconProps?.strokeWidth ?? 1.8}
               {...iconProps}
             />
@@ -54,11 +54,7 @@ export function StatTile({
           {sub ? <span className="stat-tile__sub">{sub}</span> : <span />}
           {delta && (
             <span className={cn("kpi-delta", !up && "kpi-delta--down")}>
-              {up ? (
-                <TrendingUp className="size-2.5" />
-              ) : (
-                <TrendingDown className="size-2.5" />
-              )}
+              {up ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
               {delta}
             </span>
           )}

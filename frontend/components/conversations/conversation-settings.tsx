@@ -84,9 +84,9 @@ export function ConversationSettings({
             {thread.tags.map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[10px] text-muted-foreground"
+                className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground"
               >
-                <Tag className="size-2.5" /> {t}
+                <Tag className="size-3" /> {t}
               </span>
             ))}
           </div>
@@ -94,7 +94,7 @@ export function ConversationSettings({
       )}
 
       <section className={cn("rounded-xl border border-border", isMobile ? "p-4" : "p-3")}>
-        <p className="text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="text-[13px] font-medium">
           Canaux du prospect
         </p>
         <div className="mt-2 space-y-1.5">
@@ -119,14 +119,14 @@ export function ConversationSettings({
               >
                 <Icon className="size-4 shrink-0" style={{ color: t.accent }} />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[12px] font-medium">{t.label}</span>
-                  <span className="block truncate text-[10.5px] text-muted-foreground">
-                    {t.handleLabel} : {thread.handles[c] ?? "—"}
+                  <span className="block truncate text-[13px] font-medium">{t.label}</span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {t.handleLabel} : {thread.handles[c] ?? "non renseigné"}
                   </span>
                 </span>
                 {active && (
                   <span
-                    className="shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase text-background"
+                    className="shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium text-background"
                     style={{ backgroundColor: t.accent }}
                   >
                     Actif
@@ -162,7 +162,7 @@ export function ConversationSettings({
       </section>
 
       <section className={cn("rounded-xl border border-border", isMobile ? "p-4" : "p-3")}>
-        <p className="text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="text-[13px] font-medium">
           Notes internes
         </p>
         <textarea
@@ -204,7 +204,7 @@ export function ConversationSettings({
   return createPortal(
     <div className="fixed inset-0 z-[120] flex justify-end">
       <div className="absolute inset-0 bg-foreground/40 backdrop-blur-[2px]" onClick={onClose} />
-      <aside className="relative z-10 flex h-full w-full max-w-sm flex-col border-l border-border bg-background shadow-2xl">
+      <aside className="relative z-10 flex h-full w-full max-w-sm flex-col border-l border-border bg-background shadow-float">
         <header
           className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3"
           style={{ backgroundColor: `color-mix(in oklab, ${theme.accent} 8%, transparent)` }}
@@ -241,7 +241,9 @@ function Info({
     <div className="flex items-center gap-2">
       <Icon className="size-3.5 shrink-0 text-muted-foreground" />
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className="ml-auto truncate font-medium">{value}</dd>
+      <dd className="ml-auto truncate font-medium">
+        {value && value !== "—" ? value : "Non renseigné"}
+      </dd>
     </div>
   );
 }

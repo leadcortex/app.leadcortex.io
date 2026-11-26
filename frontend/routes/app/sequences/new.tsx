@@ -2,10 +2,10 @@
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PageHeader } from "@/components/common/ui-primitives";
+import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
   Save,
-  X,
   Plus,
   Trash2,
   GripVertical,
@@ -15,33 +15,29 @@ import {
   Clock,
   Sparkles,
   ChevronDown,
-  SlidersHorizontal,
-  Target,
-  Users,
-  Tag,
 } from "@/components/icons";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { useAppStore, DEFAULT_SEQUENCE_SETTINGS, type SequenceSettings } from "@/lib/state/store";
 import { CustomSelect } from "@/components/common/custom-select";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd";
 import { CreateFormSkeleton } from "@/components/skeletons";
 import { generateSequence } from "@/lib/ai/sequence.functions";
 
 export const Route = createFileRoute("/app/sequences/new")({
   head: () => ({
     meta: [
-      { title: "Nouvelle séquence — LeadCortex" },
+      { title: "Nouvelle séquence · LeadCortex" },
       {
         name: "description",
         content:
-          "Composez une séquence de prospection multicanale : étapes email, LinkedIn et appel, options avancées d'envoi et génération assistée par IA.",
+          "Créez une séquence de prospection : emails, messages LinkedIn et appels, avec horaires d'envoi et brouillon proposé par l'IA.",
       },
-      { property: "og:title", content: "Nouvelle séquence — LeadCortex" },
+      { property: "og:title", content: "Nouvelle séquence · LeadCortex" },
       {
         property: "og:description",
-        content: "Créez une séquence multicanale avec options avancées et génération IA.",
+        content: "Créez une séquence de prospection par email, LinkedIn et téléphone.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -77,30 +73,25 @@ const TONES = [
 function Section({
   title,
   subtitle,
-  icon: Icon,
   children,
   action,
 }: {
   title: string;
   subtitle?: string;
-  icon?: typeof Mail;
   children: React.ReactNode;
   action?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-background p-6 space-y-4">
+    <section className="space-y-6 rounded-xl border border-border bg-card p-4 md:p-6">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-2.5">
-          {Icon && <Icon className="size-4 mt-0.5 text-muted-foreground" />}
-          <div>
-            <h3 className="font-semibold text-sm">{title}</h3>
-            {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
-          </div>
+        <div>
+          <h2 className="text-base font-semibold">{title}</h2>
+          {subtitle && <p className="mt-1 text-[13px] text-muted-foreground">{subtitle}</p>}
         </div>
         {action}
       </div>
       {children}
-    </div>
+    </section>
   );
 }
 
@@ -199,10 +190,10 @@ function NewSequencePage() {
       if (res.source === "ai") {
         toast.success(`Séquence générée : ${gen.steps.length} étapes proposées`);
       } else {
-        toast.warning(res.message || "IA indisponible — trame par défaut appliquée.");
+        toast.warning(res.message || "IA indisponible : modèle par défaut appliqué.");
       }
-    } catch (error: any) {
-      toast.error(error?.message || "La génération IA a échoué.");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "La génération IA a échoué.");
     } finally {
       setIsGenerating(false);
     }
@@ -212,7 +203,7 @@ function NewSequencePage() {
     e.preventDefault();
 
     if (!name.trim()) {
-      toast.error("Veuillez donner un nom à la séquence.");
+      toast.error("Donnez un nom à la séquence.");
       return;
     }
 
@@ -247,11 +238,11 @@ function NewSequencePage() {
       });
 
       addActivity("Séquence créée", name.trim());
-      toast.success(`Séquence "${name.trim()}" créée avec succès`);
+      toast.success(`Séquence "${name.trim()}" créée`);
 
       navigate({ to: "/app/sequences" });
-    } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la création");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "La création a échoué.");
     } finally {
       setIsSubmitting(false);
     }
@@ -266,7 +257,7 @@ function NewSequencePage() {
     navigate({ to: "/app/sequences" });
   };
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const items = Array.from(steps);
     const [reordered] = items.splice(result.source.index, 1);
@@ -277,38 +268,32 @@ function NewSequencePage() {
   const durationDays = steps.reduce((max, s) => Math.max(max, s.delay), 0);
 
   return (
-    <div className="p-8 max-w-4xl">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={handleCancel}
-          className="p-1.5 rounded-md hover:bg-surface transition-colors"
-        >
-          <ArrowLeft className="size-4 text-muted-foreground" />
-        </button>
-        <PageHeader
-          eyebrow="Créer"
-          title="Nouvelle séquence"
-          description="Définissez les étapes de votre séquence de prospection."
-        />
-      </div>
+    <div className="max-w-3xl">
+      <button
+        type="button"
+        onClick={handleCancel}
+        className="mb-6 inline-flex items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" /> Séquences
+      </button>
+      <PageHeader eyebrow="Séquences" title="Nouvelle séquence." />
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-xl border border-border bg-surface/40 p-6 space-y-4">
+        <section className="space-y-4 rounded-xl bg-surface/50 p-4 md:p-6">
           <div className="flex items-start justify-between gap-4">
-            <div className="flex items-start gap-2.5">
-              <Sparkles className="size-4 mt-0.5 text-primary" />
-              <div>
-                <h3 className="font-semibold text-sm">Générer avec l'IA</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Décrivez votre offre et votre cible : l'IA rédige les étapes, les objets et les
-                  délais.
-                </p>
-              </div>
+            <div>
+              <h2 className="flex items-center gap-2 text-base font-semibold">
+                <Sparkles className="size-4 text-primary" /> Partir d'un brouillon IA
+              </h2>
+              <p className="mt-1 text-[13px] text-muted-foreground">
+                Décrivez votre offre et votre cible. L'IA propose les étapes, les objets et les
+                délais.
+              </p>
             </div>
             <button
               type="button"
               onClick={() => setAiOpen((v) => !v)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border border-border rounded-md hover:bg-background transition-colors"
+              className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-[13px] transition-colors hover:bg-surface/70"
             >
               {aiOpen ? "Masquer" : "Ouvrir"}
               <ChevronDown
@@ -326,7 +311,7 @@ function NewSequencePage() {
                 placeholder="Ex : Nous vendons une plateforme de maintenance prédictive aux directeurs industriels d'ETI françaises. Objectif : décrocher un audit de 30 minutes."
                 className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y"
               />
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <CustomSelect
                   label="Ton"
                   value={aiTone}
@@ -344,53 +329,50 @@ function NewSequencePage() {
                   }))}
                   variant="pill"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={handleGenerate}
                   disabled={isGenerating}
-                  className="ml-auto inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-foreground text-background hover:opacity-90 transition-all disabled:opacity-50"
+                  className="ml-auto"
                 >
                   {isGenerating ? (
                     <>
-                      <span className="size-4 border-2 border-background border-t-transparent rounded-full animate-spin" />
-                      Génération...
+                      <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Rédaction...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="size-4" /> Générer la séquence
+                      <Sparkles /> Proposer les étapes
                     </>
                   )}
-                </button>
+                </Button>
               </div>
-              <p className="text-[11px] text-muted-foreground">
-                La génération remplace les étapes actuelles et complète les champs laissés vides.
+              <p className="text-xs text-muted-foreground">
+                Les étapes actuelles seront remplacées. Les champs déjà remplis sont gardés.
               </p>
             </div>
           )}
-        </div>
+        </section>
 
-        <Section
-          title="Informations générales"
-          subtitle="Contexte de la séquence, utilisé pour la personnalisation."
-          icon={Target}
-        >
+        <Section title="Informations" subtitle="Elles servent à personnaliser les messages.">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-1.5 md:col-span-2">
-              <label className="text-xs font-medium text-foreground">
+              <label className="text-[13px] font-medium">
                 Nom de la séquence <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Industrial CTO — cold outreach"
+                placeholder="CTO industrie, premier contact"
                 required
                 className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
             </div>
 
             <div className="space-y-1.5 md:col-span-2">
-              <label className="text-xs font-medium text-foreground">Description</label>
+              <label className="text-[13px] font-medium">Description</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -401,7 +383,7 @@ function NewSequencePage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Objectif</label>
+              <label className="text-[13px] font-medium">Objectif</label>
               <CustomSelect
                 label="Objectif"
                 value={objective}
@@ -417,7 +399,7 @@ function NewSequencePage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Statut à la création</label>
+              <label className="text-[13px] font-medium">Statut à la création</label>
               <CustomSelect
                 label="Statut"
                 value={status}
@@ -430,8 +412,8 @@ function NewSequencePage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                <Users className="size-3.5" /> Audience cible
+              <label className="flex items-center gap-1.5 text-[13px] font-medium">
+                Audience cible
               </label>
               <input
                 type="text"
@@ -443,9 +425,7 @@ function NewSequencePage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                <Tag className="size-3.5" /> Tags
-              </label>
+              <label className="flex items-center gap-1.5 text-[13px] font-medium">Tags</label>
               <input
                 type="text"
                 value={tagsInput}
@@ -457,36 +437,34 @@ function NewSequencePage() {
           </div>
         </Section>
 
-        <div className="rounded-xl border border-border bg-background p-6 space-y-4">
-          <div className="flex items-center justify-between">
+        <section className="space-y-4 rounded-xl border border-border bg-card p-4 md:p-6">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <h3 className="font-semibold text-sm">Étapes</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <h2 className="text-base font-semibold">Étapes</h2>
+              <p className="mt-1 text-[13px] text-muted-foreground tabular-nums">
                 {steps.length} étape{steps.length > 1 ? "s" : ""} · durée {durationDays} jour
                 {durationDays > 1 ? "s" : ""}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={addStep}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border border-border rounded-md hover:bg-surface transition-colors"
-            >
-              <Plus className="size-3.5" /> Ajouter une étape
-            </button>
+            <Button type="button" variant="outline" size="sm" onClick={addStep}>
+              <Plus /> Ajouter une étape
+            </Button>
           </div>
 
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="steps">
               {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
+                <div {...provided.droppableProps} ref={provided.innerRef}>
                   {steps.map((step, index) => (
                     <Draggable key={step.id} draggableId={step.id} index={index}>
                       {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          className={`rounded-lg border border-border bg-surface/30 p-4 transition-colors ${
-                            snapshot.isDragging ? "bg-primary/5 border-primary/30 shadow-lg" : ""
+                          className={`border-t border-border bg-card py-4 first:border-t-0 ${
+                            snapshot.isDragging
+                              ? "rounded-lg border border-primary/30 px-4 shadow-float"
+                              : ""
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -498,8 +476,8 @@ function NewSequencePage() {
                             </div>
 
                             <div className="flex-1 space-y-3">
-                              <div className="flex items-center gap-3">
-                                <span className="text-xs font-medium text-muted-foreground bg-background px-2 py-0.5 rounded">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="mr-1 text-[13px] font-medium">
                                   Étape {index + 1}
                                 </span>
 
@@ -517,8 +495,8 @@ function NewSequencePage() {
                                   variant="pill"
                                 />
 
-                                <div className="flex items-center gap-1 ml-auto text-xs text-muted-foreground">
-                                  <Clock className="size-3" />
+                                <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Clock className="size-3.5" />
                                   <CustomSelect
                                     label="Jours"
                                     value={String(step.delay)}
@@ -536,9 +514,11 @@ function NewSequencePage() {
                                 <button
                                   type="button"
                                   onClick={() => removeStep(step.id)}
-                                  className="p-1 rounded hover:bg-destructive/10 text-destructive transition-colors"
+                                  aria-label={`Supprimer l'étape ${index + 1}`}
+                                  title="Supprimer l'étape"
+                                  className="grid size-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                                 >
-                                  <Trash2 className="size-3.5" />
+                                  <Trash2 className="size-4" />
                                 </button>
                               </div>
 
@@ -549,14 +529,14 @@ function NewSequencePage() {
                                     value={step.subject || ""}
                                     onChange={(e) => updateStep(step.id, "subject", e.target.value)}
                                     placeholder="Objet de l'email"
-                                    className="w-full px-3 py-1.5 text-sm rounded border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                                    className="h-9 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                                   />
                                   <textarea
                                     value={step.content}
                                     onChange={(e) => updateStep(step.id, "content", e.target.value)}
-                                    placeholder="Contenu de l'email..."
+                                    placeholder="Texte de l'email"
                                     rows={3}
-                                    className="w-full px-3 py-1.5 text-sm rounded border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary resize-y"
+                                    className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                                   />
                                 </div>
                               )}
@@ -565,9 +545,9 @@ function NewSequencePage() {
                                 <textarea
                                   value={step.content}
                                   onChange={(e) => updateStep(step.id, "content", e.target.value)}
-                                  placeholder="Message LinkedIn..."
+                                  placeholder="Message LinkedIn"
                                   rows={3}
-                                  className="w-full px-3 py-1.5 text-sm rounded border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary resize-y"
+                                  className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 />
                               )}
 
@@ -575,9 +555,9 @@ function NewSequencePage() {
                                 <textarea
                                   value={step.content}
                                   onChange={(e) => updateStep(step.id, "content", e.target.value)}
-                                  placeholder="Script d'appel ou notes..."
+                                  placeholder="Script d'appel ou notes"
                                   rows={2}
-                                  className="w-full px-3 py-1.5 text-sm rounded border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary resize-y"
+                                  className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 />
                               )}
                             </div>
@@ -591,19 +571,18 @@ function NewSequencePage() {
               )}
             </Droppable>
           </DragDropContext>
-        </div>
+        </section>
 
         <Section
-          title="Options avancées"
-          subtitle="Fenêtre d'envoi, quotas, suivi et priorité."
-          icon={SlidersHorizontal}
+          title="Options d'envoi"
+          subtitle="Horaires, quota par jour, suivi et priorité."
           action={
             <button
               type="button"
               onClick={() => setAdvancedOpen((v) => !v)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border border-border rounded-md hover:bg-surface transition-colors"
+              className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 text-[13px] transition-colors hover:bg-surface/70"
             >
-              {advancedOpen ? "Réduire" : "Déployer"}
+              {advancedOpen ? "Masquer" : "Afficher"}
               <ChevronDown
                 className={`size-3.5 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
               />
@@ -611,10 +590,10 @@ function NewSequencePage() {
           }
         >
           {advancedOpen && (
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium">Limite quotidienne</label>
+                  <label className="text-[13px] font-medium">Limite quotidienne</label>
                   <input
                     type="number"
                     min={1}
@@ -625,7 +604,7 @@ function NewSequencePage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium">Début d'envoi</label>
+                  <label className="text-[13px] font-medium">Début d'envoi</label>
                   <input
                     type="time"
                     value={settings.sendWindowStart}
@@ -634,7 +613,7 @@ function NewSequencePage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium">Fin d'envoi</label>
+                  <label className="text-[13px] font-medium">Fin d'envoi</label>
                   <input
                     type="time"
                     value={settings.sendWindowEnd}
@@ -645,7 +624,7 @@ function NewSequencePage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-medium">Jours d'envoi</label>
+                <label className="text-[13px] font-medium">Jours d'envoi</label>
                 <div className="flex flex-wrap gap-1.5">
                   {DAYS.map((d) => {
                     const active = settings.sendDays.includes(d);
@@ -669,7 +648,7 @@ function NewSequencePage() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium">Fuseau horaire</label>
+                  <label className="text-[13px] font-medium">Fuseau horaire</label>
                   <CustomSelect
                     label="Fuseau"
                     value={settings.timezone}
@@ -683,7 +662,7 @@ function NewSequencePage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium">Priorité</label>
+                  <label className="text-[13px] font-medium">Priorité</label>
                   <CustomSelect
                     label="Priorité"
                     value={settings.priority}
@@ -708,9 +687,9 @@ function NewSequencePage() {
                 ].map((opt) => (
                   <label
                     key={opt.key}
-                    className="flex items-center justify-between gap-4 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-surface/50 transition-colors"
+                    className="flex cursor-pointer items-center justify-between gap-4 py-2"
                   >
-                    <span className="text-xs">{opt.label}</span>
+                    <span className="text-sm">{opt.label}</span>
                     <input
                       type="checkbox"
                       checked={settings[opt.key]}
@@ -724,30 +703,22 @@ function NewSequencePage() {
           )}
         </Section>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg hover:bg-surface transition-colors"
-          >
-            <X className="size-4" /> Annuler
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-foreground text-background rounded-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+        <div className="flex items-center justify-end gap-2 pt-2">
+          <Button type="button" variant="ghost" onClick={handleCancel}>
+            Annuler
+          </Button>
+          <Button type="submit" size="lg" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <span className="size-4 border-2 border-background border-t-transparent rounded-full animate-spin" />
+                <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 Création...
               </>
             ) : (
               <>
-                <Save className="size-4" /> Créer la séquence
+                <Save /> Créer la séquence
               </>
             )}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

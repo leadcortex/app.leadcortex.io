@@ -156,7 +156,7 @@ export function MessageComposer({
                 <span className="block max-w-[110px] truncate text-[11px] leading-tight">
                   {a.name}
                 </span>
-                <span className="block text-[10px] leading-tight text-muted-foreground">
+                <span className="block text-[11px] leading-tight text-muted-foreground">
                   {formatSize(a.size)}
                 </span>
               </span>
@@ -222,8 +222,8 @@ export function MessageComposer({
             {emojiOpen && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setEmojiOpen(false)} />
-                <div className="absolute bottom-full left-0 z-40 mb-2 w-72 rounded-2xl border border-border bg-popover p-2 shadow-2xl">
-                  <p className="px-1 pb-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <div className="absolute bottom-full left-0 z-40 mb-2 w-72 rounded-lg border border-border bg-popover p-2 shadow-float">
+                  <p className="px-1 pb-2 text-xs font-medium text-muted-foreground">
                     Emojis fréquents
                   </p>
                   <div className="grid grid-cols-8 gap-0.5">
@@ -255,7 +255,7 @@ export function MessageComposer({
         </div>
       </div>
 
-      <p className="mt-1.5 hidden px-1 text-[10.5px] text-muted-foreground md:block">
+      <p className="mt-2 hidden px-1 text-[11px] text-muted-foreground md:block">
         Entrée pour envoyer · Maj+Entrée pour un retour à la ligne · {theme.label}
       </p>
 
@@ -319,10 +319,10 @@ function AddMenu({
           <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
           <div
             className={cn(
-              "absolute bottom-full left-0 z-40 mb-2 w-64 max-w-[calc(100vw-32px)] rounded-2xl border border-border bg-popover p-1 shadow-2xl",
+              "absolute bottom-full left-0 z-40 mb-2 w-64 max-w-[calc(100vw-32px)] rounded-lg border border-border bg-popover p-1 shadow-float",
             )}
           >
-            <p className="px-2.5 pb-1 pt-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="px-2 pb-1 pt-2 text-xs font-medium text-muted-foreground">
               Ajouter
             </p>
             <AddItem
@@ -339,8 +339,8 @@ function AddMenu({
             />
             <AddItem
               icon={Link2}
-              label="Contexte IA"
-              desc="Ouvre l'assistant avec le fil"
+              label="Demander à l'assistant"
+              desc="Avec cette conversation en contexte"
               onClick={onPickContext}
             />
           </div>
@@ -365,14 +365,14 @@ function AddItem({
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-secondary/60 active:bg-secondary/80"
+      className="flex min-h-12 w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-secondary/60 active:bg-secondary/80"
     >
       <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
         <Icon className="size-4" strokeWidth={1.7} />
       </span>
       <span className="min-w-0">
-        <span className="block truncate text-[12px] font-medium leading-tight">{label}</span>
-        <span className="block truncate text-[10.5px] leading-tight text-muted-foreground">
+        <span className="block truncate text-[13px] font-medium leading-tight">{label}</span>
+        <span className="block truncate text-xs leading-tight text-muted-foreground">
           {desc}
         </span>
       </span>

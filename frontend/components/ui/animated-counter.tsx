@@ -29,12 +29,10 @@ export function AnimatedCounter({
   delay = 0,
   className,
 }: AnimatedCounterProps) {
-  const [displayed, setDisplayed] = useState<number>(() =>
-    prefersReducedMotion() ? value : 0,
-  );
+  const [displayed, setDisplayed] = useState<number>(value);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
-  const fromRef = useRef<number>(0);
+  const fromRef = useRef<number>(value);
 
   useEffect(() => {
     if (prefersReducedMotion()) {
@@ -73,10 +71,7 @@ export function AnimatedCounter({
   }, [value, duration, delay]);
 
   return (
-    <span
-      className={cn("counter-anim tabular-nums", className)}
-      aria-label={defaultFormat(value)}
-    >
+    <span className={cn("counter-anim tabular-nums", className)} aria-label={defaultFormat(value)}>
       <span className="counter-anim__value">{format(displayed)}</span>
     </span>
   );
@@ -89,9 +84,7 @@ function parseCounterText(text: string): {
   suffix: string;
 } | null {
   if (!text) return null;
-  const m = text.match(
-    /^(\s*[+\-±]?\s*)(\d{1,3}(?:[\s\u202f.,]\d{3})*|\d+)(?:[.,](\d+))?\s*(.*)$/,
-  );
+  const m = text.match(/^(\s*[+\-±]?\s*)(\d{1,3}(?:[\s\u202f.,]\d{3})*|\d+)(?:[.,](\d+))?\s*(.*)$/);
   if (!m) return null;
   const prefix = m[1] ?? "";
   const rawInt = (m[2] ?? "").replace(/[\s\u202f]/g, "").replace(/[.,](?=\d{3}\b)/g, "");
@@ -115,12 +108,7 @@ export type SmartCounterProps = {
   className?: string;
 };
 
-export function SmartCounter({
-  text,
-  duration = 900,
-  delay = 0,
-  className,
-}: SmartCounterProps) {
+export function SmartCounter({ text, duration = 900, delay = 0, className }: SmartCounterProps) {
   const parsed = parseCounterText(text);
 
   if (!parsed || parsed.number === null) {

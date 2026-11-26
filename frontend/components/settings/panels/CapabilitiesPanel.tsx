@@ -56,14 +56,14 @@ function RoleField({
   options: AiBrand[];
 }) {
   return (
-    <div className="rounded-lg border border-border p-3 transition-colors hover:border-primary/20">
+    <div className="rounded-lg border border-border p-3 transition-colors">
       <div className="mb-3 flex items-center gap-2">
         <span className="grid size-8 place-items-center rounded-md bg-primary/10 text-primary">
           <BrandLogo brand={value} size={16} />
         </span>
         <div>
           <p className="text-xs font-semibold">{label}</p>
-          <p className="text-[10px] text-muted-foreground">{hint}</p>
+          <p className="text-xs text-muted-foreground">{hint}</p>
         </div>
       </div>
       <Select value={value} onValueChange={(v) => onChange(v as AiBrand)}>
@@ -90,18 +90,18 @@ function RoleField({
 
 function IncludedModelCard({ brand }: { brand: AiBrandInfo }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-border bg-surface/30 p-3.5 transition-colors hover:border-primary/20">
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-surface/30 p-3.5 transition-colors">
       <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
         <BrandLogo brand={brand} size={20} />
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <p className="truncate text-sm font-medium">{brand.name}</p>
-          <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">
+          <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[11px] font-medium text-primary">
             Inclus
           </span>
         </div>
-        <p className="mt-0.5 inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+        <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted-foreground">
           par
           <ProviderLogo provider={brand.providerKey} size={11} />
           {brand.providerLabel}
@@ -129,12 +129,12 @@ function ApiAccessCard({ onOpen, onAdd }: { onOpen: () => void; onAdd: () => voi
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-sm font-semibold">Mes clés API</p>
             {activeCount > 0 && (
-              <span className="rounded-full bg-success/10 px-2 py-0.5 text-[9px] font-medium text-success">
+              <span className="rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-medium text-success">
                 {activeCount} active{activeCount > 1 ? "s" : ""}
               </span>
             )}
             {pausedCount > 0 && (
-              <span className="rounded-full bg-warning/15 px-2 py-0.5 text-[9px] font-medium text-warning">
+              <span className="rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-medium text-warning">
                 {pausedCount} en pause
               </span>
             )}
@@ -171,7 +171,7 @@ function ApiAccessCard({ onOpen, onAdd }: { onOpen: () => void; onAdd: () => voi
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-3.5">
-        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="text-xs font-medium text-muted-foreground">
           Modèles en plus avec votre clé
         </span>
         {optional.map((b) => {
@@ -296,9 +296,9 @@ function TeamContent({ onOpenApi }: { onOpenApi: (add: boolean) => void }) {
             onClick={() => setMode("app")}
             aria-pressed={mode === "app"}
             className={cn(
-              "rounded-md px-3 py-1.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "rounded-md px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               mode === "app"
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-background text-foreground"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -309,9 +309,9 @@ function TeamContent({ onOpenApi }: { onOpenApi: (add: boolean) => void }) {
             onClick={() => setMode("user-key")}
             aria-pressed={mode === "user-key"}
             className={cn(
-              "rounded-md px-3 py-1.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "rounded-md px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               mode === "user-key"
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-background text-foreground"
                 : "text-muted-foreground hover:text-foreground",
               !hasUsableKey && "text-muted-foreground/60",
             )}
@@ -338,14 +338,14 @@ function TeamContent({ onOpenApi }: { onOpenApi: (add: boolean) => void }) {
         </div>
 
         {mode === "user-key" && !hasUsableKey && (
-          <div className="mt-4 flex items-start gap-2 rounded-lg bg-warning/10 p-3 text-[10.5px] text-warning">
+          <div className="mt-4 flex items-start gap-2 rounded-lg bg-warning/10 p-3 text-xs text-warning">
             <LockKeyhole className="mt-px size-3.5 shrink-0" />
             <span>Ajoutez au moins une clé API active pour activer ce mode.</span>
           </div>
         )}
 
         <div className="mt-5 flex items-center justify-between gap-3">
-          <p className="text-[10.5px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             <b>Perplexity</b> n'est proposé qu'en recherche.
           </p>
           <LoadingButton
@@ -362,7 +362,6 @@ function TeamContent({ onOpenApi }: { onOpenApi: (add: boolean) => void }) {
       <SettingsCard
         title="Équipe active"
         description="Résumé des modèles actuellement utilisés."
-        icon={UsersRound}
       >
         <div className="grid gap-2 text-xs sm:grid-cols-2">
           <div className="flex items-center justify-between rounded-lg bg-surface/50 px-3 py-2.5">
@@ -388,7 +387,7 @@ function TeamContent({ onOpenApi }: { onOpenApi: (add: boolean) => void }) {
         <div className="mt-5 border-t border-border pt-4">
           <label
             htmlFor="team-system-prompt"
-            className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground"
+            className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
           >
             <Sparkles className="size-3 text-primary" />
             Instructions permanentes
@@ -396,7 +395,7 @@ function TeamContent({ onOpenApi }: { onOpenApi: (add: boolean) => void }) {
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-background px-3 py-3">
             <div className="min-w-0">
               <p className="text-xs font-medium">Contexte réutilisable</p>
-              <p className="mt-0.5 text-[10.5px] leading-relaxed text-muted-foreground">
+              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
                 Ajoutez des fichiers de référence transmis automatiquement à l’assistant.
               </p>
             </div>
@@ -418,7 +417,6 @@ function DomainsBlock() {
     <SettingsCard
       title="Domaines d'envoi"
       description="SPF, DKIM et DMARC sont contrôlés automatiquement."
-      icon={Globe2}
       actions={
         <Button size="sm" variant="outline">
           <Plus /> Ajouter
@@ -429,13 +427,13 @@ function DomainsBlock() {
         {["outbound.founder.co", "hi.founder.co"].map((domain) => (
           <div
             key={domain}
-            className="flex items-center justify-between rounded-lg border border-border p-3.5 transition-colors hover:border-primary/20"
+            className="flex items-center justify-between rounded-lg border border-border p-3.5 transition-colors"
           >
             <div>
               <p className="font-mono text-xs">{domain}</p>
-              <p className="mt-1 text-[10px] text-muted-foreground">Warmup 87% · Score 9.2</p>
+              <p className="mt-1 text-xs text-muted-foreground">Warmup 87% · Score 9.2</p>
             </div>
-            <span className="inline-flex items-center gap-1 text-[10px] text-success">
+            <span className="inline-flex items-center gap-1 text-xs text-success">
               <Check className="size-3" /> Vérifié
             </span>
           </div>
@@ -475,11 +473,10 @@ export function CapabilitiesPanel() {
 
 function OverviewView({ onOpenApi }: { onOpenApi: (add: boolean) => void }) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:space-y-12">
       <PanelIntro
-        icon={Sparkles}
         title="Capacités"
-        description="Les modèles d'IA à votre disposition, votre accès API personnel et vos domaines d'envoi."
+        description="Les modèles d'IA que vous utilisez, vos clés API et vos domaines d'envoi."
       />
 
       <PanelGroup

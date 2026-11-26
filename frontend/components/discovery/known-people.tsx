@@ -411,7 +411,7 @@ function PersonRow({
         "border border-transparent",
         active
           ? "bg-primary/[0.06] border-primary/25 ring-1 ring-primary/20"
-          : "hover:bg-surface/60 hover:border-border/60 hover:shadow-sm",
+          : "hover:bg-surface/60 hover:border-border/60",
       )}
     >
       <LetterAvatar name={person.name} size={34} shape="circle" />
@@ -429,11 +429,11 @@ function PersonRow({
             )}
             title={`Score ${person.score.toFixed(1)}`}
           />
-          <span className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground">
+          <span className="ml-auto shrink-0 font-mono text-xs text-muted-foreground">
             {person.score.toFixed(1)}
           </span>
         </div>
-        <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{person.title}</p>
+        <p className="mt-0.5 truncate text-xs text-muted-foreground">{person.title}</p>
         <div className="mt-0.5 flex items-center gap-1.5">
           <CompanyLogo
             name={person.company}
@@ -441,7 +441,7 @@ function PersonRow({
             size={14}
             className="shrink-0"
           />
-          <span className="truncate text-[10px] text-muted-foreground">{person.company}</span>
+          <span className="truncate text-xs text-muted-foreground">{person.company}</span>
         </div>
       </div>
       <ChevronRight
@@ -488,7 +488,7 @@ function PersonPreview({
         <div className="flex items-start gap-3 md:gap-4">
           <LetterAvatar name={person.name} size={64} shape="circle" />
           <div className="min-w-0 flex-1">
-            <h2 className="truncate font-display text-lg italic md:text-2xl">{person.name}</h2>
+            <h2 className="truncate text-lg font-semibold md:text-xl">{person.name}</h2>
             <p className="mt-0.5 inline-flex items-center gap-1.5 truncate text-xs text-muted-foreground md:text-sm">
               <Briefcase className="size-3" /> {person.title}
             </p>
@@ -522,7 +522,7 @@ function PersonPreview({
         </div>
 
         <div className="list-item-atelier p-3 md:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="text-[13px] font-medium text-foreground">
             Signal d'intérêt
           </p>
           <div className="mt-1.5 flex items-center gap-2">
@@ -532,7 +532,7 @@ function PersonPreview({
         </div>
 
         <div className="list-item-atelier space-y-2 p-3 md:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="text-[13px] font-medium text-foreground">
             Contact probable
           </p>
           <div className="flex items-center gap-2 text-xs md:text-sm">
@@ -548,13 +548,13 @@ function PersonPreview({
             <Linkedin className="size-3.5 shrink-0" />
             <span className="truncate font-mono">{person.linkedin}</span>
           </a>
-          <p className="text-[10px] text-muted-foreground">
-            Coordonnées probables — à vérifier avant tout envoi.
+          <p className="text-xs text-muted-foreground">
+            Coordonnées probables, à vérifier avant tout envoi.
           </p>
         </div>
 
         <div className="list-item-atelier border-primary/25 bg-primary/[0.04] p-3 md:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70">
+          <p className="text-[13px] font-medium text-primary">
             Angle d'approche suggéré
           </p>
           <p className="mt-1 text-xs md:text-sm text-primary">
@@ -572,7 +572,7 @@ function PersonPreview({
           <button
             type="button"
             onClick={() => onAdd(person)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[10px] font-medium text-primary-foreground transition-all hover:brightness-110 md:text-xs"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-all hover:bg-primary/90"
           >
             <Plus className="size-3.5" /> Ajouter à ma base
           </button>
@@ -580,14 +580,14 @@ function PersonPreview({
             href={`https://${person.linkedin}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-[10px] transition-colors hover:bg-surface md:text-xs"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-surface"
           >
             <Linkedin className="size-3.5" /> LinkedIn
           </a>
           <button
             type="button"
             onClick={() => toast.info(`Analyse IA de ${person.name} en cours…`)}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-[10px] transition-colors hover:bg-surface md:text-xs"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-surface"
           >
             <Sparkles className="size-3.5" /> Enrichir
           </button>
@@ -608,7 +608,7 @@ function Stat({
 }) {
   return (
     <div className="list-item-atelier p-2.5">
-      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Icon className="size-3" />
         {label}
       </div>
@@ -777,7 +777,7 @@ export function KnownPeopleExplorer() {
         stage: "new",
         saved: false,
       } as any);
-      addActivity?.("Décideur importé", `${p.name} — ${p.company} (suggestion)`);
+      addActivity?.("Décideur importé", `${p.name} · ${p.company} (suggestion)`);
       if (created && typeof created === "object" && "id" in created) {
         toast.success(`${p.name} ajouté à votre base`);
       } else {
@@ -809,7 +809,7 @@ export function KnownPeopleExplorer() {
       </div>
 
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-3 py-2">
-        <h3 className="truncate font-display text-sm italic">
+        <h3 className="truncate text-base font-semibold">
           {query.trim() ? "Résultats" : "Décideurs connus"}
         </h3>
         <span className="counter-pill counter-pill--sm">
@@ -857,7 +857,7 @@ export function KnownPeopleExplorer() {
               </div>
             )}
 
-            <div className="border-t border-border/60 px-3 py-2 text-center text-[10px] text-muted-foreground/70">
+            <div className="border-t border-border/60 px-3 py-2 text-center text-xs text-muted-foreground/70">
               Données publiques · à titre d'exemple
             </div>
           </>
@@ -905,11 +905,11 @@ export function KnownPeopleExplorer() {
           <div
             data-known-people-dropdown
             style={dropdownStyle}
-            className="overflow-y-auto rounded-xl border border-border bg-popover shadow-2xl animate-in fade-in-0 zoom-in-95"
+            className="overflow-y-auto rounded-xl border border-border bg-popover shadow-float animate-in fade-in-0"
           >
             {!query.trim() ? (
               <>
-                <p className="px-3 pb-1 pt-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                <p className="px-3 pb-1 pt-2 text-xs font-medium text-muted-foreground">
                   Recherches suggérées
                 </p>
                 {SUGGESTED_NAMES.map((s) => (
@@ -951,11 +951,11 @@ export function KnownPeopleExplorer() {
                   <LetterAvatar name={p.name} size={24} shape="circle" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-medium">{p.name}</p>
-                    <p className="truncate text-[10px] text-muted-foreground">
+                    <p className="truncate text-xs text-muted-foreground">
                       {p.title} · {p.company}
                     </p>
                   </div>
-                  <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                  <span className="shrink-0 font-mono text-xs text-muted-foreground">
                     {p.score.toFixed(1)}
                   </span>
                 </button>

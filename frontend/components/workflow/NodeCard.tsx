@@ -170,21 +170,17 @@ function NodeCardBase({
       onPointerDown={onPointerDown}
       onContextMenu={onContextMenu}
       className={cn(
-        "group absolute cursor-move select-none rounded-2xl border bg-node text-node-foreground shadow-node transition-[box-shadow,transform,opacity] duration-150",
-        selected ? "border-transparent shadow-glow" : "border-node-border hover:shadow-node-hover",
+        "group absolute cursor-move select-none rounded-2xl border bg-node text-node-foreground shadow-node transition-[box-shadow,border-color,opacity] duration-150",
+        selected
+          ? "border-transparent shadow-glow"
+          : "border-node-border hover:border-foreground/20",
         node.muted && "opacity-55 saturate-50",
         dimmed && "opacity-35",
       )}
       style={{ left: node.x, top: node.y, width: w, height: h }}
     >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute left-1 top-2.5 bottom-2.5 w-[5px] rounded-full"
-        style={{ background: accent }}
-      />
-
       <div
-        className="flex items-center gap-2 rounded-t-2xl pl-4 pr-2"
+        className="flex items-center gap-2 rounded-t-2xl pl-3 pr-2"
         style={{
           height: HEADER_H,
           background: `color-mix(in oklab, ${accent} 14%, transparent)`,
@@ -194,21 +190,19 @@ function NodeCardBase({
           className="grid h-6 w-6 shrink-0 place-items-center rounded-lg"
           style={{ background: accent, color: "oklch(0.16 0.02 70)" }}
         >
-          <Icon className="h-3.5 w-3.5" />
+          <Icon className="size-4" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[12.5px] font-semibold leading-tight tracking-tight">
-            {node.title}
-          </p>
+          <p className="truncate text-[13px] font-semibold leading-tight">{node.title}</p>
         </div>
         {node.status === "running" && (
-          <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-primary" />
+          <Loader2 className="size-4 shrink-0 animate-spin text-primary" />
         )}
         {node.status === "success" && <span className="h-2 w-2 shrink-0 rounded-full bg-success" />}
         {node.status === "error" && (
           <span className="h-2 w-2 shrink-0 rounded-full bg-destructive" />
         )}
-        {node.muted && <EyeOff className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+        {node.muted && <EyeOff className="size-4 shrink-0 text-muted-foreground" />}
         {isCode && onOpenCodeEditor && (
           <button
             type="button"
@@ -219,9 +213,9 @@ function NodeCardBase({
               e.stopPropagation();
               onOpenCodeEditor();
             }}
-            className="grid h-5 w-5 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
+            className="grid size-6 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
           >
-            <Code2 className="h-3.5 w-3.5" />
+            <Code2 className="size-4" />
           </button>
         )}
 
@@ -233,21 +227,21 @@ function NodeCardBase({
             e.stopPropagation();
             onPatch({ collapsed: !node.collapsed });
           }}
-          className="grid h-5 w-5 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
+          className="grid size-6 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
         >
           {node.collapsed ? (
-            <ChevronRight className="h-3.5 w-3.5" />
+            <ChevronRight className="size-4" />
           ) : (
-            <ChevronDown className="h-3.5 w-3.5" />
+            <ChevronDown className="size-4" />
           )}
         </button>
-        <GripVertical className="h-3.5 w-3.5 shrink-0 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+        <GripVertical className="size-4 shrink-0 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
       </div>
 
       {!node.collapsed && (
         <>
           <div
-            className="flex items-center truncate px-4 text-[10.5px] leading-tight text-muted-foreground"
+            className="flex items-center truncate px-3 text-[11px] leading-tight text-muted-foreground"
             style={{ height: SUB_H }}
           >
             <span className="truncate">{node.subtitle}</span>
@@ -256,7 +250,7 @@ function NodeCardBase({
           {fields.length > 0 && (
             <div
               ref={fieldsRef}
-              className="space-y-1 px-4"
+              className="space-y-1 px-3"
               style={{ paddingTop: FIELDS_PAD - 4, paddingBottom: FIELDS_PAD }}
             >
               {fields.map((f) => {
@@ -267,9 +261,7 @@ function NodeCardBase({
                     className="grid grid-cols-[76px_minmax(0,1fr)] items-center gap-2"
                     style={{ minHeight: FIELD_H - 4 }}
                   >
-                    <span className="truncate text-[10px] uppercase tracking-wide text-muted-foreground">
-                      {f.label}
-                    </span>
+                    <span className="truncate text-[11px] text-muted-foreground">{f.label}</span>
                     {f.type === "toggle" ? (
                       <button
                         type="button"
@@ -305,7 +297,7 @@ function NodeCardBase({
                       <input
                         type={f.type === "number" ? "number" : "text"}
                         value={String(v ?? "")}
-                        placeholder={f.placeholder ?? "—"}
+                        placeholder={f.placeholder ?? ""}
                         aria-label={f.label}
                         onPointerDown={stop}
                         onClick={stop}
@@ -330,7 +322,7 @@ function NodeCardBase({
                 code={String(node.config[note.key] ?? "")}
                 language={language.id}
                 height={noteH}
-                placeholder={note.placeholder ?? "Aucun code — ouvre l'éditeur."}
+                placeholder={note.placeholder ?? "Aucun code. Ouvrez l'éditeur."}
                 headerLabel={`${note.label} · ${language.label}`}
                 onEdit={onOpenCodeEditor}
               />
@@ -342,7 +334,7 @@ function NodeCardBase({
               <textarea
                 ref={taRef}
                 value={String(node.config[note.key] ?? "")}
-                placeholder={note.placeholder ?? "Écris ici…"}
+                placeholder={note.placeholder ?? "Écrivez ici…"}
                 aria-label={note.label}
                 onPointerDown={stop}
                 onClick={stop}
@@ -351,7 +343,7 @@ function NodeCardBase({
                 style={{ height: noteH, maxHeight: NOTE_MAX_H, minHeight: NOTE_MIN_H }}
                 className="wf-node-field w-full resize-y overflow-auto rounded-md border border-input bg-input-bg px-2 py-1.5 text-[11px] leading-snug outline-none"
               />
-              <span className="pointer-events-none absolute -top-3 left-0.5 text-[9px] uppercase tracking-wide text-muted-foreground/70">
+              <span className="pointer-events-none absolute -top-3 left-0.5 text-[11px] leading-none text-muted-foreground">
                 {note.label}
               </span>
             </div>
@@ -396,7 +388,7 @@ function NodeCardBase({
           {(node.inputs ?? []).map((p, i) => (
             <div
               key={p.id}
-              className="absolute left-3 flex items-center text-[10.5px] text-muted-foreground"
+              className="absolute left-3 flex items-center text-[11px] text-muted-foreground"
               style={{ top: portRowY(node, i) - PORT_GAP / 2, height: PORT_GAP }}
             >
               <span className="max-w-[104px] truncate">{p.label}</span>
@@ -434,7 +426,7 @@ function NodeCardBase({
           {(node.outputs ?? []).map((p, i) => (
             <div
               key={p.id}
-              className="absolute right-3 flex items-center justify-end text-[10.5px] text-muted-foreground"
+              className="absolute right-3 flex items-center justify-end text-[11px] text-muted-foreground"
               style={{ top: portRowY(node, i) - PORT_GAP / 2, height: PORT_GAP }}
             >
               <span className="max-w-[132px] truncate text-right">{p.label}</span>

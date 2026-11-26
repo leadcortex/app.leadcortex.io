@@ -1,7 +1,8 @@
 // frontend/routes/app/sequences/index.tsx
 
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { PageHeader, Badge, Kpi } from "@/components/common/ui-primitives";
+import { PageHeader, Badge } from "@/components/common/ui-primitives";
+import { Button } from "@/components/ui/button";
 import DataTable, { type Column } from "@/components/common/data-table";
 import {
   Plus,
@@ -11,12 +12,10 @@ import {
   Send,
   Linkedin,
   Phone,
-  Clock,
   Copy,
   Trash2,
   Pencil,
   Eye,
-  Users,
 } from "@/components/icons";
 import { toast } from "sonner";
 import { useAppStore } from "@/lib/state/store";
@@ -27,16 +26,15 @@ import { ActionMenu } from "@/components/common/action-menu";
 export const Route = createFileRoute("/app/sequences/")({
   head: () => ({
     meta: [
-      { title: "Séquences — LeadCortex" },
+      { title: "Séquences · LeadCortex" },
       {
         name: "description",
-        content:
-          "Pilotez vos séquences de prospection multicanales : étapes, cadence d'envoi, ouvertures et réponses.",
+        content: "Vos séquences de prospection : étapes, rythme d’envoi, ouvertures et réponses.",
       },
-      { property: "og:title", content: "Séquences — LeadCortex" },
+      { property: "og:title", content: "Séquences · LeadCortex" },
       {
         property: "og:description",
-        content: "Pilotez vos séquences de prospection multicanales.",
+        content: "Vos séquences de prospection par email, LinkedIn et téléphone.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -103,13 +101,21 @@ function SequencesPage() {
   const active = sequences.filter((s) => s.status === "active");
   const totalLeads = sequences.reduce((n, s) => n + s.leads, 0);
   const detailed = sequences.filter((s) => (s.stepsDetail?.length ?? 0) > 0);
-  const pct = (v: string) => Number(String(v).replace("%", "")) || 0;
-  const avgOf = (key: "opens" | "replies") =>
-    sequences.length
-      ? `${Math.round(sequences.reduce((n, s) => n + pct(s[key]), 0) / sequences.length)}%`
-      : "0%";
-  const avgOpens = avgOf("opens");
-  const avgReplies = avgOf("replies");
+
+  const toggleStatus = (row: (typeof sequences)[number]) => {
+    toggleSequenceStatus(row.id);
+    const next = row.status === "active" ? "en pause" : "activée";
+    toast.success(`Séquence ${next}`);
+    addActivity("Séquence " + next, row.name);
+  };
+
+  const newButton = (
+    <Button asChild>
+      <Link to="/app/sequences/new">
+        <Plus /> Nouvelle séquence
+      </Link>
+    </Button>
+  );
 
   const columns: Column<(typeof sequences)[number]>[] = [
     {
@@ -120,63 +126,46 @@ function SequencesPage() {
         <Link
           to={`/app/sequences/$id`}
           params={{ id: row.id }}
-          className="flex items-center gap-2 md:gap-3 hover:text-primary transition-colors group"
+          className="block min-w-0 transition-colors hover:text-primary"
         >
-          <div
-            className={`size-6 md:size-8 rounded-lg grid place-items-center ${
-              row.status === "active"
-                ? "bg-primary/8 text-primary"
-                : "bg-secondary text-muted-foreground"
-            }`}
-          >
-            {row.status === "active" ? (
-              <Play className="size-3 md:size-3.5" fill="currentColor" />
-            ) : (
-              <Pause className="size-3 md:size-3.5" />
-            )}
-          </div>
-          <div>
-            <p className="font-medium text-xs md:text-sm group-hover:underline">{row.name}</p>
-            <p className="text-[9px] md:text-xs text-muted-foreground flex items-center gap-0.5 md:gap-1">
-              <Mail className="size-2.5 md:size-3" /> Email + LinkedIn
-            </p>
-          </div>
+          <p className="truncate text-sm font-medium">{row.name}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Email et LinkedIn</p>
         </Link>
       ),
-      cellClassName: "min-w-[140px] md:min-w-[200px]",
+      cellClassName: "min-w-[160px] md:min-w-[220px]",
     },
     {
       key: "steps",
       header: "Étapes",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.steps}</span>,
-      className: "text-center",
-      cellClassName: "text-center",
+      accessor: (row) => <span className="text-sm tabular-nums">{row.steps}</span>,
+      className: "text-right",
+      cellClassName: "text-right",
     },
     {
       key: "leads",
       header: "Leads",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.leads}</span>,
-      className: "text-center",
-      cellClassName: "text-center",
+      accessor: (row) => <span className="text-sm tabular-nums">{row.leads}</span>,
+      className: "text-right",
+      cellClassName: "text-right",
     },
     {
       key: "opens",
       header: "Ouvertures",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.opens}</span>,
-      className: "text-center",
-      cellClassName: "text-center",
+      accessor: (row) => <span className="text-sm tabular-nums">{row.opens}</span>,
+      className: "text-right",
+      cellClassName: "text-right",
+      hideOnMobile: true,
     },
     {
       key: "replies",
       header: "Réponses",
       sortable: true,
-      accessor: (row) => <span className="font-mono text-xs md:text-sm">{row.replies}</span>,
-      className: "text-center",
-      cellClassName: "text-center",
-      hideOnMobile: true,
+      accessor: (row) => <span className="text-sm tabular-nums">{row.replies}</span>,
+      className: "text-right",
+      cellClassName: "text-right",
     },
     {
       key: "status",
@@ -184,7 +173,7 @@ function SequencesPage() {
       sortable: true,
       accessor: (row) => (
         <Badge tone={row.status === "active" ? "primary" : "muted"}>
-          {row.status === "active" ? "Actif" : "En pause"}
+          {row.status === "active" ? "Active" : row.status === "paused" ? "En pause" : "Brouillon"}
         </Badge>
       ),
     },
@@ -194,71 +183,45 @@ function SequencesPage() {
       sortable: false,
       accessor: (row) => (
         <div className="flex items-center justify-end gap-1">
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={(e) => {
               e.stopPropagation();
-              toggleSequenceStatus(row.id);
-              const next = row.status === "active" ? "en pause" : "activée";
-              toast.success(`Séquence ${next}`);
-              addActivity("Séquence " + next, row.name);
+              toggleStatus(row);
             }}
-            className="inline-flex items-center gap-0.5 md:gap-1 text-[9px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 border border-border rounded-md hover:bg-surface transition-colors"
           >
             {row.status === "active" ? (
               <>
-                <Pause className="size-2.5 md:size-3" /> Pauser
+                <Pause /> <span className="hidden md:inline">Mettre en pause</span>
               </>
             ) : (
               <>
-                <Play className="size-2.5 md:size-3" /> Activer
+                <Play /> <span className="hidden md:inline">Activer</span>
               </>
             )}
-          </button>
+          </Button>
           <ActionMenu items={rowMenu(row)} />
         </div>
       ),
-      className: "w-20 md:w-32",
+      className: "w-24 md:w-48",
     },
   ];
 
   if (sequences.length === 0) {
     return (
       <div className="max-w-full">
-        <PageHeader
-          eyebrow="Séquences"
-          title="Vos séquences d'envoi."
-          description="Multi-étape, multi-canal, avec routage adaptatif selon les réponses."
-          actions={
-            <Link
-              to="/app/sequences/new"
-              className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all"
-            >
-              <Plus className="size-3 md:size-3.5" /> Nouvelle séquence
-            </Link>
-          }
+        <PageHeader eyebrow="Engager" title="Vos séquences." actions={newButton} />
+        <EmptyState
+          icon={Send}
+          title="Aucune séquence pour l'instant"
+          action={{
+            label: "Créer une séquence",
+            onClick: () => navigate({ to: "/app/sequences/new" }),
+            icon: Plus,
+          }}
+          size="lg"
         />
-
-        <div className="relative isolate overflow-hidden rounded-2xl">
-          <img
-            src="/images/app/sequences.webp"
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-[0.18] md:opacity-25"
-          />
-          <div className="relative z-10 bg-background/45 backdrop-blur-[1px]">
-            <EmptyState
-              icon={Send}
-              title="Aucune séquence"
-              description="Créez votre première séquence pour automatiser vos campagnes de prospection."
-              action={{
-                label: "Créer une séquence",
-                onClick: () => navigate({ to: "/app/sequences/new" }),
-                icon: Plus,
-              }}
-              size="lg"
-            />
-          </div>
-        </div>
       </div>
     );
   }
@@ -266,167 +229,11 @@ function SequencesPage() {
   return (
     <div className="max-w-full">
       <PageHeader
-        eyebrow="Séquences"
-        title="Vos séquences d'envoi."
-        description="Multi-étape, multi-canal, avec routage adaptatif selon les réponses."
-        actions={
-          <Link
-            to="/app/sequences/new"
-            className="inline-flex items-center gap-1 px-2 md:px-3 py-1 text-[9px] md:text-xs bg-foreground text-background rounded-md hover:opacity-90 transition-all"
-          >
-            <Plus className="size-3 md:size-3.5" /> Nouvelle séquence
-          </Link>
-        }
+        eyebrow="Engager"
+        title="Vos séquences."
+        description={`${active.length} active${active.length > 1 ? "s" : ""} sur ${sequences.length} · ${totalLeads} leads en cours`}
+        actions={newButton}
       />
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-6">
-        <Kpi
-          label="Séquences actives"
-          value={String(active.length)}
-          sub={`${sequences.length - active.length} en pause`}
-        />
-        <Kpi
-          label="Leads en séquence"
-          value={String(totalLeads)}
-          sub={`${sequences.length} séquences`}
-        />
-        <Kpi label="Taux d'ouverture" value={avgOpens} delta="+4%" up />
-        <Kpi label="Taux de réponse" value={avgReplies} delta="+2%" up />
-      </div>
-
-      {detailed.length > 0 && (
-        <section className="mb-4 md:mb-6">
-          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-            Séquences créées ({detailed.length})
-          </h2>
-          <div className="grid md:grid-cols-2 gap-3">
-            {detailed.map((seq) => {
-              const duration = (seq.stepsDetail ?? []).reduce(
-                (max, s) => Math.max(max, s.delay),
-                0,
-              );
-              return (
-                <article
-                  key={seq.id}
-                  className="rounded-xl border border-border bg-background p-4 space-y-3"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <Link
-                        to="/app/sequences/$id"
-                        params={{ id: seq.id }}
-                        className="font-medium text-sm hover:underline"
-                      >
-                        {seq.name}
-                      </Link>
-                      {seq.description && (
-                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                          {seq.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <Badge tone={seq.status === "active" ? "primary" : "muted"}>
-                        {seq.status === "active"
-                          ? "Actif"
-                          : seq.status === "paused"
-                            ? "En pause"
-                            : "Brouillon"}
-                      </Badge>
-                      <ActionMenu items={rowMenu(seq)} />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="size-3" /> {seq.steps} étapes · {duration} j
-                    </span>
-                    {seq.audience && (
-                      <span className="inline-flex items-center gap-1 truncate max-w-[220px]">
-                        <Users className="size-3" /> {seq.audience}
-                      </span>
-                    )}
-                    {seq.settings && (
-                      <span>
-                        {seq.settings.dailyLimit}/jour · {seq.settings.sendWindowStart}–
-                        {seq.settings.sendWindowEnd}
-                      </span>
-                    )}
-                  </div>
-
-                  <ol className="space-y-1.5">
-                    {(seq.stepsDetail ?? []).slice(0, 4).map((s, i) => {
-                      const Icon = CHANNEL_ICON[s.type];
-                      return (
-                        <li
-                          key={s.id}
-                          className="flex items-start gap-2 text-xs rounded-lg border border-border/70 bg-surface/40 px-2.5 py-1.5"
-                        >
-                          <Icon className="size-3.5 mt-0.5 text-muted-foreground shrink-0" />
-                          <span className="font-mono text-[10px] text-muted-foreground shrink-0">
-                            J{s.delay > 0 ? `+${s.delay}` : ""}
-                          </span>
-                          <span className="truncate">
-                            {s.subject?.trim() || s.content || `Étape ${i + 1}`}
-                          </span>
-                        </li>
-                      );
-                    })}
-                    {(seq.stepsDetail?.length ?? 0) > 4 && (
-                      <li className="text-[11px] text-muted-foreground pl-1">
-                        +{(seq.stepsDetail?.length ?? 0) - 4} autres étapes
-                      </li>
-                    )}
-                  </ol>
-
-                  {seq.tags && seq.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {seq.tags.map((t) => (
-                        <span
-                          key={t}
-                          className="px-2 py-0.5 text-[10px] rounded-full border border-border text-muted-foreground"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-end gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        toggleSequenceStatus(seq.id);
-                        toast.success(
-                          seq.status === "active" ? "Séquence en pause" : "Séquence activée",
-                        );
-                      }}
-                      className="inline-flex items-center gap-1 text-[11px] px-2 py-1 border border-border rounded-md hover:bg-surface transition-colors"
-                    >
-                      {seq.status === "active" ? (
-                        <>
-                          <Pause className="size-3" /> Pauser
-                        </>
-                      ) : (
-                        <>
-                          <Play className="size-3" /> Activer
-                        </>
-                      )}
-                    </button>
-                    <Link
-                      to="/app/sequences/$id"
-                      params={{ id: seq.id }}
-                      className="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-md bg-foreground text-background hover:opacity-90 transition-all"
-                    >
-                      <Eye className="size-3" /> Ouvrir
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-      )}
 
       <DataTable
         data={sequences}
@@ -435,26 +242,129 @@ function SequencesPage() {
         pageSize={10}
         showPagination={true}
         showSearch={true}
-        searchPlaceholder="Nom de la séquence..."
+        searchPlaceholder="Rechercher une séquence"
         searchFields={["name"]}
-        emptyMessage="Aucune séquence créée."
+        emptyMessage="Aucune séquence trouvée."
       />
 
-      <section className="mt-4 md:mt-8 rounded-xl border border-border bg-surface/40 p-4 md:p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4">
-          <div>
-            <h2 className="font-display text-xl md:text-2xl italic">Composer une accroche.</h2>
-            <p className="mt-0.5 md:mt-1 text-xs md:text-sm text-muted-foreground">
-              Décrivez le contexte, l'agent rédige. Vous éditez, vous envoyez.
-            </p>
+      {detailed.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-base font-semibold">Étapes des séquences créées</h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            {detailed.map((seq) => {
+              const duration = (seq.stepsDetail ?? []).reduce(
+                (max, s) => Math.max(max, s.delay),
+                0,
+              );
+              return (
+                <article
+                  key={seq.id}
+                  className="rounded-xl border border-border bg-card p-4 md:p-6"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <Link
+                        to="/app/sequences/$id"
+                        params={{ id: seq.id }}
+                        className="text-sm font-semibold hover:underline"
+                      >
+                        {seq.name}
+                      </Link>
+                      {seq.description && (
+                        <p className="mt-1 line-clamp-2 text-[13px] text-muted-foreground">
+                          {seq.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Badge tone={seq.status === "active" ? "primary" : "muted"}>
+                        {seq.status === "active"
+                          ? "Active"
+                          : seq.status === "paused"
+                            ? "En pause"
+                            : "Brouillon"}
+                      </Badge>
+                      <ActionMenu items={rowMenu(seq)} />
+                    </div>
+                  </div>
+
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {seq.steps} étapes sur {duration} jours
+                    {seq.audience && <> · {seq.audience}</>}
+                    {seq.settings && (
+                      <>
+                        {" "}
+                        · {seq.settings.dailyLimit} par jour, de {seq.settings.sendWindowStart} à{" "}
+                        {seq.settings.sendWindowEnd}
+                      </>
+                    )}
+                  </p>
+
+                  <ol className="mt-4 divide-y divide-border border-y border-border">
+                    {(seq.stepsDetail ?? []).slice(0, 4).map((s, i) => {
+                      const Icon = CHANNEL_ICON[s.type];
+                      return (
+                        <li key={s.id} className="flex items-center gap-3 py-2 text-[13px]">
+                          <Icon className="size-4 shrink-0 text-muted-foreground" />
+                          <span className="w-10 shrink-0 text-xs tabular-nums text-muted-foreground">
+                            J{s.delay > 0 ? `+${s.delay}` : ""}
+                          </span>
+                          <span className="truncate">
+                            {s.subject?.trim() || s.content || `Étape ${i + 1}`}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                  {(seq.stepsDetail?.length ?? 0) > 4 && (
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Et {(seq.stepsDetail?.length ?? 0) - 4} autres étapes
+                    </p>
+                  )}
+
+                  {seq.tags && seq.tags.length > 0 && (
+                    <p className="mt-3 text-xs text-muted-foreground">{seq.tags.join(", ")}</p>
+                  )}
+
+                  <div className="mt-4 flex items-center justify-end gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => toggleStatus(seq)}>
+                      {seq.status === "active" ? (
+                        <>
+                          <Pause /> Mettre en pause
+                        </>
+                      ) : (
+                        <>
+                          <Play /> Activer
+                        </>
+                      )}
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/app/sequences/$id" params={{ id: seq.id }}>
+                        Ouvrir
+                      </Link>
+                    </Button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
-          <button
-            onClick={() => toast.success("Cortex rédige une accroche...")}
-            className="inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 text-[10px] md:text-xs bg-primary text-primary-foreground rounded-md hover:brightness-110 transition-all shrink-0"
-          >
-            Générer avec Cortex
-          </button>
+        </section>
+      )}
+
+      <section className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-8 sm:flex-row sm:items-center">
+        <div>
+          <h2 className="text-base font-semibold">Besoin d'une accroche ?</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Décrivez le contexte, Cortex propose un premier jet que vous retouchez.
+          </p>
         </div>
+        <Button
+          variant="outline"
+          onClick={() => toast.success("Cortex rédige une accroche...")}
+          className="shrink-0"
+        >
+          Rédiger avec Cortex
+        </Button>
       </section>
     </div>
   );

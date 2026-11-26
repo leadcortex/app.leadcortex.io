@@ -64,7 +64,7 @@ function SegmentedControl<T extends string>({
             className={cn(
               "px-2 py-1.5 text-[11px] rounded-md transition-colors inline-flex items-center justify-center gap-1",
               active
-                ? "bg-background shadow-sm text-foreground font-medium"
+                ? "bg-background text-foreground font-medium"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -95,7 +95,7 @@ export function PeopleSectionConfig() {
         >
           <div className="space-y-4">
             <div>
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-1.5 text-xs font-medium text-muted-foreground">
                 Densité
               </p>
               <SegmentedControl
@@ -109,7 +109,7 @@ export function PeopleSectionConfig() {
             </div>
 
             <div>
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-1.5 text-xs font-medium text-muted-foreground">
                 Lignes par page
               </p>
               <SegmentedControl
@@ -124,7 +124,7 @@ export function PeopleSectionConfig() {
             </div>
 
             <div>
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-1.5 text-xs font-medium text-muted-foreground">
                 Vue par défaut
               </p>
               <SegmentedControl
@@ -229,7 +229,7 @@ export function CompaniesSectionConfig() {
         >
           <div className="space-y-4">
             <div>
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-1.5 text-xs font-medium text-muted-foreground">
                 Densité
               </p>
               <SegmentedControl
@@ -243,7 +243,7 @@ export function CompaniesSectionConfig() {
             </div>
 
             <div>
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-1.5 text-xs font-medium text-muted-foreground">
                 Lignes par page
               </p>
               <SegmentedControl
@@ -258,7 +258,7 @@ export function CompaniesSectionConfig() {
             </div>
 
             <div>
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="mb-1.5 text-xs font-medium text-muted-foreground">
                 Vue par défaut
               </p>
               <SegmentedControl

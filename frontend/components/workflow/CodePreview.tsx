@@ -84,16 +84,14 @@ export function CodePreview({
   return (
     <div
       className={cn(
-        "flex flex-col overflow-hidden rounded-md border border-input bg-[oklch(0.18_0.02_260)] font-mono text-[10.5px] leading-[1.55] text-zinc-100",
+        "flex flex-col overflow-hidden rounded-md border border-input bg-[oklch(0.18_0.02_260)] font-mono text-[11px] leading-[1.55] text-zinc-100",
         className,
       )}
       style={{ height }}
     >
       {(headerLabel || onEdit) && (
         <div className="flex shrink-0 items-center justify-between gap-1 border-b border-white/10 px-2 py-1">
-          <span className="truncate text-[9px] uppercase tracking-wide text-zinc-400">
-            {headerLabel}
-          </span>
+          <span className="truncate text-[11px] text-zinc-400">{headerLabel}</span>
           {onEdit && (
             <button
               type="button"
@@ -102,7 +100,7 @@ export function CodePreview({
                 e.stopPropagation();
                 onEdit();
               }}
-              className="inline-flex shrink-0 items-center gap-1 rounded bg-primary/20 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-primary hover:bg-primary/30"
+              className="inline-flex shrink-0 items-center gap-1 rounded bg-primary/20 px-1.5 py-0.5 text-[11px] font-medium text-primary hover:bg-primary/30"
             >
               <Code2 className="h-2.5 w-2.5" /> Éditer
             </button>
@@ -115,7 +113,7 @@ export function CodePreview({
       >
         {lines.length === 0 ? (
           <p className="px-2 py-1.5 italic text-zinc-500">
-            {placeholder ?? "Aucun code — ouvre l'éditeur."}
+            {placeholder ?? "Aucun code. Ouvrez l'éditeur."}
           </p>
         ) : (
           <table className="w-full border-collapse">

@@ -9,11 +9,7 @@ import { CompanyLogo } from "@/components/company-logo";
 import { ImageCropperDialog } from "@/components/ui/image-cropper-dialog";
 import { TransparencyGrid } from "@/components/ui/transparency-grid";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  isSvgFile,
-  isSvgDataUrl,
-  type ImageBackground,
-} from "@/lib/core/image-utils";
+import { isSvgFile, isSvgDataUrl, type ImageBackground } from "@/lib/core/image-utils";
 
 export type ImageUploaderProps = {
   type?: "avatar" | "logo";
@@ -110,11 +106,7 @@ export function ImageUploader({
             role="button"
             tabIndex={0}
             aria-label={src ? "Modifier l'image" : "Ajouter une image"}
-            title={
-              src
-                ? "Double-cliquez pour ajuster l'image"
-                : "Cliquez pour choisir une image"
-            }
+            title={src ? "Double-cliquez pour ajuster l'image" : "Cliquez pour choisir une image"}
             className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             style={{ borderRadius }}
           >
@@ -126,8 +118,7 @@ export function ImageUploader({
                   borderRadius,
                   overflow: "hidden",
                   backgroundColor: isAvatar ? "var(--surface)" : "var(--background)",
-                  boxShadow:
-                    "0 0 0 2px color-mix(in oklab, var(--primary) 30%, transparent)",
+                  boxShadow: "0 0 0 2px color-mix(in oklab, var(--primary) 30%, transparent)",
                   position: "relative",
                 }}
               >
@@ -157,16 +148,14 @@ export function ImageUploader({
             onClick={() => inputRef.current?.click()}
             aria-label={`Changer ${label ?? "l'image"}`}
             title="Changer l'image (nouvelle image)"
-            className="absolute -bottom-1 -right-1 z-10 grid size-6 place-items-center rounded-full border border-border bg-background shadow-[0_1px_0_var(--border)] hover:bg-surface active:translate-y-[1px] active:shadow-none transition-all"
+            className="absolute -bottom-1 -right-1 z-10 grid size-6 place-items-center rounded-full border border-border bg-background hover:bg-surface transition-colors"
           >
             <Camera className="size-3" />
           </button>
         </div>
         <div className="text-center">
           <p className="text-xs font-medium">{label}</p>
-          <p className="text-[10px] text-muted-foreground">
-            Glissez ou cliquez · PNG, JPG, SVG
-          </p>
+          <p className="text-[10px] text-muted-foreground">Glissez ou cliquez · PNG, JPG, SVG</p>
         </div>
         {src && (
           <button

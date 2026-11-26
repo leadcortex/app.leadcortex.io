@@ -84,7 +84,7 @@ export function BlockPalette({
       >
         <DialogTitle className="sr-only">Ajouter un bloc</DialogTitle>
 
-        <div className="flex shrink-0 items-center gap-2 border-b border-border py-2 pl-3 pr-14">
+        <div className="flex shrink-0 items-center gap-2 border-b border-border py-2 pl-4 pr-14">
           <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
           <input
             ref={inputRef}
@@ -95,30 +95,30 @@ export function BlockPalette({
                 pick(flatResults[0].id);
               }
             }}
-            placeholder="Rechercher un bloc… (Entrée pour insérer le premier résultat)"
-            className="h-7 min-w-0 flex-1 bg-transparent text-[13px] outline-none"
+            placeholder="Rechercher un bloc (Entrée insère le premier)"
+            className="h-9 min-w-0 flex-1 bg-transparent text-[16px] outline-none sm:text-sm"
           />
         </div>
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col sm:flex-row">
-          <aside className="hidden w-[196px] shrink-0 overflow-y-auto border-r border-border py-1.5 sm:block">
+          <aside className="hidden w-[200px] shrink-0 overflow-y-auto border-r border-border p-2 sm:block">
             <button
               type="button"
               onClick={() => setCat("all")}
               className={cn(
-                "flex w-full items-center gap-2 px-3 py-1.5 text-left text-[12px] transition-colors",
+                "flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] transition-colors",
                 cat === "all"
                   ? "bg-accent font-medium text-foreground"
                   : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
               )}
             >
-              <LayoutGrid className="h-3.5 w-3.5 shrink-0" />
+              <LayoutGrid className="size-4 shrink-0" />
               <span className="min-w-0 flex-1 truncate">Tout</span>
-              <span className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
+              <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                 {BLOCKS.length}
               </span>
             </button>
-            <div className="my-1 h-px bg-border" />
+            <div className="my-2 h-px bg-border" />
             {CATEGORIES.map((c) => {
               const Icon = c.icon;
               const count = countsByCategory.get(c.key) ?? 0;
@@ -130,7 +130,7 @@ export function BlockPalette({
                   type="button"
                   onClick={() => setCat(c.key)}
                   className={cn(
-                    "flex w-full items-center gap-2 px-3 py-1.5 text-left text-[12px] transition-colors",
+                    "flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] transition-colors",
                     active
                       ? "font-medium text-foreground"
                       : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
@@ -138,13 +138,13 @@ export function BlockPalette({
                   style={active ? { background: `${c.color}1a` } : undefined}
                 >
                   <span
-                    className="grid h-4 w-4 shrink-0 place-items-center rounded-sm"
+                    className="grid size-4 shrink-0 place-items-center"
                     style={{ color: c.color }}
                   >
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className="size-4" />
                   </span>
                   <span className="min-w-0 flex-1 truncate">{c.label}</span>
-                  <span className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                     {count}
                   </span>
                 </button>
@@ -152,12 +152,12 @@ export function BlockPalette({
             })}
           </aside>
 
-          <div className="wf-hscroll flex w-full min-w-0 shrink-0 flex-nowrap gap-1 overflow-x-auto overflow-y-hidden overscroll-x-contain border-b border-border px-2 py-1.5 sm:hidden">
+          <div className="wf-hscroll flex w-full min-w-0 shrink-0 flex-nowrap gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain border-b border-border px-4 py-2 sm:hidden">
             <button
               type="button"
               onClick={() => setCat("all")}
               className={cn(
-                "shrink-0 rounded-full px-2 py-0.5 text-[10.5px]",
+                "h-8 shrink-0 rounded-full px-3 text-[13px]",
                 cat === "all"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent",
@@ -171,7 +171,7 @@ export function BlockPalette({
                 type="button"
                 onClick={() => setCat(c.key)}
                 className={cn(
-                  "shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-[10.5px]",
+                  "h-8 shrink-0 whitespace-nowrap rounded-full px-3 text-[13px]",
                   cat === c.key ? "text-background" : "text-muted-foreground hover:bg-accent",
                 )}
                 style={cat === c.key ? { background: c.color, color: "#08090c" } : undefined}
@@ -181,21 +181,19 @@ export function BlockPalette({
             ))}
           </div>
 
-          <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-2">
+          <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-2 sm:p-3">
             {groups.map((group, gi) => {
               const c = group.category ? CATEGORIES.find((x) => x.key === group.category) : null;
               return (
-                <div key={group.category ?? "flat"} className={cn(gi > 0 && "mt-3")}>
+                <div key={group.category ?? "flat"} className={cn(gi > 0 && "mt-6")}>
                   {c && (
-                    <div className="mb-1.5 flex items-center gap-1.5 px-1">
+                    <div className="mb-2 flex items-center gap-2 px-2">
                       <span
                         className="h-1.5 w-1.5 shrink-0 rounded-full"
                         style={{ background: c.color }}
                       />
-                      <span className="text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground">
-                        {c.label}
-                      </span>
-                      <span className="text-[10.5px] text-muted-foreground/70">
+                      <span className="text-[13px] font-semibold">{c.label}</span>
+                      <span className="text-xs tabular-nums text-muted-foreground">
                         ({group.blocks.length})
                       </span>
                     </div>
@@ -209,19 +207,19 @@ export function BlockPalette({
                           key={b.id}
                           type="button"
                           onClick={() => pick(b.id)}
-                          className="group grid grid-cols-[auto_minmax(0,1fr)] items-start gap-2 rounded-md border border-transparent p-2 text-left hover:border-border hover:bg-accent"
+                          className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 rounded-lg p-2 text-left transition-colors hover:bg-surface/70"
                         >
                           <span
-                            className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded"
+                            className="grid size-8 shrink-0 place-items-center rounded-lg"
                             style={{ background: `${bc.color}25`, color: bc.color }}
                           >
-                            <Icon className="h-3.5 w-3.5" />
+                            <Icon className="size-4" />
                           </span>
                           <span className="min-w-0">
-                            <span className="block truncate text-[12px] font-medium">
+                            <span className="block truncate text-[13px] font-medium">
                               {b.title}
                             </span>
-                            <span className="block truncate text-[10.5px] text-muted-foreground">
+                            <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                               {b.subtitle}
                             </span>
                           </span>
@@ -233,7 +231,7 @@ export function BlockPalette({
               );
             })}
             {!flatResults.length && (
-              <p className="p-4 text-center text-[12px] text-muted-foreground">
+              <p className="p-8 text-center text-[13px] text-muted-foreground">
                 Aucun bloc trouvé.
               </p>
             )}

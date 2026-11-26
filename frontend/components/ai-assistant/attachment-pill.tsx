@@ -44,7 +44,7 @@ export function AttachmentPill({
       toast.success(`« ${attachment.name} » téléchargé`);
       return;
     }
-    toast.info("Restitution du fichier — bientôt disponible");
+    toast.info("Restitution du fichier : bientôt disponible");
   };
 
   if (isImage) {

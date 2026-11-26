@@ -99,7 +99,7 @@ export function ResizableSplit({
     >
       <section
         className={cn(
-          "flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-sm",
+          "flex flex-col overflow-hidden rounded-xl border border-border bg-background",
           "h-[var(--rs-mlh)]",
           "md:h-[var(--rs-dh)] md:shrink-0 md:w-[var(--rs-lw)]",
         )}
@@ -121,7 +121,7 @@ export function ResizableSplit({
 
       <section
         className={cn(
-          "flex min-w-0 flex-none flex-col overflow-hidden rounded-xl border border-border bg-background shadow-sm md:flex-1",
+          "flex min-w-0 flex-none flex-col overflow-hidden rounded-xl border border-border bg-background md:flex-1",
           "h-[var(--rs-mrh)]",
           "md:h-[var(--rs-dh)]",
         )}
